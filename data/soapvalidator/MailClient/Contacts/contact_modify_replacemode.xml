@@ -1,0 +1,351 @@
+<t:tests xmlns:t = "urn:zimbraTestHarness">
+
+<t:property name = "test_account1.name" value = "test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name = "test_account1.password" value = "test123"/>
+
+<t:property name = "contact1.first" value = "first${TIME}${COUNTER}"/>
+<t:property name = "contact1.last" value = "last${TIME}${COUNTER}"/>
+<t:property name = "contact1.email" value = "email${TIME}${COUNTER}@hotmail.com"/>
+
+<t:property name = "contact2.first" value = "first2${TIME}${COUNTER}"/>
+<t:property name = "contact2.last" value = "last2${TIME}${COUNTER}"/>
+<t:property name = "contact2.email" value = "email2${TIME}${COUNTER}@hotmail.com"/>
+
+<t:property name = "contact3.first" value = "first3${TIME}${COUNTER}"/>
+<t:property name = "contact3.last" value = "last3${TIME}${COUNTER}"/>
+<t:property name = "contact3.email" value = "email3${TIME}${COUNTER}@hotmail.com"/>
+
+<t:property name = "contact4.first" value = "first4${TIME}${COUNTER}"/>
+<t:property name = "contact4.last" value = "last4${TIME}${COUNTER}"/>
+<t:property name = "contact4.email" value = "email4${TIME}${COUNTER}@hotmail.com"/>
+
+<t:property name = "contact5.first" value = "first5${TIME}${COUNTER}"/>
+<t:property name = "contact5.last" value = "last5${TIME}${COUNTER}"/>
+<t:property name = "contact5.email" value = "email5${TIME}${COUNTER}@hotmail.com"/>
+
+
+<t:property name = "user.certificate1" value = "Cert1${TIME}${COUNTER}"/>
+<t:property name = "user.smime1" value = "Smime1${TIME}${COUNTER}"/>
+
+<t:property name = "user.certificate2" value = "Cert2${TIME}${COUNTER}"/>
+<t:property name = "user.smime2" value = "Smime2${TIME}${COUNTER}"/>
+
+<t:property name = "user.certificate3" value = "Cert3${TIME}${COUNTER}"/>
+<t:property name = "user.smime3" value = "Smime3${TIME}${COUNTER}"/>
+
+
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid = "Ping" type = "always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test required = "true">
+        <t:request>
+            <PingRequest xmlns = "urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid = "ContactsModify_ReplaceMode_acctsetup" type = "always">
+    <t:objective>create test account</t:objective>
+    
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required = "true">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid = "ContactsModify_ReplaceMode_acctlogin" type = "always">
+    <t:objective>login as the test account</t:objective>
+    
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContact_ReplaceMode_01" bugids="59738" type="smoke">
+    <t:objective>Modify a contact: with replace mode to 0 and op = + </t:objective>
+    <t:steps>1. create a new contact with email address, userSMIMECertificate, userCertiticate
+        2. Modify and add more userSMIMECertificate, userCertiticate attributes
+		3. Verify that multiple attributes are added
+    </t:steps>
+    
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact1.first}</a>
+                    <a n = "lastName">${contact1.last}</a>
+                    <a n = "email">${contact1.email}</a>
+					<a n = "userCertificate">${user.certificate1}</a>
+					<a n = "userSMIMECertificate">${user.smime1}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
+                <cn id = "${contact.id}">
+                    <a n = "userCertificate" op="+">${user.certificate2}</a>
+					<a n = "userSMIMECertificate" op="+">${user.smime2}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn">
+				<t:select path='//mail:a[@n="userSMIMECertificate"]' match="${user.smime1}"/>
+				<t:select path='//mail:a[@n="userSMIMECertificate"]' match="${user.smime2}"/>
+				<t:select path='//mail:a[@n="userCertificate"]' match="${user.certificate1}"/>
+				<t:select path='//mail:a[@n="userCertificate"]' match="${user.certificate2}"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContact_ReplaceMode_02" bugids="59738" type="smoke">
+    <t:objective>Modify a contact: Remove previous attributes and add new</t:objective>
+    <t:steps>1. create a new contact with email address, userSMIMECertificate, userCertiticate
+        2. Modify contact: remove previous userSMIMECertificate, userCertiticate attributes and add new values for same attributes
+		3. Verify that new attributes are added
+    </t:steps>
+    
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact2.first}</a>
+                    <a n = "lastName">${contact2.last}</a>
+                    <a n = "email">${contact2.email}</a>
+					<a n = "userCertificate">${user.certificate1}</a>
+					<a n = "userSMIMECertificate">${user.smime1}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact2.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
+                <cn id = "${contact2.id}">
+					<a n = "userCertificate"></a>
+					<a n = "userSMIMECertificate"></a>
+                    <a n = "userCertificate" op="+">${user.certificate2}</a>
+					<a n = "userSMIMECertificate" op="+">${user.smime2}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn">
+				<t:select path='//mail:a[@n="userSMIMECertificate"]' match="${user.smime2}"/>
+				<t:select path='//mail:a[@n="userCertificate"]' match="${user.certificate2}"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContact_ReplaceMode_03" bugids="59738" type="smoke">
+    <t:objective>Modify a contact: Remove all added attributes</t:objective>
+    <t:steps>1. create a new contact with email address, userSMIMECertificate, userCertiticate
+        2. Modify contact: remove all userSMIMECertificate, userCertiticate attributes
+		3. Verify that attributes are removed
+    </t:steps>
+    
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact3.first}</a>
+                    <a n = "lastName">${contact3.last}</a>
+                    <a n = "email">${contact3.email}</a>
+					<a n = "userCertificate">${user.certificate1}</a>
+					<a n = "userSMIMECertificate">${user.smime1}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact3.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
+                <cn id = "${contact3.id}">
+                    <a n = "userCertificate" op="+">${user.certificate2}</a>
+					<a n = "userSMIMECertificate" op="+">${user.smime2}</a>
+					<a n = "userCertificate"></a>
+					<a n = "userSMIMECertificate"></a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn">
+				<t:select path='//mail:a[@n="userSMIMECertificate"]' emptyset="1"/>
+				<t:select path='//mail:a[@n="userCertificate"]' emptyset="1"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContact_ReplaceMode_04" bugids="59738" type="smoke">
+    <t:objective>Modify a contact: Verify invalid request is thrown for empty value with op=+</t:objective>
+    <t:steps>1. create a new contact with email address, userSMIMECertificate, userCertiticate
+        2. Modify contact: With op=+ enter empty value to be modified
+		3. Verify that invalid request error is thrown
+    </t:steps>
+    
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact4.first}</a>
+                    <a n = "lastName">${contact4.last}</a>
+                    <a n = "email">${contact4.email}</a>
+					<a n = "userCertificate">${user.certificate1}</a>
+					<a n = "userSMIMECertificate">${user.smime1}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact4.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
+                <cn id = "${contact4.id}">
+                    <a n = "userCertificate" op="+"></a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace="0">
+                <cn id = "${contact4.id}">
+                    <a n = "userSMIMECertificate" op="+"></a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+          	<t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/> 
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContact_ReplaceMode_05" bugids="59738" type="smoke">
+    <t:objective>Modify a contact: with replace=1 replace the value of the attributes</t:objective>
+    <t:steps>1. create a new contact with email address, userSMIMECertificate, userCertiticate
+        2. Modify contact: modify userSMIMECertificate, userCertiticate attributes
+		3. Verify that attributes are updated with new value
+    </t:steps>
+    
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact5.first}</a>
+                    <a n = "lastName">${contact5.last}</a>
+                    <a n = "email">${contact5.email}</a>
+					<a n = "userCertificate">${user.certificate1}</a>
+					<a n = "userSMIMECertificate">${user.smime1}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact5.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace="1">
+                <cn id = "${contact5.id}">
+                    <a n = "userCertificate">${user.certificate2}</a>
+					<a n = "userSMIMECertificate">${user.smime2}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn">
+				<t:select path='//mail:a[@n="userSMIMECertificate"]' match="${user.smime1}" emptyset="1"/>
+				<t:select path='//mail:a[@n="userCertificate"]' match="${user.certificate1}" emptyset="1"/>
+				<t:select path='//mail:a[@n="userSMIMECertificate"]' match="${user.smime2}"/>
+				<t:select path='//mail:a[@n="userCertificate"]' match="${user.certificate2}"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+</t:tests>
+    
+

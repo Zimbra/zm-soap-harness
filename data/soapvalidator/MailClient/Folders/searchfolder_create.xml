@@ -1,0 +1,394 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="search.name1" value="Search01${TIME}.${COUNTER}"/>
+<t:property name="search.name2" value="Search01${TIME}.${COUNTER}"/>
+<t:property name="searchName.number" value="12345${TIME}.${COUNTER}"/>
+<t:property name="searchName.spchar" value="':;~!@"/>
+<t:property name="searchName.blank" value=""/>
+<t:property name="searchName.space" value="             "/>
+<t:property name="searchName.spaces" value= "Test${TIME}     .Test${COUNTER}"/>
+
+
+
+<t:property name="query01" value="in:inbox"/>
+<t:property name="query02" value="in:contacts"/>
+<t:property name="query03" value="in:sent"/>
+<t:property name="query04" value="in:trash"/>
+
+<t:property name="type1" value="message"/>
+<t:property name="type2" value="conversation"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+<t:objective>basic system check</t:objective>
+
+<t:test id="ping" required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+ <t:objective>create test account</t:objective>
+
+<t:test id="admin_login" required="true" >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAdmin">
+    <name>${admin.user}</name>
+    <password>${admin.password}</password>
+  </AuthRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+ </t:response>
+</t:test>
+
+<t:test required="true" >
+ <t:request>
+  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+    <name>${test_account1.name}</name>
+    <password>${test_account1.password}</password>
+    <!--
+    <a n="zimbraMailHost">${LOCALHOST}</a>
+    <a n="zimbraMailStatus">enabled</a>
+    <a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+    <a n="zimbraPasswordMinAge">7</a>
+    Commenting out the optional attributes and sending the request with minimal requirement
+    -->
+  </CreateAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+       <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+ <t:objective>login as the test account</t:objective>
+
+<t:test required="true">
+<t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${test_account1.name}</account>
+    <password>${test_account1.password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest1" type="smoke" >
+ <t:objective> Create Search Folder for query "in:inbox" and type "message"  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="${search.name1}" query="${query01}" types="${type1}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="name" match="${search.name1}"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query01}"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest2" type="smoke" >
+ <t:objective> Create Search Folder for query "in:inbox" and type "conversation"  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query01}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query01}"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest3" type="smoke" >
+ <t:objective> Create Search Folder for query "in:contacts" and type "message"  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query02}" types="${type1}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query02}"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest4" type="smoke" >
+ <t:objective> Create Search Folder for query "in:contacts" and type "conversation"  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query02}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query02}"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest5" type="smoke" >
+ <t:objective> Create Search Folder for query "in:sent" and type "message"  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query03}" types="${type1}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query03}"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest6" type="smoke" >
+ <t:objective> Create Search Folder for query "in:sent" and type "conversation"  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query03}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query03}"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest7" type="smoke" >
+ <t:objective> Create Search Folder for query "in:trash" and type "message"  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query04}" types="${type1}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query04}"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest8" type="smoke" >
+ <t:objective> Create Search Folder for query "in:trash" and type "conversation"  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query04}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query04}"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateSearchFolderRequest9" type="smoke" >
+ <t:objective>  Create Search Folder with duplicate name in message view   </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="${search.name1}" query="${query02}" types="${type1}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path= "//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest10" type="smoke" >
+ <t:objective>  Create Search Folder with duplicate name in conversation view   </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="${search.name1}" query="${query02}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path= "//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateSearchFolderRequest11" type="negative" >
+ <t:objective> Create Search Folder with special characters </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="${searchName.spchar}" query="${query04}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path= "//zimbra:Code" match="^mail.INVALID_NAME"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateSearchFolderRequest12" type="negative" >
+ <t:objective> Create Search Folder with name as numbers </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="${searchName.number}" query="${query04}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query04}"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateSearchFolderRequest13" type="negative" >
+ <t:objective> Create Search Folder with name as blank </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="${searchName.blank}" query="${query04}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path= "//zimbra:Code" match="^mail.INVALID_NAME"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateSearchFolderRequest14" type="negative" >
+ <t:objective> Create Search Folder with name as only spaces </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="${searchName.space}" query="${query04}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path= "//zimbra:Code" match="^mail.INVALID_NAME"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateSearchFolderRequest15" type="negative" >
+ <t:objective> Create Search Folder with names in two parts  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="${searchName.spaces}" query="${query04}" types="${type2}" sortBy="dateDesc" l="1"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateSearchFolderRequest16" type="negative" >
+ <t:objective> Create Search Folder in Inbox  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query04}" types="${type2}" sortBy="dateDesc" l="2"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="l" match="2"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateSearchFolderRequest17" type="negative" >
+ <t:objective> Create Search Folder in Inbox  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query04}" types="${type2}" sortBy="dateDesc" l="5"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="l" match="5"/>
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateSearchFolderRequest18" type="negative" >
+ <t:objective> Create Search Folder in Contacts folder  </t:objective>
+<t:test>
+<t:request>
+    <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+        <search name="Search01${TIME}.${COUNTER}" query="${query04}" types="${type2}" sortBy="dateDesc" l="7"/>
+    </CreateSearchFolderRequest>
+</t:request>
+    <t:response>
+        <t:select path="//mail:CreateSearchFolderResponse"/>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="l" match="7"/>
+
+   </t:response>
+ 
+</t:test>
+</t:test_case>
+
+
+
+</t:tests>
+

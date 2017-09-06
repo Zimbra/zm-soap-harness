@@ -1,0 +1,152 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="message11.subject" value="Subject10${TIME}.${COUNTER}"/>
+<t:property name="message11.content" value="Content10${TIME}.${COUNTER}"/>
+
+
+<t:property name="message11.file" value="${soapxml.root}/MailClient/Mail/Drafts/SaveDraftMime/test.pdf"/>
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always">
+    <t:objective>Create test account</t:objective>
+    <steps>
+        1. Login to admin account
+        2. Create user accounts
+    </steps>
+
+    <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- Creating the user account with quota of 1 mb - here specified in bytes -->
+    <t:test id="create_test_account1" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+                <a n="zimbraMailQuota">1048576</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="DraftQuotaCheck" type="functional">
+    <t:objective>To Send a draft mail</t:objective>
+    <t:steps>
+        1. Compose a message and save it as Draft
+        2. Upload the attachment
+        2. Reopen the draft and attach the attachment uploaded 
+    </t:steps>
+  
+  	<!-- Login to the user account -->
+  	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test id="saveDraftRequest7a">
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account1.name}'/>
+                    <su> saving first in draft </su>
+                    <mp ct="text/plain">
+                        <content> Send the draft mail</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft7.id"/>
+        </t:response>
+    </t:test>
+
+	<!-- upload the attachment -->
+	<t:delay msec="2000"/>	
+
+	<t:property name="uploadServletServer" value="${test_acct.server}"/>
+
+    <t:uploadservlettest id="SaveDraftRequest11a" required="true">
+        <t:uploadServletRequest>
+            <filename>${message11.file}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="message11.aid"/>
+			<t:select attr="StatusCode" match="200"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+		
+	<t:delay msec="5000"/>
+
+	<!-- Again save the draft with an attachment, Response should be quota exceeded -->
+	<t:test id="saveDraftRequest7a">
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m id ="${draft7.id}">                	
+                    <e t="t" a='${test_account1.name}'/>
+                    <su> re changing of draft </su>
+                    <mp ct="text/plain">
+                        <content> Send the draft mail </content>
+                    </mp>
+                    <attach aid="${message11.aid}" />
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="mail.QUOTA_EXCEEDED"/>
+        </t:response>
+    </t:test>		
+	
+</t:test_case>
+
+</t:tests>
+
+

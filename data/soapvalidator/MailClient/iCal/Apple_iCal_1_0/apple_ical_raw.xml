@@ -1,0 +1,214 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+<t:property name="account1.name" value="${iCalAccount1.name}@${iCalDomain.name}"/>
+
+
+<t:property name="mail1.subject" value="iCal event invitation: New Event mac"/>
+<t:property name="mail1.fragment" value="^Persistent System has invited you.*"/>
+<t:property name="mail1.content" value="Persistent System has invited you to the iCal event: New Event mac,  
+scheduled for 16 October 2005. To accept or decline this invitation,  
+click the link below."/>
+
+<t:property name="appt1.file" value="${soapxml.root}/MailClient/iCal/Apple_iCal_1_0/mac-ical-raw.txt"/>
+<t:property name="appt1.summary" value="New Event mac"/>
+<t:property name="appt1.invitee" value="${account1.name}"/>
+<t:property name="appt1.organizer" value="user02@zimbra.co.in"/>
+<t:property name="appt1.start" value="20051016"/>
+<t:property name="appt1.end" value="20051016"/>
+<t:property name="appt1.allday" value="1"/>
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+
+	<!-- Make sure the domain is there -->
+    <t:test >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${iCalDomain.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${account1.name}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" set="account1.id"/>
+                     <t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+	</t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test >
+        <t:request>
+            <DeleteMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account1.id}"/>
+            </DeleteMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteMailboxResponse"/>
+        </t:response>
+    </t:test>    
+
+    <t:test >
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+
+<t:test_case testcaseid="apple_iCal_rawInject01" type="functional" bugids="44975">
+    <t:objective>Verify the basic iCal format when lmtp inject is used to inject the iCal</t:objective>
+    <t:steps>
+	1. Use lmtp inject to inject the message
+	2. Login as the invitee
+	3. GetApptSummaries, verify the meeting was created
+    </t:steps>
+    
+
+	<t:mailinjecttest>
+		<t:lmtpInjectRequest>
+			<filename>${appt1.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${test_acct2.server}</server>
+		</t:lmtpInjectRequest>
+	</t:mailinjecttest>
+
+
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    
+	<!-- do a simple verification of the mail -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
+	  	 <query>in:inbox</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="mail1.id"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail1.subject}"/>
+	  </t:response>
+	</t:test>
+
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${mail1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${mail1.id}"/>
+            <t:select path='//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@cd="attachment"]' attr="filename" match="iCal-20051015-200945.ics"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

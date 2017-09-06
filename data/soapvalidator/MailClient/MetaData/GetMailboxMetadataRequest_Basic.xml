@@ -1,0 +1,175 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxMetadata01" type="smoke" >
+    <t:objective>Verify basic GetMailboxMetadataRequest works (no metadata)</t:objective>
+  
+	<t:property name="metadata.section.key" value="zwc:${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
+				<meta section="${metadata.section.key}"/>
+			</GetMailboxMetadataRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMailboxMetadataResponse">
+            </t:select>
+        </t:response>
+    </t:test>
+ 
+
+</t:test_case>
+
+<t:test_case testcaseid="GetMailboxMetadata01" type="smoke" >
+    <t:objective>Verify basic GetMailboxMetadataRequest works (with metadata)</t:objective>
+
+
+	<t:property name="metadata.section.key" value="zwc:${TIME}${COUNTER}"/>
+	<t:property name="meta.key" value="key${TIME}${COUNTER}"/>
+	<t:property name="meta.value" value="value${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<SetMailboxMetadataRequest xmlns="urn:zimbraMail">
+				<meta section="${metadata.section.key}">
+					<a n="${meta.key}">${meta.value}</a>
+				</meta>
+			</SetMailboxMetadataRequest>   
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SetMailboxMetadataResponse"/>
+		</t:response>
+	</t:test>
+  
+	<t:test>
+		<t:request>
+			<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
+				<meta section="${metadata.section.key}"/>
+			</GetMailboxMetadataRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMailboxMetadataResponse">
+	            <t:select path="//mail:meta[@section='${metadata.section.key}']">
+	            	<t:select path="//mail:a[@n='${meta.key}']" match="${meta.value}"/>
+            	</t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+ 
+
+</t:test_case>
+
+<t:test_case testcaseid="GetMailboxMetadata04" type="smoke" >
+    <t:objective>Verify basic GetMailboxMetadataRequest works (with multiple metadata)</t:objective>
+
+
+
+	<t:property name="metadata.section.key" value="zwc:${TIME}${COUNTER}"/>
+	<t:property name="meta1.key" value="key${TIME}${COUNTER}"/>
+	<t:property name="meta1.value" value="value${TIME}${COUNTER}"/>
+	<t:property name="meta2.key" value="key${TIME}${COUNTER}"/>
+	<t:property name="meta2.value" value="value${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<SetMailboxMetadataRequest xmlns="urn:zimbraMail">
+				<meta section="${metadata.section.key}">
+					<a n="${meta1.key}">${meta1.value}</a>
+					<a n="${meta2.key}">${meta2.value}</a>
+				</meta>
+			</SetMailboxMetadataRequest>   
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SetMailboxMetadataResponse"/>
+		</t:response>
+	</t:test>
+  
+	<t:test>
+		<t:request>
+			<GetMailboxMetadataRequest xmlns="urn:zimbraMail">
+				<meta section="${metadata.section.key}"/>
+			</GetMailboxMetadataRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMailboxMetadataResponse">
+	            <t:select path="//mail:meta[@section='${metadata.section.key}']">
+	            	<t:select path="//mail:a[@n='${meta1.key}']" match="${meta1.value}"/>
+	            	<t:select path="//mail:a[@n='${meta2.key}']" match="${meta2.value}"/>
+            	</t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+ 
+
+</t:test_case>
+
+
+</t:tests>

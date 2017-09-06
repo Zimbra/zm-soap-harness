@@ -1,0 +1,391 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="admin1.account" value="admin1.${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="admin2.account" value="admin2.${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="right1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="domain.new.name" value="new.${TIME}.${COUNTER}${defaultdomain.name}"/>
+<t:property name="account1.dl8.name" value="dl8.${TIME}.${COUNTER}@${domain.new.name}"/>
+<t:property name="account2.name" value="right2.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${admin1.account}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${admin2.account}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin2.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetEffectiveRightsRequest01" type="smoke" bugids="36447" >
+<t:objective> Basic test case to verify GetEffectiveRightsRequest </t:objective>
+	<t:steps>
+	1. Create a regular admin account (created in above request)
+	2. Grant few rights to admin1
+    3. Check all the rights are retuned in GetEffectiveRightsRequest
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>accessGAL</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>countAccount</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>createAlias</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GetEffectiveRightsRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+			</GetEffectiveRightsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetEffectiveRightsResponse/admin:target">
+				<t:select path="//admin:right[@n='accessGAL']" emptyset="0"/>
+				<t:select path="//admin:right[@n='countAccount']" emptyset="0"/>
+				<t:select path="//admin:right[@n='createAlias']" emptyset="0"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetEffectiveRightsRequest02" type="smoke" >
+<t:objective> Send GetEffectiveRightsRequest on target where grantee has no rights </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetEffectiveRightsRequest xmlns="urn:zimbraAdmin">
+				<target type="account" by="name">${admin1.account}</target>
+				<grantee type="usr" by="name">${account1.name}</grantee>
+			</GetEffectiveRightsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetEffectiveRightsResponse/admin:target" attr="rights" emptyset="1"/>            
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetEffectiveRightsRequest03" type="smoke" bugids="37801">
+<t:objective> Verify if "grantee" is omitted, it means the account identified by the auth token. </t:objective>
+<!-- As we authenticating as global admin account, it has all the rights on all the target accounts. -->
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetEffectiveRightsRequest xmlns="urn:zimbraAdmin">
+				<target type="account" by="name">${account1.name}</target>
+			</GetEffectiveRightsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetEffectiveRightsResponse/admin:target">   
+				<t:select path="//admin:right[@n='addAccountAlias']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='adminLoginAs']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='checkRightUsr']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='deleteAccount']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='getAccountInfo']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='getAccountMembership']" emptyset="0"/>					
+				<t:select path="//admin:right[@n='getMailboxInfo']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='listAccount']" emptyset="0"/>							
+				<t:select path="//admin:right[@n='purgeMessages']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='reindexMailbox']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='removeAccountAlias']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='renameAccount']" emptyset="0"/>			
+				<t:select path="//admin:right[@n='setAccountPassword']" emptyset="0"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetEffectiveRightsRequest04" type="smoke" >
+<t:objective> Verify "expandAllAttrs" set to getAttrs </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin2.account}</grantee>
+				<right>modifyAccount</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin2.account}</name>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetEffectiveRightsRequest xmlns="urn:zimbraAdmin" expandAllAttrs="getAttrs">
+				<target type="account" by="name">${account1.name}</target>
+			</GetEffectiveRightsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetEffectiveRightsResponse/admin:target"/>   
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetEffectiveRightsRequest05" type="smoke" >
+<t:objective> Verify "expandAllAttrs" set to setAttrs </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin2.account}</name>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetEffectiveRightsRequest xmlns="urn:zimbraAdmin" expandAllAttrs="setAttrs">
+				<target type="account" by="name">${account1.name}</target>
+			</GetEffectiveRightsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetEffectiveRightsResponse/admin:target"/>   
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetEffectiveRightsRequest06" type="smoke" bugids="36683">
+<t:objective> Verify "expandAllAttrs" set to both "getAttrs, setAttrs" </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin1.account}</name>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetEffectiveRightsRequest xmlns="urn:zimbraAdmin" expandAllAttrs="setAttrs, setAttrs">
+				<target type="account" by="name">${account1.name}</target>
+			</GetEffectiveRightsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetEffectiveRightsResponse/admin:target"/>   
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="GetEffectiveRightsRequest07" type="smoke" bugids="70206">
+<t:objective> Inconsistent responses from getEffectiveRights and checkRight </t:objective>
+	<t:steps>
+		1. Login as a admin
+		2. Create distribution List (DL1)
+		3. give deleteDistributionList right on dl to delegated admin
+		4. Send GetEffectiveRightsRequest and CheckRightRequest > observe response.
+	</t:steps>
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="list1" value="list1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+	  <t:test id="CreateDistributionListRequest1"  required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list1}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="dl" by="name">${list1}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>deleteDistributionList</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+	
+	 <t:test>
+		<t:request>
+			<GetEffectiveRightsRequest xmlns="urn:zimbraAdmin">
+				<target type="dl" by="name">${list1}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+			</GetEffectiveRightsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetEffectiveRightsResponse/admin:target/admin:right[@n='deleteDistributionList']" emptyset="0"/>   
+		</t:response>
+	</t:test>
+	
+	 <t:test>
+		<t:request>
+			<CheckRightRequest xmlns="urn:zimbraAdmin">
+				<target type="dl" by="name">${list1}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>deleteDistributionList</right>
+			</CheckRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:CheckRightResponse" attr="allow" match="1"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+</t:tests>

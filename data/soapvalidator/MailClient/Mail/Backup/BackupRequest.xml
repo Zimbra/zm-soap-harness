@@ -1,0 +1,319 @@
+<t:tests xmlns:t = "urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>  
+
+<t:property name="account1.name" value="acct1${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="account2.name" value="acct2${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="account3.name" value="acct2${TIME}${COUNTER}@${domain1.name}"/>
+
+
+
+<t:property name="msg01.subject" value="message${TIME}${COUNTER}"/>
+<t:property name="msg02.subject" value="message${TIME}${COUNTER}"/>
+<t:property name="message_content" value="this mail is to check whether the message is read or unread"/>
+
+
+
+<t:test_case testcaseid = "Ping" type = "always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id = "ping">
+        <t:request>
+            <PingRequest xmlns = "urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "acctSetup1_conv_backup" type = "always">
+    <t:objective>create test account</t:objective>
+    
+    <t:test id = "admin_login" required = "true" depends = "ping">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test reuqired="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>   
+
+	<t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>   
+
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupRequest_Mail_Basic_01" type="smoke" areas="backup,nonappliance">
+<t:objective>Backup and restore an account with a simple message. Verify that after backup and restore, the message remains</t:objective>
+<t:steps>
+         1. Login to account1 
+         2. Send 1 mail to account2.
+		 3. Backup the Account2
+         4. Delete the Account2
+         5. Restore the Account2
+		 6. Verify that the message is still in the mailbox
+</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+     <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a="${account2.name}"/>
+                    <su>${msg01.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${message_content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse"/>
+        </t:response>
+    </t:test>
+
+ 
+     
+	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
+	<t:property name="account.name" value="${account2.name}"/>
+	<t:property name="account.id" value="${account2.id}"/>
+	<t:include filename="BackupWorkflowFullDeleteRestore.inc"/> 
+ 	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>   
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="message" >
+                <query>subject:(${msg01.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id}']">
+            	<t:select path="//mail:e[@t='f']" attr="a" match="${account1.name}"/>
+            	<t:select path="//mail:e[@t='t']" attr="a" match="${account2.name}"/>
+            	<t:select path="//mail:su" match="${msg01.subject}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="BackupRequest_Mail_Basic_02" type="smoke" areas="backup,nonappliance">
+	<t:objective>Backup (incremental) and restore an account with a message. Verify that after backup and restore, the message remains</t:objective>
+	<t:steps>
+	         1. Login to account3 
+			 2. Backup the Account3.
+			 3. Send mail to account3
+			 4. Do incremental backup of Account3
+	         5. Delete the Account3
+	         6. Restore the Account3
+			 7. Verify that the message is still in the mailbox
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	
+	<t:property name="server.zimbraAdmin" value="${account3.server}"/>
+	<t:property name="account.name" value="${account3.name}"/>
+	<t:property name="account.id" value="${account3.id}"/>
+     
+	<t:include filename="BackupRequestFullBasic.inc"/> 
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a="${account3.name}"/>
+                    <su>${msg02.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${message_content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SendMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+
+     
+	<t:property name="server.zimbraAdmin" value="${account3.server}"/>
+	<t:property name="account.name" value="${account3.name}"/>
+	<t:property name="account.id" value="${account3.id}"/>
+
+	<t:include filename="BackupWorkflowIncrementalDeleteRestore.inc"/> 
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>   
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="message" >
+                <query>subject:(${msg02.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id}']">
+            	<t:select path="//mail:e[@t='f']" attr="a" match="${account1.name}"/>
+            	<t:select path="//mail:e[@t='t']" attr="a" match="${account3.name}"/>
+            	<t:select path="//mail:su" match="${msg02.subject}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+</t:tests>

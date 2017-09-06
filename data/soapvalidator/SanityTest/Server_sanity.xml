@@ -1,0 +1,274 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.name" value="testserver${TIME}${COUNTER}"/>
+<t:property name="server.spaceinname" value="testserver    ${TIME}${COUNTER}"/>
+<t:property name="server.notes" value="test of adding Server via SOAP"/>
+<t:property name="server.desc" value="test server description"/>
+<t:property name="server.name1" value="testserver${TIME}${COUNTER}"/>
+<t:property name="server.name2" value="testserver${TIME}${COUNTER}"/>
+<t:property name="server.name3" value="testserver${TIME}${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="CreateServerRequest_01" type="sanity">
+    <t:objective>Sanity test for CreateServerRequest </t:objective>
+    
+     <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.name}</name>
+                <a n="zimbraNotes">${server.notes}</a>
+                <a n="description">${server.desc}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateServerResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest_01" type="sanity">
+    <t:objective> Sanity test for GetServerRequest </t:objective>
+    
+     <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.name1}</name>              
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateServerResponse/admin:server" attr="id" set="server1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="id">${server1.id}</server>            
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServerResponse/admin:server" attr="id" match="${server1.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ModifyServerRequest_01" type="sanity">
+    <t:objective> Sanity test for ModifyServerRequest </t:objective>
+    
+     <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+      <t:test>
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.name2}</name>              
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateServerResponse/admin:server" attr="id" set="server2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                <id>${server2.id}</id>
+                <a n="zimbraSmtpPort">25</a>            
+            </ModifyServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyServerResponse/admin:server" attr="id" match="${server2.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DeleteServerRequest_01" type="sanity" >
+    <t:objective> Sanity test for DeleteServerRequest </t:objective>
+    
+     <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+      <t:test>
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.name3}</name>              
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateServerResponse/admin:server" attr="id" set="server3.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <DeleteServerRequest xmlns="urn:zimbraAdmin">
+                <id>${server3.id}</id>          
+            </DeleteServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteServerResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllServersRequest_01" type="sanity" >
+    <t:objective> Sanity test for GetAllServersRequest </t:objective>
+    
+     <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetAllServersRequest xmlns="urn:zimbraAdmin"/>           
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllServersResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetServiceStatusRequest_01" type="sanity">
+    <t:objective>Sanity test for GetServiceStatus</t:objective>
+       
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetServiceStatusRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServiceStatusResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="GetServerNIfsRequest_01" type="sanity">
+    <t:objective>Sanity test for GetServerNIfsRequest</t:objective>
+       
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetServerNIfsRequest xmlns="urn:zimbraAdmin">
+                <server by="name">${adminServer.name}</server>
+            </GetServerNIfsRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="addr"]'/>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="mask"]'/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCreateObjectAttrsRequest_01" type="sanity">
+    <t:objective>Sanity test for GetCreateObjectAttrsRequest</t:objective>
+       
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetCreateObjectAttrsRequest xmlns="urn:zimbraAdmin">
+                 <target type="server"/>  
+            </GetCreateObjectAttrsRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetCreateObjectAttrsResponse/admin:setAttrs'/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

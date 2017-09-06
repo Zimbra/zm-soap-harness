@@ -1,0 +1,291 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test.longsubject" value="Test subject.The Taj Mahal incorporates and expands on design traditions of Persian architecture and earlier Mughal architecture. The tomb is the central focus of the entire complex of the Taj Mahal. This large, white marble structure stands on a square plinth and consists of a symmetrical building with an iwan (an arch-shaped doorway) topped by a large dome and finial. Like most Mughal tombs, the basic elements are Persian in origin.The base structure is essentially a large, multi-chambered cube with chamfered corners, forming an unequal octagon that is approximately 55 metres (180 ft) on each of the four long sides. On each of these sides, a huge pishtaq, or vaulted archway, frames the iwan with two similarly shaped, arched balconies stacked on either side. This motif of stacked pishtaqs is replicated on the chamfered corner areas, making the design completely symmetrical on all sides of the building. Four minarets frame the tomb, one at each corner of the plinth facing the chamfered corners. The main chamber houses the false sarcophagi of Mumtaz Mahal and Shah Jahan; the actual graves are at a lower level. This motif of stacked pishtaqs is replicated on the chamfered corner areas, making the design completely symmetrical on all sides of the building. Four minarets frame the tomb, one at each corner of the plinth facing the chamfered corners. The main chamber houses the false sarcophagi of Mumtaz Mahal and Shah Jahan; the actual graves are at a lower level."/>
+<t:property name="appointment.name" value="name${TIME}.${COUNTER}"/>
+
+
+<t:property name="appointment.location" value="Meeting Room 1"/>
+<t:property name="appointment.content" value="Content of the message"/>
+
+<t:property name="CurrentTime" value="${GENTIME}"/>
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="TimeRangeStart" value="${TIME-1d}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+2d)}"/>
+
+
+<t:property name="task1.location" value="Location of task${TIME}.${COUNTER}"/>
+<t:property name="task1.content" value="Content of the task${TIME}.${COUNTER}"/>
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account, 2. Create a mail account </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${account1.server}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account1.mta.server"/>
+		</t:response>
+    </t:test>
+    
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug48297_1" type="smoke" bugids="48297">
+    <t:objective>system failure: subject too long</t:objective>
+    <t:steps>
+    1. Login to ZWC
+	2. Inject mail which has long subject which causes in exception.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account1.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:property name="msg01.file" value="${testMailRaw.root}/Bugs/48297/bug48297.txt"/>
+	
+	<t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${account1.mta.server}</address>
+            <filename>${msg01.file}</filename>
+            <recipient>${account1.name}</recipient>
+        </t:smtpInjectRequest>
+    </t:smtpinjecttest>  
+	
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>Adrien B</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+		
+		</t:response>
+	</t:test>
+	
+	<t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+       		<t:select path="//mail:GetMsgResponse"/>           		      
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="bug48297_2" type="smoke" bugids="48297">
+    <t:objective>system failure: subject too long</t:objective>
+    <t:steps>
+    1. Login to ZWC
+	2. Create an appointment with long subject which causes in exception.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account1.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	 <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.name}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${account1.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <e a="${account1.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${test.longsubject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment.content}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt"/>
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="bug48297_3" type="smoke" bugids="48297">
+    <t:objective>system failure: subject too long</t:objective>
+    <t:steps>
+    1. Login to ZWC
+	2. Create a task with long subject which causes in exception.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account1.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.tasks}']" attr="id" set="account1.folder.task.id"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:test id="CreateTaskRequest">
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.task.id}">
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${appointment.name}" loc="${task1.location}">
+							<s d="${Time1}"/>
+							<e d="${Time2}"/>
+							<or a="${account1.name}"/>
+							<at role="REQ" a="${account2.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>${task1.content}</content>
+					</mp>
+					<su>${test.longsubject}</su>
+					<e a="${account2.name}" t="t"/>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="invId" set ="task1.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test depends="GetTaskRequest1a">
+        <t:request> 
+            <GetTaskRequest  xmlns="urn:zimbraMail" id="${task1.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetTaskResponse"/>  
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+</t:tests>
+
+

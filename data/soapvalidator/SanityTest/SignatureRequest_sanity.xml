@@ -1,0 +1,296 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account3.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="signature1.name" value="signature${TIME}${COUNTER}"/>
+<t:property name="signature1.type" value="text/plain"/>
+<t:property name="signature1.content" value="signature${TIME}${COUNTER}"/>
+
+<t:property name="signature2.name" value="signature${TIME}${COUNTER}"/>
+<t:property name="signature2.type" value="text/plain"/>
+<t:property name="signature2.content" value="signature${TIME}${COUNTER}"/>
+<t:property name="signature2.newcontent" value="signature${TIME}${COUNTER}"/>
+
+<t:property name="signature3.name" value="signature${TIME}${COUNTER}"/>
+<t:property name="signature3.type" value="text/plain"/>
+<t:property name="signature3.content" value="signature${TIME}${COUNTER}"/>
+
+<t:property name="signature4.name" value="signature${TIME}${COUNTER}"/>
+<t:property name="signature4.type" value="text/plain"/>
+<t:property name="signature4.content" value="signature${TIME}${COUNTER}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="CreateSignatureRequest_01" type="sanity" >
+ <t:objective>Sanity test for CreateSignatureRequest</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >		
+        <t:request>
+			<CreateSignatureRequest xmlns="urn:zimbraAccount">
+				<signature name="${signature1.name}">
+					<content type="${signature1.type}">${signature1.content}</content>
+				</signature>
+			</CreateSignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CreateSignatureResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ModifySignatureRequest_01" type="sanity" >
+ <t:objective>Sanity test for ModifySignatureRequest</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >		
+        <t:request>
+			<CreateSignatureRequest xmlns="urn:zimbraAccount">
+				<signature name="${signature2.name}">
+					<content type="${signature2.type}">${signature2.content}</content>
+				</signature>
+			</CreateSignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CreateSignatureResponse">
+            	<t:select path="//acct:signature" attr="id" set="signature2.id"/>
+            </t:select>
+		</t:response>
+	</t:test>
+
+	<t:test >
+        <t:request>
+			<ModifySignatureRequest xmlns="urn:zimbraAccount">
+				<signature name="${signature2.name}" id="${signature2.id}">
+					<content type="${signature2.type}">${signature2.newcontent}</content>
+				</signature>
+			</ModifySignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifySignatureResponse"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="GetSignaturesRequest_01" type="sanity" >
+ <t:objective>Sanity test for GetSignaturesRequest</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account3.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >		
+        <t:request>
+			<CreateSignatureRequest xmlns="urn:zimbraAccount">
+				<signature name="${signature3.name}">
+					<content type="${signature3.type}">${signature3.content}</content>
+				</signature>
+			</CreateSignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CreateSignatureResponse">
+            	<t:select path="//acct:signature" attr="id" set="signature3.id"/>
+            </t:select>
+		</t:response>
+	</t:test>
+
+	<t:test >
+         <t:request>
+			<GetSignaturesRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetSignaturesResponse/acct:signature"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="DeleteSignatureRequest_01" type="sanity" >
+ <t:objective>Sanity test for DeleteSignatureRequest</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account4.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >		
+        <t:request>
+			<CreateSignatureRequest xmlns="urn:zimbraAccount">
+				<signature name="${signature4.name}">
+					<content type="${signature4.type}">${signature4.content}</content>
+				</signature>
+			</CreateSignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CreateSignatureResponse">
+            	<t:select path="//acct:signature" attr="id" set="signature4.id"/>
+            </t:select>
+		</t:response>
+	</t:test>
+
+	<t:test >
+         <t:request>
+			<DeleteSignatureRequest xmlns="urn:zimbraAccount">
+				<signature id="${signature4.id}"/>				
+			</DeleteSignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:DeleteSignatureResponse"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+</t:tests>

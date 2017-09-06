@@ -1,0 +1,45 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:test_case testcaseid="SOAP_GetFolderRequest_01" type="measurement">
+	<t:objective>Measure basic AuthRequest</t:objective>
+	
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${admin.user}</account>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+					
+					</content>
+                </m>
+            </AddMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:AddMsgResponse" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

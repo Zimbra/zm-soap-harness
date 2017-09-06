@@ -1,0 +1,164 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="${COUNTER}.${TIME}.${defaultdomain.name}"/>
+<t:property name="domain1.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain1.name}"/>
+
+<t:property name="domain2.name" value="${COUNTER}.${TIME}.${defaultdomain.name}"/>
+<t:property name="domain2.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain2.name}"/>
+
+<t:property name="domain3.name" value="${COUNTER}.${TIME}.${defaultdomain.name}"/>
+<t:property name="domain3.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain3.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="CreateGalSyncAccountRequest_01" type="sanity">
+    <t:objective>Sanity test for CreateGalSyncAccountRequest</t:objective>
+	
+	<t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+            	<name>${domain1.name}</name>
+            	<a n="zimbraGalMode">zimbra</a>
+            	<a n="zimbraGalMaxResults">100</a>
+        	</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain1.name}" server="${server.zimbraAdmin}">
+        		<account by="name">${domain1.galaccount.name}</account>
+    		</CreateGalSyncAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" />
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncGalAccountRequest_01" type="sanity">
+    <t:objective>Sanity test for SyncGalAccountRequest</t:objective>
+	
+	<t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+            	<name>${domain2.name}</name>
+            	<a n="zimbraGalMode">zimbra</a>
+            	<a n="zimbraGalMaxResults">100</a>
+        	</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain2.name}" server="${server.zimbraAdmin}">
+        		<account by="name">${domain2.galaccount.name}</account>
+    		</CreateGalSyncAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain2.galaccount.id"/>
+		</t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+			<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
+				<account id="${domain2.galaccount.id}">			    
+				</account>
+			</SyncGalAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SyncGalAccountResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteGalSyncAccountRequest_01" type="sanity">
+    <t:objective>Sanity test for DeleteGalSyncAccountRequest</t:objective>
+	
+	<t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+            	<name>${domain3.name}</name>
+            	<a n="zimbraGalMode">zimbra</a>
+            	<a n="zimbraGalMaxResults">100</a>
+        	</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain3.name}" server="${server.zimbraAdmin}">
+        		<account by="name">${domain3.galaccount.name}</account>
+    		</CreateGalSyncAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain3.galaccount.id"/>
+		</t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <DeleteGalSyncAccountRequest xmlns="urn:zimbraAdmin">
+        		<account by="id">${domain3.galaccount.id}</account>
+    		</DeleteGalSyncAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteGalSyncAccountResponse"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

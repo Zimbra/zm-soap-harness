@@ -1,0 +1,332 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+<t:property name="test_account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test.${TIME}.${COUNTER}@@${defaultdomain.name}"/>
+
+<t:property name="folder.name" value="Inbox"/>
+<t:property name="folder1.name" value="folder.1${TIME}${COUNTER}"/>
+<t:property name="folder2.name" value="folder.2${TIME}${COUNTER}"/>
+<t:property name = "op.delete" value = "delete"/>
+<t:property name="policy1.name" value="policy1${TIME}${COUNTER}"/>
+<t:property name="policy2.name" value="policy2${TIME}${COUNTER}"/>
+
+<t:property name="folder.pname" value="1"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="rights.admin"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}${rights.administer}"/>
+<t:property name="grant.usr"			value="usr"/>
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.read"			value="read"/>
+<t:property name="op.unread"		value="!read"/>
+<t:property name="op.flag"			value="flag"/>
+<t:property name="op.unflag"		value="!flag"/>
+<t:property name="op.tag"			value="tag"/>
+<t:property name="op.untag"			value="!tag"/>
+<t:property name="op.move"			value="move"/>
+<t:property name="op.delete"		value="delete"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test  id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account1.name}</name>
+            <password>${test_account1.password}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test  id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account2.name}</name>
+            <password>${test_account2.password}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  id="create_test_account3" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account3.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+		
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="bug66715_1" type="smoke" bugids="66175">
+	<t:objective>Retention property does not get observed for folders when shared with manager or admin rights.</t:objective>
+
+    <t:steps>1. login as user1, set message retention for inbox for 1 month
+             2. share this folder with user2 with manager or admin rights
+             3. login as user2 , accept the share
+             4. try to delete messages from shared folder of user1 which are less 1 month
+    </t:steps>
+	
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	  <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
+        </t:response>
+    </t:test>
+
+    <t:test  depends="folderaction1a">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="retentionpolicy" id="${folder.inbox}">
+					 <retentionPolicy>
+   						 <keep>
+      						<policy type="user" lifetime="31d"/>
+   						 </keep>
+   						 <purge/>
+ 	 				</retentionPolicy>
+				</action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action">
+              
+            </t:select>
+        </t:response>
+    </t:test>
+	
+  <!--  Share the Inbox folder with Account1 -->
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${folder.inbox}">
+					<grant gt="${grant.usr}" d="${test_account2.name}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+  <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+  
+      <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+       <t:test id="getFolderRequest">
+        <t:request>
+            <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
+        </t:response>
+    </t:test>
+
+   <!-- Verify "retentionPolicy" information should return in CreateMountpointResponse  -->
+	<t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.inbox.id}" name="folder1${TIME}${COUNTER}" zid="${test_account1.id}" rid="${folder.inbox}" view="message"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link/mail:retentionPolicy/mail:keep/mail:policy" attr="lifetime" match="31d"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link/mail:retentionPolicy/mail:purge" emptyset="0"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="bug66715_2" type="smoke" bugids="66175">
+	<t:objective>Retention property does not get observed for folders when shared with manager or admin rights.</t:objective>
+
+    <t:steps>1. login as user1, set message retention for inbox for 1 month
+             2. share this folder with user2 with manager or admin rights
+             3. login as user2 , accept the share
+             4. try to delete messages from shared folder of user1 which are less 1 month
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	  <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
+        </t:response>
+    </t:test>
+
+    <t:test  depends="folderaction1a">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="retentionpolicy" id="${folder.inbox}">
+					 <retentionPolicy>
+   						 <keep>
+      						<policy type="user" lifetime="31d"/>
+   						 </keep>
+   						 <purge/>
+ 	 				</retentionPolicy>
+				</action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action">
+              
+            </t:select>
+        </t:response>
+    </t:test>
+	
+  <!--  Share the Inbox folder with Account1 -->
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${folder.inbox}">
+					<grant gt="${grant.usr}" d="${test_account3.name}" perm="${rights.admin}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+  <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+  
+      <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+       <t:test id="getFolderRequest">
+        <t:request>
+            <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account3.folder.inbox.id"/>
+        </t:response>
+    </t:test>
+
+   <!-- Verify "retentionPolicy" information should return in CreateMountpointResponse  -->
+	<t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account3.folder.inbox.id}" name="folder2${TIME}${COUNTER}" zid="${test_account2.id}" rid="${folder.inbox}" view="message"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link/mail:retentionPolicy/mail:keep/mail:policy" attr="lifetime" match="31d"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link/mail:retentionPolicy/mail:purge" emptyset="0"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+</t:tests>

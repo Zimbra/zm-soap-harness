@@ -1,0 +1,172 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="op.tag" value="tag"/>
+<t:property name="op.update" value="update"/>
+<t:property name="tag.number" value="5"/>
+
+<t:property name="tag.color.default" value="5"/>
+
+<t:property name="tag1.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag2.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag3.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag3.newname" value="tag${TIME}${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="acctSetup_tag" type="sanity" >
+    <t:objective>Account setup for all TagRequest sanity test</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="CreateTagRequest_01" type="sanity" >
+    <t:objective>Sanity test for CreateTagRequest</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+     <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag1.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" />	      
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="GetTagRequest_01" type="sanity" >
+    <t:objective>Sanity test for GetTagRequest</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+     <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag2.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" >
+            	<t:select attr="id" set="tag2.id"/>
+            </t:select>  
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	 	<t:request>
+	   		<GetTagRequest xmlns="urn:zimbraMail"/>
+	 	</t:request>
+	  	<t:response>
+			<t:select path="//mail:GetTagResponse/mail:tag[@id='${tag2.id}']">
+		    	<t:select attr="name" match="${tag2.name}"/>
+			</t:select>
+	 	</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="TagActionRequest_01" type="sanity" >
+    <t:objective>Sanity test for TagActionRequest</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+     <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag3.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" >
+            	<t:select attr="id" set="tag3.id"/>
+            </t:select>  
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <TagActionRequest xmlns="urn:zimbraMail">
+                <action op="rename" id="${tag3.id}" name="${tag3.newname}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action">
+            	<t:select attr="op" match="rename"/>
+            	<t:select attr="id" match="${tag3.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

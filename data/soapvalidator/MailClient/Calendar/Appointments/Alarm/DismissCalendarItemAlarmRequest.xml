@@ -1,0 +1,874 @@
+
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="test_account.password" value="test123"/>
+<t:property name="dismissedAt.blank" value=""/>
+<t:property name="apptId.invalid" value="id${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Meeting Room 1"/>
+<t:property name="appointment.content" value="Content of the message"/>
+<t:property name="appointment.newsubject" value="Subject of meeting${TIME}.${COUNTER}"/>
+
+<t:property name="appointment11.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment11.location" value="Meeting Room 1"/>
+<t:property name="appointment11.content" value="Content of the message"/>
+
+<t:property name="appointment14.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment14.location" value="Meeting Room 1"/>
+<t:property name="appointment14.content" value="Content of the message"/>
+
+<t:property name="cos1.name" value="Cos${TIME}.${COUNTER}"/>
+
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="Time3" value="${ICALTIME(+2h)}"/>
+<t:property name="Time4" value="${ICALTIME(+3h)}"/>
+<t:property name="Time5" value="${ICALTIME(+4h)}"/>
+<t:property name="Time6" value="${ICALTIME(+5h)}"/>
+<t:property name="Time7" value="${ICALTIME(+6h)}"/>
+<t:property name="Time8" value="${ICALTIME(+7h)}"/>
+<t:property name="Time9" value="${ICALTIME(+8h)}"/>
+<t:property name="Time10" value="${ICALTIME(+9h)}"/>
+<t:property name="Time11" value="${ICALTIME(+10h)}"/>
+<t:property name="Time12" value="${ICALTIME(+11h)}"/>
+<t:property name="Time13" value="${ICALTIME(+12h)}"/>
+<t:property name="Time14" value="${ICALTIME(+13h)}"/>
+<t:property name="Time15" value="${ICALTIME(+14h)}"/>
+<t:property name="Time16" value="${ICALTIME(+15h)}"/>
+<t:property name="Time17" value="${ICALTIME(+15h)}"/>
+
+
+
+<t:test_case testcaseid="CalendarRequest_AccountSetup" type="always" >
+    <t:objective>Account setup</t:objective>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account.password}</password>
+                <a n="zimbraCalendarReminderDeviceEmail">"foo@foo.com"}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_01" type="smoke" >
+	<t:objective>Create Single event with reminder and dismiss it. </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateAppointmentRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account2.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account1.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateAppointmentRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId}" dismissedAt="1603125000000"/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:DismissCalendarItemAlarmResponse/mail:appt/mail:alarmData">
+          <t:select attr="nextAlarm" match="1603211400000"/>
+        </t:select>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_02" type="smoke" >
+	<t:objective>Create Single task and dismiss it.</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateTaskRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account2.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account1.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateTaskRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateTaskResponse" attr="calItemId" set="task1.calItemId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId}" dismissedAt="1603125000000"/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:DismissCalendarItemAlarmResponse/mail:appt/mail:alarmData">
+          <t:select attr="nextAlarm" match="1603211400000"/>
+        </t:select>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_03" type="smoke" >
+	<t:objective>Send DismissCalendarItemAlarmRequest with 'dismissedAt' time as alphabets </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateAppointmentRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account1.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account2.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateAppointmentRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId}" dismissedAt="aaaa"/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+      		<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_04" type="smoke" >
+	<t:objective>Send DismissCalendarItemAlarmRequest with 'dismissedAt' time as invalid time</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateAppointmentRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account1.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account2.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateAppointmentRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId}" dismissedAt="-111111111111111111111111111111"/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+      		<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_05" type="smoke" >
+	<t:objective>Send DismissCalendarItemAlarmRequest with 'dismissedAt' time as blank </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateAppointmentRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account1.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account2.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateAppointmentRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId}" dismissedAt="${dismissedAt.blank}"/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+      		<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_06" type="smoke" >
+	<t:objective>Send DismissCalendarItemAlarmRequest with invalid appt ID</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateAppointmentRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account1.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account2.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateAppointmentRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId.invalid}" dismissedAt="${dismissedAt.blank}"/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+      		<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_07" type="smoke" >
+	<t:objective>Send DismissCalendarItemAlarmRequest: 'dismissedAt' time with leading Spaces - "dismissedAt="        1603125000000"</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateAppointmentRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account1.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account2.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateAppointmentRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId}" dismissedAt="        1603125000000"/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+      		<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_08" type="smoke" >
+	<t:objective>Send DismissCalendarItemAlarmRequest: 'dismissedAt' time with trailing Spaces - "dismissedAt="1603125000000   "</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateAppointmentRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account1.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account2.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateAppointmentRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId}" dismissedAt="1603125000000           "/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+      		<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_09" type="smoke" >
+	<t:objective>Send DismissCalendarItemAlarmRequest with space before and after the 'dismissedAt' time ="   1603125000000  "</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateAppointmentRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account1.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account2.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateAppointmentRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId}" dismissedAt="         1603125000000          "/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+      		<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_10" type="smoke" >
+	<t:objective>Send DismissCalendarItemAlarmRequest with blank ID</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateTaskRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account2.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account1.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateTaskRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateTaskResponse" attr="calItemId" set="task1.calItemId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="" dismissedAt="1603125000000"/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+     		<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,21 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:test_case testcaseid="SOAPADMIN_AuthRequest_01" type="measurement">
+	<t:objective>Measure basic AuthRequest</t:objective>
+	
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

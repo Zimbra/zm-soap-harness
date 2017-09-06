@@ -1,0 +1,152 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="accountA1.name" value="multihost.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="accountB1.name" value="multihost.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="accSetup1_AuthBasicMultihost" hostCount="2" type="always" >
+	<t:objective>create test accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountA1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailHost">${multihostA.FQDN}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountA1.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountB1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailHost">${multihostB.FQDN}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountB1.id"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthBasicMultihost01" hostCount="2" type="smoke" >
+	<t:objective>Verify that an account configured with zimbraMailHost=A can log into host A</t:objective>
+
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${accountA1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthBasicMultihost02" hostCount="2" type="smoke" >
+	<t:objective>Verify that an account configured with zimbraMailHost=A cannot log into host B</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${multihostB.FQDN}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${accountA1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<!--t:select path="//zimbra:Code" match="^service.WRONG_HOST"/-->
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthBasicMultihost03" hostCount="2" type="smoke" >
+	<t:objective>Verify that an account configured with zimbraMailHost=B cannot log into host A</t:objective>
+		
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+		<t:test >
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${accountB1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<!--t:select path="//zimbra:Code" match="^service.WRONG_HOST"/-->
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthBasicMultihost04" hostCount="2" type="smoke" >
+	<t:objective>Verify that an account configured with zimbraMailHost=B can log into host B</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${multihostB.FQDN}"/>
+
+		<t:test >
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${accountB1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+</t:tests>

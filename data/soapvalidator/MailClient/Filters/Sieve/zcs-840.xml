@@ -1,0 +1,246 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+<t:property name="mail_subject" value="Test Mail" />
+<t:property name="dollar" value="$"/>
+
+<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
+<t:property name="sieve_rule1" value='require  ["tag","variables"];
+set "varTo" "To";
+set "varFrom" "From";
+if address :is "${dollar}{varFrom}" "${account1.name}" {
+    tag "addressTag1";
+}
+
+set "fromAddress" "${account1.name}";
+if address :is "${dollar}{varFrom}" "${dollar}{fromAddress}" {
+    tag "addressTag2";
+}
+
+set "toAddress" "${account2.name}";
+if anyof address :matches ["$\{dollar}{varFrom}", "$\{dollar}{varTo}"] ["test*"] {
+    tag "addressTag3";
+}
+
+if envelope :contains "${dollar}{varFrom}" "test" {
+    tag "envelopTag1";
+}
+
+if envelope :contains ["$\{dollar}{varFrom}", "$\{dollar}{varTo}"] "test" {
+    tag "envelopTag2";
+}
+
+set "headerName" "Subject";
+if header :is "${dollar}{headerName}" ["${mail_subject}"] {
+    tag "headerTag1";
+}
+
+set "str1" "test";
+set "str2" "${dollar}{str1}";
+if string :is "${dollar}{str1}" "${dollar}{str2}" {
+    tag "stringTag1";
+}
+'/>
+
+<!-- <t:property name="sieve_rule1" value='require  ["tag","variables", "editheader"];
+set "varTo" "To";
+set "varFrom" "From";
+if address :is "${dollar}{varFrom}" "${account1.name}" {
+    tag "addressTag1";
+}
+
+set "fromAddress" "${account1.name}";
+if address :is "${dollar}{varFrom}" "${dollar}{fromAddress}" {
+    tag "addressTag2";
+}
+
+set "toAddress" "${account2.name}";
+if anyof address :matches ["$\{dollar}{varFrom}", "$\{dollar}{varTo}"] ["test*"] {
+    tag "addressTag3";
+}
+
+if envelope :contains "${dollar}{varFrom}" "test" {
+    tag "envelopTag1";
+}
+
+if envelope :contains ["$\{dollar}{varFrom}", "$\{dollar}{varTo}"] "test" {
+    tag "envelopTag2";
+}
+
+set "headerName" "Subject";
+if header :is "${dollar}{headerName}" ["${mail_subject}"] {
+    tag "headerTag1";
+}
+
+set "str1" "test";
+set "str2" "${dollar}{str1}";
+if string :is "${dollar}{str1}" "${dollar}{str2}" {
+    tag "stringTag1";
+}
+
+set "headerName" "X-Test-Header";
+addheader :last "${dollar}{headerName}" "${dollar}{str2}";
+
+set "subject" "subject";
+deleteheader :is "${dollar}{subject}" "${mail_subject}";
+
+replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
+'/> -->
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin" />
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="acctSetup1" type="always" bugids="ZCS-840">
+    <t:objective>create test accounts</t:objective>
+    <stpes>
+    1. auth with admin account
+    2. create test accounts
+    </stpes>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+        </t:response>
+    </t:test> 
+
+     <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="bugZCS-840_rule1" type="smoke" bugids="ZCS-840">
+   <t:objective>Verify address test with variables on LHS and RHS</t:objective>
+    <steps> 
+        1. Add sieve_rule1 for the user.
+        2. Send email to that user. 
+        3. Verify header is added and value is appended even though the case of variable name does not match.
+    </steps>    
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+        </t:response>
+    </t:test>
+        
+    <t:test id = "modifyaccountrequest01">
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test> 
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+        </t:response>
+    </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m>
+                        <e t="t" a='${account2.name}' />
+                        <su>${mail_subject}</su>
+                        <mp ct="text/plain">
+                            <content>Good Morning</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m"
+                    attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+        <t:delay sec="5"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+        </t:response>
+    </t:test>
+
+     <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:Inbox</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" match="addressTag1,addressTag2,addressTag3,envelopTag1,envelopTag2,headerTag1,stringTag1"/>
+            </t:response>
+    </t:test>
+
+<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
+<!-- <t:resttest>
+        <t:restServletRequest>
+            <id>${msg1.id}</id>
+        </t:restServletRequest>
+        <t:restServletResponse>
+            <t:select attr="Subject" emptyset="1"/>
+            <t:select attr="X-Test-Header" match="Replaced" />
+        </t:restServletResponse>
+    </t:resttest> -->
+</t:test_case>
+ 
+</t:tests>

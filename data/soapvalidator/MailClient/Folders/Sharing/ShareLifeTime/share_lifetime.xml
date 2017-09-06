@@ -1,0 +1,428 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.name" value="account0.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="guest1.name" value="guest1${TIME}.${COUNTER}@foo.com"/>
+<t:property name="guest1.password" value="guest1password"/>
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.pub"			value="pub"/>
+<t:property name="grant.guest"			value="guest"/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="view.conversation"	value="conversation"/>
+<t:property name="view.message"			value="message"/>
+<t:property name="view.contact"			value="contact"/>
+<t:property name="view.appointment"		value="appointment"/>
+<t:property name="view.note"			value="note"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="Sharing_GranteeGuest_AccountSetup" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps>
+            1. Login to admin.
+            2. Create two accounts.
+            3. Get those accounts.
+            4. Get auth token of the 2 accounts created.
+    </t:steps>
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account0.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account0.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="server.zimbraAccount" value="${account0.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account0.folder.root.id"/>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account0.folder.inbox.id"/>
+             <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="account0.folder.briefcase.id"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="Sharing_GuestGtantExpiry_01" type="smoke">
+    <t:objective>Share a folder to guest.  Verify guestgrantexpiry not set by default.</t:objective>
+    <t:steps>
+            1. Login to account0
+            2. Create a sub-folder for briefcase
+            3. Share with read right to guest.
+            4. Verify no guestgrantexpiry set.
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${account0.server}"/>
+    <t:property name="account0.folder1.name" value="folder${TIME}${COUNTER}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account0.folder.briefcase.id}" name="${account0.folder1.name}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account0.folder1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account0.folder1.id}">
+                    <grant gt="${grant.guest}" d="${guest1.name}"  perm="${rights.read}" />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+     <t:test >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${account0.folder1.name}']/mail:acl" attr="guestGrantExpiry" emptyset="1"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="Sharing_GuestGrantExpiry_02" type="smoke">
+    <t:objective>Share a folder to guest.  Verify guestgrantexpiry not set by default..</t:objective>
+    <t:steps>
+            1. set zimbraFileExternalShareLifeTime
+            2. Login to account0
+            3. Create a sub-folder for briefcase.
+            4. Share with read right to internal user.
+            5. Share with read right to guest.
+            6. Verify guestgrantexpiry set.
+            7. Revoke the guest share.
+            8. Verify guestgrantexpiry unset.
+
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${account0.server}"/>
+    <t:property name="account0.folder2.name" value="folder${TIME}${COUNTER}"/>
+
+        <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account0.id}</id>
+                <a n="zimbraFileExternalShareLifeTime">90s</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+        </t:response>
+    </t:test>
+
+   <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account0.folder.briefcase.id}" name="${account0.folder2.name}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account0.folder2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account0.folder2.id}">
+                    <grant gt="${grant.usr}" d="${account1.name}" perm="${rights.read}" />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account0.folder2.id}">
+                    <grant gt="${grant.guest}" d="${guest1.name}" args="${guest1.password}" perm="${rights.read}" />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${account0.folder2.name}']/mail:acl" attr="guestGrantExpiry" />
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="!${op.grant}" id="${account0.folder2.id}" zid="${guest1.name}">
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    <t:test >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${account0.folder2.name}']/mail:acl" attr="guestGrantExpiry" emptyset="1" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="Sharing_GuestGrantExpiry_03" type="smoke">
+    <t:objective>Share a folder to guest.  Verify guestgrantexpiry not set by default..</t:objective>
+    <t:steps>
+            1. set zimbraFileExternalShareLifeTime and zimbraFileShareLifeTime on account0
+            2. Login to account0
+            3. Create a sub-folder for briefcase .
+            4. Share with read right to guest.
+            5. Share with read right to internal user.
+            6. Verify  guestgrantexpiry and internalGrantExpiry set.
+            7. Revoke the guest share.
+            8. Verify guestgrantexpiry unset and internalGrantExpiry still there.
+            9. Revoke the internal user share.
+            10. Verify guestgrantexpiry unset as well as internalGrantExpiry unset.
+
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${account0.server}"/>
+    <t:property name="account0.folder3.name" value="folder${TIME}${COUNTER}"/>
+
+        <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account0.id}</id>
+                <a n="zimbraFileExternalShareLifeTime">90s</a>
+                <a n="zimbraFileShareLifeTime">60s</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account0.folder.briefcase.id}" name="${account0.folder3.name}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account0.folder3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account0.folder3.id}">
+                    <grant gt="${grant.guest}" d="${guest1.name}" args="${guest1.password}" perm="${rights.read}" />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account0.folder3.id}">
+                    <grant gt="${grant.usr}" d="${account1.name}" perm="${rights.read}" />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${account0.folder3.name}']/mail:acl" attr="guestGrantExpiry" />
+            <t:select path="//mail:folder[@name='${account0.folder3.name}']/mail:acl" attr="internalGrantExpiry" />
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="!${op.grant}" id="${account0.folder3.id}" zid="${guest1.name}">
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    <t:test >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${account0.folder3.name}']/mail:acl" attr="guestGrantExpiry" emptyset="1" />
+            <t:select path="//mail:folder[@name='${account0.folder3.name}']/mail:acl" attr="internalGrantExpiry" />
+        </t:response>
+    </t:test>
+
+        <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="!${op.grant}" id="${account0.folder3.id}" zid="${account1.id}">
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${account0.folder3.name}']/mail:acl" attr="guestGrantExpiry" emptyset="1" />
+            <t:select path="//mail:folder[@name='${account0.folder3.name}']/mail:acl" attr="internalGrantExpiry" emptyset="1" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+</t:tests>

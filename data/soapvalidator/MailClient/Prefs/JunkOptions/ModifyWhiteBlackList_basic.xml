@@ -1,0 +1,636 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="domain1.black.name" value="blacklist1${TIME}${COUNTER}.com"/>
+<t:property name="domain2.black.name" value="blacklist2${TIME}${COUNTER}.com"/>
+
+<t:property name="domain1.white.name" value="whitelist1${TIME}${COUNTER}.com"/>
+<t:property name="domain2.white.name" value="whitelist2${TIME}${COUNTER}.com"/>
+
+<t:property name="account4.name" value="account4.${TIME}.${COUNTER}@${domain1.black.name}"/>
+<t:property name="account5.name" value="account5.${TIME}.${COUNTER}@${domain2.black.name}"/>
+
+<t:property name="account6.name" value="account6.${TIME}.${COUNTER}@${domain1.white.name}"/>
+<t:property name="account7.name" value="account7.${TIME}.${COUNTER}@${domain2.white.name}"/>
+
+
+<t:property name="message1.subject" value="subject1.${TIME}.${COUNTER}"/>
+<t:property name="message1.content" value="content1.${TIME}.${COUNTER}"/>
+
+<t:property name="message2.subject" value="subject2.${TIME}.${COUNTER}"/>
+<t:property name="message2.content" value="content2.${TIME}.${COUNTER}"/>
+
+<t:property name="message3.subject" value="subject3.${TIME}.${COUNTER}"/>
+<t:property name="message3.content" value="content3.${TIME}.${COUNTER}"/>
+
+<t:property name="message4.subject" value="subject4.${TIME}.${COUNTER}"/>
+<t:property name="message4.content" value="content5.${TIME}.${COUNTER}"/>
+
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+
+
+<!-- authentication -->
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!-- Login as the admin to get an auth token -->
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>create test account</t:objective>
+	<t:steps>1. Login to admin.
+			2. Create a test account.
+	</t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateDomainRequest1">
+        <t:request> 
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.black.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+		<t:response>
+			<t:select path="//admin:CreateDomainResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test id="CreateDomainRequest2">
+        <t:request> 
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain2.black.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+		<t:response>
+			<t:select path="//admin:CreateDomainResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test id="CreateDomainRequest3">
+        <t:request> 
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.white.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+		<t:response>
+			<t:select path="//admin:CreateDomainResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test id="CreateDomainRequest4">
+        <t:request> 
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain2.white.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+		<t:response>
+			<t:select path="//admin:CreateDomainResponse"/>
+		</t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account6.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account7.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account7.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_01" type="smoke" bugids="46684">
+    <t:objective>Verify that ModifyWhiteBlackListRequest set to domain is obeyed </t:objective>
+    <t:steps>
+	1. Login to Account1.
+	2. Set ModifyWhiteBlackListRequest (blacklist) to a domain and send message from that domain user
+	3. Verify that message is not received
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyWhiteBlackListRequest xmlns="urn:zimbraAccount">
+				<blackList>
+					<addr op="+">@${domain1.black.name}</addr>
+				</blackList>
+			</ModifyWhiteBlackListRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:ModifyWhiteBlackListResponse"/>
+
+        </t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+		    <SendMsgRequest xmlns="urn:zimbraMail">
+		    	<m>
+					<e t="t" a='${account1.name}'/>
+					<su> ${message1.subject} </su>
+					<mp ct="text/plain">
+					    <content>${message1.content}</content>
+					</mp>
+		     	</m>
+		    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:delay msec="5000"/>
+     
+	<t:test>
+    	<t:request>
+        	<SearchRequest xmlns="urn:zimbraMail" types="message">
+           		<query>subject:(${message1.subject})</query>
+           	</SearchRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//mail:SearchResponse"/> 
+        </t:response>
+    </t:test>
+   
+	<t:test>
+    	<t:request>
+        	<SearchRequest xmlns="urn:zimbraMail" types="message">
+           		<query>subject:(${message1.subject})</query>
+           	</SearchRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message1.subject}" emptyset="1"/> 
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_02" type="smoke">
+    <t:objective>Verify that ModifyWhiteBlackListRequest set to user is obeyed </t:objective>
+    <t:steps>
+	1. Login to Account1.
+	2. Set ModifyWhiteBlackListRequest (blacklist) to a user and send message from that domain user
+	3. Verify that message is not received
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyWhiteBlackListRequest xmlns="urn:zimbraAccount">
+				<blackList>
+					<addr op="+">${account5.name}</addr>
+				</blackList>
+			</ModifyWhiteBlackListRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:ModifyWhiteBlackListResponse"/>
+
+        </t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account5.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+		    <SendMsgRequest xmlns="urn:zimbraMail">
+		    	<m>
+					<e t="t" a='${account1.name}'/>
+					<su> ${message2.subject} </su>
+					<mp ct="text/plain">
+					    <content>${message2.content}</content>
+					</mp>
+		     	</m>
+		    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:delay sec="5"/>
+        
+	<t:test>
+    	<t:request>
+        	<SearchRequest xmlns="urn:zimbraMail" types="message">
+           		<query>subject:(${message2.subject})</query>
+           	</SearchRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message1.subject}" emptyset="1"/> 
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_03" type="smoke" >
+    <t:objective>Verify that ModifyWhiteBlackListRequest set to domain is obeyed </t:objective>
+    <t:steps>
+	1. Login to Account1.
+	2. Set ModifyWhiteBlackListRequest (whitelist) to a domain and send message from that domain user
+	3. Verify that message is received
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyWhiteBlackListRequest xmlns="urn:zimbraAccount">
+				<whiteList>
+					<addr op="+">${domain1.white.name}</addr>
+				</whiteList>
+			</ModifyWhiteBlackListRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:ModifyWhiteBlackListResponse"/>
+
+        </t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+		    <SendMsgRequest xmlns="urn:zimbraMail">
+		    	<m>
+					<e t="t" a='${account2.name}'/>
+					<su> ${message3.subject}</su>
+					<mp ct="text/plain">
+					    <content>${message3.content}</content>
+					</mp>
+		     	</m>
+		    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:delay sec="5"/>
+        
+	<t:test>
+    	<t:request>
+        	<SearchRequest xmlns="urn:zimbraMail" types="message">
+           		<query>subject:(${message3.subject})</query>
+           	</SearchRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message3.subject}"/> 
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="ModifyWhiteBlackListRequest_Basic_04" type="smoke" >
+    <t:objective>Verify that ModifyWhiteBlackListRequest set to user is obeyed </t:objective>
+    <t:steps>
+	1. Login to Account1.
+	2. Set ModifyWhiteBlackListRequest (whitelist) to a user and send message from that domain user
+	3. Verify that message is received
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyWhiteBlackListRequest xmlns="urn:zimbraAccount">
+				<whiteList>
+					<addr op="+">${account7.name}</addr>
+				</whiteList>
+			</ModifyWhiteBlackListRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:ModifyWhiteBlackListResponse"/>
+
+        </t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account7.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+		    <SendMsgRequest xmlns="urn:zimbraMail">
+		    	<m>
+					<e t="t" a='${account2.name}'/>
+					<su> ${message4.subject}</su>
+					<mp ct="text/plain">
+					    <content>${message4.content}</content>
+					</mp>
+		     	</m>
+		    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:delay sec="5"/>
+        
+	<t:test>
+    	<t:request>
+        	<SearchRequest xmlns="urn:zimbraMail" types="message">
+           		<query>subject:(${message4.subject})</query>
+           	</SearchRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message4.subject}"/> 
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+</t:tests>

@@ -1,0 +1,678 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="domain" value="dl.com${COUNTER}${TIME}"/>
+<t:property name="list1" value="dislist1@${domain}"/>
+<t:property name="list2" value="dislist2@${domain}"/>
+<t:property name="list3" value="dislist3@${domain}"/>
+<t:property name="list4" value="dislist4@${domain}"/>
+<t:property name="list5" value="dislist5@${domain}"/>
+<t:property name="list6" value="dislist6@${domain}"/>
+<t:property name="list7" value="dislist7@${domain}"/>
+<t:property name="list8" value="dislist8@${domain}"/>
+
+<t:property name="account1" value="account1@${domain}"/>
+<t:property name="account2" value="account2@${domain}"/>
+<t:property name="account3" value="account3@${domain}"/>
+<t:property name="account4" value="account4@${domain}"/>
+<t:property name="account5" value="account5@${domain}"/>
+
+<t:property name="spchar" value="!@^*()_#%%+"/>
+<t:property name="sometext" value="thissometexttogetaccountmembershipinvalid"/>
+<t:property name="number" value="1233038484"/>
+<t:property name="zero" value="0000000000000000000000000"/>
+<t:property name="negative" value="-20238858"/>
+<t:property name="decimal" value="2.4988"/>
+<t:property name="blank" value=""/>
+<t:property name="space" value="          "/>
+
+
+<t:test_case testcaseid = "Ping" type = "always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+ 
+
+<t:test_case testcaseid = "acctSetup1_account_getmembership" type = "always">
+    <t:objective>Account Setup </t:objective>
+	<t:steps>
+			1. Login into admin.
+			2. Create a domain.
+			3. Create test accounts.
+			4. Create DLs.
+			5. Modify the account and make it a member of a DL.
+	</t:steps>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateDomain" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain}</name>
+                <a n="zimbraNotes">Domain for GetAccountMembershipRequest testing</a>
+            </CreateDomainRequest>
+        </t:request>
+    </t:test>
+
+    <t:test id="CreateDistributionList1a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list1}</name>
+                <a n="description">A test distribution list1</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list1.name"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addDistributionListMemberRequest1a" required="true">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${account1}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateDistributionList1b" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list2}</name>
+                <a n="description">A test distribution list2</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list2.name"/>
+		</t:response>
+    </t:test>
+
+    <t:test id="CreateDistributionList1c" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list3}</name>
+                <a n="description">A test distribution list3</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list3.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list3.name"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateAccountRequest1a">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="CreateAccountRequest1b">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:test id="CreateAccountRequest1c">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="addDistributionListMemberRequest1b" required="true">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${account2}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "acctSetup2_account_getmembership" type = "always">
+    <t:objective>Account Setup2 </t:objective>
+	<t:steps>
+			1. Login into admin.
+			2. Create test account4.
+			3. Create DL4 and DL5.
+			4. Add account4 to DL4.
+			5. Add DL4 to DL5.
+	</t:steps>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateAccountRequest1c">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:test id="CreateDistributionList2a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list4}</name>
+                <a n="description">A test distribution list4</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list4.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list4.name"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateDistributionList2b" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list5}</name>
+                <a n="description">A test distribution list5</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list5.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list5.name"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addDistributionListMemberRequest2a" required="true">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list4.id}</id>
+                <dlm>${account4}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addDistributionListMemberRequest2ba" required="true">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list5.id}</id>
+                <dlm>${list4.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "acctSetup3_account_getmembership" type = "always">
+    <t:objective>Account Setup3 </t:objective>
+	<t:steps>
+			1. Login into admin.
+			2. Create test account5.
+			3. Create DL6, DL7 and DL8.
+			4. Add account5 to DL6.
+			5. Add DL6 to DL7 and DL7 to DL8.
+	</t:steps>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateAccountRequest1c">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:test id="CreateDistributionList3a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list6}</name>
+                <a n="description">A test distribution list6</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list6.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list6.name"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateDistributionList3b" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list7}</name>
+                <a n="description">A test distribution list7</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list7.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list7.name"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateDistributionList3c" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list8}</name>
+                <a n="description">A test distribution list8</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list8.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list8.name"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="addDistributionListMemberRequest3a" required="true">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list6.id}</id>
+                <dlm>${account5}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addDistributionListMemberRequest2ba" required="true">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list7.id}</id>
+                <dlm>${list6.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addDistributionListMemberRequest2ba" required="true">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list8.id}</id>
+                <dlm>${list7.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "aaccount_getmembership01" type = "smoke">
+    <t:objective> Verifying the GetAccountMembershipRequest by id, where DL with one user is a member of account2</t:objective>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account2.id}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1}"/>        
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "aaccount_getmembership02" type = "smoke">
+    <t:objective> Verifying the GetAccountMembershipRequest by id, where DL without user is a member of account2</t:objective>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account3.id}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetAccountMembershipResponse"/>        
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "aaccount_getmembership03" type = "smoke">
+    <t:objective> Verifying the GetAccountMembershipRequest by name, where DL with one user is a member of account2</t:objective>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${account2}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1}"/>        
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "aaccount_getmembership04" type = "smoke">
+    <t:objective> Verifying the GetAccountMembershipRequest by name, where DL without user is a member of account2</t:objective>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${account3}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetAccountMembershipResponse" />        
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "aaccount_getmembership05" type = "negative">
+    <t:objective> Verifying the GetAccountMembershipRequest by id with blank/space/spchar/sometext/ zero/ negative   </t:objective>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${blank}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${space}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${spchar}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${sometext}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${zero}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${negative}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "aaccount_getmembership06" type = "negative">
+    <t:objective> Verifying the GetAccountMembershipRequest by name with blank/space/spchar/sometext/ zero/ negative   </t:objective>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${blank}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${space}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${spchar}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${sometext}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${zero}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${negative}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${account2.id}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+<!-- 	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl" attr="name" match="${list1}"/>        
+ -->		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "aaccount_getmembership07" type = "functional">
+    <t:objective> Verifying the 'via-dl-name' by name, where account is member of DL4 and DL4 is member of DL5</t:objective>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${account4}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+   	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list4}']" attr="via" emptyset="1"/>
+   	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list5.name}']" attr="via" match="${list4.name}"/>
+  		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "aaccount_getmembership08" type = "functional">
+    <t:objective> Verifying the 'via-dl-name' by id, where account is member of DL4 and DL4 is member of DL5</t:objective>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account4.id}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+   	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list4}']" attr="via" emptyset="1"/>
+  	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list5}']" attr="via" match="${list4.name}"/>
+ 		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "aaccount_getmembership09" type = "functional">
+    <t:objective> Verifying the 'via-dl-name' by name and id, where account is member of DL6 and DL6 is member of DL7 and DL7 is member of DL8 and </t:objective>
+	<t:steps>
+			1. Login into admin.
+			2. Create test account5.
+			3. Create DL6, DL7 and DL8.
+			4. Add account5 to DL6.
+			5. Add DL6 to DL7 and DL7 to DL8.
+	</t:steps>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account5.id}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+  	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list6.name}']" attr="via" emptyset="1"/>
+  	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list7.name}']" attr="via" match="${list6.name}"/>
+  	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list8.name}']" attr="via" match="${list7.name}"/>
+  		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<GetAccountMembershipRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${account5}</account>
+			</GetAccountMembershipRequest>
+        </t:request>
+        <t:response>
+  	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list6.name}']" attr="via" emptyset="1"/>
+  	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list7.name}']" attr="via" match="${list6.name}"/>
+  	        <t:select path="//admin:GetAccountMembershipResponse/admin:dl[@name='${list8.name}']" attr="via" match="${list7.name}"/>
+  		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

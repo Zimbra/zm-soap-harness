@@ -1,0 +1,359 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name = "test_account1.name" value = "test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="uri" value="${admin.uri}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="setup_create" type="always" >
+    <t:objective>Login to the account </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+	
+    
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug53745_1" type="smoke" bugids="53745">
+    <t:objective>Enable/disable the export and import feature by CoS</t:objective>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos1${TIME}${COUNTER}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>  
+            <t:select path='//admin:CreateCosResponse/admin:cos/admin:a[@n="zimbraFeatureImportFolderEnabled"]' match="${globals.true}"/>       
+        </t:response>
+    </t:test>
+
+	  <t:test>
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${cos.id}</id>
+                <a n="zimbraFeatureImportFolderEnabled">${globals.false}</a>
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" set="cos.id1"/>         
+            <t:select path='//admin:ModifyCosResponse/admin:cos/admin:a[@n="zimbraFeatureImportFolderEnabled"]' match="${globals.false}"/>    
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${cos.id}</id>
+                <a n="zimbraFeatureImportFolderEnabled">${globals.true}</a>
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" set="cos.id2"/>     
+            <t:select path='//admin:ModifyCosResponse/admin:cos/admin:a[@n="zimbraFeatureImportFolderEnabled"]' match="${globals.true}"/>           
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos2${TIME}${COUNTER}</name>        
+                <a n="zimbraFeatureExportFolderEnabled">${globals.false}</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos2.id"/>  
+            <t:select path='//admin:CreateCosResponse/admin:cos/admin:a[@n="zimbraFeatureExportFolderEnabled"]' match="${globals.false}"/>       
+        </t:response>
+    </t:test>
+    
+        <t:test>
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${cos2.id}</id>
+                <a n="zimbraFeatureExportFolderEnabled">${globals.true}</a>
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" set="cos2.id2"/>     
+            <t:select path='//admin:ModifyCosResponse/admin:cos/admin:a[@n="zimbraFeatureExportFolderEnabled"]' match="${globals.true}"/>           
+        </t:response>
+    </t:test>
+    
+       <t:test>
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${cos2.id}</id>
+                <a n="zimbraFeatureExportFolderEnabled">${globals.false}</a>
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" set="cos2.id2"/>     
+            <t:select path='//admin:ModifyCosResponse/admin:cos/admin:a[@n="zimbraFeatureExportFolderEnabled"]' match="${globals.false}"/>           
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="bug53745_2" type="smoke" bugids="53745">
+    <t:objective>Enable/disable the export and import feature by CoS</t:objective>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+   <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test1.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account.id"/>  
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraFeatureImportFolderEnabled"]' match="${globals.true}"/>
+        </t:response>
+    </t:test> 
+
+	<t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${test_account.id}</id>
+                <a n = "zimbraFeatureImportFolderEnabled">${globals.false}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" set="test_account.id"/>  
+            <t:select path='//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraFeatureImportFolderEnabled"]' match="${globals.false}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${test_account.id}</id>
+                <a n = "zimbraFeatureImportFolderEnabled">${globals.true}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" set="test_account.id"/>  
+            <t:select path='//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraFeatureImportFolderEnabled"]' match="${globals.true}"/>
+        </t:response>
+    </t:test>
+    
+	   <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test2.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n = "zimbraFeatureImportFolderEnabled">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id"/>  
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraFeatureImportFolderEnabled"]' match="${globals.false}"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${test_account1.id}</id>
+                <a n = "zimbraFeatureExportFolderEnabled">${globals.true}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" set="test_account1.id"/>  
+            <t:select path='//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraFeatureExportFolderEnabled"]' match="${globals.true}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${test_account1.id}</id>
+                <a n = "zimbraFeatureExportFolderEnabled">${globals.false}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" set="test_account1.id"/>  
+            <t:select path='//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraFeatureExportFolderEnabled"]' match="${globals.false}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="bug53745_3" type="negative" bugids="53745">
+    <t:objective>Test for zimbraFeatureImportFolderEnabled and zimbraFeatureExportFolderEnabled with invalid values.</t:objective>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+   <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test3.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n = "zimbraFeatureImportFolderEnabled">invalid_value</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test> 
+    
+     <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test3.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n = "zimbraFeatureImportFolderEnabled">12334</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test> 
+
+	   <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test3.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n = "zimbraFeatureExportFolderEnabled">invalid_value</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test> 
+	
+	   <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test3.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n = "zimbraFeatureExportFolderEnabled">12344</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+	  
+	  <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos3${TIME}${COUNTER}</name>        
+                <a n = "zimbraFeatureExportFolderEnabled">invalid_value</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+ 			  <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>    
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos3${TIME}${COUNTER}</name>        
+                <a n = "zimbraFeatureExportFolderEnabled">122344</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+ 			  <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>    
+        </t:response>
+    </t:test>
+    
+       <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos3${TIME}${COUNTER}</name>        
+                <a n = "zimbraFeatureImportFolderEnabled">invalid_value</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+ 			  <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>    
+        </t:response>
+    </t:test>
+    
+         <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos3${TIME}${COUNTER}</name>        
+                <a n = "zimbraFeatureImportFolderEnabled">122344</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+ 			  <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>    
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case>
+
+
+</t:tests>

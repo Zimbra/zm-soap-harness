@@ -1,0 +1,250 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="license.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="license.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CheckLicenseRequest_AccountSetup" type="always" areas="network">
+    <t:objective>Get License Info</t:objective>
+    <t:steps>
+        1. Login into Admin
+        2. Get License Info    
+    </t:steps>
+    
+    <t:test id="CheckLicenseRequest01a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <ActivateLicenseRequest xmlns="urn:zimbraAdmin">
+                <content xmlns=""></content>
+            </ActivateLicenseRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ActivateLicenseResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>             
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+        <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>   
+                <a n="zimbraFeatureSMIMEEnabled">TRUE</a>           
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CheckLicenseRequest_01" type="smoke" areas="network" bugids="52022">
+    <t:objective>Get License Info for mapi - NETWORK</t:objective>
+    <t:steps>
+        1. Login as test account
+        2. CheckLicenseRequest feature="mapi" - OK
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test depends="CheckLicenseRequest01a">
+        <t:request>
+            <CheckLicenseRequest xmlns="urn:zimbraAccount" feature="mapi">
+            </CheckLicenseRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CheckLicenseResponse" attr="status" match="ok"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="CheckLicenseRequest_02" type="smoke" areas="network" bugids="52022, 7611">
+    <t:objective>Get License Info for isync - NETWORK</t:objective>
+    <t:steps>
+        1. Login as test account
+        2. CheckLicenseRequest feature="isync" - OK
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test depends="CheckLicenseRequest01a">
+        <t:request>
+            <CheckLicenseRequest xmlns="urn:zimbraAccount" feature="iSync">
+            </CheckLicenseRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CheckLicenseResponse" attr="status" match="ok"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="CheckLicenseRequest_03" type="smoke" areas="network" bugids="52022">
+    <t:objective>Get License Info for mobileSync - NETWORK</t:objective>
+    <t:steps>
+        1. Login as test account
+        2. CheckLicenseRequest feature="mobileSync" - OK
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test depends="CheckLicenseRequest01a">
+        <t:request>
+            <CheckLicenseRequest xmlns="urn:zimbraAccount" feature="mapi">
+            </CheckLicenseRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CheckLicenseResponse" attr="status" match="ok"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="CheckLicenseRequest_04" type="smoke" bugids="52022" areas="network">
+    <t:objective>Get License Info for isync - NETWORK</t:objective>
+    <t:steps>
+        1. Login as test account
+        2. CheckLicenseRequest feature="isync" - OK
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test depends="CheckLicenseRequest01a">
+        <t:request>
+            <CheckLicenseRequest xmlns="urn:zimbraAccount" feature="iSync">
+            </CheckLicenseRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CheckLicenseResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="CheckLicenseRequest_04" type="smoke" bugids="57188" areas="network">
+    <t:objective>Get License Info for smime - NETWORK</t:objective>
+    <t:steps>
+        1. Login as test account2
+        2. CheckLicenseRequest feature="smime" - OK
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckLicenseRequest xmlns="urn:zimbraAccount" feature="smime">
+            </CheckLicenseRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CheckLicenseResponse" attr="status" match="ok"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+</t:tests>

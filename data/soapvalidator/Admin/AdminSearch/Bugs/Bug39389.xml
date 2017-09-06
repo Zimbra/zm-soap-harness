@@ -1,0 +1,112 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+<t:property name="account1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_account_search" type="always" >
+    <t:objective>Prepare the account for tests</t:objective>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+    
+
+<t:test_case testcaseid="SearchDirectoryRequest_Bug_39389" type="functional">
+    <t:objective>Verify searching for COS attributes as per bug 39389</t:objective>
+    <t:steps>
+    1. Create a new COS with zimbraFeatureIMEnabled=TRUE (for example)
+    2. Add an account to the COS
+    3. Add an account in the default COS with zimbraFeatureIMEnabled=TRUE
+    4. Search for "(zimbraFeatureIMEnabled=TRUE)" - account1 should not show up.  account2 should show up.
+    </t:steps>
+
+    <t:test id = "CreateCosRequest1a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name>cos${TIME}${COUNTER}</name>
+                <a n="zimbraFeatureIMEnabled">${globals.true}</a>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos1.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraFeatureIMEnabled">${globals.true}</a>        
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin">
+                <query>(zimbraFeatureIMEnabled=TRUE)</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse">
+            	<t:select path="//admin:account[@id='${account1.id}']" emptyset="1"/>
+            	<t:select path="//admin:account[@id='${account2.id}']"/>
+            </t:select>
+        </t:response>
+    </t:test> 
+
+</t:test_case>     
+
+
+
+</t:tests>

@@ -1,0 +1,468 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.name" value="jeeves"/>
+
+<t:property name="cos.name" value="testing"/>
+<t:property name="cos.newName" value="testing2"/>
+
+<t:property name="domain.name" value="testing.net"/>
+
+<t:property name="account.name" value="user1@testing.net"/>
+<t:property name="account.newName" value="user.one@testing.net"/>
+<t:property name="account.alias" value="user1.fool@testing.net"/>
+<t:property name="account.password" value="zimbratest"/>
+
+
+<t:property name="uri" value="${admin.uri}"/>
+
+<t:test>
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="true">
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAdmin">
+    <name>${admin.user}</name>
+    <password>${admin.password}</password>
+  </AuthRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+ </t:response>
+</t:test>
+
+<t:test required="true">
+ <t:request>
+  <CreateServerRequest xmlns="urn:zimbraAdmin">
+    <name>${server.name}</name>
+    <a n="zimbraNotes">test of adding Server via SOAP</a>
+  </CreateServerRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateServerResponse/admin:server" attr="id" set="server.id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetAllServersRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetAllServersResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetServerRequest xmlns="urn:zimbraAdmin">
+    <server by="id">${server.id}</server>
+  </GetServerRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetServerResponse/admin:server" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetServerRequest xmlns="urn:zimbraAdmin" applyConfig="0">
+    <server by="id">${server.id}</server>
+  </GetServerRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetServerResponse/admin:server" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <ModifyServerRequest xmlns="urn:zimbraAdmin">
+    <id>${server.id}</id>
+    <a n="description">big fluffy server</a>
+  </ModifyServerRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:ModifyServerResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetServerRequest xmlns="urn:zimbraAdmin">
+    <server by="name">${server.name}</server>
+  </GetServerRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetServerResponse/admin:server" attr="id"/> 
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <DeleteServerRequest xmlns="urn:zimbraAdmin">
+    <id>${server.id}</id>
+  </DeleteServerRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:DeleteServerResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="true">
+ <t:request>
+  <CreateCosRequest xmlns="urn:zimbraAdmin">
+    <name>${cos.name}</name>
+    <a n="zimbraNotes">test of adding COS via SOAP</a>
+    <a n="zimbraPrefSaveToSent">TRUE</a>
+    <a n="zimbraMailQuota">123456</a>    
+  </CreateCosRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateCosResponse/admin:cos" attr="id"  set="cos.id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetAllCosRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetAllCosResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetCosRequest xmlns="urn:zimbraAdmin">
+    <cos by="id">${cos.id}</cos>
+  </GetCosRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetCosResponse/admin:cos" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <ModifyCosRequest xmlns="urn:zimbraAdmin">
+    <id>${cos.id}</id>
+    <a n="zimbraMailQuota">10000000</a>
+  </ModifyCosRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:ModifyCosResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetCosRequest xmlns="urn:zimbraAdmin">
+    <cos by="name">${cos.name}</cos>
+  </GetCosRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetCosResponse/admin:cos" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="true">
+ <t:request>
+  <CreateDomainRequest xmlns="urn:zimbraAdmin">
+    <name>${domain.name}</name>
+    <a n="zimbraNotes">test of adding via SOAP</a>
+  </CreateDomainRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain.id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetAllDomainsRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetAllDomainsResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetDomainRequest xmlns="urn:zimbraAdmin">
+    <domain by="id">${domain.id}</domain>
+  </GetDomainRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetDomainResponse/admin:domain" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetDomainRequest xmlns="urn:zimbraAdmin" applyConfig="0">
+    <domain by="id">${domain.id}</domain>
+  </GetDomainRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetDomainResponse/admin:domain" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <ModifyDomainRequest xmlns="urn:zimbraAdmin">
+    <id>${domain.id}</id>
+    <a n="zimbraNotes">test of updating via SOAP</a>
+  </ModifyDomainRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:ModifyDomainResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetDomainRequest xmlns="urn:zimbraAdmin">
+    <domain by="name">${domain.name}</domain>
+  </GetDomainRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetDomainResponse/admin:domain" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetAllAdminAccountsRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetAllAdminAccountsResponse"/>
+ </t:response>
+</t:test>
+
+<t:test id="createAccount" required="true">
+ <t:request>
+  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+    <name>${account.name}</name>
+    <password>${account.password}</password>
+    <a n="zimbraNotes">test of adding via SOAP</a>
+    <a n="zimbraPrefSaveToSent">FALSE</a>    
+    <a n="zimbraCOSId">${cos.id}</a>
+  </CreateAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetAccountRequest xmlns="urn:zimbraAdmin">
+    <account by="id">${account.id}</account>
+  </GetAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetAccountResponse/admin:account" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetAccountRequest applyCos="0" xmlns="urn:zimbraAdmin">
+    <account by="id">${account.id}</account>
+  </GetAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetAccountResponse/admin:account" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+    <id>${account.id}</id>
+    <alias>${account.alias}</alias>
+  </AddAccountAliasRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:AddAccountAliasResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetAccountRequest xmlns="urn:zimbraAdmin">
+    <account by="id">${account.id}</account>
+  </GetAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetAccountResponse/admin:account" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+    <query>(zimbraId=${account.id})</query>
+  </SearchAccountsRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:SearchAccountsResponse/admin:account" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <SearchAccountsRequest xmlns="urn:zimbraAdmin" attrs="uid,cn,description" types="accounts,aliases,distributionlists" applyCos="0">
+    <query>(uid=*user*)</query>
+  </SearchAccountsRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:SearchAccountsResponse/admin:account" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
+    <id>${account.id}</id>
+    <alias>${account.alias}</alias>
+  </RemoveAccountAliasRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:RemoveAccountAliasResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetAccountRequest xmlns="urn:zimbraAdmin">
+    <account by="name">${account.name}</account>
+  </GetAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetAccountResponse/admin:account" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+    <id>${account.id}</id>
+    <a n="zimbraNotes">test of updating via SOAP</a>
+  </ModifyAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:ModifyAccountResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <GetAccountRequest xmlns="urn:zimbraAdmin">
+    <account by="id">${account.id}</account>
+  </GetAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:GetAccountResponse/admin:account" attr="id"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <SetPasswordRequest xmlns="urn:zimbraAdmin">
+    <id>${account.id}</id>
+    <newPassword>thisisatest</newPassword>
+  </SetPasswordRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:SetPasswordResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <RenameAccountRequest xmlns="urn:zimbraAdmin">
+    <id>${account.id}</id>
+    <newName>${account.newName}</newName>
+  </RenameAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:RenameAccountResponse"/>
+ </t:response>
+</t:test>
+
+
+<t:test required="false">
+ <t:request>
+  <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+    <id>${account.id}</id>
+  </DeleteAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:DeleteAccountResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <RenameCosRequest xmlns="urn:zimbraAdmin">
+    <id>${cos.id}</id>
+    <newName>${cos.newName}</newName>
+  </RenameCosRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:RenameCosResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <DeleteCosRequest xmlns="urn:zimbraAdmin">
+    <id>${cos.id}</id>
+  </DeleteCosRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:DeleteCosResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+    <id>${domain.id}</id>
+  </DeleteDomainRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:DeleteDomainResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <CheckDirectoryRequest xmlns="urn:zimbraAdmin">
+    <directory path="/opt/zimbra/store/0"/>
+  </CheckDirectoryRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CheckDirectoryResponse"/>
+ </t:response>
+</t:test>
+
+<t:test required="false">
+ <t:request>
+  <CheckDirectoryRequest xmlns="urn:zimbraAdmin">
+  	<directory path="/opt/zimbra/store/1" create="1"/>
+  </CheckDirectoryRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CheckDirectoryResponse"/>
+ </t:response>
+</t:test>
+
+</t:tests>

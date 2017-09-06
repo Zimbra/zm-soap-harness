@@ -1,0 +1,692 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="default_zimbraMailMessageLifetime" value="0"/>
+<t:property name="default_zimbraMailTrashLifetime" value="10s"/>
+<t:property name="default_zimbraMailSpamLifetime" value="10s"/>
+
+<t:property name="domain01" value="testpurge${TIME}${COUNTER}.com"/>
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${domain01}"/>
+<t:property name="purge01.user" value="purge.${TIME}.${COUNTER}@${domain01}"/>
+<t:property name="purge02.user" value="purge.${TIME}.${COUNTER}@${domain01}"/>
+<t:property name="purge03.user" value="purge.${TIME}.${COUNTER}@${domain01}"/>
+<t:property name="purge04.user" value="purge.${TIME}.${COUNTER}@${domain01}"/>
+<t:property name="purge05.user" value="purge.${TIME}.${COUNTER}@${domain01}"/>
+<t:property name="purge06.user" value="purge.${TIME}.${COUNTER}@${domain01}"/>
+<t:property name="purge07.user" value="purge.${TIME}.${COUNTER}@${domain01}"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
+<!--
+ Below is a poor man's check to see if messages were deleted.
+ The same mail is injected over and over, the size of that mail is 312 bytes.
+ So, if one message was deleted, the mbox size should be reduced by 312 bytes.
+-->
+
+<t:property name="messages1.size" value="312"/>
+<t:property name="messages2.size" value="624"/>
+<t:property name="messages3.size" value="926"/>
+<t:property name="messages4.size" value="1248"/>
+<t:property name="messages5.size" value="1560"/>
+<t:property name="messages6.size" value="1872"/>
+
+<t:property name="mail01A.subject" value="purge01A"/>
+<t:property name="mail01B.subject" value="purge01B"/>
+<t:property name="mail01C.subject" value="purge01C"/>
+<t:property name="mail01D.subject" value="purge01D"/>
+<t:property name="mail01E.subject" value="purge01E"/>
+<t:property name="mail01F.subject" value="purge01F"/>
+
+<t:property name="trash.id" value="3"/>
+<t:property name="spam.id" value="4"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+     <t:request>
+       <PingRequest xmlns="urn:zimbraAdmin"/>
+     </t:request>
+      <t:response>
+        <t:select path="//admin:PingResponse"/>
+     </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="admin_auth" type="always" >
+ <t:objective>login as the admin</t:objective>
+
+    <t:test required="true" >
+     <t:request>
+      <AuthRequest xmlns="urn:zimbraAdmin">
+        <name>${admin.user}</name>
+        <password>${admin.password}</password>
+      </AuthRequest>
+     </t:request>
+     <t:response>
+        <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+     </t:response>
+    </t:test>
+
+	<!-- Remember the admin auth token because we will be switching between
+		the admin account and user accouns
+	-->
+	<t:property name="admin.authToken" value="${authToken}"/>
+
+	<!-- Create the domain for the test accounts -->
+	
+    <t:test id="CreateDomainRequest0a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain01}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain0.id"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${purge01.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${purge02.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${purge03.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${purge04.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+
+<t:mailinjecttest>
+        <t:lmtpInjectRequest>
+                <filename>${testMailRaw.root}/purge/purge01A</filename>
+                <to>${purge02.user}</to>
+                <from>${account1.name}</from>
+                <server>${test_acct2.server}</server>
+                <modify>
+                        <header a="To">${purge02.user}</header>
+                        <header a="From">${account1.name}</header>
+                        <header a="X-Zimbra-Received">${XZIMBRARECEIVED(-8d)}</header>
+                </modify>
+        </t:lmtpInjectRequest>
+</t:mailinjecttest>
+
+<t:mailinjecttest>
+        <t:lmtpInjectRequest>
+                <filename>${testMailRaw.root}/purge/purge01A</filename>
+                <to>${purge03.user}</to>
+                <from>${account1.name}</from>
+                <server>${test_acct3.server}</server>
+                <modify>
+                        <header a="To">${purge03.user}</header>
+                        <header a="From">${account1.name}</header>
+                        <header a="X-Zimbra-Received">${XZIMBRARECEIVED(-10s)}</header>
+                </modify>
+        </t:lmtpInjectRequest>
+</t:mailinjecttest>
+
+<t:mailinjecttest>
+        <t:lmtpInjectRequest>
+                <filename>${testMailRaw.root}/purge/purge01C</filename>
+                <to>${purge03.user}</to>
+                <from>${account1.name}</from>
+                <server>${test_acct3.server}</server>
+                <modify>
+                        <header a="To">${purge03.user}</header>
+                        <header a="From">${account1.name}</header>
+                        <header a="X-Zimbra-Received">${XZIMBRARECEIVED(-10s)}</header>
+                </modify>
+        </t:lmtpInjectRequest>
+</t:mailinjecttest>
+
+<t:mailinjecttest>
+        <t:lmtpInjectRequest>
+                <filename>${testMailRaw.root}/purge/purge01A</filename>
+                <to>${purge04.user}</to>
+                <from>${account1.name}</from>
+                <server>${test_acct4.server}</server>
+                <modify>
+                        <header a="To">${purge04.user}</header>
+                        <header a="From">${account1.name}</header>
+                        <header a="X-Zimbra-Received">${XZIMBRARECEIVED(-10s)}</header>
+                </modify>
+        </t:lmtpInjectRequest>
+</t:mailinjecttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="PurgeTrashMessagesRequest1" type="functional" bugids="46613">
+ <t:objective>Purge messages for a single account with zimbraMailPurgeUseChangeDateForTrash=true </t:objective>
+ <t:steps>
+    Set zimbraMailPurgeUseChangeDateForTrash=true
+ 	GetAccountRequest to get the account ID;
+ 	Inject message that is 8 days older
+ 	Set the zimbraMailTrashLifetime to 6days
+ 	PurgeMessagesRequest with the account ID.
+    GetMailboxRequest to make sure the trash is not empty
+</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:test >
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by="name">${purge02.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail01A.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail01A.subject}$"/>
+            <t:select attr="id" set="mail01A.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${mail01A.id}" l="${trash.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="^${mail01A.id}$"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test>
+        <t:request>
+            <GetAccountRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${purge02.user}</account>
+            </GetAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAccountResponse/admin:account" attr="id" set="purge02.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${purge02.id}</id>
+                <a n = "zimbraMailMessageLifetime">${default_zimbraMailMessageLifetime}</a>
+                <a n = "zimbraMailTrashLifetime">6d</a>
+                <a n = "zimbraMailPurgeUseChangeDateForTrash">${globals.true}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${purge02.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="purge02.mbxid"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:requestContext>
+	    <authToken>${admin.authToken}</authToken>
+	    <account by="id">${purge02.id}</account>
+        </t:requestContext>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:anywhere </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="^${mail01A.subject}$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${purge02.id}"/>
+            </PurgeMessagesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${purge02.mbxid}$"/>
+        </t:response>
+    </t:test>  
+
+<!-- TODO: This should work without the requestContext but simply using the SearchRequest:mbox parameter.
+                <mbx id="${purge02.id}"/>
+-->
+    <t:test>
+        <t:requestContext>
+	    <authToken>${admin.authToken}</authToken>
+	    <account by="id">${purge02.id}</account>
+        </t:requestContext>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:anywhere </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="^${mail01A.subject}$" />
+            
+        </t:response>
+    </t:test>      
+</t:test_case>
+
+<t:test_case testcaseid="PurgeTrashMessagesRequest2" type="functional" bugids="46613">
+ <t:objective>
+	Purge messages for a single account with one message with zimbraMailPurgeUseChangeDateForTrash=false
+ </t:objective>
+ <t:steps>
+	1. Login to the account to move the messages to Trash that are 10sec older
+	2. Login to the admin account to send purge messages request
+	3. Modify the account setting to zimbraMailTrashLifetime=10s
+	3. Check that the mailbox does not contains the messages
+ </t:steps>
+   
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by="name">${purge03.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail01C.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail01C.subject}$"/>
+            <t:select attr="id" set="mail01C.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${mail01C.id}" l="${trash.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="^${mail01C.id}$"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail01A.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail01A.subject}$"/>
+            <t:select attr="id" set="mail01A.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${mail01A.id}" l="${trash.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="^${mail01A.id}$"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test>
+        <t:request>
+            <GetAccountRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${purge03.user}</account>
+            </GetAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAccountResponse/admin:account" attr="id" set="purge03.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${purge03.id}</id>
+                <a n = "zimbraMailPurgeUseChangeDateForTrash">${globals.false}</a>
+                <a n = "zimbraMailTrashLifetime">${default_zimbraMailTrashLifetime}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${purge03.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="purge03.mbxid"/>
+        </t:response>
+    </t:test>  
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+    <t:test>
+        <t:requestContext>
+	    <authToken>${admin.authToken}</authToken>
+	    <account by="id">${purge03.id}</account>
+        </t:requestContext>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:anywhere </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail01A.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail01C.subject}"/>
+        </t:response>
+    </t:test>
+
+	<t:delay msec="10000"/>
+	
+    <t:test>
+        <t:request>
+            <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${purge03.id}"/>
+            </PurgeMessagesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${purge03.mbxid}$"/>
+        </t:response>
+    </t:test>  
+
+
+    <t:test>
+        <t:requestContext>
+	    <authToken>${admin.authToken}</authToken>
+	    <account by="id">${purge03.id}</account>
+        </t:requestContext>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:anywhere </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail01A.subject}" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail01C.subject}" emptyset="1"/>
+         </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="PurgeTrashMessagesRequest3" type="functional" bugids="46613">
+  <t:objective>
+	Purge messages for a single account with zimbraMailPurgeUseChangeDateForTrash=false
+  </t:objective>
+  <t:steps>
+	Login as purge04;
+	Move emails into trash;
+	Change the account setting to zimbraMailTrashLifetime=10s and zimbraMailPurgeUseChangeDateForTrash=false
+	wait for 10 secs
+	move back the message from trash to inbox
+	Purge messages
+	Message should not be purged and should be present in inbox.
+  </t:steps>
+
+   
+<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by="name">${purge04.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail01A.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail01A.subject}$"/>
+            <t:select attr="id" set="mail01A.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${mail01A.id}" l="${trash.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="^${mail01A.id}$"/>
+        </t:response>
+    </t:test>
+    
+    <t:delay msec="10000"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+
+
+    <t:test>
+        <t:request>
+            <GetAccountRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${purge04.user}</account>
+            </GetAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAccountResponse/admin:account" attr="id" set="purge04.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${purge04.id}</id>
+                <a n = "zimbraMailMessageLifetime">${default_zimbraMailMessageLifetime}</a>
+                <a n = "zimbraMailTrashLifetime">${default_zimbraMailTrashLifetime}</a>
+                <a n= "zimbraMailPurgeUseChangeDateForTrash">${globals.false}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${purge04.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="purge04.mbxid"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:requestContext>
+	    <authToken>${admin.authToken}</authToken>
+	    <account by="id">${purge04.id}</account>
+        </t:requestContext>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:anywhere </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail01A.subject}"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by="name">${purge04.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+               <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox.id"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${mail01A.id}" l="${folder.inbox.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="^${mail01A.id}$"/>
+        </t:response>
+    </t:test>
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+    
+    <t:test>
+        <t:request>
+            <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${purge04.id}"/>
+            </PurgeMessagesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${purge04.mbxid}$"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:requestContext>
+	    <authToken>${admin.authToken}</authToken>
+	    <account by="id">${purge04.id}</account>
+        </t:requestContext>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:anywhere </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail01A.subject}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+</t:tests>
+

@@ -1,0 +1,761 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+
+<t:property name="message.subject1" value="message01"/>
+<t:property name="message.content1" value="content of the message01"/>
+
+<t:property name="message2.subject" value="message02"/>
+<t:property name="message2.content" value="&lt;div style='font-family:Arial, Helvetica, sans-serif;font-size:10pt;color:#000000;'&gt;html content of the message02"/>
+
+<t:property name="op.read" value="read"/>
+<t:property name="op.unread" value="!read"/>
+
+
+<t:test_case testcaseid="acctSetup1_Conv_fetch_62075" type="always" >
+    <t:objective>Create a test account</t:objective>
+    <steps> 
+        1. Login to admin account
+        2. Create a test_account1 
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup2_Conv_fetch_62075" type="always" >
+    <t:objective>login as the test account and create a conversation.</t:objective>
+    <t:steps> 
+        1. Login to test_account1 
+        2. Send a mail to test_account1        
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account1.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="sendmail1" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account2.name}'/>
+                    <su>${message.subject1}</su>
+                    <mp ct="text/plain">
+                        <content>${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+	<!--
+		To ensure that the conversation emails are received correctly
+		wait for the message to be sent before sending the next one.
+		
+		When I ran this test, the converstation wasn't received in the
+		correct order (FWD came before the original).
+	-->
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse"/> 
+		</t:response>
+	</t:test>
+
+    <t:test id="sendmail2" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message1.id}" rt="w">
+                    <e t="t" a='${test_account2.name}'/>
+                    <su>Fwd: ${message.subject1}</su>
+                    <mp ct="text/plain">
+                        <content>Forwarded content:${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+	<!--
+		To ensure that the conversation emails are received correctly
+		wait for the message to be sent before sending the next one.
+		
+		When I ran this test, the converstation wasn't received in the
+		correct order (FWD came before the original).
+	-->
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse"/> 
+		</t:response>
+	</t:test>
+
+    <t:test id="sendmail3" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account2.name}'/>
+                    <su>${message2.subject}</su>
+					<mp ct="multipart/alternative">
+						<mp ct="text/plain">
+							<content>${message.content1}</content>
+						</mp>
+						<mp ct="text/html">
+							<content>${message2.content}</content>
+						</mp>
+					</mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+	<!--
+		To ensure that the conversation emails are received correctly
+		wait for the message to be sent before sending the next one.
+		
+		When I ran this test, the converstation wasn't received in the
+		correct order (FWD came before the original).
+	-->
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse"/> 
+		</t:response>
+	</t:test>
+
+
+    <t:test id="sendmail4" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message1.id}" rt="w">
+                    <e t="t" a='${test_account2.name}'/>
+                    <su>Fwd: ${message2.subject}</su>
+					<mp ct="multipart/alternative">
+						<mp ct="text/plain">
+							<content>Forwarded content: ${message.content1}</content>
+						</mp>
+						<mp ct="text/html">
+							<content>Forwarded content: ${message2.content}</content>
+						</mp>
+					</mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+	<!--
+		To ensure that the conversation emails are received correctly
+		wait for the message to be sent before sending the next one.
+		
+		When I ran this test, the converstation wasn't received in the
+		correct order (FWD came before the original).
+	-->
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse"/> 
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account2.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="searchConv1" >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:${message.subject1}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[1]" attr="id" set="message2.id"/>
+            <t:select path="//mail:SearchResponse/mail:m[2]" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchConv1" >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:${message.subject1}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchConv2" >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:${message2.subject}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[1]" attr="id" set="HTMLmessage2.id"/>
+            <t:select path="//mail:SearchResponse/mail:m[2]" attr="id" set="HTMLmessage1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchConv2" >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:${message2.subject}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv2.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Conv_fetch_62075_01" type="smoke" >
+    <t:objective>Search for a conversation with fetch="u" specified that should expand all unread messages</t:objective>
+  	
+  	<t:steps> 
+    	1. Update conversation with message unread opeartion.
+    	2. Search for the conversation with fetch="u" specified
+    	2. Verify all unread message are expanded.
+    </t:steps>
+    
+    <t:test >
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv1.id}" op="${op.unread}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.unread}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
+         </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="u">
+                <query>subject:(${message.subject1})</query>
+            </SearchConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="id" match="${message2.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="f" match=".*u.*"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp" attr="body" match="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp/mail:content"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[2]" attr="id" match="${message1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="f" match=".*u.*"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp" attr="body" />
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp/mail:content" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" match=".*u.*"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" match=".*u.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Conv_fetch_62075_02" type="smoke" >
+    <t:objective>Search for a conversation with fetch="u" specified should not expand any read messages</t:objective>
+
+	<t:steps> 
+    	1. Update conversation with message read opeartion.
+    	2. Search for the conversation with fetch="u" specified
+    	3. Verify any read message is not expanded.
+    </t:steps>
+    
+    <t:test >
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv1.id}" op="${op.read}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.read}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
+         </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="u">
+                <query>subject:(${message.subject1})</query>
+            </SearchConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="id" match="${message2.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="f" match=".*u.*" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp" attr="body" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp/mail:content" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[2]" attr="id" match="${message1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="f" match=".*u.*" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp" attr="body" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp/mail:content" emptyset="1"/>
+            
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f"  emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Conv_fetch_62075_03" type="smoke" >
+    <t:objective>Search for a conversation with fetch="u1" specified that should expand only first message when all messages are read</t:objective>
+
+	<t:steps> 
+    	1. Update conversation with message read opeartion.
+    	2. Search for the conversation with fetch="u1" specified
+    	3. Verify the only first read message is expanded.
+    </t:steps>
+    
+    <t:test >
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv1.id}" op="${op.read}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.read}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
+         </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="u1">
+                <query>subject:(${message.subject1})</query>
+            </SearchConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="id" match="${message2.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="f" match=".*u.*" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp" attr="body" />
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp/mail:content" />
+            <t:select path="//mail:SearchConvResponse/mail:m[2]" attr="id" match="${message1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="f" match=".*u.*" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp" attr="body" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp/mail:content" emptyset="1"/>
+            
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f"  emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="Conv_fetch_62075_04" type="smoke" >
+    <t:objective>Search for a conversation with fetch="u1" specified that should expand all unread messages</t:objective>
+
+	<t:steps> 
+    	1. Update conversation with message unread opeartion.
+    	2. Search for the conversation with fetch="u1" specified
+    	3. Verify all unread messages are expanded.
+    </t:steps>
+    
+    <t:test >
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv1.id}" op="${op.unread}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.unread}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
+         </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="u1">
+                <query>subject:(${message.subject1})</query>
+            </SearchConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="id" match="${message2.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="f" match=".*u.*"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp" attr="body" match="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp/mail:content"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[2]" attr="id" match="${message1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="f" match=".*u.*"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp" attr="body" />
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp/mail:content" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" match=".*u.*"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" match=".*u.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Conv_fetch_62075_05" type="smoke" >
+    <t:objective>Search for a conversation which has read and unread messages with fetch="u1" specified that should expand only unread message</t:objective>
+	
+	<t:steps> 
+    	1. Update conversation with unread operation.
+    	2. Update a message  of that conversation with read operation
+    	3. Search for the conversation with fetch="u1" specified
+    	4. Verify only unread message is expanded.
+    </t:steps>
+    
+    <t:test >
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv1.id}" op="${op.unread}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.unread}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
+         </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message2.id}" op="${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.read}"/>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message2.id}"/>
+         </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="u1">
+                <query>subject:(${message.subject1})</query>
+            </SearchConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="id" match="${message2.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="f" match=".*u.*" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp" attr="body" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp/mail:content" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[2]" attr="id" match="${message1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="f" match=".*u.*"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp" attr="body" />
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp/mail:content" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" match=".*u.*" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" match=".*u.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Conv_fetch_62075_06" type="smoke" >
+	<t:objective>Search for a conversation which has read and unread messages with fetch="u" specified that should expand only unread message</t:objective>
+	
+	<t:steps> 
+    	1. Update conversation with unread operation.
+    	2. Update a message  of that conversation with read operation
+    	3. Search for the conversation with fetch="u" specified
+    	4. Verify only unread message is expanded.
+    </t:steps>
+    
+    <t:test >
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv1.id}" op="${op.unread}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.unread}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv1.id}"/>
+         </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message2.id}" op="${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.read}"/>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message2.id}"/>
+         </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchConvRequest xmlns="urn:zimbraMail" cid="${conv1.id}" sortBy="dateDesc" offset="0" limit="25" fetch="u">
+                <query>subject:(${message.subject1})</query>
+            </SearchConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchConvResponse/mail:m[1]" attr="id" match="${message2.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']" attr="f" match=".*u.*" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp" attr="body" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message2.id}']/mail:mp/mail:content" emptyset="1"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[2]" attr="id" match="${message1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="cid" match="${conv1.id}"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']" attr="f" match=".*u.*"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>            
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:su" emptyset="0"/>
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp" attr="body" />
+            <t:select path="//mail:SearchConvResponse/mail:m[@id='${message1.id}']/mail:mp/mail:content" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" match=".*u.*" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="f" match=".*u.*"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail"  types="conversation">               
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse" />
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail"  types="message">               
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+</t:tests>

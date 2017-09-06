@@ -1,0 +1,169 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>  
+
+<t:property name="dl1.user" value="searchdl1.${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="dl1.name" value="${dl1.user}@${domain1.name}"/>
+
+
+<t:property name="search.validquery" value="(|(cn=*${dl1.user}*)(sn=*${dl1.user}*)(gn=*${dl1.user}*)(displayName=*${dl1.user}*)(zimbraMailAlias=*${dl1.user}*)(zimbraMailAddress=*${dl1.user}*)(zimbraMailDeliveryAddress=*${dl1.user}*))"/>
+<t:property name="search.validquerywithspace" value="(|(cn=*  ${dl1.user}  *)(sn=*  ${dl1.user}  *)(gn=*  ${dl1.user}  *)(displayName=*  ${dl1.user}  *)(zimbraMailAlias=*  ${dl1.user}  *)(zimbraMailAddress=*  ${dl1.user}  *)(zimbraMailDeliveryAddress=*   ${dl1.user}   *))"/>
+
+<t:property name="dl1.query1" value="(|(uid=*${dl1.user}*)(cn=*${dl1.user}*)(sn=*${dl1.user}*)(gn=*${dl1.user}*)(displayName=*${dl1.user}*)(zimbraMailAlias=*${dl1.user}*)(zimbraId=vc)(zimbraMailAddress=*${dl1.user}*)(zimbraMailDeliveryAddress=*${dl1.user}*))"/>
+<t:property name="dl1.query2" value="(|(uid=*${dl1.name}*)(cn=*${dl1.name}*)(sn=*${dl1.name}*)(gn=*${dl1.name}*)(displayName=*${dl1.name}*)(zimbraMailAlias=*${dl1.name}*)(zimbraId=vc)(zimbraMailAddress=*${dl1.name}*)(zimbraMailDeliveryAddress=*${dl1.name}*))"/>
+<t:property name="domain1.query1" value="(|(uid=*${domain1.name}*)(cn=*${domain1.name}*)(sn=*${domain1.name}*)(gn=*${domain1.name}*)(displayName=*${domain1.name}*)(zimbraMailAlias=*${domain1.name}*)(zimbraId=vc)(zimbraMailAddress=*${domain1.name}*)(zimbraMailDeliveryAddress=*${domain1.name}*))"/>   
+
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_account_search" type="always" >
+    <t:objective>Prepare the account for tests</t:objective>
+    <t:steps> 1. Login to admin
+              2. Create test-accounts
+              3. Create an alias 
+              4. Create a distribution list        
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test reuqired="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${dl1.user}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl1.id"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+    
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_DistributionLists_01" type="smoke">
+    <t:objective>Verify searching for a particular Distribution list witout domain name </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="distributionlists">
+                <query>${dl1.query1}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:dl" attr="name" match="${dl1.user}"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_DistributionLists_02" type="functional" bugids="4704">
+    <t:objective>Verify searching for a particular Distribution list with domain name, applyCos="0" and attrs" </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus" types="distributionlists">
+                <query>${dl1.query2}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:dl" attr="name" match="${dl1.user}"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_DistributionLists_03" type="functional">
+    <t:objective>Verify searching for types="accounts,aliases,distributionlists,resources,domains"  </t:objective>    
+
+
+	<t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="accounts,aliases,distributionlists,resources,domains">
+                <query>${dl1.query1}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:dl" attr="name" match="${dl1.user}"/>    
+        </t:response>
+    </t:test> 
+
+
+</t:test_case> 
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_DistributionLists_04" type="functional">
+    <t:objective>Search a deleted distribution list </t:objective>
+    <t:steps>1. Delete the disribution list
+             2. Search the deleted distribution list        
+    </t:steps>
+
+    <t:test id="searchDirectoryRequest19a">
+        <t:request>
+            <DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${dl1.id}</id>
+            </DeleteDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDistributionListResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="searchAccountsRequest19a">
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="distributionlists">
+                <query>${dl1.query1}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>   
+
+
+</t:tests>
+

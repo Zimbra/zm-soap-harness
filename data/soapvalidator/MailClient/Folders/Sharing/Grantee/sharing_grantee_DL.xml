@@ -1,0 +1,813 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="dl1.name" value="dl1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="dl2.name" value="dl2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account0.name" value="account0.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account1.folder2.name" value="account1.folder2.${TIME}.${COUNTER}"/>
+<t:property name="account1.folder2.msg01.subject" value="subject.${TIME}.${COUNTER}"/>
+<t:property name="account1.folder3.name" value="account1.folder3.${TIME}.${COUNTER}"/>
+<t:property name="account1.folder3.msg01.subject" value="subject.${TIME}.${COUNTER}"/>
+<t:property name="account1.folder4.name" value="account1.folder3.${TIME}.${COUNTER}"/>
+<t:property name="account1.folder4.msg01.subject" value="subject.${TIME}.${COUNTER}"/>
+
+<t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.alias" value="account3.alias.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="list3.name" value="list3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account4.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="list4a.name" value="list4a.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="list4b.name" value="list4b.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.read"			value="read"/>
+<t:property name="op.unread"		value="!read"/>
+<t:property name="op.flag"			value="flag"/>
+<t:property name="op.unflag"		value="!flag"/>
+<t:property name="op.tag"			value="tag"/>
+<t:property name="op.untag"			value="!tag"/>
+<t:property name="op.move"			value="move"/>
+<t:property name="op.delete"		value="delete"/>
+
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.grp"			value="grp"/>
+<t:property name="grant.dom"			value="dom"/>
+<t:property name="grant.cos"			value="cos"/>
+<t:property name="grant.all"			value="all"/>
+<t:property name="grant.pub"			value="pub"/>
+<t:property name="grant.guest"			value="guest"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="view.conversation"	value="conversation"/>
+<t:property name="view.message"			value="message"/>
+<t:property name="view.contact"			value="contact"/>
+<t:property name="view.appointment"		value="appointment"/>
+<t:property name="view.note"			value="note"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Sharing_GranteeDL_AccountSetup" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps>
+            1. Login to admin.
+            2. Create two accounts.
+            3. Get those accounts.
+            4. Get auth token of the 2 accounts created.
+    </t:steps>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account0.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account0.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${dl1.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest1a">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${dl1.id}</id>
+                <dlm>${account1.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+        
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${dl2.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest1a">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${dl2.id}</id>
+                <dlm>${account2.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <alias>${account3.alias}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list3.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list3.id}</id>
+                <dlm>${account3.alias}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+ 
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list4a.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list4a.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list4b.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list4b.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list4a.id}</id>
+                <dlm>${list4b.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+ 
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list4b.id}</id>
+                <dlm>${account4.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+ 
+    <t:test >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account0.folder.root.id"/> 
+        </t:response>
+    </t:test>
+    
+</t:test_case>  
+
+ 
+
+<t:test_case testcaseid="Sharing_GranteeDL_01" type="smoke">
+    <t:objective>Share a folder to a DL.  Verify that DL users have access.</t:objective>
+    <t:steps>
+            1. Login to account0
+            2. Get Root folder.
+            3. Create a folder.
+            4. Share (manager) with gt=usr
+            5. Another user in the DL sends GetMsgRequest (success)
+            6. Another user in a different DL sends GetMsgRequest (PERM_DENIED)
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+ 
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account0.folder.root.id}" name="folder${TIME}${COUNTER}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account0.folder1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account0.folder1.id}">
+                    <content>Date: Wed, 28 Nov 2007 05:15:48 -0800 (PST)
+From: foo@example.com
+To: bar@example.com
+Subject: subject${TIME}${COUNTER}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+In The Matrix, the hero Neo could dodge bullets because
+time moved in slow motion for him during battles. Indeed,
+in the real world, people in danger often feel as if 
+time slowed down for them.
+
+                    </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account0.message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account0.folder1.id}" op="grant" >
+                    <grant gt="${grant.usr}" d="${dl1.name}" perm="${rights.manager}" />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account0.id}:${account0.message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:m[@id='${account0.id}:${account0.message1.id}']"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account0.id}:${account0.message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="Sharing_GranteeDL_02" type="smoke">
+    <t:objective>Unshare a folder to a DL.  Verify that DL users no longer have access.</t:objective>
+    <t:steps>
+            1. Login to account0
+            2. Get Root folder.
+            3. Create a folder.
+            4. Share (manager) with gt=usr
+            4. Unshare with gt=usr
+            5. Another user in the DL sends GetMsgRequest (PERM_DENIED)
+            6. Another user in a different DL sends GetMsgRequest (PERM_DENIED)
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+ 
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account0.folder.root.id}" name="folder${TIME}${COUNTER}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account0.folder1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account0.folder1.id}">
+                    <content>Date: Wed, 28 Nov 2007 05:15:48 -0800 (PST)
+From: foo@example.com
+To: bar@example.com
+Subject: subject${TIME}${COUNTER}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+In The Matrix, the hero Neo could dodge bullets because
+time moved in slow motion for him during battles. Indeed,
+in the real world, people in danger often feel as if 
+time slowed down for them.
+
+                    </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account0.message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account0.folder1.id}" op="grant">
+                    <grant gt="${grant.usr}" d="${dl1.name}" perm="${rights.manager}" />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account0.folder1.id}" op="!grant" zid="${dl1.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account0.id}:${account0.message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account0.id}:${account0.message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="FoldersDelegated_DistributionList_02" type="smoke" bugids="8862">
+    <t:objective>Verify that a folder can be delegated to a distribution list</t:objective>
+    <t:steps>
+            1. Login to account1
+            2. Share folder1 with list3, which includes account3's alias
+            3. Login to account3
+            4. Read an item from account1's folder1
+    </t:steps>       
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+                         
+    <t:test id="getFolderRequest">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="folders_delegated1a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${folder.inbox}" name="folder${COUNTER}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder3.id}">
+                	<content>Subject: ${account1.folder3.msg01.subject}
+To: foo@foo.com
+From: foo@foo.com
+
+Content Content Content
+
+					</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.folder3.id}" op="grant">
+                    <grant d="${list3.name}" gt="usr" perm="r"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+ 
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.id}:${account1.message3.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="su" match="${account1.folder3.msg01.subject}"/>
+        </t:response>
+    </t:test>
+                         
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="FoldersDelegated_DistributionList_03" type="functional">
+    <t:objective>Verify that a folder can be delegated to a distribution list, that contains another </t:objective>
+    <t:steps>
+            1. Login to account1
+            2. Share folder4 with list4a, which includes list4b, which incluudes account4
+            3. Login to account4
+            4. Read an item from account1's folder4
+    </t:steps>       
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+                         
+    <t:test id="getFolderRequest">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="folders_delegated1a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${folder.inbox}" name="folder${COUNTER}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder4.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder4.id}">
+                	<content>Subject: ${account1.folder4.msg01.subject}
+To: foo@foo.com
+From: foo@foo.com
+
+Content Content Content
+
+					</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message4.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.folder4.id}" op="grant">
+                    <grant d="${list4a.name}" gt="usr" perm="r"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+ 
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.id}:${account1.message4.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="su" match="${account1.folder4.msg01.subject}"/>
+        </t:response>
+    </t:test>
+                         
+    
+</t:test_case>
+
+
+
+
+</t:tests>

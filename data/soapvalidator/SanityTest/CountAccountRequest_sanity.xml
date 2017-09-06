@@ -1,0 +1,74 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="cos1.name" value="gold${TIME}"/>
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:test_case testcaseid="CountAccountRequest_01" type="sanity" >
+    <t:objective>Sanity test for CountAccountRequest</t:objective>
+   
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos1.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id"/>
+        </t:response>
+    </t:test>
+   
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos1.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" />
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos1.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" />
+        </t:response>
+    </t:test>
+    
+    <t:test>
+       <t:request>
+			<CountAccountRequest xmlns="urn:zimbraAdmin">
+	    			<domain by="name">${defaultdomain.name}</domain>
+			</CountAccountRequest>
+        </t:request>
+        <t:response>
+          	<t:select path="//admin:CountAccountResponse/admin:cos[@name='${cos1.name}']" match="2"/>         
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+</t:tests>

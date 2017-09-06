@@ -1,0 +1,425 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="FROMUSER${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="TOUSER${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="CCUSER${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="mail1.subject" value="Trying to test wildcards."/>
+<t:property name="mail1.content" value="Mail is sent to user2 and user3 is in cc. This is not that difficult to test"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="ping" type="always" >
+<t:objective>basic system check</t:objective>
+	<t:test id="ping" required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="search_wildcard_toccfrom_setup" type="always" >
+	<t:objective>To create 3 test accounts.</t:objective>
+
+	<t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+<t:test_case testcaseid="search_wildcard_01" type="functional"> 
+	<!-- Note: Moving all tests to functional since this bug is not part of JP -->
+	<t:objective>Login to account 2 and send a mail</t:objective>
+	<t:steps>
+		1. Login to account1.
+		2. Send a mail "mail1" with account2 in "TO" field and account3 in "Cc" field.
+	</t:steps>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			 </AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${test_account2.name}'/>
+					<e t="c" a='${test_account3.name}'/>
+					<su>${mail1.subject}</su>
+					<mp ct="text/plain">
+						<content> ${mail1.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="search_wildcard_02" type="functional" bugids="7581,14292,60820">
+	<t:objective>Login to account 2 and verify wildcard search functionality for TO header.</t:objective>
+	<t:steps>
+		1. Login to account2.
+		2. Verify wildcard search functionality on TO field.
+	</t:steps>
+
+
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			 </AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>to:${test_account2.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>to:TOUSER*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>to:*OUSER</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>to:TO*ER*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="search_wildcard_03" type="functional" bugids="7581,14292,60820">
+	<t:objective>Verify wildcard search functionality for CC header</t:objective>
+	<t:steps>
+		1. Verify wildcard search functionality for CC header
+	</t:steps>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>cc:${test_account3.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>cc:CCUSER*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>cc:*CUSER</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>cc:CC*ER*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="search_wildcard_03" type="functional" bugids="7581,14292,60820">
+	<t:objective>Verify wildcard search functionality for FROM header.</t:objective>
+	<t:steps>
+		1. Verify wildcard search functionality for FROM header.
+	</t:steps>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>from:${test_account1.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>from:FROM*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>from:*MUSER</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>from:FR*ER*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="search_wildcard_04" type="functional" bugids="7581,14292,60820">
+	<t:objective>Verify wildcard search functionality for subject.</t:objective>
+	<t:steps>
+		1. Verify wildcard search functionality for subject
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>subject:${mail1.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>subject:Try*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>subject:*wildcard</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>subject:Try*wildca*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="search_wildcard_05" type="functional" bugids="7581,14292,60820">
+	<t:objective>Verify wildcard search functionality for contents.</t:objective>
+	<t:steps>
+		1. Verify wildcard functionality for contents.
+	</t:steps>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>difficult</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>Thi*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>*difficul</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>subject:dif*l*</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+</t:tests>

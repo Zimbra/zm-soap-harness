@@ -1,0 +1,122 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain.name" value="preauth.${TIME}.${COUNTER}.com"/>
+<t:property name="domain.preauthkey" value="7c9d4c4372457f2e9df0a681e31559e691199762171b832ec042861bc9b610ba"/>
+<!--t:property name="domain.preauthkey" value="527f7fa4cbaaa9be9ef7abf4818ac68658ad8e75a3a6f2b2432f8a97531099da"/-->
+
+<t:property name="account.name" value="preauth${TIME}${COUNTER}@${domain.name}"/>
+
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+ <t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAdmin">
+	    <name>${admin.user}</name>
+	    <password>${admin.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+	    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+
+    <t:test id="CreateDomainRequest0a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name}</name>
+                <a n="zimbraPreAuthKey">${domain.preauthkey}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse">
+	            <t:select path="//admin:domain" attr="id" set="domain.id"/>
+	            <t:select path="//admin:a[@n='zimbraPreAuthKey']" match="${domain.preauthkey}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">maintenance</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server"/>
+		 </t:response>
+    </t:test>  
+
+   
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug95102" type="smoke" bugids="95102">
+	<t:objective>preAuthServlet has no checking against the account's status </t:objective>
+    <t:steps>
+     1) put user in maintenance that you plan to preauth
+     2) login with user using preauth URL
+     3) Error should be seen regaridng account in maintainance mode
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account.server}"/>
+
+	<t:property name="authToken" value=""/>
+
+	
+	<t:property name="account.timestamp" value="${TIME}"/>
+	<t:property name="account.expires" value="0"/>
+	
+	<t:preauth
+		account="${account.name}"
+		by="name"
+		timestamp="${account.timestamp}"
+		expires="${account.expires}"
+		key="${domain.preauthkey}"
+		set="account.preauthkey"/>
+	
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account.name}</account>
+				<preauth timestamp="${account.timestamp}" expires="${account.expires}">${account.preauthkey}</preauth>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			           <t:select path="//zimbra:Code" match="account.MAINTENANCE_MODE"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+</t:tests>

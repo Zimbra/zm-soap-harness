@@ -1,0 +1,43 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetDevicesCountRequest01" areas="network" type="smoke">
+<t:objective>GetDeviceCountRequest on default Admin</t:objective>
+   <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test required="true">
+        <t:request>
+            <GetDevicesCountRequest xmlns="urn:zimbraAdmin">
+            </GetDevicesCountRequest>
+           </t:request>
+        <t:response>
+        <t:select path="//admin:GetDevicesCountResponse" attr="count" match="0" />
+        </t:response>
+	</t:test>
+</t:test_case>
+
+</t:tests>

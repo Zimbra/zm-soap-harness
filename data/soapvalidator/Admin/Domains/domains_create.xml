@@ -1,0 +1,890 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain0.name" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name1" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name2" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name3" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name4" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name5" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name6" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name7" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name8" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name9" value="${TIME}${COUNTER}"/>
+<t:property name="domain.name10" value="${TIME}${COUNTER}"/>
+
+<t:property name="domain.ad" value="ad"/>
+<t:property name="domain.zimbra" value="zimbra"/>
+<t:property name="domain.both" value="both"/>
+<t:property name="domain.ldap" value="ldap"/>
+
+<t:property name="domain.space" value="        "/>
+<t:property name="domain.spname" value="name with   space${TIME}${COUNTER}"/>
+<t:property name="domain.blank" value=""/>
+<t:property name="domain.spchar" value=":&lt;''//\\"/>
+<t:property name="domain.sometext" value="someinvalidtexttotestnegativedomainname"/>
+<t:property name="domain.name@" value="@domain${TIME}${COUNTER}.com"/>
+ <t:property name="domain.negative" value="-1"/>
+   
+<t:property name="DN.name" value="zimbra1"/>
+<t:property name="DN.blank" value=""/>
+
+<t:property name="DN.name1" value="testdomain"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="admin_login" type="always" >
+    <t:objective>Login to Admin Account</t:objective>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchDirectoryRequest1" type="smoke" >
+    <t:objective> SearchDirectoryRequest </t:objective>
+
+	<t:test>
+		<t:request>
+			<SearchDirectoryRequest xmlns="urn:zimbraAdmin" offset="0" sortBy="zimbraDomainName" sortAscending="1" types="domains">
+				<query/>
+			</SearchDirectoryRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest0" type="smoke" areas="dev_sanity">
+    <t:objective>create a  Domain  </t:objective>
+    <t:steps> 
+            1. Create a new Domain 
+    </t:steps>
+    
+    <t:test id="CreateDomainRequest0a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${domain0.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain0.id"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+    
+
+<t:test_case testcaseid="CreateDomainRequest1" type="functional" >
+    <t:objective>create a dulicate Domain  </t:objective>
+    <t:steps> 
+            1. Create a new Domain 
+            2. Create a dulicate Domain  
+    </t:steps>
+    
+    <t:test id="CreateDomainRequest1a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${domain.name1}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
+        </t:response>
+    </t:test>
+    <t:test depends="CreateDomainRequest1a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${domain.name1}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^account.DOMAIN_EXISTS"/>     
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest2" type="functional" bugids="1628">
+    <t:objective>create a new Domain with spaces in place of name </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.space}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="CreateDomainRequest3" type="functional" bugids="1628">
+    <t:objective>create a new Domain with blank name </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.blank}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CreateDomainRequest4" type="functional" >
+    <t:objective>create a dulicate Domain-Check Case Sensitivity  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>DOMAIN${domain.name1}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^account.DOMAIN_EXISTS"/>     
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest5" bugids="1628" type="functional" >
+    <t:objective>create a new Domain with special characters in name </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.spchar}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//admin:CreateDomainResponse"/> -->
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest6" type="functional" >
+    <t:objective>create a new Domain with spaces in the name </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.spname}</name>
+            </CreateDomainRequest>
+        </t:request>
+       <t:response>
+<!--             <t:select path="//admin:CreateDomainResponse"/> -->
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest7" type="functional" >
+    <t:objective>create a new Domain with leading spaces in the name </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>          domain${TIME}${COUNTER}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest8" type="functional" >
+    <t:objective>create a new Domain with trailing spaces in the name </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}    </name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest9" type="functional" >
+    <t:objective>Create a Domain with a blank description </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="description">${domain.blank}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest10" type="functional" >
+    <t:objective>Create a Domain with blank Notes </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraNotes">${domain.blank}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest11" type="functional" bugids="1198">
+    <t:objective>Create a Domain with valid maximum number of GAL entries </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                  <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalMaxResults">20</a>    
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                  <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalMaxResults">0020</a>    
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> -->
+           		 <t:select path="//zimbra:Code" match="ldap.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<!-- Removed reference to bugid 1198, since it SOAP is successful and the UI is broken. -->
+<t:test_case testcaseid="CreateDomainRequest12" type="functional" >
+    <t:objective>Create a Domain with maximum number of GAL entries- enter netagive value </t:objective>
+
+    <t:test>
+        <t:request>
+             <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalMaxResults">-20</a>
+                <a n="zimbraNotes">testnotes</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest13" bugids="1198" type="functional" >
+    <t:objective>Create a Domain with maximum number of GAL entries- check with characters</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalMaxResults">abcd</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest14" type="functional" >
+    <t:objective>Check GAL Mode- Using existing option </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalMode">${domain.both}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraGalMode']" match="${domain.both}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalMode">${domain.zimbra}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraGalMode']" match="${domain.zimbra}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalMode">${domain.ldap}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraGalMode']" match="${domain.ldap}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest15" bugids="1978" type="negative" >
+    <t:objective> Check GAL Mode- Using Non-existing option </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalMode">${domain.sometext}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest16" bugids="1978" type="functional" >
+    <t:objective>Check LDAP URL-With Invalid Entry </t:objective>
+    
+    <t:test>
+        <t:request>
+              <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalLdapURL">${domain.sometext}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest17" bugids="1978" type="functional" >
+    <t:objective>Check LDAP Search Base-With Invalid Entry</t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalLdapSearchBase">${domain.sometext}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest18" bugids="1978" type="functional" >
+    <t:objective>Check LDAP Bind DN-With Invalid Entry </t:objective>
+
+    <t:test id="Domain020">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalLdapBindDn">${domain.sometext}</a>
+               </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest19" type="functional" >
+    <t:objective>Check LDAP Bind Password-Check with Blank Password</t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalLdapBindPassword">${domain.blank}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest20" bugids="1978" type="functional" >
+    <t:objective>Check LDAP Filter-Check with Invalid Entry</t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraGalLdapFilter">${domain.sometext}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest21" bugids="45065" type="negative" >
+    <t:objective>Check Authentication Mechanism- Using Non-existing option </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraAuthMech">${domain.sometext}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <!-- Getting account.INVALID_ATTR_VALUE for build:20050609164754-->
+<!--             <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/> -->
+            	<t:select path = "//zimbra:Code" match = "^service.FAILURE"/>
+			<!-- Poonam 16/May/2008: 5.0.6_GA_2300.RHEL4_20080514183540 I think proper response is ok as per the bug -->
+            <!--  t:select path="//admin:CreateDomainResponse"/-->
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest22" bugids="1978" type="functional" >
+    <t:objective>Check LDAP URL (AUTH)-With Invalid Entry </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraAuthLdapURL">${domain.sometext}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateDomainRequest23" bugids="1978" type="functional" >
+    <t:objective>Check LDAP Bind DN Template (AUTH)-With Invalid Entry </t:objective>
+    
+    <t:test>
+        <t:request>
+               <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                  <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraAuthLdapBindDn">${domain.sometext}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+ 
+    
+<t:test_case testcaseid="CreateDomainRequest24" type="functional" >
+    <t:objective>Check Authentication Mode- Using existing option </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraAuthMech">${domain.zimbra}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraAuthMech']" match="${domain.zimbra}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraAuthMech">${domain.ldap}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraAuthMech']" match="${domain.ldap}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${TIME}${COUNTER}</name>
+                <a n="zimbraAuthMech">${domain.ad}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraAuthMech']" match="${domain.ad}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+    
+<t:test_case testcaseid="CreateDomainRequest25" type="smoke">
+    <t:objective>create a Domain with all valid values </t:objective>    
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name2}</name>
+                <a n="zimbraGalMode">${domain.zimbra}</a>
+                <a n="zimbraGalMaxResults">100</a>
+                <a n="zimbraNotes">Notes</a>
+                <a n="zimbraAuthLdapURL"/>
+                <a n="description">description</a>
+                <a n="zimbraAuthMech">${domain.zimbra}</a>            
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraGalMaxResults']" match="100"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraAuthMech']" match="${domain.zimbra}"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraDomainName']" match="${domain.name2}"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraNotes']" match="Notes"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='description']" match="description"/>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraGalMode']" match="${domain.zimbra}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+   
+<t:test_case testcaseid="CreateDomainRequest26" type="negative">
+    <t:objective>create a Domain with no a element </t:objective>    
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name3}</name>                
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>                        
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+    
+<t:test_case testcaseid="CreateDomainRequest27" type="negative">
+    <t:objective>create a Domain with no name element </t:objective>    
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+                <a n="zimbraGalMode">${domain.zimbra}</a>
+                 <a n="zimbraGalMaxResults">100</a>
+                 <a n="zimbraNotes">Notes</a>
+                 <a n="zimbraAuthLdapURL"/>
+                 <a n="description">description</a>
+                 <a n="zimbraAuthMech">${domain.zimbra}</a>            
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+	<t:test_case testcaseid="CreateDomainRequest28" type="smoke">
+    <t:objective>create a Domain with a valid value of zimbraDomainMaxAccounts</t:objective>    
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain.name5}</name>
+                <a n="zimbraGalMode">${domain.zimbra}</a>
+                <a n="zimbraGalMaxResults">100</a>
+                <a n="zimbraNotes">Notes</a>
+                <a n="zimbraAuthLdapURL"/>
+                <a n="description">description</a>
+                <a n="zimbraAuthMech">${domain.zimbra}</a> 
+				<a n="zimbraDomainMaxAccounts">5</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain/admin:a[@n='zimbraDomainMaxAccounts']" match="5"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+	<t:test_case testcaseid="CreateDomainRequest29" type="negative">
+    <t:objective>create a Domain with invalid values of zimbraDomainMaxAccounts(space/blank/zero/sometext/negative)
+	</t:objective>    
+    
+    <t:test  id="CreateDomainRequest29a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain.name6}</name>
+                <a n="zimbraGalMode">${domain.zimbra}</a>
+                <a n="zimbraGalMaxResults">100</a>
+                <a n="zimbraNotes">Notes</a>
+                <a n="zimbraAuthLdapURL"/>
+                <a n="description">description</a>
+                <a n="zimbraAuthMech">${domain.zimbra}</a> 
+				<a n="zimbraDomainMaxAccounts">${domain.space}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  id="CreateDomainRequest29b">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain.name7}</name>
+                <a n="zimbraGalMode">${domain.zimbra}</a>
+                <a n="zimbraGalMaxResults">100</a>
+                <a n="zimbraNotes">Notes</a>
+                <a n="zimbraAuthLdapURL"/>
+                <a n="description">description</a>
+                <a n="zimbraAuthMech">${domain.zimbra}</a> 
+				<a n="zimbraDomainMaxAccounts">${domain.blank}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+       </t:response>
+    </t:test>
+
+    <t:test  id="CreateDomainRequest29c">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain.name8}</name>
+                <a n="zimbraGalMode">${domain.zimbra}</a>
+                <a n="zimbraGalMaxResults">100</a>
+                <a n="zimbraNotes">Notes</a>
+                <a n="zimbraAuthLdapURL"/>
+                <a n="description">description</a>
+                <a n="zimbraAuthMech">${domain.zimbra}</a> 
+				<a n="zimbraDomainMaxAccounts">0</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+       </t:response>
+    </t:test>
+    
+    <t:test  id="CreateDomainRequest29d">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain.name9}</name>
+                <a n="zimbraGalMode">${domain.zimbra}</a>
+                <a n="zimbraGalMaxResults">100</a>
+                <a n="zimbraNotes">Notes</a>
+                <a n="zimbraAuthLdapURL"/>
+                <a n="description">description</a>
+                <a n="zimbraAuthMech">${domain.zimbra}</a> 
+				<a n="zimbraDomainMaxAccounts">${domain.sometext}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
+       </t:response>
+    </t:test>
+    
+    <t:test  id="CreateDomainRequest29e">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain.name10}</name>
+                <a n="zimbraGalMode">${domain.zimbra}</a>
+                <a n="zimbraGalMaxResults">100</a>
+                <a n="zimbraNotes">Notes</a>
+                <a n="zimbraAuthLdapURL"/>
+                <a n="description">description</a>
+                <a n="zimbraAuthMech">${domain.zimbra}</a> 
+				<a n="zimbraDomainMaxAccounts">${domain.negative}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^account.INVALID_ATTR_VALUE$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="CreateDomainRequest30" type="functional" bugids="36665">
+    <t:objective>create a Domain with zimbraDomainDefaultCOSId set to invalid values</t:objective>
+	<t:steps>
+		1. Create a new domain with zimbraDomainDefaultCOSId=valid cos id
+		2. Create a new domain with zimbraDomainDefaultCOSId=text
+		3. Create a new domain with zimbraDomainDefaultCOSId=deleted cos id
+	</t:steps>    
+    
+	<t:property name="cos1.name" value="cos${TIME}${COUNTER}"/>
+	<t:property name="cos2.name" value="cos${TIME}${COUNTER}"/>
+	
+    <t:test id = "CreateCosRequest1a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos1.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id = "CreateCosRequest1a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos2.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="deletecosrequest1b">
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${cos2.id}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test  id="CreateDomainRequest29a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${TIME}.${COUNTER}.${defaultdomain.name}</name>
+                <a n="zimbraDomainDefaultCOSId">${cos1.id}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test  id="CreateDomainRequest29a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${TIME}.${COUNTER}.${defaultdomain.name}</name>
+                <a n="zimbraDomainDefaultCOSId">text</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+    
+	<t:test  id="CreateDomainRequest29a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${TIME}.${COUNTER}.${defaultdomain.name}</name>
+                <a n="zimbraDomainDefaultCOSId">${cos2.id}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path = "//zimbra:Code" match = "^service.FAILURE"/>
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case>
+
+
+</t:tests>
+
+

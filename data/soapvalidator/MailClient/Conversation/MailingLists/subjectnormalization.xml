@@ -1,0 +1,679 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+
+
+<t:property name="account1.name" value="account${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account${COUNTER}.${TIME}@${defaultdomain.name}"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="account_setup_conversation" type="always" >
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a mail account 
+    </steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account2"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account3"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_01" type="functional" bugids="28536" >
+	<t:objective>exclude mailing list prefixes during subject normalization</t:objective>
+	<t:steps>
+		1. AddMsgRequest to account1 with subject: [mailing-list] subject1 (simulates mailing list message)
+		2. AddMsgRequest to account1 with subject: RE: [mailing-list] subject1 
+		3. AddMsgRequest to account1 with subject: FWD: [mailing-list] RE: subject1 
+		3. Verify replies are combined in the conversation
+	</t:steps>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="message1.content" value="content${TIME}${COUNTER}"/>
+	<t:property name="message2.content" value="content${TIME}${COUNTER}"/>
+	<t:property name="message3.content" value="content${TIME}${COUNTER}"/>
+	<t:property name="message4.content" value="content${TIME}${COUNTER}"/>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>From: foo@example.com 
+To: mailinglist@example.com 
+Subject: [mailing-list] ${message.subject}
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+${message1.content}
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+	
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>From: foo@example.com 
+To: mailinglist@example.com 
+Subject: RE: [mailing-list] ${message.subject}
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+${message2.content}
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
+        </t:response>
+    </t:test>
+	
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>From: foo@example.com 
+To: mailinglist@example.com 
+Subject: FWD: [mailing-list] ${message.subject}
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+${message3.content}
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message3.id"/>
+        </t:response>
+    </t:test>
+	
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>From: foo@example.com 
+To: mailinglist@example.com 
+Subject: FWD: [mailing-list] RE: ${message.subject}
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+${message4.content}
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message4.id"/>
+        </t:response>
+    </t:test>
+	
+
+	<t:test id="convactionrequest1a">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conversation.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test depends="getconvrequest1a">
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${conversation.id}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetConvResponse">
+				<!-- remember to escape the brackets so the regex doesn't interpret them -->
+				<t:select path="//mail:su" match="\[mailing-list\] ${message.subject}"/>
+				<t:select path="//mail:m" attr="id" match="${message1.id}"/>
+				<t:select path="//mail:m" attr="id" match="${message2.id}"/>
+				<t:select path="//mail:m" attr="id" match="${message3.id}"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_02" type="functional" bugids="28536" >
+	<t:objective>Verify the mailing list brackets are not included in the sort order by subject</t:objective>
+	<t:steps>
+		1. AddMsgRequest to account1 with subject: b
+		2. AddMsgRequest to account1 with subject: d
+		3. AddMsgRequest to account1 with subject: [mailing-list] a 
+		4. AddMsgRequest to account1 with subject: [mailing-list] c 
+		5. Verify messages are sorted by a, b, c, e ... not including the brackets
+	</t:steps>
+
+	<t:property name="message.content" value="content${TIME}${COUNTER}"/>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>From: foo@example.com 
+To: bar@example.com 
+Subject: b
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+${message.content}
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+	
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>From: foo@example.com 
+To: mailinglist@example.com 
+Subject: d
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+${message.content}
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
+        </t:response>
+    </t:test>
+	
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>From: foo@example.com 
+To: mailinglist@example.com 
+Subject: [cmailing-list] a
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+${message.content}
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message3.id"/>
+        </t:response>
+    </t:test>
+	
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>From: foo@example.com 
+To: mailinglist@example.com 
+Subject: [amailing-list] c
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+${message.content}
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message4.id"/>
+        </t:response>
+    </t:test>
+	
+
+	<t:test id="convactionrequest1a">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" sortBy="subjAsc" types="message">
+				<query>content:(${message.content})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m[1]" attr="id" match="${message3.id}"/>
+				<t:select path="//mail:m[2]" attr="id" match="${message1.id}"/>
+				<t:select path="//mail:m[3]" attr="id" match="${message4.id}"/>
+				<t:select path="//mail:m[4]" attr="id" match="${message2.id}"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_03" type="deprecated" areas="noncluster">
+	<t:objective>Verify if zimbraPrefDedupeMessagesSentToSelf=dedupeAll, then the original sent message should be combined into the conversation</t:objective>
+	<t:steps>
+		1. ModifyPrefsRequest - set zimbraPrefDedupeMessagesSentToSelf=dedupeAll
+		2. account2 - SendMsgRequest to account3 with subject: subject1
+		3. account3 - SendMsgRequest to account2 with subject: [mailling-list] subject1
+		4. account3 - SendMsgRequest to account2 with subject: RE: [mailling-list] subject1
+		5. account2 - Verify all 3 messages are combined into one conversation
+	</t:steps>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="message1.content" value="content${TIME}${COUNTER}"/>
+	<t:property name="message2.content" value="content${TIME}${COUNTER}"/>
+	<t:property name="message3.content" value="content${TIME}${COUNTER}"/>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefDedupeMessagesSentToSelf">dedupeAll</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message1.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>[mailing-list] ${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message2.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>RE: [mailing-list] ${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message3.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="convactionrequest1a">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m[1]" attr="id" set="message1.id"/>
+				<t:select path="//mail:m[2]" attr="id" set="message2.id"/>
+				<t:select path="//mail:m[3]" attr="id" set="message3.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:finally areas="noncluster">
+	
+	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraMessageIdDedupeCacheSize">${zimbraMessageIdDedupeCacheSize.default}</a>
+			</ModifyConfigRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:ModifyConfigResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmailboxdctl}</params>
+		</t:request>
+	</t:staftask>
+	
+	<!-- Sleep for 5 minutes to wait for mbox to come up -->
+	<t:delay sec="300"/>
+	
+
+</t:finally>
+	
+
+<t:test_case testcaseid="Conversations_MailingLists_SubjectNormalization_04" type="functional" bugids="36851" areas="noncluster">
+	<t:objective>Verify two messages with the same message ID are combined into the same conversation</t:objective>
+	<t:steps>
+		1. LMTP inject message with subject="subject1"
+		2. LMTP inject message with subject="[mailing-list] subject1" and same message ID as #1
+		3. Verify messages are combined into the same conversation (these steps simulate a mailing list message response)
+	</t:steps>
+
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraMessageIdDedupeCacheSize">0</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmailboxdctl}</params>
+		</t:request>
+	</t:staftask>
+	
+	<!-- Sleep for 5 minutes to wait for mbox to come up -->
+	<t:delay sec="300"/>
+	
+
+	<t:property name="mime.folder" value="${testMailRaw.root}/email40"/>
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${mime.folder}</foldername>
+			<to>${account3.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+
+	<t:test id="convactionrequest1a">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>content:content1</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="cid" set="message1.cid"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:test id="convactionrequest1a">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>content:content2</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="cid" match="${message1.cid}"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+
+
+</t:test_case>
+
+
+
+
+
+
+</t:tests>

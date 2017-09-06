@@ -1,0 +1,368 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="trashlifetime${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="trashlifetime${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="MsgTrashLifetime" value="5s"/>
+<t:property name="purgedelay" value="30"/> <!-- 30 seconds -->
+
+<t:property name="msg.file" value="${testMailRaw.root}/email02/msg01.txt"/>
+<t:property name="msg1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+
+<t:property name="op.trash" value="move"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MailSpamLifetime_Setup" type="always" >
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a account1 with zimbraMailTrashLifetime = 100 days.
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraMailTrashLifetime">${MsgTrashLifetime}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MailSpamLifetime01" type="smoke" >
+    <t:objective>Verify that the mail moved to Trash gets deleted after time specified in zimbraMailTrashLifetime.</t:objective>
+    <steps> 1. AddMsgRequest
+            2. Login to account1. 
+			3. Move the message to trash.
+			4. After purging messages, the mail should not be in Trash folder.
+    </steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.inbox.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id}" op = "${op.trash}" l="${folder.trash.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" >
+                <query>in:${globals.trash}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:delay sec="${purgedelay}"/>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account1.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="account1.mbxid"/>
+         </t:response>
+    </t:test>  
+	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
+ 
+    <t:test >
+        <t:request>
+            <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account1.id}"/>
+            </PurgeMessagesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${account1.mbxid}$"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" >
+                <query>in:${globals.trash}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MailSpamLifetime02" type="smoke"  >
+    <t:objective>Verify that the mail moved to Trash is not deleted untill the accounts zimbraMailTrashLifetime expires.</t:objective>
+    <steps> 1. Login to account2. 
+    		2. Add a message
+			3. Move the message to trash.
+			4. After purging messages, the mail should remain in Trash folder.
+    </steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.inbox.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id}" op = "${op.trash}" l="${folder.trash.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" >
+                <query>in:${globals.trash}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account2.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="account2.mbxid"/>
+         </t:response>
+    </t:test>  
+    
+ 	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
+ 
+    <t:test >
+        <t:request>
+            <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account2.id}"/>
+            </PurgeMessagesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${account2.mbxid}$"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" >
+                <query>in:${globals.trash}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests> 

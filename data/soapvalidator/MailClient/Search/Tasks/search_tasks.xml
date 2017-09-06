@@ -1,0 +1,380 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="task1.subject" value="Subject of  task${TIME}.${COUNTER}"/>
+<t:property name="task2.subject" value="Subject of  task${TIME}.${COUNTER}"/>
+<t:property name="task3.subject" value="Subject of  task${TIME}.${COUNTER}"/>
+<t:property name="task1.content" value="Content of the task${TIME}.${COUNTER}"/>
+<t:property name="task2.content" value="Content of the task${TIME}.${COUNTER}"/>
+<t:property name="task3.content" value="Content of the task${TIME}.${COUNTER}"/>
+<t:property name="task.location" value="Location of  task${TIME}.${COUNTER}"/>
+
+<t:property name="CurrentTime" value="${GENTIME}"/>
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="Time3" value="${ICALTIME(-1d)}"/>
+<t:property name="Time4" value="${ICALTIME(-1d)(+30m)}"/>
+
+<t:property name="root" value="${soapxml.root}/MailClient/Mail/lmtp/Attachments/"/>
+<t:property name="msg01.file" value="${root}/attachmentZimbra.txt"/>
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+	
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin"/>
+	        </t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse"/>
+			</t:response>
+		</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="search_tasks_acct_setup_01" type="always">
+	<t:objective>Create test accounts</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server1"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server2"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.tasks}']" attr="id" set="account1.folder.task.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="uploadServletServer" value="${test_acct.server1}"/>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${msg01.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="attach.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.task.id}">
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="25" status="INPR" allDay="0" name="${task1.subject}" loc="${task.location}">
+							<or a="${test_account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>${task1.content}</content>
+					</mp>
+					<su>${task1.subject}</su>
+					<attach aid="${attach.aid}"/>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="calItemId" set="task1.id"/>
+		</t:response>
+	</t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
+
+	<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+	<t:property name="time.20180115120000.pst" value="${TIME(+14d)[${time.20180101120000.pst}]}"/>
+
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.task.id}">
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task2.subject}" loc="${task.location}">
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME[${time.20180115120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${test_account1.name}"/>
+							<recur>
+								<add>
+									<rule freq="MON">
+										<interval ival="1"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>${task2.content}</content>
+					</mp>
+					<su>${task2.subject}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="calItemId" set="task2.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.task.id}">
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="75" status="INPR" allDay="0" name="${task3.subject}" loc="${task.location}">
+							<s d="${Time3}"/>
+							<e d="${Time4}"/>
+							<or a="${test_account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>${task3.content}</content>
+					</mp>
+					<su>${task3.subject}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="calItemId" set="task3.id"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="search_tasks_01" type="functional">
+	<t:objective> Search for task with attachment</t:objective>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="task">
+				<query>has:attachment</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:task[@id='${task1.id}']"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="search_tasks_02" type="functional">
+	<t:objective> Search for a task by subject</t:objective>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="task">
+				<query>${task2.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:task[@id='${task2.id}']"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="search_tasks_03" type="functional">
+	<t:objective> Search for task by content</t:objective>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="task">
+				<query>${task3.content}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:task[@id='${task3.id}']"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="search_tasks_04" type="functional">
+	<t:objective> Search in task folder and check whether all tasks are returned </t:objective>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="task">
+				<query>in:${globals.tasks}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:task[@id='${task1.id}']"/>
+			<t:select path="//mail:SearchResponse/mail:task[@id='${task2.id}']"/>
+			<t:select path="//mail:SearchResponse/mail:task[@id='${task3.id}']"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="search_tasks_05" type="functional" bugids="15005">
+	<t:objective> Search for a task with attachment and check for the attachment flag</t:objective>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="task">
+				<query>${task1.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:task[@id='${task1.id}']"/>
+			<t:select path="//mail:SearchResponse/mail:task" attr="f" match="a!"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="search_tasks_06" type="functional" bugids="15062">
+	<t:objective> Search for a recurring task and check for the recurrence flag</t:objective>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="task">
+				<query>${task2.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:task[@id='${task2.id}']"/>
+			<t:select path="//mail:SearchResponse/mail:task" attr="recur" match="1"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="search_tasks_07" type="functional" bugids="15981">
+	<t:objective>To verify that organizer of task is returned in the SearchResponse</t:objective>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="task">
+				<query>${task3.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:task[@id='${task3.id}']"/>
+			<t:select path="//mail:SearchResponse/mail:task/mail:or" attr="a" match="${test_account1.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="search_tasks_08" type="smoke" bugids="53484">
+	<t:objective></t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	<t:property name="Date1" value="${CURRDATE}"/>
+	<t:property name="task4.subject" value="subject1.${TIME}.${COUNTER}"/>
+	<t:property name="task4.reminder" value="${ICALTIME(+2m)}"/>
+	
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.task.id}">
+					<inv>
+						<comp allDay="1" name="${task4.subject}">
+							<s d="${Date1}"/>
+							<e d="${Date1}"/>
+							<alarm action="DISPLAY">
+								<trigger>
+								  <abs d="${task4.reminder}"/>
+								</trigger>
+								<desc>Reminder 1</desc>
+								 <repeat count="2" m="10"/>
+							 </alarm>
+						</comp>
+					</inv>
+					<su>${task4.subject}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="invId" set="task4.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="task">
+				<query>${task4.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:task[@invId='${task4.id}']"/>
+			<t:select path="//mail:SearchResponse/mail:task[@invId='${task4.id}']/mail:alarmData" attr="name" match="${task4.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:task[@invId='${task4.id}']/mail:alarmData/mail:alarm/mail:trigger/mail:abs" attr="d" match="${task4.reminder}.?"/>
+			
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

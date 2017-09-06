@@ -1,0 +1,172 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+		<t:test id="ping" required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="acctSetup" type="always">
+		<t:objective>Create test accounts</t:objective>
+		<t:steps>	1. Login to admin account
+					2. Create accounts        
+	    </t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'	set="account1.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'	set="account2.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+
+	<t:test_case testcaseid="bug60066" type="smoke" bugids="60066">
+		<t:objective>Indentity update in savde draft </t:objective>
+<t:property name="account1.datasource1.name" value="datasource${TIME}${COUNTER}"/>
+<t:property name="account1.folder1.name" value="folder${TIME}${COUNTER}"/>
+ 
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account1.folder1.name}" l="${inboxFolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse">
+            	<t:select path="//mail:folder" attr="id" set="account1.folder1.id"/>
+        	</t:select>
+        </t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<imap name="${IMAP.Gmail.username}" isEnabled="true" 
+					emailAddress="${IMAP.Gmail.username}" host="${IMAP.Gmail.hostname}" 
+					port="${IMAP.Gmail.port}" username="${IMAP.Gmail.username}" password="${IMAP.Gmail.password}"
+					l="${account1.folder1.id}" connectionType="ssl" pollingInterval="0" 
+					leaveOnServer="true" fromAddress="${account1.name}"/>
+			 </CreateDataSourceRequest>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:CreateDataSourceResponse">
+            	<t:select path="mail:imap" attr="id" set="datasource1.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount" />
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse/acct:identity[@name='DEFAULT']" attr="id" set="account1.identity.id"/>
+			</t:response>
+	</t:test>
+	
+	<t:test id="saveDraftRequest1a">
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m idnt="${account1.identity.id}">
+                    <e t="t" a="foo@example.com"/>
+                    <e t="f" a="${account1.name}"/>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+	
+	<t:test id="saveDraftRequest1a">
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m idnt="${datasource1.id}" id="${message1.id}">
+                    <e t="t" a="${account2.name}"/>
+                    <e t="f" a="${IMAP.Gmail.username}"/>
+                    <su>hello</su>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="idnt" match="${datasource1.id}"/>
+        </t:response>
+    </t:test>
+    
+      <t:test >
+      <t:request>
+        <GetMsgRequest xmlns="urn:zimbraMail">
+          <m id="${message1.id}"/>
+        </GetMsgRequest>
+      </t:request>
+      <t:response>
+      	<t:select path="//mail:GetMsgResponse/mail:m" attr="idnt" match="${datasource1.id}"/>
+      </t:response>
+      </t:test>
+ 
+ </t:test_case>
+
+
+
+</t:tests>

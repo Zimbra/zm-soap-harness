@@ -1,0 +1,778 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="account1.name"
+		value="sieve1.${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	<t:property name="subject1" value="sub1.${TIME}${COUNTER} test" />
+	<t:property name="subject2" value="sub2.${TIME}${COUNTER}" />
+	<t:property name="subject3" value="sub3.${TIME}${COUNTER} fail" />
+	<t:property name="subject4" value="sub4.${TIME}${COUNTER}" />
+	<t:property name="subject5" value="sub5.${TIME}${COUNTER}" />
+	<t:property name="subject6" value="sub6.${TIME}${COUNTER}" />
+	<t:property name="subject7" value="sub7.${TIME}${COUNTER}" />
+	<t:property name="subject8" value="sub8.${TIME}${COUNTER}" />
+
+	<t:property name="var4_expected" value="Demo test 123" />
+	<t:property name="var5_expected" value="sIEVE TEST" />
+
+	<t:property name="var_one" value="$\{var_one}" />
+	<t:property name="var_two" value="$\{var_two}" />
+	<t:property name="var3" value="$\{var_three}" />
+	<t:property name="var4" value="$\{var_four}" />
+	<t:property name="var5" value="$\{var_five}" />
+	<t:property name="var6" value="$\{var_six}" />
+	<t:property name="var7" value="$\{var_seven}" />
+	<t:property name="var8" value="$\{var_eight}" />
+
+	<t:property name="sieve_test1"
+		value='require ["log","fileinto","variables","tag"];	
+		set :lower :upper "var_one" "demo TEST 123";
+		if header :contains "Subject" "sub1"
+		{
+			log "Should not be logged in as ${var_one}";
+			fileinto "Junk";
+			tag "${var_one}";
+		}   
+' />
+
+	<t:property name="sieve_test2"
+		value='require ["log","fileinto","variables", "tag"];	
+		set :lowerfirst :upperfirst "var_two" "demo TEST 123";
+		if header :contains "Subject" "sub2"
+		{
+			log "Should not be logged in as ${var_two}";
+			fileinto "Junk";
+			tag "${var_two}";
+		}   
+' />
+
+	<t:property name="sieve_test3"
+		value='require ["log","fileinto","tag","variables"];	
+		set :length :upperfirst "var_three" "demo TEST 123";
+		if header :contains "Subject" "sub3"
+		{
+			log "Should be logged in as ${var3}";
+			tag "${var3}";
+			fileinto "Junk";
+		}   
+' />
+
+	<t:property name="sieve_test4"
+		value='require ["log","fileinto","tag","variables"];	
+		set :lower :upperfirst "var_four" "demo TEST 123";
+		if header :contains "Subject" "sub4"
+		{
+			log "Should be logged in as ${var4}";
+			tag "${var4}";
+			fileinto "Junk";
+		}   
+' />
+
+	<t:property name="sieve_test5"
+		value='require ["log","fileinto","tag","variables"];	
+		set :lowerfirst :upper "var_five" "Sieve Test";
+		if header :contains "Subject" "sub5"
+		{
+			log "Should be logged in as ${var5}";
+			tag "${var5}";
+			fileinto "Junk";
+		}   
+' />
+
+	<t:property name="sieve_test6"
+		value='require ["log","fileinto","tag","variables"];	
+		set :lowerfirst :length :upperfirst "var_six" "demo TEST 123";
+		if header :contains "Subject" "sub6"
+		{
+			log "Should be logged in as ${var6}";
+			tag "${var6}";
+			fileinto "Junk";
+		}   
+' />
+
+	<t:property name="sieve_test7"
+		value='require ["log","fileinto","tag","variables"];	
+		set :length :lower :length "var_seven" "demo TEST 123";
+		if header :contains "Subject" "sub7"
+		{
+			log "Should be logged in as ${var7}";
+			tag "${var7}";
+			fileinto "Junk";
+		}   
+' />
+
+	<t:property name="sieve_test8"
+		value='require ["log","fileinto","tag","variables"];	
+		set :length :lower :lower :lower "var_eight" "demo TEST 123";
+		if header :contains "Subject" "sub8"
+		{
+			log "Should be logged in as ${var8}";
+			tag "${var8}";
+			fileinto "Junk";
+		}   
+' />
+
+
+	<t:test_case testcaseid="AcctSetup1_Sieve"
+		type="smoke" bugids="zcs873">
+		<t:objective> Create test account and login to first account
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="name" set="account1.name" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+	    	<t:request>
+	            <GetServerRequest xmlns="urn:zimbraAdmin">
+					<server by="name">${zimbraServer.name}</server>
+				</GetServerRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
+	        </t:response>
+    	</t:test> 
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-873_Filter1" type="smoke"
+		bugids="ZCS-873">
+		<t:objective>Set a variable with match types of same precedence.
+			Message should not be tagged and filedInto Junk folder
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_1">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test1}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject1}</su>
+						<mp ct="text/plain">
+							<content>content 1</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Junk subject:${subject1}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject1}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-873_Filter2" type="smoke"
+		bugids="ZCS-873">
+		<t:objective>Set a variable with match types of same precedence.
+			Message should not be tagged and filedInto Junk folder
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_2">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test2}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject2}</su>
+						<mp ct="text/plain">
+							<content>content 2</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Junk subject:${subject2}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject2}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-873_Filter3" type="smoke"
+		bugids="ZCS-873">
+		<t:objective>Set a variable with match types of same precedence.
+			Message should not be tagged and filedInto Junk folder
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_3">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test3}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject3}</su>
+						<mp ct="text/plain">
+							<content>content 3</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message3.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Junk subject:${subject3}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="tn"
+					match="13" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-873_Filter4" type="smoke"
+		bugids="ZCS-873">
+		<t:objective>Set a variable with match types of different precedences.
+			Message should be tagged and filedInto Junk folder
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_4">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test4}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject4}</su>
+						<mp ct="text/plain">
+							<content>content 4</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message4.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Junk subject:${subject4}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="tn"
+					match="${var4_expected}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-873_Filter5" type="smoke"
+		bugids="ZCS-873">
+		<t:objective>Set a variable with match types of different precedences.
+			Message should be tagged and filedInto Junk folder
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_5">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test5}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject5}</su>
+						<mp ct="text/plain">
+							<content>content 5</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message5.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Junk subject:${subject5}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="tn"
+					match="${var5_expected}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-873_Filter6" type="smoke"
+		bugids="ZCS-873">
+		<t:objective>Set a variable with match types of same precedences.
+			Message should not be tagged and filedInto Junk folder
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_6">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test6}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject6}</su>
+						<mp ct="text/plain">
+							<content>content 6</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message6.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Junk subject:${subject6}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject6}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-873_Filter7" type="smoke"
+		bugids="ZCS-873">
+		<t:objective>Set a variable with match types of same precedences.
+			Message should not be tagged and filedInto Junk folder
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_7">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test7}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject7}</su>
+						<mp ct="text/plain">
+							<content>content 7</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message7.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Junk subject:${subject7}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject7}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	 <t:test_case testcaseid="ZCS-873_Filter8" type="smoke"
+		bugids="ZCS-873">
+		<t:objective>Set a variable with match types of same precedences.
+			Message should not be tagged and filedInto Junk folder
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_8">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test8}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject8}</su>
+						<mp ct="text/plain">
+							<content>content 8</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message8.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Junk subject:${subject8}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject8}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+</t:tests>
+	
+	
+	
+	
+	
+	

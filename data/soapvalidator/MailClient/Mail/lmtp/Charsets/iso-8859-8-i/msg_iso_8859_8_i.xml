@@ -1,0 +1,189 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="iso88598i${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message.folder" value="${testMailRaw.root}/charsets/iso-8859-8_i/"/>
+
+<!--  A message with an encoded content -->
+<t:property name="message01.subject" value="נסיון"/>
+<t:property name="message01.content" value="אם זה עבר אז לך קיבינימט"/>
+	
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>1. Login to admin.
+                  2. Create a test account.       
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailDefaultCharset">ISO-8859-7</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <foldername>${message.folder}</foldername>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="Charsets_iso_8859_8_i_01" type="smoke">
+    <t:objective>Verify account can receive iso 8859-8_i encoded content</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message01.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="id" set="message01.id"/>
+            </t:select>
+		</t:response>
+    </t:test>
+
+	<t:test >
+        <t:request> 
+            <GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${message01.id}"/>
+			</GetMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetMsgResponse">
+				<t:select path="//mail:m">
+					<t:select path="//mail:content" match="(?s).*${message01.content}.*"/>
+				</t:select>
+			</t:select> 
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message01.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Content-type" match="text/plain; charset=iso-8859-8-i"/>
+			<t:select attr="Content-transfer-encoding" match="quoted-printable"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="Charsets_iso_8859_8_i_02" type="smoke">
+    <t:objective>Verify account can receive iso 8859-8_i encoded subject</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>content:(${message01.content})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="id" set="message02.id"/>
+            </t:select>
+		</t:response>
+    </t:test>
+
+	<t:test >
+        <t:request> 
+            <GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${message02.id}"/>
+			</GetMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetMsgResponse">
+				<t:select path="//mail:m">
+					<t:select path="//mail:su" match=".*${message01.subject}"/>				
+				</t:select>
+			</t:select> 
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message02.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>	
+			<!--  Should match =?iso-8859-8-i?B?8PHp5e8=?= -->		
+			<t:select attr="Subject" match="=\?iso-8859-8-i\?B\?8PHp5e8=\?="/>			
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+</t:tests>

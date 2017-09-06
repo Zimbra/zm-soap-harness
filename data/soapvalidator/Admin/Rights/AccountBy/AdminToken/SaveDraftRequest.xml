@@ -1,0 +1,139 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct1_setup_AccountBy" type="always" >
+ <t:objective>create test accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<!-- Remember these values for later -->
+	<t:property name="authToken.admin" value="${authToken}"/>
+
+	
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+	<!-- account1 creates a conversation and gets the conversation ID -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request> 
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse">
+            	<t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account1.folder.drafts.id"/>
+            </t:select>
+        </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AccountBy_Admin_SaveDraftRequest_Basic01" type="smoke" >
+    <t:objective>Use an admin token with accountby to SaveDraftRequest</t:objective>
+    <t:steps>
+    1. Use admin authtoken with accountby=account1 to SaveDraftRequest - Success
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${zimbraServer.name}"/>
+
+    <t:test >
+		<t:requestContext>
+			<authToken>${authToken.admin}</authToken>
+
+			<account by="id">${account1.id}</account>
+		</t:requestContext>
+		<t:request>
+			<SaveDraftRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>Subject ${TIME} ${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>Content ${TIME} ${COUNTER}</content>
+					</mp>
+				</m>
+			</SaveDraftRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SaveDraftResponse">
+            	<t:select path="//mail:m" attr="id" match="${account1.id}:${regex.id}$"/>
+            	<t:select path="//mail:m" attr="l" match="${account1.id}:${account1.folder.drafts.id}"/>
+            </t:select>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+</t:tests>

@@ -1,0 +1,472 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account.password" value="${defaultpassword.value}"/>
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="firstName1" value="Fname1"/>
+<t:property name="firstName2" value="Fname2"/>
+<t:property name="firstName3" value="Fname3"/>
+<t:property name="firstName4" value="Fname4"/>
+<t:property name="firstName5" value="Fname5"/>
+<t:property name="firstName6" value="Fname6"/>
+<t:property name="firstName7" value="Fname7"/>
+<t:property name="firstName8" value="Fname8"/>
+<t:property name="firstName9" value="Fname9"/>
+<t:property name="firstName10" value="Fname10"/>
+<t:property name="firstName11" value="Fname11"/>
+<t:property name="firstName12" value="Fname12"/>
+<t:property name="firstName13" value="Fname13"/>
+<t:property name="firstName14" value="Fname14"/>
+<t:property name="firstName15" value="Fname15"/>
+
+<t:property name="lastName1" value="いちご"/>
+<t:property name="lastName2" value="イチゴ"/>
+<t:property name="lastName3" value="ｲﾁｺﾞ"/>
+<t:property name="lastName4" value="全角ひらがな"/>
+<t:property name="lastName5" value="全角カタカナ"/>
+<t:property name="lastName6" value="半角"/>
+<t:property name="lastName7" value="あああいちごいいい"/>
+<t:property name="lastName8" value="いちごいいい"/>
+<t:property name="lastName9" value="あああいちご"/>
+<t:property name="lastName10" value="アアアイチゴイイイ"/>
+<t:property name="lastName11" value="イチゴイイイ"/>
+<t:property name="lastName12" value="アアアイチゴ"/>
+<t:property name="lastName13" value="ｱｱｱｲﾁｺﾞｲｲｲ"/>
+<t:property name="lastName14" value="ｲﾁｺﾞｲｲｲ"/>
+<t:property name="lastName15" value="ｱｱｱｲﾁｺﾞ"/>
+<t:property name="email" value="email.${TIME}.${COUNTER}@domain.com"/>
+
+<t:property name="company.name" value="Company"/>
+<t:property name="notes" value="あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ContactsCreate_acctsetup1" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+             </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="ContactsCreate_acctlogin" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug48742_createcontacts" type="smoke" bugids="48742">
+    <t:objective>RFE: Find contacts by partial matches</t:objective>
+    <t:steps>
+     1. Creating New contacts which should do partial match for いちご, イチゴ and ｲﾁｺﾞ 
+    </t:steps>
+ 
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName1}"</a>
+                    <a n="lastName">"${lastName1}"</a>
+                    <a n="email">email1.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact1.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+
+ 	
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName2}"</a>
+                    <a n="lastName">"${lastName2}"</a>
+                    <a n="email">email2.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact2.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName3}"</a>
+                    <a n="lastName">"${lastName3}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact3.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName4}"</a>
+                    <a n="lastName">"${lastName4}"</a>
+                    <a n="nameSuffix">"いちご"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact4.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName5}"</a>
+                    <a n="lastName">"${lastName5}"</a>
+                    <a n="nameSuffix">"イチゴ"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact5.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+
+     
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName6}"</a>
+                    <a n="lastName">"${lastName6}"</a>
+                    <a n="nameSuffix">"ｲﾁｺﾞ"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact6.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName7}"</a>
+                    <a n="lastName">"${lastName7}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact7.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName8}"</a>
+                    <a n="lastName">"${lastName8}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact8.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName9}"</a>
+                    <a n="lastName">"${lastName9}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact9.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName10}"</a>
+                    <a n="lastName">"${lastName10}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact10.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName11}"</a>
+                    <a n="lastName">"${lastName11}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact11.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName12}"</a>
+                    <a n="lastName">"${lastName12}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact12.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName13}"</a>
+                    <a n="lastName">"${lastName13}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact13.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName14}"</a>
+                    <a n="lastName">"${lastName14}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact14.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">"${firstName15}"</a>
+                    <a n="lastName">"${lastName15}"</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact15.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+                                                            
+</t:test_case>
+
+<t:test_case testcaseid = "bug48742_search1" bugids="48742" type = "smoke">
+	<t:objective>Search contacts using "いちご" and all the 15 contacts should be displayed</t:objective>
+             
+		<t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
+	                <query>"いちご"</query>
+	            </SearchRequest>        
+	        </t:request>
+	        <t:response>
+	        	<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName1}"/>
+	        	<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName2}"/>
+	        	<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName3}"/>
+  	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName4}"/>
+  	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName5}"/>
+  	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName6}"/> 
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName7}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName8}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName9}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName10}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName11}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName12}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName13}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName14}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName15}"/>  	            
+	        </t:response>
+	    </t:test>
+	                
+</t:test_case>
+
+<t:test_case testcaseid = "bug48742_search2" bugids="48742" type = "smoke">
+	<t:objective>Search contacts using "イチゴ" and all the 15 contacts should be displayed</t:objective>
+             
+		<t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
+	                <query>"イチゴ"</query>
+	            </SearchRequest>        
+	        </t:request>
+	        <t:response>
+	        	<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName1}"/>
+	        	<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName2}"/>
+	        	<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName3}"/>
+  	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName4}"/>
+  	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName5}"/>
+  	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName6}"/> 
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName7}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName8}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName9}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName10}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName11}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName12}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName13}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName14}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName15}"/>  	            
+	        </t:response>
+	    </t:test>
+	                
+</t:test_case>
+
+<t:test_case testcaseid = "bug48742_search3" bugids="48742" type = "smoke">
+    <t:objective>Search contacts using "ｲﾁｺﾞ" and all the 15 contacts should be displayed</t:objective>
+             
+		<t:test>
+	        <t:request>
+	            <SearchRequest xmlns="urn:zimbraMail" types="contact" limit="20">
+	                <query>"ｲﾁｺﾞ"</query>
+	            </SearchRequest>        
+	        </t:request>
+	        <t:response>
+	        	<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName1}"/>
+	        	<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName2}"/>
+	        	<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName3}"/>
+  	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName4}"/>
+  	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName5}"/>
+  	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName6}"/> 
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName7}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName8}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName9}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName10}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName11}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName12}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName13}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName14}"/>
+	            <t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='firstName']" contains="${firstName15}"/>  	            
+	        </t:response>
+	    </t:test>
+	                
+</t:test_case>
+
+</t:tests>

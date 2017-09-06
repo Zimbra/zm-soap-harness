@@ -1,0 +1,195 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="root"                         value="${soapxml.root}/MailClient/Search/"/>
+<t:property name="SearchEncoded01.file"           value="${root}/Mime/SearchEncoded01.txt"/>
+<t:property name="SearchEncoded01.from"        value="SearchEncoded01.From@foo.com"/>
+<t:property name="SearchEncoded01.subject"        value="If you can read this you understand the example."/>
+<t:property name="SearchEncoded318.file"           value="${root}/Mime/SearchEncoded318.txt"/>
+<t:property name="SearchEncoded318.from"        value="SearchEncoded318.From@foo.com"/>
+
+
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+<t:test required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+ <t:objective>create test account</t:objective>
+
+<t:test required="true" >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAdmin">
+    <name>${admin.user}</name>
+    <password>${admin.password}</password>
+  </AuthRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+ </t:response>
+</t:test>
+
+<t:test required="true" >
+ <t:request>
+  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+    <name>${account1.name}</name>
+    <password>${defaultpassword.value}</password>
+  </CreateAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+       <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+<t:test_case testcaseid="SearchEncoded01" type="functional" bugids="22">
+	<t:objective> Verify that encoded headers can be searched for
+	</t:objective>
+
+
+	<t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${SearchEncoded01.file}</filename>
+                        <to>${account1.name}</to>
+                        <from>${SearchEncoded01.from}</from>
+                        <server>${test_acct.server}</server>
+		<modify>
+                        <header a="From">${SearchEncoded01.from}</header>
+		</modify>
+        </t:lmtpInjectRequest>
+	</t:mailinjecttest>
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account1.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>from:(${SearchEncoded01.from})</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="SearchEncoded01.id"/>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>subject:(${SearchEncoded01.subject})</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${SearchEncoded01.id}"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchEncoded_bug318" type="functional" bugids="318">
+	<t:objective> Verify that utf-7 can be searched for
+	</t:objective>
+	<t:steps>
+	1. Inject a message with utf-7 encoding
+	2. Search for the content, which is "Item 3 is -british pound-1"
+	</t:steps>
+	
+
+
+	<t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${SearchEncoded318.file}</filename>
+                        <to>${account1.name}</to>
+                        <from>${SearchEncoded318.from}</from>
+                        <server>${test_acct.server}</server>
+		<modify>
+                        <header a="From">${SearchEncoded318.from}</header>
+		</modify>
+        </t:lmtpInjectRequest>
+	</t:mailinjecttest>
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account1.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>from:(${SearchEncoded318.from})</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="SearchEncoded318.id"/>
+		<t:select path="//mail:SearchResponse/mail:m" attr="fr" set="Item 3 is £1."/>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>content:(Item 3 is £1)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${SearchEncoded318.id}"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>
+
+
+

@@ -1,0 +1,94 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="COS.name" value="testcos${TIME}${COUNTER}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_account.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Login to admin account </t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+            
+    <t:property name="admin.authToken" value="${authToken}"/>
+    
+    
+    <t:test id = "CreateCosRequest1a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="Cos.id"/>
+        </t:response>
+    </t:test>
+    
+     
+   
+
+</t:test_case>
+
+
+
+
+
+<t:test_case testcaseid="bug88686" type="smoke" >
+    <t:objective> Modify a COS and set zimbraFeatureCalendarEnabled = FALSE and verify if zimbraFeatureGroupCalendarEnabled is set to false automatically </t:objective>
+     <t:steps>1.Login to admin account
+             2. Create a cos
+             3. Set zimbraFeatureCalendarEnabled to False
+             4. Verify that zimbraFeatureGroupCalendarEnabled is automatically set to false
+    </t:steps>
+    
+    <t:test id="modifycosrequest2b">
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${Cos.id}</id>
+                <a n="zimbraFeatureCalendarEnabled">FALSE</a>
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${Cos.id}"/> 
+            <t:select path="//admin:a[@n='zimbraFeatureGroupCalendarEnabled']" match="FALSE"/>           
+        </t:response>
+    </t:test>
+    
+ 
+
+</t:test_case>
+
+
+
+</t:tests>
+

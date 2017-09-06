@@ -1,0 +1,499 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="change${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.server" value="NOT_DEFINED"/>
+<t:property name="account2.name" value="change${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.server" value="NOT_DEFINED"/>
+
+<t:property name="draft1.subject1" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="draft1.subject2" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="draft1.subject3" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="draft1.content1" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="draft1.content2" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="draft1.content3" value="content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="contact1.email1" value="email${TIME}.${COUNTER}@foo.com"/>
+<t:property name="contact1.email2" value="email${TIME}.${COUNTER}@foo.com"/>
+<t:property name="contact1.email3" value="email${TIME}.${COUNTER}@foo.com"/>
+
+<t:property name="appointment1.subject1" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="appointment1.subject2" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="appointment1.subject3" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="appointment1.location1" value="Location${TIME}.${COUNTER}"/>
+<t:property name="appointment1.location2" value="Location${TIME}.${COUNTER}"/>
+<t:property name="appointment1.location3" value="Location${TIME}.${COUNTER}"/>
+<t:property name="appointment1.content1" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="appointment1.content2" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="appointment1.content3" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="appointment1.start" value="${ICALTIME(+1h)}"/>
+<t:property name="appointment1.finish" value="${ICALTIME(+2h)}"/>
+<t:property name="TimeRangeStart" value="${TIME(-1d)}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+2d)}"/>
+
+<t:property name="wiki1.name" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="wiki1.content1" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="wiki1.content2" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="wiki1.content3" value="content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always">
+    <t:objective>Create test account</t:objective>
+    <steps>
+        1. Login to admin account
+        2. Create user accounts
+    </steps>
+
+    <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account2" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="smoke">
+    <t:objective>Login as the test account and get the folder list</t:objective>
+    <t:steps>
+        1. Login to test account
+        2. Get the list of default folders
+    </t:steps>
+
+    <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.draft"/>
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Context_Change_01" type="functional">
+    <t:objective>Verify MODIFY_CONFLICT response if change token and message id are the same for two different requests (SaveDraftRequest)</t:objective>
+    <t:steps>
+        1. Save a draft, record the new change token and message id
+        2. Save the draft again, using the new change token (success)
+        3. Save the draft again, using the same change token (MODIFY_CONFLICT)
+        4. Verify that the second save (step 2) remains
+    </t:steps>
+
+    <t:test >
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account1.name}'/>
+                    <su>${draft1.subject1}</su>
+                    <mp ct="text/plain">
+                        <content>${draft1.content1}</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="draft1.token"/>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+
+            <change token="${draft1.token}" type="new"></change>
+        </t:requestContext>
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m id="${draft1.id}">
+                    <e t="t" a='${account1.name}'/>
+                    <su>${draft1.subject2}</su>
+                    <mp ct="text/plain">
+                        <content>${draft1.content2}</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+
+            <change token="${draft1.token}" type="new"></change>
+        </t:requestContext>
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m id="${draft1.id}">
+                    <e t="t" a='${account1.name}'/>
+                    <su>${draft1.subject3}</su>
+                    <mp ct="text/plain">
+                        <content>${draft1.content3}</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.MODIFY_CONFLICT$"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${draft1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${draft1.id}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${draft1.subject2}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:content" match="${draft1.content2}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Context_Change_02" type="functional">
+    <t:objective>Verify MODIFY_CONFLICT response if change token and message id are the same for two different requests (ModifyContactRequest)</t:objective>
+    <t:steps>
+        1. Save a contact, record the new change token and message id
+        2. Modify the contact, using the new change token (success)
+        3. Modify the contact again, using the same change token (MODIFY_CONFLICT)
+        4. Verify that the second save (step 2) remains
+    </t:steps>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="email">${contact1.email1}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="contact1.token"/>
+            <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+
+            <change token="${contact1.token}" type="new"></change>
+        </t:requestContext>
+        <t:request>
+            <ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
+                <cn id="${contact1.id}">
+                    <a n="email">${contact1.email2}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+
+            <change token="${contact1.token}" type="new"></change>
+        </t:requestContext>
+        <t:request>
+            <ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
+                <cn id="${contact1.id}">
+                    <a n="email">${contact1.email3}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.MODIFY_CONFLICT$"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetContactsRequest xmlns="urn:zimbraMail">
+                <cn id="${contact1.id}"/>
+            </GetContactsRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//mail:GetContactsResponse/mail:cn/mail:a[@n="email"]' match="${contact1.email2}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="Context_Change_03" type="functional">
+    <t:objective>Verify INVITE_OUT_OF_DATE response if change token and message id are the same for two different requests (ModifyApptRequest)</t:objective>
+    <t:steps>
+        1. Save a appointment, record the new change token and message id
+        2. Modify the appointment, using the new change token (success)
+        3. Modify the appointment again, using the same change token (INVITE_OUT_OF_DATE)
+        4. Verify that the second save (step 2) remains
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject1}" loc="${appointment1.location1}">
+                        <s d="${appointment1.start}"/>  
+                        <e d="${appointment1.finish}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment1.content1}</content>
+                    </mp>
+                    <su>${appointment1.subject1}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+	
+	<t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>subject:"${appointment1.subject1}"</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:delay msec="1000"/>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject1}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="appointment1.token"/>
+            <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment1.subject1}']" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+
+            <change token="${appointment1.token}" type="new"></change>
+        </t:requestContext>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject2}" loc="${appointment1.location2}">
+                        <s d="${appointment1.start}"/>  
+                        <e d="${appointment1.finish}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment1.content2}</content>
+                    </mp>
+                    <su>${appointment1.subject2}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+
+            <change token="${appointment1.token}" type="new"></change>
+        </t:requestContext>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject3}" loc="${appointment1.location3}">
+                        <s d="${appointment1.start}"/>  
+                        <e d="${appointment1.finish}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment1.content3}</content>
+                    </mp>
+                    <su>${appointment1.subject3}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.MODIFY_CONFLICT$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject2}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt" attr="loc" match="${appointment1.location2}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Context_Change_04" type="deprecated" bugids="9152">
+    <t:objective>Verify MODIFY_CONFLICT response if change token and id are the same for two different requests (SaveWikiRequest)</t:objective>
+    <t:steps>
+        1. Save a wiki page, record the new change token and wiki id
+        2. Modify the wiki page, using the new change token (success)
+        3. Modify the wiki page again, using the same change token (MODIFY_CONFLICT)
+        4. Verify that the second save (step 2) remains
+    </t:steps>
+
+    <t:test >
+        <t:request>
+			<SaveWikiRequest xmlns="urn:zimbraMail">
+			  <w l="${folder.briefcase}" name="${wiki1.name}">${wiki1.content1}</w>
+			</SaveWikiRequest>
+        </t:request>
+        <t:response>
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="wiki1.token"/>
+            <t:select path="//mail:SaveWikiResponse/mail:w" attr="id" set="wiki1.id"/>
+            <t:select path="//mail:SaveWikiResponse/mail:w" attr="ver" set="wiki1.ver"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+
+            <change token="${wiki1.token}" type="new"></change>
+        </t:requestContext>
+        <t:request>
+			<SaveWikiRequest xmlns="urn:zimbraMail">
+			  <w id="${wiki1.id}" name="${wiki1.name}" ver="${wiki1.ver}" l="${folder.briefcase}">${wiki1.content2}</w>
+			</SaveWikiRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveWikiResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+
+            <change token="${wiki1.token}" type="new"></change>
+        </t:requestContext>
+        <t:request>
+			<SaveWikiRequest xmlns="urn:zimbraMail">
+			  <w id="${wiki1.id}" name="${wiki1.name}" ver="${wiki1.ver}" l="${folder.briefcase}">${wiki1.content3}</w>
+			</SaveWikiRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.MODIFY_CONFLICT$"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+			<GetWikiRequest xmlns="urn:zimbraMail">
+				<w id="${wiki1.id}"/>
+			</GetWikiRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetWikiResponse/mail:w">
+				<t:select attr="id" match="${wiki1.id}"/>
+				<t:select attr="body" match=".*${wiki1.content2}.*"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+
+</t:tests>

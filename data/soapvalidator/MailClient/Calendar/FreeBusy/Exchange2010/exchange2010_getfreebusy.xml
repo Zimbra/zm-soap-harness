@@ -1,0 +1,441 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="test${TIME}${COUNTER}"/>
+<t:property name="account1.domain1.user" value="test.${TIME}.${COUNTER}@${domain1.name}"/>
+<t:property name="domain2.name" value="test${TIME}${COUNTER}"/>
+<t:property name="account1.domain2.user" value="test.${TIME}.${COUNTER}@${domain2.name}"/>
+
+
+<t:property name="Exchange2010.hostname" value="10.137.242.162"/>
+<t:property name="Exchange2010.admin.username" value="administrator@zmexch.eng.vmware.com"/>
+<t:property name="Exchange2010.admin.password" value="z1mbr4Migration"/>
+<t:property name="Exchange2010.username" value="soapautomation@zmexch.eng.vmware.com"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+    
+	<t:test id="ping" required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+    
+</t:test_case>
+
+
+
+<t:test_case testcaseid="create new domains" type="always" >
+	<t:objective>Login to Admin Account</t:objective>
+    
+	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+                <a n="zimbraFreebusyExchangeURL">https://${Exchange2010.hostname}/EWS/Exchange.asmx</a>
+                <a n="zimbraFreebusyExchangeAuthUsername">${Exchange2010.admin.username}</a>
+                <a n="zimbraFreebusyExchangeAuthPassword">${Exchange2010.admin.password}</a>
+                <a n="zimbraFreebusyExchangeAuthScheme">basic</a>
+                <a n="zimbraFreebusyExchangeServerType">ews</a>
+                <a n="zimbraFreebusyExchangeUserOrg">/o=First Organization/ou=Exchange Administrative Group (FsadYDIBOHF23SPDLT)</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
+        </t:response>        
+    </t:test>
+    
+       <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain2.name}</name>
+              </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain2.id"/>
+        </t:response>        
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.domain1.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.domain1.server"/>
+        </t:response>
+    </t:test>
+ 
+     <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.domain2.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.domain2.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="deploy_exchange_certificate" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:staftask >
+		<t:request>
+			<server>local</server>
+			<service>FS</service>
+			<params>COPY FILE ${ZimbraQARoot}/data/TestMailRaw/cert/virgo.cer TOFILE /tmp/virgo.cer TOMACHINE ${zimbraServer.name}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra//bin/zmcertmgr addcacert /tmp/virgo.cer\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+	
+	<!-- Sleep for 5 minutes to wait for mbox to come up -->
+	<t:delay sec="60"/>
+	
+
+</t:test_case>
+
+<t:test_case testcaseid="Exchange2010_freebusy_basic_01" type="smoke" bugids="55090,74641,74091,54072" >
+    <t:objective>Get free busy of exchange user </t:objective>
+	<t:steps>
+	1. Configure domain with exchange free busy.
+    2. Login to zimbra user
+    3. Get Free busy of any exchange user
+    4. Verify it shows correct free busy status considering day light saving too.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.domain1.server}"/>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.domain1.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+        <t:test  >
+        <t:request>
+            <GetFreeBusyRequest xmlns="urn:zimbraMail" uid="${Exchange2010.username}" s="1423852200000" e="1424370600000" >
+            </GetFreeBusyRequest>
+        </t:request>
+        <t:response>
+        <!--  <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="s" match="1423852200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="e" match="1424163600000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:b" attr="s" match="1424163600000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:b" attr="e" match="1424167200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="s" match="1424167200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="e" match="1424275200000"/>  -->
+        
+          
+           <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="s" match="1423852200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="e" match="1424370600000"/>
+          
+          
+        </t:response>
+    </t:test>
+   </t:test_case> 
+   
+   <t:test_case testcaseid="Exchange2010_freebusy_basic_02" type="smoke" bugids="73359,78295" >
+    <t:objective>Free busy configuration on domain and globalConfig  </t:objective>
+	<t:steps>
+		1> Configure a server with two domains say domain1 and domain2.
+		2> Configure invalid FB settings in globalConfig and valid settings for domain1. Don't configure anything for domain2.
+		3> Restart the server.
+		4> Login as domain2 user and see if FB works. It should fails because the global settings has incorrect values.
+		5> Login as domain1 and see if FB work
+		6> Configure valid FB settings in globalConfig
+		7> Restart the server. 
+		8> Login as domain1 user and see if FB works
+		9> Login as domain2 user and see if FB works
+		
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.domain1.server}"/>
+
+	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraFreebusyExchangeURL">https://${Exchange2010.hostname}/EMSFK/Exchansssge.asmx</a>
+                <a n="zimbraFreebusyExchangeAuthUsername">${Exchange2010.admin.username}</a>
+                <a n="zimbraFreebusyExchangeAuthPassword">${Exchange2010.admin.password}</a>
+                <a n="zimbraFreebusyExchangeAuthScheme">basic</a>
+                <a n="zimbraFreebusyExchangeServerType">ews</a>
+                <a n="zimbraFreebusyExchangeUserOrg">/o=First Organization/ou=Exchange Administrative Group (FsadYDIBOHF23SPDLT)</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+	
+	<!-- Sleep for 5 minutes to wait for mbox to come up -->
+	<t:delay sec="60"/>
+	
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.domain2.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+        <t:test  >
+        <t:request>
+            <GetFreeBusyRequest xmlns="urn:zimbraMail" uid="${Exchange2010.username}" s="1423852200000" e="1424370600000" >
+            </GetFreeBusyRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="s" match="1423852200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="e" match="1424370600000"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.domain1.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+        <t:test  >
+        <t:request>
+            <GetFreeBusyRequest xmlns="urn:zimbraMail" uid="${Exchange2010.username}" s="1423852200000" e="1424370600000" >
+            </GetFreeBusyRequest>
+        </t:request>
+        <t:response>
+        <!-- <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="s" match="1423852200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="e" match="1424163600000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:b" attr="s" match="1424163600000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:b" attr="e" match="1424167200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="s" match="1424167200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="e" match="1424275200000"/> -->
+          
+          
+          
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="s" match="1423852200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="e" match="1424370600000"/>
+        </t:response>
+    </t:test>
+    
+    	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+		</t:test>
+    
+     <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraFreebusyExchangeURL">https://${Exchange2010.hostname}/EWS/Exchange.asmx</a>
+                <a n="zimbraFreebusyExchangeAuthUsername">${Exchange2010.admin.username}</a>
+                <a n="zimbraFreebusyExchangeAuthPassword">${Exchange2010.admin.password}</a>
+                <a n="zimbraFreebusyExchangeAuthScheme">basic</a>
+                <a n="zimbraFreebusyExchangeServerType">ews</a>
+                <a n="zimbraFreebusyExchangeUserOrg">/o=First Organization/ou=Exchange Administrative Group (FsadYDIBOHF23SPDLT)</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+	
+	<!-- 60 for 5 minutes to wait for mbox to come up -->
+	<t:delay sec="60"/>
+	
+	
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.domain2.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+        <t:test  >
+        <t:request>
+            <GetFreeBusyRequest xmlns="urn:zimbraMail" uid="${Exchange2010.username}" s="1423852200000" e="1424370600000" >
+            </GetFreeBusyRequest>
+        </t:request>
+        <t:response>
+        <!--  <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="s" match="1423852200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="e" match="1424163600000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:b" attr="s" match="1424163600000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:b" attr="e" match="1424167200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="s" match="1424167200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="e" match="1424275200000"/> -->
+         
+          
+           <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="s" match="1423852200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="e" match="1424370600000"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.domain1.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+        <t:test  >
+        <t:request>
+        <GetFreeBusyRequest xmlns="urn:zimbraMail" uid="${Exchange2010.username}" s="1423852200000" e="1424370600000" >
+            </GetFreeBusyRequest>
+        </t:request>
+        <t:response>
+        <!-- <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="s" match="1423852200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="e" match="1424163600000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:b" attr="s" match="1424163600000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:b" attr="e" match="1424167200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="s" match="1424167200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:f" attr="e" match="1424275200000"/> -->
+          
+          
+           <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="s" match="1423852200000"/>
+          <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${Exchange2010.username}']/mail:n" attr="e" match="1424370600000"/>
+        </t:response>
+    </t:test>
+    
+   </t:test_case> 
+   <t:finally>
+    	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+		</t:test>
+    
+     <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraFreebusyExchangeURL"></a>
+                <a n="zimbraFreebusyExchangeAuthUsername"></a>
+                <a n="zimbraFreebusyExchangeAuthPassword"></a>
+                <a n="zimbraFreebusyExchangeAuthScheme"></a>
+                <a n="zimbraFreebusyExchangeServerType"></a>
+                <a n="zimbraFreebusyExchangeUserOrg">/</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+   
+   <t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+	
+	<!-- Sleep for 5 minutes to wait for mbox to come up -->
+	<t:delay sec="60"/>
+	
+	
+   </t:finally>
+   
+</t:tests>

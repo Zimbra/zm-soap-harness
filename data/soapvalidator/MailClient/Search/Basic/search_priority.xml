@@ -1,0 +1,239 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+<t:test required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="acct01.name" value="acct01.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct02.name" value="acct02.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct01.dir" value="${testMailRaw.root}/priority"/>
+
+<t:test_case testcaseid="acct01 setup" type="always" >
+        <t:objective> setup acct01 </t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct01.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct01.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+		<foldername>${acct01.dir}</foldername>
+		<to>${acct01.name}</to>
+		<from>${nonZimbraUser.name}</from>
+		<server>${test_acct.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${acct01.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Search_Priority_01" type="smoke">
+ <t:objective>
+	Verify that a search with priority of mail returns the correct email meessage
+ </t:objective>
+ <t:steps>
+	email is sent to acct01 in the body of the message
+	Search for priority:low
+	check that the correct message is returned by checking the subject
+ </t:steps>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>priority:low</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^low_prioritymail"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Search_Priority_02" type="smoke">
+ <t:objective>
+	Verify that a search with priority of mail returns the correct email meessage
+ </t:objective>
+ <t:steps>
+	email is sent to acct01 in the body of the message
+	Search for priority:high
+	check that the correct message is returned by checking the subject
+ </t:steps>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>priority:high</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^high_prioritymail"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<!--t:test_case testcaseid="Search_Priority_03" type="smoke">
+ <t:objective>
+	Verify that a search with priority of task returns the correct task
+ </t:objective>
+ <t:steps>
+	create a task with priority=1
+	Search for priority:high
+	check that the correct task is returned by checking the subject
+ </t:steps>
+
+<t:property name="task1.subject" value="Subject of task${TIME}.${COUNTER}"/>
+<t:property name="task1.location" value="Location of task${TIME}.${COUNTER}"/>
+<t:property name="task1.content" value="Content of the task${TIME}.${COUNTER}"/>
+<t:property name="task2.subject" value="Subject of task${TIME}.${COUNTER}"/>
+<t:property name="task2.location" value="Location of task${TIME}.${COUNTER}"/>
+<t:property name="task2.content" value="Content of the task${TIME}.${COUNTER}"/>
+
+<t:property name="CurrentTime" value="${GENTIME}"/>
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.tasks}']" attr="id" set="account1.folder.task.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="CancelTaskRequest1a">
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.task.id}">
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="75" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
+							<s d="${Time1}"/>
+							<e d="${Time2}"/>
+							<or a="${acct01.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>${task1.content}</content>
+					</mp>
+					<su>${task1.subject}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="invId" set ="task1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="task">
+		   <query>priority:high</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:task" attr="name" match="${task1.subject}"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>	
+
+<t:test_case testcaseid="Search_Priority_04" type="smoke">
+ <t:objective>
+	Verify that a search with priority of task returns the correct task
+ </t:objective>
+ <t:steps>
+	create a task with priority=9
+	Search for priority:low
+	check that the correct task is returned by checking the subject
+ </t:steps>
+
+	<t:test id="CancelTaskRequest2a">
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.task.id}">
+					<inv method="REQUEST">
+						<comp priority="9" percentComplete="25" status="INPR" allDay="0" name="${task2.subject}" loc="${task2.location}">
+							<s d="${Time1}"/>
+							<e d="${Time2}"/>
+							<or a="${acct01.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>${task2.content}</content>
+					</mp>
+					<su>${task2.subject}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="invId" set ="task2.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="task">
+		   <query>priority:high</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:task" attr="name" match="${task2.subject}"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case-->
+
+</t:tests>
+

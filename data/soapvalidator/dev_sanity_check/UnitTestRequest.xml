@@ -1,0 +1,70 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- Make sure non-admin auth is not allowed to run tests -->
+
+<t:property name="uri" value="${mailclient.uri}"/>
+
+<t:test_case testcaseid="user_auth" type="always"  areas="dev_internal">
+    <t:objective>Login to user account </t:objective>
+
+    <t:test id="user_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${user1.user}</account>
+                <password>${user1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:property name="uri" value="${admin.uri}"/>
+
+<t:test_case testcaseid="RunUnitTestsRequest1" type="smoke" areas="dev_internal">
+  <t:objective>Make sure user is not allowed to run unit tests</t:objective>
+    <t:test id="runUnitTests">
+    <t:request>
+      <RunUnitTestsRequest xmlns="urn:zimbraAdmin"/>
+    </t:request>
+    <t:response>
+      <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.PERM_DENIED"/>
+    </t:response>
+  </t:test>
+</t:test_case>
+
+<!-- Do admin auth and run tests -->
+
+<t:test_case testcaseid="admin_auth" type="always"  areas="dev_internal" >
+    <t:objective>Login to admin account </t:objective>
+
+    <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="RunUnitTestsRequest2" type="smoke" areas="dev_internal">
+    <t:objective> Execute the internal Unit Tests </t:objective>
+
+	<t:test id="runUnitTests">
+	 <t:request>
+	  <RunUnitTestsRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:RunUnitTestsResponse" attr="numFailed" match="^0$"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>

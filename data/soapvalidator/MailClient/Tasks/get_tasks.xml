@@ -1,0 +1,181 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="task1.subject" value="Subject of task${TIME}.${COUNTER}"/>
+<t:property name="task1.location" value="Location of task${TIME}.${COUNTER}"/>
+<t:property name="task1.content" value="Content of the task${TIME}.${COUNTER}"/>
+
+<t:property name="CurrentTime" value="${GENTIME}"/>
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+	
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin"/>
+	        </t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse"/>
+			</t:response>
+		</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="get_task_acct_setup_01" type="always">
+	<t:objective>Create test accounts</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server1"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server2"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="get_task_acct_setup_02" type="always">
+	<t:objective>Login to First Account</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.tasks}']" attr="id" set="account1.folder.task.id"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="get_task_01" type="smoke">
+	<t:objective>To obtain the details of a task using GetTaskRequest</t:objective>
+	<t:steps>
+		1. Create a Task.
+        2. Give GetTaskRequest to obtain the details of the Task.
+	</t:steps>
+
+	<t:test id="GetTaskRequest1a">
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.task.id}">
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
+							<s d="${Time1}"/>
+							<e d="${Time2}"/>
+							<or a="${test_account1.name}"/>
+							<at role="REQ" a="${test_account2.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>${task1.content}</content>
+					</mp>
+					<su>${task1.subject}</su>
+					<e a="${test_account2.name}" t="t"/>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="invId" set ="task1.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test depends="GetTaskRequest1a">
+        <t:request> 
+            <GetTaskRequest  xmlns="urn:zimbraMail" id="${task1.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp" attr="name" match="${task1.subject}"/>
+            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp" attr="loc" match="${task1.location}"/>
+            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:s" attr="d" match="${Time1}"/>
+            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:e" attr="d" match="${Time2}"/>
+            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:or" attr="a" match="${test_account1.name}"/>
+            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:at" attr="a" match="${test_account2.name}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="get_task_02" type="functional">
+	<t:objective>To send GetTaskRequest with id of a canceled Task. It should get moved to trash.</t:objective>
+	<t:steps>
+		1. Cancel a task.
+        2. Give GetTaskRequest with id of the canceled task.
+	</t:steps>
+	
+	<t:test id="GetTaskRequest2a">
+		<t:request>
+			<CancelTaskRequest xmlns="urn:zimbraMail" id="${task1.id}" comp="0">
+			</CancelTaskRequest>
+		</t:request>
+        <t:response>
+            <t:select path = "//mail:CancelTaskResponse"/>
+        </t:response>
+	</t:test>
+
+    <t:test depends="GetTaskRequest2a">
+        <t:request> 
+            <GetTaskRequest  xmlns="urn:zimbraMail" id="${task1.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetTaskResponse/mail:task" attr="l" match="${account1.folder.trash.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

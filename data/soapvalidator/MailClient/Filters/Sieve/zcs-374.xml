@@ -1,0 +1,1150 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+	<t:property name="account1.name"
+		value="test1.${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account2.name"
+		value="test2.${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="subject01" value="subject1.${TIME}${COUNTER}" />
+	<t:property name="subject02" value="subject2.${TIME}${COUNTER}" />
+	<t:property name="subject03" value="subject3.${TIME}${COUNTER}" />
+	<t:property name="subject04" value="subject4.${TIME}${COUNTER}" />
+	<t:property name="subject05" value="subject5.SPAM" />
+
+	<t:property name="content01" value="content1.${TIME}${COUNTER}" />
+	<t:property name="content02" value="content2.${TIME}${COUNTER}" />
+	<t:property name="content03" value="content3.${TIME}${COUNTER}" />
+	<t:property name="content04" value="content4.${TIME}${COUNTER}" />
+	<t:property name="content05" value="content5.${TIME}${COUNTER}" />
+
+
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="AcctSetup1_filters_save" type="always">
+		<t:objective>create test accounts</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+					<domain by="name">${defaultdomain.name}</domain>
+				</GetDomainInfoRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetDomainInfoResponse/admin:domain"
+					attr="id" set="domain_id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="name" set="account1.name" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+<!-- Marking soap to sieve tests deprecated since they are removed from the code. They should be enabled once the code is added back -->
+	<t:test_case testcaseid="ZCS-374_Filter1" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for new Reject
+			action.
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter1.name" value="filter_name1${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter1.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionReject>This message should be rejected</actionReject>
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter1.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionReject"
+					contains="This message should be rejected" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject01}</su>
+						<mp ct="text/plain">
+							<content>${content01}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:${subject01}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject01}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter2" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for new Ereject
+			action.
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter2.name" value="filter_name2${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter2.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionEreject>Erejecting this message with ereject
+								</actionEreject>
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter2.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionEreject"
+					contains="Erejecting this message with ereject" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject02}</su>
+						<mp ct="text/plain">
+							<content>${content02}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:${subject02}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject02}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter3" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for new "Log"
+			filter action.
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter3.name" value="filter_name3${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter3.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionLog level="info">Should be printed in log file
+								</actionLog>
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter3.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionLog"
+					contains="Should be printed in log file" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionLog"
+					attr="level" match="info" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter4" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for new log and
+			reject filter action.
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter4.name" value="filter_name4${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter4.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionReject index="1">Rejecting this message
+								</actionReject>
+								<actionLog index="0" level="fatal">Log to be filed in
+								</actionLog>
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter4.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionReject"
+					contains="Rejecting this message" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionReject"
+					attr="index" match="1" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionLog"
+					attr="level" match="fatal" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionLog"
+					attr="index" match="0" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionLog"
+					contains="Log to be filed in" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject03}</su>
+						<mp ct="text/plain">
+							<content>${content03}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message3.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:${subject03}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject03}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-374_Filter5" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request with Reject,log and
+			tag in one script. Should throw error
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter5.name" value="filter_name5${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter5.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionEreject index="2">Erejecting this message
+								</actionEreject>
+								<actionLog index="1">Log to be filed in</actionLog>
+								<actionTag index="0" tagName="123" />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" contains="mail.NO_SUCH_TAG" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter6" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request with 2 rejects in
+			one script. Should throw error
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter6.name" value="filter_name6${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter6.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionReject index="1">Rejecting this message index 1
+								</actionReject>
+								<actionReject index="0">Rejecting this message index 0
+								</actionReject>
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" contains="PARSE_ERROR" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter7" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request with two Erejects
+			in one script. Should throw error
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter7.name" value="filter_name7${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter7.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionEreject index="1">ERejecting this message index
+									1
+								</actionEreject>
+								<actionEreject index="0">ERejecting this message index
+									0
+								</actionEreject>
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" contains="PARSE_ERROR" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter8" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for with one Reject
+			and one Ereject in one script. Should throw error
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter8.name" value="filter_name8${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter8.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionReject index="1">Rejecting this message index 1
+								</actionReject>
+								<actionEreject index="0">Erejecting this message index
+									0
+								</actionEreject>
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" contains="PARSE_ERROR" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter9" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for new reject and
+			log actions.
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter9.name" value="filter_name9${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter9.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionReject index="1">Rejecting this message
+								</actionReject>
+								<actionLog index="0" level="warn">Log to be filed in
+								</actionLog>
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter9.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionReject"
+					contains="Rejecting this message" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionLog"
+					attr="level" match="warn" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionLog"
+					contains="Log to be filed in" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject04}</su>
+						<mp ct="text/plain">
+							<content>${content04}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message4.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:${subject04}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject04}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter10" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for new filter
+			actions in Admin namespace
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter10.name" value="filter_name10.${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+					type="before">
+					<domain by="name">${defaultdomain.name}</domain>
+					<filterRules>
+						<filterRule name="${filter10.name}" active="1">
+							<filterTests condition="anyof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionReject>Rejecting this message</actionReject>
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+					type="before">
+					<domain by="name">${defaultdomain.name}</domain>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule"
+					attr="name" match="${filter10.name}" />
+				<t:select
+					path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule//mail:actionReject"
+					contains="Rejecting this message" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+					type="before">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule"
+					attr="name" match="${filter10.name}" />
+				<t:select
+					path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule//mail:actionReject"
+					contains="Rejecting this message" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter11" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for log action with
+			invalid log level.
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter11.name" value="filter_name11${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter11.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionLog index="0" level="XYZ">Incorrect log level
+								</actionLog>
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter11.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionLog"
+					attr="level" match="XYZ" emptyset="1" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:actionLog"
+					contains="Incorrect log level" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+
+
+	<t:test_case testcaseid="ZCS-374_Filter12" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for new Reject
+			action with empty message.
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter12.name" value="filter_name12${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter12.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionReject></actionReject>
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Text" contains="Empty reject action" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-374_Filter13" type="deprecated"
+		bugids="ZCS-374">
+		<t:objective>Execute Modify and Get Filter Request for new Ereject
+			action with empty message.
+		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter13.name" value="filter_name13${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter13.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<addressTest header="from" stringComparison="is"
+									value="${admin.user}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionEreject></actionEreject>
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Text" contains="Empty ereject action" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+
+
+	<t:finally>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+					<id>${domain_id}</id>
+					<a n="zimbraAdminSieveScriptBefore" />
+					<a n="zimbraAdminSieveScriptAfter" />
+				</ModifyDomainRequest>
+			</t:request>
+		</t:test>
+
+	</t:finally>
+
+</t:tests>

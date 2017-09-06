@@ -1,0 +1,739 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account5.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account6.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account7.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account8.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="op.delete" value="delete"/>
+
+<t:property name="test_account.password" value="test123"/>
+
+<t:property name="message.subject2" value="Subject2${TIME}.${COUNTER}"/>
+<t:property name="message.content2" value="content of the second message${TIME}.${COUNTER}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="conversation_draft_setup" type="always">
+    <t:objective>Create test accounts</t:objective>
+    <steps>
+        1. Login to admin account
+        2. Create user accounts
+    </steps>
+
+    <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test  required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+    
+     <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account5.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account6.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account7.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account8.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct8.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+
+<t:test_case testcaseid="SaveConvDraftRequest1" type="smoke" bugids="21040">
+    <t:objective>Saved draft reply of a conversation should show up in conversation search result </t:objective>
+    
+    <t:steps>
+        1. Account 1 send an email to account 2(message1)
+        2. Account 2 forward back to account2(message2)
+        3. Account 1 get the conversation id       
+        4  Save draft reply with original id(message1).
+        5. Search for the conversation.
+        6. Conversation should have(saved draft).
+    </t:steps>
+
+ 	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account2.name}'/>
+                    <su> ${message.subject2} </su>
+                    <mp ct="text/plain">
+                        <content> ${message.content2}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    
+    <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message1.id}" rt="w">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su> Fwd: ${message.subject2}</su>
+                    <mp ct="text/plain">
+                        <content> $ Forwarded content : {message.content2}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id2"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+ 	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:inbox</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m origid="${message.id2}" rt="r">
+                    <e t="t" a='${test_account1.name}'/>
+                    <su> Re: ${message.subject2} </su>
+                    <mp ct="text/plain">
+                        <content> Replied content ${message.content2}</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
+        </t:response>
+    </t:test>    
+    
+    <t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${conv.id}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetConvResponse">
+				<t:select path="//mail:m[@id='${draft1.id}']"/>
+			</t:select>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${draft1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" />
+		</t:response>
+    </t:test> 	
+    
+</t:test_case>
+
+<t:test_case testcaseid="SaveConvDraftRequest2" type="functional" bugids="21040">
+    <t:objective>Delete the parent message of the conversation but conversation will have saved draft reply </t:objective>
+    
+    <t:steps>
+        1. Account 3 send an email to account 4(message3)
+        2. Account 4 forward back to account3(message4)
+        3. Account 3 get the conversation id
+        4. Delete the message 3.
+        5  Save draft reply with original id(message3).
+        6. Search for the conversation.
+        7. Conversation should have(saved draft).
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+	
+	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account4.name}'/>
+                    <su> ${message.subject2} </su>
+                    <mp ct="text/plain">
+                        <content> ${message.content2}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message3.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+    
+    <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account4.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message1.id}" rt="w">
+                    <e t="t" a="${test_account3.name}"/>
+                    <su> Fwd: ${message.subject2}</su>
+                    <mp ct="text/plain">
+                        <content> $ Forwarded content : {message.content2}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message4.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+ 	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:inbox</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv1.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message3.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>    
+	
+    <t:test>
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m origid="${message3.id}" rt="r">
+                    <e t="t" a='${test_account4.name}'/>
+                    <su> Re: ${message.subject2} </su>
+                    <mp ct="text/plain">
+                        <content> Replied content ${message.content2}</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft2.id"/>
+        </t:response>
+    </t:test>    
+    
+    <t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${conv.id}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetConvResponse">
+				<t:select path="//mail:m[@id='${draft2.id}']"/>
+			</t:select>
+		</t:response>
+	</t:test>    
+       
+</t:test_case>
+
+<t:test_case testcaseid="SaveConvDraftRequest3" type="functional" bugids="21040">
+    <t:objective>Conversation should contain saved draft reply with same subject and  with or without original id</t:objective>
+    
+    <t:steps>
+        1. Account 5 send an email to account 6
+        2. Account 6 forward back to account 5
+        3. Account 5 get the conversation id
+        4. Save draft reply with same subject and without providing original id(draft3).
+        5  Save draft reply with original id(draft4).
+        6. Search for the conversation.
+        7. Conversation should have(draft3 and draft4).
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+
+	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account5.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account6.name}'/>
+                    <su> ${message.subject2} </su>
+                    <mp ct="text/plain">
+                        <content> ${message.content2}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message5.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
+    
+    <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account6.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message1.id}" rt="w">
+                    <e t="t" a="${test_account5.name}"/>
+                    <su> Fwd: ${message.subject2}</su>
+                    <mp ct="text/plain">
+                        <content> $ Forwarded content : {message.content2}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message6.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+
+ 	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account5.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:inbox</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv3.id"/>
+		</t:response>
+	</t:test>
+	
+    <t:test>
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m >
+                    <e t="t" a='${test_account6.name}'/>
+                    <su> Re: ${message.subject2} </su>
+                    <mp ct="text/plain">
+                        <content> Replied content ${message.content2}</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft3.id"/>
+        </t:response>
+    </t:test>    
+    
+    <t:test>
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m origid="${message5.id}" rt="r">
+                    <e t="t" a='${test_account6.name}'/>
+                    <su> Re: ${message.subject2} </su>
+                    <mp ct="text/plain">
+                        <content> Replied content ${message.content2}</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft4.id"/>
+        </t:response>
+    </t:test>    
+    
+    <t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${conv3.id}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetConvResponse/mail:c/mail:m" attr="id" match="${draft4.id}">				
+			</t:select>
+		</t:response>
+	</t:test>    
+       
+</t:test_case>
+
+<t:test_case testcaseid="SaveConvDraftRequest4" type="smoke" bugids="21040">
+    <t:objective>Conversation should not contain  draft with changed subject and without original id. Conversation does contain  draft with changed subject but with original id. </t:objective>
+    
+    <t:steps>
+        1. Account 7 send an email to account 8
+        2. Account 8 forward back to account 7
+        3. Account 7 get the conversation id
+        4. Save draft with chnaged subject (draft3.id).
+        5  Save draft reply with original id but change subject (draft4.id).
+        6. Search for the conversation.
+        7. Conversation should not have draft3 but draft4.
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
+
+	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account7.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account8.name}'/>
+                    <su> ${message.subject2} </su>
+                    <mp ct="text/plain">
+                        <content> ${message.content2}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message7.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct8.server}"/>
+    
+    <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account8.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message7.id}" rt="w">
+                    <e t="t" a="${test_account7.name}"/>
+                    <su> Fwd: ${message.subject2}</su>
+                    <mp ct="text/plain">
+                        <content> $ Forwarded content : {message.content2}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message8.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
+
+ 	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account7.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:inbox</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv4.id"/>
+		</t:response>
+	</t:test>
+	
+    <t:test>
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m >
+                    <e t="t" a='${test_account8.name}'/>
+                    <su> new subject </su>
+                    <mp ct="text/plain">
+                        <content> Replied content ${message.content2}</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft5.id"/>
+        </t:response>
+    </t:test>    
+    
+    <t:test>
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m origid="${message7.id}" rt="r">
+                    <e t="t" a='${test_account8.name}'/>
+                    <su> New subject </su>
+                    <mp ct="text/plain">
+                        <content> Replied content ${message.content2}</content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft6.id"/>
+        </t:response>
+    </t:test>    
+    
+    <t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${conv4.id}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetConvResponse/mail:c/mail:m" attr="id" match="${draft6.id}"/>
+			<t:select path="//mail:GetConvResponse/mail:c/mail:m" attr="id" match="${draft5.id}" emptyset="1"/>			
+		</t:response>
+	</t:test>    
+       
+</t:test_case>
+</t:tests>
+
+

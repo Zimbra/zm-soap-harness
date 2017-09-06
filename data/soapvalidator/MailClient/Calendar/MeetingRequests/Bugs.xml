@@ -1,0 +1,344 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="uploadFile.name" value="${testMailRaw.root}/bug26705/bug26705.txt"/>
+<t:property name="appt.subject" value="Tuesday Today"/>
+
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.uploadFolder.name" value="${testMailRaw.root}/Bugs/38387"/>
+<t:property name="account2.appt.subject" value="subjecttest12436381386522"/>
+
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug26705" type="smoke" areas="Calendar" bugids="26705">
+    <t:objective> Verify spam email with calendar invite ics attachment should not update calendar </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="uploadServletServer" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inbox.id"/>
+        </t:response>
+    </t:test>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${uploadFile.name}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+            <modify>
+                <header a="To">${account1.name}</header>
+                <header a="From">${nonZimbraUser.name}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="1207506600000" calExpandInstEnd="1207938600000">
+				<query>${appt.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appt.subject}" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Bug38387" type="functional" areas="Calendar" bugids="38387">
+    <t:objective> Verify reply does not include com.zimbra.cs.store.BlobInputStream@22838de0 as body text (Mobile Sync) </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="uploadServletServer" value="${account2.server}"/>
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${account2.uploadFolder.name}</foldername>
+			<to>${account2.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account2.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" >
+				<query>subject:(${account2.appt.subject})</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="id" set="account2.message.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail" >
+				<m id="${account2.message.id}"/>
+			</GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="Bug26472" type="functional" areas="Calendar,noncluster" bugids="26472">
+    <t:objective> Verify bug 26472 - rsvp changed from 0 to 1 after script is executed</t:objective>
+    <t:steps>
+    1. Login as account3
+    2. Create an appointment with RSVP=0
+    3. Stop mailbox
+    4. Execute fixup20080410-SetRsvpTrue.pl
+    5. Start mailbox
+    6. Verify appointment contains RSVP=1
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content${TIME}.${COUNTER}"/>
+
+	<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+	<t:property name="timezone.pst.regex" value="America\/Los_Angeles"/>
+	<t:property name="time.20190101120000.gmt" value="1546344000000"/>
+	<t:property name="time.20190101120000.pst" value="${TIME(-8h)[${time.20190101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+							<or a="${account3.name}"/>
+							<at a="${account1.name}" role="REQ" ptst="NE" rsvp="0"/>
+							<s d="${ICALTIME[${time.20190101120000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+1h)[${time.20190101120000.pst}]}" tz="${timezone.pst}" />
+						</comp>
+					</inv>
+					<e a="${account1.name}" t="t"/>
+					<e a="${account3.name}" t="f"/>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="invId" set="account3.appt1.invId"/>
+            	<!--<t:select attr="id" set="account3.message.id"/>  -->
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account3.appt1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="rsvp" match="0"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${account3.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl stop\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmailboxdctl}</params>
+		</t:request>
+	</t:staftask>
+
+	<t:staftask >
+		<t:request>
+			<server>${account3.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'(cd /opt/zimbra/libexec/scripts/; ./fixup20080410-SetRsvpTrue.pl)\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmailboxdctl}</params>
+		</t:request>
+	</t:staftask>
+
+	<t:staftask >
+		<t:request>
+			<server>${account3.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl start\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmailboxdctl}</params>
+		</t:request>
+	</t:staftask>
+
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account3.appt1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:comp" attr="rsvp" match="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    
+</t:test_case>
+
+
+
+
+
+
+
+</t:tests>
+

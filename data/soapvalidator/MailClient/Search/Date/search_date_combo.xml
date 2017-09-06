@@ -1,0 +1,127 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+<t:test required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account02.name" value="account02.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account02.password" value="${defaultpassword.value}"/>
+<t:property name="account02.dir" value="${testMailRaw.root}/email02"/>
+
+
+<t:test_case testcaseid="account02 setup" type="always" >
+        <t:objective> setup account02 </t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account02.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account02.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+		<foldername>${account02.dir}</foldername>
+		<to>${account02.name}</to>
+		<from>${nonZimbraUser.name}</from>
+		<server>${test_acct.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
+	<t:objective> Login as the appropriate test account
+	</t:objective>
+
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account02.name}</account>
+	    <password>${account02.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="date_combo_SearchRequest1" type="functional" bugids="2254" >
+ <t:objective>
+	Verify that a search before:X and after:Y finds all messages inbetween
+ </t:objective>
+ <t:steps>
+	email is sent to search in the body of the message
+	Search for after:5/22/2005 and before:6/10/2005
+	check that the correct message is returned by checking the subject
+ </t:steps>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>after:5/22/2005 before:6/6/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email02B$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+</t:tests>
+

@@ -1,0 +1,845 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.reply" value="reply content"/>
+
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.reply" value="reply content"/>
+
+<t:property name="account4.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message1.subject" value="subject1.${TIME}.${COUNTER}"/>
+<t:property name="message1.content" value="content1.${TIME}.${COUNTER}"/>
+
+<t:property name="message2.subject" value="subject2.${TIME}.${COUNTER}"/>
+<t:property name="message2.content" value="content2.${TIME}.${COUNTER}"/>
+
+<t:property name="message3.subject" value="subject3.${TIME}.${COUNTER}"/>
+<t:property name="message3.content" value="content3.${TIME}.${COUNTER}"/>
+
+<t:property name="message4.subject" value="subject4.${TIME}.${COUNTER}"/>
+<t:property name="message4.content" value="content5.${TIME}.${COUNTER}"/>
+
+<t:property name="message5.subject" value="subject5.${TIME}.${COUNTER}"/>
+<t:property name="message5.content" value="content5.${TIME}.${COUNTER}"/>
+
+<t:property name="message6a.subject" value="subject6a.${TIME}.${COUNTER}"/>
+<t:property name="message6a.content" value="content6a.${TIME}.${COUNTER}"/>
+<t:property name="message6b.subject" value="subject6b.${TIME}.${COUNTER}"/>
+<t:property name="message6b.content" value="content6b.${TIME}.${COUNTER}"/>
+
+<t:property name="message7.subject" value="subject7.${TIME}.${COUNTER}"/>
+<t:property name="message7.content" value="content7.${TIME}.${COUNTER}"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<!-- authentication -->
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!-- Login as the admin to get an auth token -->
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>create test account</t:objective>
+	<t:steps>1. Login to admin.
+			2. Create a test account.
+	</t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
+                <pref name="zimbraPrefOutOfOfficeReply">${account1.reply}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="OutOfOfficeBasic01" type="smoke" >
+    <t:objective>Verify that an out of office setting send automatic response</t:objective>
+    <t:steps>
+	1. Login to Account2.
+	2. Send mail from Account2 to Account1.
+	3. Verify that the OOO reply is received at Account2
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+		<e t="t" a='${account1.name}'/>
+		<su> ${message1.subject} </su>
+		<mp ct="text/plain">
+		    <content>${message1.content}</content>
+		</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+        <t:delay sec="60"/>
+        
+        <t:test>
+         <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+           <query>subject:(${message1.subject})</query>
+           </SearchRequest>
+         </t:request>
+          <t:response>
+                <t:select path="//mail:SearchResponse/mail:m[@l='2']" attr="id" set="message1.inbox"/> 
+         </t:response>
+        </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.inbox}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp">
+			<t:select attr="content" match="(?s)${account1.reply}.*"/>
+		</t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="OutOfOfficeBasic02" type="functional" >
+    <t:objective>Verify that the OOO account still receives the original message</t:objective>
+    <t:steps>
+	1. Login to Account2.
+	2. Send mail from Account2 to Account1.
+	3. Login to Account1.  Verify that the message is received by Account1.
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+		<e t="t" a='${account1.name}'/>
+		<su> ${message2.subject} </su>
+		<mp ct="text/plain">
+		    <content>${message2.content}</content>
+		</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+        <t:test>
+         <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+           <query>subject:(${message2.subject})</query>
+           </SearchRequest>
+         </t:request>
+          <t:response>
+                <t:select path="//mail:SearchResponse/mail:m[@l='2']" attr="id" set="message2.id"/> 
+         </t:response>
+        </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message2.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp">
+			<t:select attr="content" match="(?s)${message2.content}.*"/>
+		</t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="OutOfOfficeBasic03" type="functional" >
+    <t:objective>Verify that an out of office setting does not save the automatic reply in the Sent folder</t:objective>
+    <t:steps>
+	3. Login to Account2.
+	4. Send mail from Account2 to Account1.
+	6. Login to Account1.  Verify that the automatic message is not saved in the Sent folder
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+		<e t="t" a='${account1.name}'/>
+		<su>${message3.subject}</su>
+		<mp ct="text/plain">
+		    <content>${message3.content}</content>
+		</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+        <t:test>
+         <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+           <query>subject:(${message1.subject}) in:Sent</query>
+           </SearchRequest>
+         </t:request>
+          <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+         </t:response>
+        </t:test>
+
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="OutOfOfficeBasic04" type="functional" >
+    <t:objective>Verify that sending yourself a message when you are OOO results in you receiving an automatic reply</t:objective>
+    <t:steps>
+	1. Login to Account1.
+	2. Send mail from Account1 to Account1.
+	3. Verify that Account1 receives the automatic reply
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+		<e t="t" a='${account1.name}'/>
+		<su>${message4.subject}</su>
+		<mp ct="text/plain">
+		    <content>${message4.content}</content>
+		</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+<!-- Verify Sent Message -->
+        <t:test>
+         <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(${message4.subject}) in:sent</query>
+           </SearchRequest>
+         </t:request>
+          <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message4.sent"/>
+         </t:response>
+        </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message4.sent}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp">
+			<t:select attr="content" match="(?s)${message4.content}.*"/>
+		</t:select>
+        </t:response>
+    </t:test>
+
+<!-- Verify OOO Message -->
+
+	<t:delay sec="60"/>
+	
+        <t:test>
+         <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(${message4.subject}) in:inbox content:(${account3.reply})</query>
+           </SearchRequest>
+         </t:request>
+          <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message4.reply"/>
+         </t:response>
+        </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message4.reply}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp">
+			<t:select attr="content" match="(?s)${account3.reply}.*"/>
+		</t:select>
+        </t:response>
+    </t:test>
+    
+<!-- Verify received Message -->
+        <t:test>
+         <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(${message4.subject}) in:inbox content:(${message4.content})</query>
+           </SearchRequest>
+         </t:request>
+          <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message4.inbox"/>
+         </t:response>
+        </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message4.inbox}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp">
+			<t:select attr="content" match="(?s)${message4.content}.*"/>
+		</t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="OutOfOfficeBasic05" type="functional" >
+    <t:objective>Verify that sending yourself a message won't result in an infinite loop</t:objective>
+    <t:steps>
+	1. Login to Account1.
+	2. Send mail from Account1 to Account1.
+	3. Verify that the system doesn't continue to send mails over and over
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+		<e t="t" a='${account1.name}'/>
+		<su>${message5.subject}</su>
+		<mp ct="text/plain">
+		    <content>${message5.content}</content>
+		</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+	<!-- The Server CPU will spin, if an infinite loop occurs -->
+	<!-- TODO: Need to add a check for max forwards on the mail -->
+
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="OutOfOfficeBasic06" type="smoke" >
+    <t:objective>Verify that an out of office setting can be turned off </t:objective>
+    <t:steps>
+	1. Login to Account3.
+	2. Turn on OOO message
+	3. Login to Account2.
+	4. Send mail from Account2 to Account3.
+	5. Verify automatic reply is received
+	6. Login to Account3.
+	7. Turn off OOO message
+	8. Login to Account2.
+	9. Send mail from Account2 to Account3.
+	10. Verify automatic reply is NOT received
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
+                <pref name="zimbraPrefOutOfOfficeReply">${account1.reply}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+		<e t="t" a='${account3.name}'/>
+		<su>${message6a.subject}</su>
+		<mp ct="text/plain">
+		    <content>${message6a.content}</content>
+		</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+        <t:delay sec="60"/>
+        
+        <t:test>
+         <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+           <query>subject:(${message6a.subject}) in:inbox</query>
+           </SearchRequest>
+         </t:request>
+          <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${account3.reply}"/>
+         </t:response>
+        </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefOutOfOfficeReplyEnabled">FALSE</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+		<e t="t" a='${account3.name}'/>
+		<su>${message6b.subject}</su>
+		<mp ct="text/plain">
+		    <content>${message6b.content}</content>
+		</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+        <t:test>
+         <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+           <query>subject:(${message6b.subject}) in:inbox</query>
+           </SearchRequest>
+         </t:request>
+          <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+         </t:response>
+        </t:test>
+
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="OutOfOfficeBasic07" type="functional" >
+    <t:objective>Verify that an out of office reply content setting can be null </t:objective>
+    <t:steps>
+	1. Login to Account4.
+	2. Turn on OOO message (but don't set a reply content)
+	3. Login to Account2.
+	4. Send mail from Account2 to Account3.
+	5. Verify automatic reply is received
+    </t:steps>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:test >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m>
+		<e t="t" a='${account4.name}'/>
+		<su>${message7.subject}</su>
+		<mp ct="text/plain">
+		    <content>${message7.content}</content>
+		</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse"/>
+	   </t:response>
+	</t:test>
+
+        <t:test>
+         <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="message">
+           <query>subject:(${message7.subject})</query>
+           </SearchRequest>
+         </t:request>
+          <t:response>
+                <t:select path="//mail:SearchResponse/mail:m[@l='2']" attr="id" set="message7.inbox"/> 
+         </t:response>
+        </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message7.inbox}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="content" match=""/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+</t:tests>

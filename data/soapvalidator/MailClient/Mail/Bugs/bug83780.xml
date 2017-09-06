@@ -1,0 +1,83 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="test_account.name" value="testAccount1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account.password" value="test123"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="testcase_setup" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+               <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test id="create_test_account" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account.name}</name>
+                <password>${test_account.password}</password>
+                
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account.server"/>
+        </t:response>
+	 </t:test>
+ </t:test_case>   
+    
+    <t:test_case testcaseid="bug83780" type="smoke" bugids="83780">
+    <t:objective>Test that zimbraAttachmentsViewInHtmlOnly is returned in GetInfoResponse</t:objective>
+    <t:steps>1. Login to test_account
+             2. Send GetInfoRequest.
+             3. Check zimbraAttachmentsViewInHtmlOnly is returned in GetInfoResponse.                    
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_account.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account.name}</account>
+                <password>${test_account.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount" sections="attrs" />		
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetInfoResponse/acct:attrs/acct:attr[@name='zimbraAttachmentsViewInHtmlOnly']" />
+			<t:select path="//acct:GetInfoResponse/acct:attrs/acct:attr[@name='zimbraAttachmentsViewInHtmlOnly']" match="FALSE"/>
+		</t:response>
+    </t:test>
+
+
+</t:test_case>
+
+</t:tests>

@@ -1,0 +1,715 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.name" value="source.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="redirect1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="redirect2.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_filters_action_redirect_basic" type="always" >
+    <t:objective> Create test account and login to first account </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account0.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account0.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="Filters_Redirect_01" type="smoke" bugids="41693">
+    <t:objective>Create Rules with different action="redirect" to zimbra account </t:objective>
+	<t:steps>
+              1. Login to account1
+			  2. Add rule "action"-> redirect ... to Account2 
+			  3. Send a mail 
+			  4. Login to Account1.  Verify no message
+			  5. Login to Account2.  Verify message is received
+    </t:steps>
+ 
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:property name="message1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+    <t:property name="message1.subject" value="email01A"/>
+
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionRedirect a="${account2.name}" />
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su>${message1.subject}</su>
+					<mp ct="text/plain">
+						<content>Content</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message0.id"/>
+		</t:response>
+	</t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message1.subject}) is:anywhere</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${message1.subject}"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Filters_Redirect_02" type="smoke" bugids="15265">
+    <t:objective>Create Rules with different action="redirect" to a deleted zimbra account </t:objective>
+	<t:steps>
+              1. Login to account3
+			  2. Add rule "action"-> redirect ... to "Junk" 
+			  3. Send a mail 
+			  4. Login to Account3.  Verify message in inbox
+    </t:steps>
+ 
+	<t:property name="account3.name" value="redirect3.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+	    </t:response>
+    </t:test>
+
+
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:property name="message3.file" value="${testMailRaw.root}/email01/msg03.txt"/>
+    <t:property name="message3.subject" value="email01C"/>
+
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message3.subject}" />          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionRedirect a="Junk" />
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account3.name}"/>
+					<su>${message3.subject}</su>
+					<mp ct="text/plain">
+						<content>Content</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message0.id"/>
+		</t:response>
+	</t:test>
+    
+    
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message3.subject}) is:anywhere</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@l='${account1.folder.inbox.id}']">
+	            <t:select path="//mail:su" match="${message3.subject}"/>
+            </t:select>
+		</t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message3.subject}) in:inbox</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+<t:test_case testcaseid="Filters_Redirect_03" type="smoke" bugids="17999,52091">
+    <t:objective>Create Rules with different action="redirect" to one's self </t:objective>
+	<t:steps>
+              1. Login to account1
+			  2. Add rule "action"-> redirect ... to Account1 
+			  3. Send a mail 
+			  4. Login to Account1.  Verify message in inbox
+    </t:steps>
+ 
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:property name="message4.file" value="${testMailRaw.root}/email01/msg04.txt"/>
+    <t:property name="message4.subject" value="email01D"/>
+    
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message4.subject}" />          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionRedirect a="${account1.name}" />
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su>${message4.subject}</su>
+					<mp ct="text/plain">
+						<content>Content</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message0.id"/>
+		</t:response>
+	</t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message4.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message4.subject}"/>
+		</t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message4.subject}) in:inbox</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Filters_Redirect_04" type="smoke" bugids="18001">
+    <t:objective>Create Rules with different action="redirect" to an invalid address</t:objective>
+	<t:steps>
+              1. Login to account1
+			  2. Add rule "action"-> redirect ... to abc123 
+			  3. Send a mail 
+			  4. Login to Account1.  Verify message in inbox
+    </t:steps>
+ 
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:property name="message5.file" value="${testMailRaw.root}/email01/msg05.txt"/>
+    <t:property name="message5.subject" value="email01E"/>
+
+
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message5.subject}" />          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionRedirect a="abc123" />
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+       		 <!-- A service.FAILURE here would be acceptable -->
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su>${message5.subject}</su>
+					<mp ct="text/plain">
+						<content>Content</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message0.id"/>
+		</t:response>
+	</t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message5.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message5.subject}"/>
+		</t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message5.subject}) in:inbox</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>
+

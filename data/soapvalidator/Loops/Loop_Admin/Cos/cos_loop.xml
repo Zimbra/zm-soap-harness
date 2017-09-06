@@ -1,0 +1,271 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="COS.name0" value="cos${TIME}${COUNTER}"/>
+<t:property name="COS.name1" value="cos${TIME}${COUNTER}"/>
+<t:property name="COS.name2" value="cos${TIME}${COUNTER}"/>
+<t:property name="COS.name3" value="cos${TIME}${COUNTER}"/>
+<t:property name="COS.name4" value="cos${TIME}${COUNTER}"/>
+<t:property name="COS.newName4" value="cos${TIME}${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="accountSetup1_cos_loop" type="always" >
+    <t:objective>Login to the account </t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Cos_loop1" type="functional" duration="long">
+    <t:objective> Create 500 COS with valid name </t:objective>
+     
+    <t:test_loop count="500"> 
+        
+        <t:test timeframeMax="2000">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name >cos${TIME}${COUNTER}</name>        
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos"/>
+            </t:response>
+        </t:test>
+        
+    </t:test_loop>
+    
+</t:test_case>
+
+    
+<t:test_case testcaseid="Cos_loop2" type="functional" duration="long">
+    <t:objective> Get COS details for a cos with valid id </t:objective>
+    <t:steps> 
+            1. Create new COS
+            2. Get details of COS by id
+            3. Get details of COS by name
+    </t:steps>
+
+    <t:test id="cos_loop2a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name>${COS.name1}</name>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS.id1"/>
+        </t:response>
+    </t:test>
+        
+    <t:test depends="cos_loop2a" timeframeMax="2000">
+        <t:request xmlns="urn:zimbraAdmin">
+            <GetCosRequest>
+                <cos by="id">${COS.id1}</cos>
+            </GetCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" match="${COS.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="cos_loop2a" timeframeMax="2000">
+        <t:request xmlns="urn:zimbraAdmin">
+            <GetCosRequest>
+                <cos by="name">${COS.name1}</cos>
+            </GetCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="${COS.name1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Cos_loop3" type="functional" duration="long">
+    <t:objective> Modify a COS with valid id and valid values for all the attributes </t:objective>
+    <t:steps>1. Create the COS.
+             2. Modify it with value values for each of the attributes. 
+    </t:steps>
+    
+    <t:test id = "cos_loop3a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name>${COS.name2}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name2}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS.id2" />
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>server${COUNTER}.${TIME}.com</name>
+                <a n="zimbraNotes">notes ${COUNTER} ${TIME}</a>
+                <a n="description">description ${COUNTER} ${TIME}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateServerResponse/admin:server" attr="id" set="server.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="cos_loop3a" timeframeMax="100">
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.id2}</id>
+                <a n="zimbraFeatureCalendarEnabled">TRUE</a>
+                <a n="zimbraPrefMailInitialSearch">${globals.inbox}</a>
+                <a n="zimbraContactMaxNumEntries">0</a>
+                <a n="zimbraFeatureGalEnabled">TRUE</a>
+                <a n="zimbraNewMailNotificationBody">New message received at</a>
+                <a n="zimbraPasswordMaxAge">0</a>
+                <a n="zimbraPrefSentMailFolder">${globals.sent}</a>
+                <a n="zimbraNewMailNotificationSubject">New message received at</a>
+                <a n="zimbraPasswordEnforceHistory">0</a>
+                <a n="zimbraPasswordMinLength">6</a>
+                <a n="zimbraMailTrashLifetime">7d</a>
+                <a n="zimbraMailIdleSessionTimeout">0</a>
+                <a n="zimbraFeatureTaggingEnabled">TRUE</a>
+                <a n="zimbraMailQuota">0</a>
+                <a n="zimbraMailMessageLifetime">0</a>
+                <a n="zimbraFeatureChangePasswordEnabled">TRUE</a>
+                <a n="zimbraMailMinPollingInterval">2m</a>
+                <a n="zimbraPrefReplyIncludeOriginalText">includeBody</a>
+                <a n="zimbraPrefForwardIncludeOriginalText">includeBody</a>
+                <a n="zimbraFeatureFiltersEnabled">TRUE</a>
+                <a n="zimbraPrefSaveToSent">TRUE</a>
+                <a n="zimbraAdminAuthTokenLifetime">12h</a>
+                <a n="zimbraAttachmentsViewInHtmlOnly">FALSE</a>
+                <a n="zimbraPrefMessageViewHtmlPreferred">TRUE</a>
+                <a n="zimbraAttachmentsBlocked">FALSE</a>
+                <a n="zimbraFeatureSavedSearchesEnabled">TRUE</a>
+                <a n="zimbraFeatureContactsEnabled">TRUE</a>
+                <a n="zimbraPrefMailItemsPerPage">25</a>
+                <a n="zimbraPrefIncludeSpamInSearch">FALSE</a>
+                <a n="zimbraPasswordMinAge">0</a>
+                <a n="zimbraPrefContactsPerPage">25</a>
+                <a n="zimbraMailSpamLifetime">7d</a>
+                <a n="zimbraPrefAutoAddAddressEnabled">FALSE</a>
+                <a n="zimbraPrefMailSignatureStyle">internet</a>
+                <a n="zimbraFeatureConversationsEnabled">TRUE</a>
+                <a n="zimbraFeatureAdvancedSearchEnabled">TRUE</a>
+                <a n="zimbraPasswordLocked">FALSE</a>
+                <a n="zimbraPrefGroupMailBy">conversation</a>
+                <a n="zimbraPrefIncludeTrashInSearch">FALSE</a>
+                <a n="zimbraFeatureInitialSearchPreferenceEnabled">TRUE</a>
+                <a n="zimbraAuthTokenLifetime">12h</a>
+                <a n="zimbraPasswordMaxLength">64</a>
+                <a n="zimbraPrefDedupeMessagesSentToSelf">dedupeNone</a>
+                <a n="zimbraPrefForwardReplyPrefixChar">&gt;</a>
+                <a n="zimbraPrefMailPollingInterval">5m</a>
+                <a n="zimbraPrefUseKeyboardShortcuts">FALSE</a>
+                <a n="zimbraPrefUseKeyboardShortcuts">FALSE</a>
+                <a c="1" n="description">New cos for modification </a>
+                <a n="zimbraMailHostPool" c="1">${server.id}</a>
+                <a n="zimbraNewMailNotificationFrom">Notification </a>    
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" match="${COS.id2}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Cos_loop4" type="functional" duration="long">
+    <t:objective> Delete a COS with valid id </t:objective>
+    <t:steps>1. Create the COS.
+             2. Delete it 
+    </t:steps>
+
+    <t:test id="cos_loop4a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name>${COS.name3}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name3}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS.id3"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="cos_loop4a" timeframeMax="2000">
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.id3}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse" attr="id" match="${COS.id3}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Cos_loop5" type="functional" duration="long">
+    <t:objective> Rename a COS  </t:objective>
+    <t:steps>1. Create the COS.
+             2. Rename it. 
+    </t:steps>
+
+    <t:test id="cos_loop5a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name>${COS.name4}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name4}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS.id4"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="cos_loop5a" timeframeMax="2000">
+        <t:request>
+            <RenameCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.id4}</id>
+			    <newName>${COS.newName4}</newName>
+            </RenameCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RenameCosResponse/admin:cos" attr="id" match="${COS.id4}"/>
+            <t:select path="//admin:RenameCosResponse/admin:cos" attr="name" match="${COS.newName4}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

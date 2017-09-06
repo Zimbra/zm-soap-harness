@@ -1,0 +1,67 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="GetServerStatsRequest01" type="sanity">
+    <t:objective>Test GetServerStatsRequest</t:objective>
+  
+     <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetServerStatsRequest xmlns="urn:zimbraAdmin">
+            	<stat name="soap_count"/>
+            </GetServerStatsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServerStatsResponse/admin:stat[@name='soap_count']"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="GetLoggerStatsRequest01" type="sanity">
+    <t:objective>Sanity test for GetLoggerStatsRequest</t:objective>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmloggerctl start\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+ 
+     <t:test id="is_logger_enabled" required="true">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse"/>
+        </t:response>
+    </t:test>  
+	
+</t:test_case>
+
+</t:tests>

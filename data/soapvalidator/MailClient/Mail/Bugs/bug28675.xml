@@ -1,0 +1,109 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="ram.bug27817${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="mail01.file" value="${testMailRaw.root}/Bugs/28675/bug28675.txt"/>
+<t:property name="mail01.subject" value="task"/>
+
+
+<t:test_case testcaseid="Account Setup" type="always" >
+    <t:objective>basic system check</t:objective>
+    	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+	    <t:response>
+	        <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+	    <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	            <name>${account1.name}</name>
+	            <password>${defaultpassword.value}</password>
+	        </CreateAccountRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="VerifyWinMailDat" type="smoke" bugids="28675">
+    <t:objective>Verify bug #28675</t:objective>
+    <t:steps>
+	1. Inject test message with winmail.dat attachment (A sample was attached in bugzilla)
+	2. Verify the attachment name appears correctly and not has 0 bytes when viewed	
+    </t:steps>
+	
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${mail01.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+		</t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>${mail01.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="mail01.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${mail01.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${mail01.id}']">
+            	<t:select path="//mail:mp[@ct='application/vnd.ms-tnef']">
+            		<t:select attr="filename" match="winmail.dat"/>            		
+				</t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+</t:tests>
+

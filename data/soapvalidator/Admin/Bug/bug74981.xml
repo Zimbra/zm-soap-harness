@@ -1,0 +1,212 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+      
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerNIfsRequest1" type="smoke" bugids="74981">
+    <t:objective> GetServerNIfsRequest with type="ipv4" </t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetServerNIfsRequest xmlns="urn:zimbraAdmin" type="ipv4">
+                <server by="name">${adminServer.name}</server>
+            </GetServerNIfsRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="addr"]'/>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="mask"]'/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="GetServerNIfsRequest2" type="smoke" bugids="74981">
+    <t:objective> GetServerNIfsRequest with type="ipv6" </t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetServerNIfsRequest xmlns="urn:zimbraAdmin" type="ipv6">
+                <server by="name">${adminServer.name}</server>
+            </GetServerNIfsRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="addr"]'/>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="mask"]'/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="GetServerNIfsRequest3" type="smoke" bugids="74981">
+    <t:objective> GetServerNIfsRequest with type="both" </t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetServerNIfsRequest xmlns="urn:zimbraAdmin" type="both">
+                <server by="name">${adminServer.name}</server>
+            </GetServerNIfsRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="addr"]'/>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="mask"]'/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="GetServerNIfsRequest3" type="smoke" bugids="74981">
+    <t:objective> GetServerNIfsRequest with type="ipv4" and by="serviceHostname"</t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetServerNIfsRequest xmlns="urn:zimbraAdmin" type="ipv4">
+                <server by="serviceHostname">${adminServer.name}</server>
+            </GetServerNIfsRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="addr"]'/>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="mask"]'/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="GetServerNIfsRequest4" type="smoke" bugids="74981">
+    <t:objective> GetServerNIfsRequest with type="ipv6" and by="serviceHostname"</t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetServerNIfsRequest xmlns="urn:zimbraAdmin" type="ipv6">
+                <server by="serviceHostname">${adminServer.name}</server>
+            </GetServerNIfsRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="addr"]'/>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="mask"]'/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="GetServerNIfsRequest5" type="smoke" bugids="74981">
+    <t:objective> GetServerNIfsRequest with type="both" and by="serviceHostname"</t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetServerNIfsRequest xmlns="urn:zimbraAdmin" type="both">
+                <server by="serviceHostname">${adminServer.name}</server>
+            </GetServerNIfsRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="addr"]'/>
+            <t:select path='//admin:GetServerNIfsResponse/admin:ni/admin:a[@n="mask"]'/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>
+ 

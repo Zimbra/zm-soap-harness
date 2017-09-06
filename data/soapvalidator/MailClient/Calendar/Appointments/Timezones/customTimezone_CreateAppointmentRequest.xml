@@ -1,0 +1,424 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_AccountSetup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_01" type="smoke" bugids="36339">
+    <t:objective>Create an appointment with a custom timezone offset (stdoff) - check GMT setting of the appointment</t:objective>
+	<t:steps>
+	1. Create an appointment with a custom timezone +1 hour from GMT, no daylight savings time
+	2. Get the appointment.  Verify the local start/end times
+	3. Get the appointment summaries.  Verify the gmt start/end times
+	</t:steps>
+	    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="timezone.name" value="timezone.${TIME}.${COUNTER}"/>
+	<t:property name="timezone.stdoff" value="60"/>	<!-- 60 minutes ahead of GMT (GMT+01.00) -->
+	
+
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.start.gmt" value="1263902400000"/>							<!-- 01/19/2010 12:00:00 UTC time -->
+	<t:property name="appointment.start.tz" value="${TIME(+1h)[${appointment.start.gmt}]}"/>	<!-- 01/19/2010 13:00:00 local time -->
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m d="${TIME}">
+					<inv >
+       					<tz id="${timezone.name}" stdoff="${timezone.stdoff}"/>
+						<comp method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}">
+							<s tz="${timezone.name}" d="${ICALTIME[${appointment.start.tz}]}"/>
+							<e tz="${timezone.name}" d="${ICALTIME(+1h)[${appointment.start.tz}]}"/>
+							<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="multipart/alternative">
+						<mp ct="text/plain"><content/></mp>
+						<mp ct="text/html"><content><html><body></body></html></content></mp>
+					</mp>
+					<su>${appointment.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment.apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.apptId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse/mail:appt">
+				<!-- As per bug 33396 comment #1 If the client-supplied TZID is not listed in timezones.ics, we look 
+        at its definition to map it to an exact match. Hence for this test case the mathced TZ is returned instead of custom TZ. -->
+            	<t:select path="//mail:s[@tz='Africa/Algiers']" attr="d" match="${ICALTIME[${appointment.start.tz}]}"/>
+            	<t:select path="//mail:e[@tz='Africa/Algiers']" attr="d" match="${ICALTIME(+1h)[${appointment.start.tz}]}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appointment.start.gmt}]}" calExpandInstEnd="${TIME(+1d)[${appointment.start.gmt}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt[@id='${appointment.apptId}']">
+				<t:select path="mail:inst" attr="s" match="${TIME[${appointment.start.gmt}]}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_02" type="smoke" >
+    <t:objective>Create an appointment (standard time) with a custom timezone offset (stdoff and dayoff) - check GMT setting of the appointment</t:objective>
+	<t:steps>
+	1. Define a custom timezone:
+		A. Standard time is +1 hour from GMT, Ends April 1
+		B. Savings time is +2 hours from GMT, Ends November1
+	2. Create an appointment in the timezone, Feb 1 (Standard Time)
+	3. Get the appointment.  Verify the local start/end times
+	4. Get the appointment summaries.  Verify the gmt start/end times
+	</t:steps>
+	    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="timezone.name" value="timezone.${TIME}.${COUNTER}"/>
+	<t:property name="timezone.stdoff" value="60"/>		<!-- Standard time: 60 minutes ahead of GMT (GMT+01.00) -->
+	<t:property name="timezone.dayoff" value="120"/>	<!-- Savings time: 120 minutes ahead of GMT (GMT+02.00) -->
+	
+
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.start.gmt" value="1265025600000"/>							<!-- 02/01/2010 12:00:00 UTC time -->
+	<t:property name="appointment.start.tz" value="${TIME(+1h)[${appointment.start.gmt}]}"/>	<!-- 02/01/2010 13:00:00 local time -->
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m d="${TIME}">
+					<inv >
+       					<tz id="${timezone.name}" stdoff="${timezone.stdoff}" dayoff="${timezone.dayoff}">
+       						<standard mon="11" mday="1" hour="0" min="0" sec="0"/>
+       						<daylight mon="4" mday="1" hour="0" min="0" sec="0"/>
+           				</tz>
+						<comp method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}">
+							<s tz="${timezone.name}" d="${ICALTIME[${appointment.start.tz}]}"/>
+							<e tz="${timezone.name}" d="${ICALTIME(+1h)[${appointment.start.tz}]}"/>
+							<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="multipart/alternative">
+						<mp ct="text/plain"><content/></mp>
+						<mp ct="text/html"><content><html><body></body></html></content></mp>
+					</mp>
+					<su>${appointment.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment.apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.apptId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse/mail:appt">
+            	<t:select path="//mail:s[@tz='${timezone.name}']" attr="d" match="${ICALTIME[${appointment.start.tz}]}"/>
+            	<t:select path="//mail:e[@tz='${timezone.name}']" attr="d" match="${ICALTIME(+1h)[${appointment.start.tz}]}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appointment.start.gmt}]}" calExpandInstEnd="${TIME(+1d)[${appointment.start.gmt}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt[@id='${appointment.apptId}']">
+				<t:select path="mail:inst" attr="s" match="${TIME[${appointment.start.gmt}]}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_03" type="smoke" >
+    <t:objective>Create an appointment (daylight time) with a custom timezone offset (stdoff and dayoff) - check GMT setting of the appointment</t:objective>
+	<t:steps>
+	1. Define a custom timezone:
+		A. Standard time is +1 hour from GMT, Ends April 1
+		B. Savings time is +2 hours from GMT, Ends November1
+	2. Create an appointment in the timezone, June 1 (Daylight Time)
+	3. Get the appointment.  Verify the local start/end times
+	4. Get the appointment summaries.  Verify the gmt start/end times
+	</t:steps>
+	    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="timezone.name" value="timezone.${TIME}.${COUNTER}"/>
+	<t:property name="timezone.stdoff" value="60"/>		<!-- Standard time: 60 minutes ahead of GMT (GMT+01.00) -->
+	<t:property name="timezone.dayoff" value="120"/>	<!-- Savings time: 120 minutes ahead of GMT (GMT+02.00) -->
+	
+
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.start.gmt" value="1275393600000"/>							<!-- 02/01/2010 12:00:00 UTC time -->
+	<t:property name="appointment.start.tz" value="${TIME(+1h)(+1h)[${appointment.start.gmt}]}"/>	<!-- 02/01/2010 13:00:00 local time -->
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m d="${TIME}">
+					<inv >
+       					<tz id="${timezone.name}" stdoff="${timezone.stdoff}" dayoff="${timezone.dayoff}">
+       						<standard mon="11" mday="1" hour="0" min="0" sec="0"/>
+       						<daylight mon="4" mday="1" hour="0" min="0" sec="0"/>
+           				</tz>
+						<comp method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}">
+							<s tz="${timezone.name}" d="${ICALTIME[${appointment.start.tz}]}"/>
+							<e tz="${timezone.name}" d="${ICALTIME(+1h)[${appointment.start.tz}]}"/>
+							<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="multipart/alternative">
+						<mp ct="text/plain"><content/></mp>
+						<mp ct="text/html"><content><html><body></body></html></content></mp>
+					</mp>
+					<su>${appointment.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment.apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.apptId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse/mail:appt">
+            	<t:select path="//mail:s[@tz='${timezone.name}']" attr="d" match="${ICALTIME[${appointment.start.tz}]}"/>
+            	<t:select path="//mail:e[@tz='${timezone.name}']" attr="d" match="${ICALTIME(+1h)[${appointment.start.tz}]}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appointment.start.gmt}]}" calExpandInstEnd="${TIME(+1d)[${appointment.start.gmt}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt[@id='${appointment.apptId}']">
+				<t:select path="mail:inst" attr="s" match="${TIME[${appointment.start.gmt}]}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="customTimezone_CreateAppointmentRequest_04" type="functional" bugids="12623">
+    <t:objective>Create an appointment using custom timezone from Jerusalem (from bug 12623)</t:objective>
+	<t:steps>
+	1. Define a custom timezone:
+		id="(GMT+02.00) Auto-Detected" stdoff="120" dayoff="180"
+			standard mon="10" mday="5" hour="0" min="0" sec="0"
+			daylight mon="4" mday="5" hour="1" min="0" sec="0"
+	2. Create an appointment in the timezone
+	3. Verify no error: java.lang.IllegalArgumentException: Illegal end time 86400000
+	</t:steps>
+	    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test id="auth2" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="timezone.name" value="(GMT+02.00) Auto-Detected"/>
+	
+
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.start.jst" value="1164970800000"/>	<!-- 20061201T110000 -->
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)[${appointment.start.jst}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m d="1164876549790">
+					<tz id="${timezone.name}" stdoff="120" dayoff="180">
+						<standard mon="10" mday="5" hour="0" min="0" sec="0"/>
+						<daylight mon="4" mday="5" hour="1" min="0" sec="0"/>
+					</tz>
+					<inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}" loc="office">
+						<s tz="${timezone.name}" d="${ICALTIME[${appointment.start.jst}]}"/>
+						<e tz="${timezone.name}" d="${ICALTIME(+1h)[${appointment.start.jst}]}"/>
+						<or a="${account2.name}"/>
+					</inv>
+					<mp ct="multipart/alternative">
+						<mp ct="text/plain">
+							<content>MessageContent</content>
+						</mp>
+						<mp ct="text/html">
+							<content><html><body><h3>MessageContent</h3><div>*~*~*~*~*~*~*~*~*~*</div></body></html></content>
+						</mp>
+					</mp>
+					<su>${appointment.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment.apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment.apptId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse/mail:appt">
+            	<t:select path="//mail:s[@tz='${timezone.name}']" attr="d" match="${ICALTIME[${appointment.start.jst}]}"/>
+            	<t:select path="//mail:e[@tz='${timezone.name}']" attr="d" match="${ICALTIME(+1h)[${appointment.start.jst}]}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-2d)[${appointment.start.gmt}]}" calExpandInstEnd="${TIME(+2d)[${appointment.start.gmt}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt[@id='${appointment.apptId}']">
+				<t:select path="mail:inst" attr="s" match="${TIME[${appointment.start.gmt}]}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

@@ -1,0 +1,141 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.password" value="${defaultpassword.value}"/>
+
+<t:property name="root"				value="${soapxml.root}/RestServlet/Contacts/Post/"/>
+<t:property name="contact1.vcf.filename"	value="${root}/contact1.vcf"/>
+<t:property name="contact1.email"			value="email@foo.com"/>
+<t:property name="contact1.firstName"		value="First"/>
+<t:property name="contact1.lastName"		value="Last"/>
+
+
+
+<t:test_case testcaseid="RestServlet_ContactPostVCF_Account_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="RestServlet_ContactPostVCF_01" type="smoke">
+	<t:objective>Post a Contact VCF to the REST servlet</t:objective>
+	<t:steps>
+	1. Use the rest servlet to upload a contact VCF
+	2. Verify that the contact appears in the mailbox
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest method="POST">
+			<filename>${contact1.vcf.filename}</filename>
+			<folder>contacts</folder>
+			<fmt>vcf</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>${contact1.email}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:cn" attr="id" set="contact1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test depends="getcontacts1a">
+		<t:request>
+			<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${contact1.id}"/>
+			</GetContactsRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetContactsResponse/mail:cn" attr="id" match="${contact1.id}"/>
+			<t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='email']" match="${contact1.email}"/>
+			<t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='firstName']" match="${contact1.firstName}"/>
+			<t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match="${contact1.lastName}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+
+</t:tests>

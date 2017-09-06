@@ -1,0 +1,357 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.password" value="test123"/>
+<t:property name="contact.blank" value=""/>
+<t:property name="contact.firstname" value="First.${TIME}.${COUNTER}"/>
+<t:property name="contact.lastname" value="Last.${TIME}.${COUNTER}"/>
+<t:property name="contact.mailid" value="email.${TIME}.${COUNTER}@domain.com"/>
+<t:property name="contact1.mailid" value="email1.${TIME}.${COUNTER}@domain.com"/>
+<t:property name="contact1.firstname" value="First.${TIME}.${COUNTER}"/>
+<t:property name="contact1.lastname" value="Last.${TIME}.${COUNTER}"/>
+<t:property name="contact1.mailid" value="email1.${TIME}.${COUNTER}@domain.com"/>
+<t:property name="contact2.firstname1" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact2.lastname1" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact2.firstname2" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact2.lastname2" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact2.mailid" value="email.${TIME}.${COUNTER}@domain.com"/>
+<t:property name="contact3.mailid" value="email3.${TIME}.${COUNTER}@domain.com"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctsetup1" type="always">
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>   
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+	  <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account2.password}</password>   
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+	  <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${test_account3.password}</password>   
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyContacts1" type="smoke" bugids="75912" >
+    <t:objective>ModifyContactRequest(ReplaceMode=0) needs way to remove all m nodes.</t:objective>
+    <t:steps>
+    1. login as a account1
+    2. Create contact group > add members in the contacts.
+    3. Send ModifyContactRequest(ReplaceMode=0) and m op="reset", this will result in all the original members in a contact group being dropped.
+    </t:steps>
+    <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact_ref.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail" replace="0">
+               <cn fileAsStr="${contact.mailid}">
+                   <a n="filesAs">${contact.mailid}</a>
+                   <a n="type">group</a>
+               
+					<m type="C" value="${contact_ref.id}"/>
+                    <m type="I" value="${contact2.mailid}"/>
+               </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact_group.id"/>
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/> 
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
+               <cn id="${contact_group.id}">
+                    <a n="type">group</a>
+                    <m op="reset"/>
+              </cn>     
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyContactResponse/mail:cn">
+            <t:select attr="id" set="contact_group.id"/>
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}" emptyset="1"/>   
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/> 
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="ModifyContacts2" type="smoke" bugids="75912" >
+    <t:objective>ModifyContactRequest(ReplaceMode=0) needs way to remove all m nodes.</t:objective>
+    <t:steps>
+    1. login as a account1
+    2. Create contact group > add members in the contacts.
+    3. Send ModifyContactRequest(ReplaceMode=0) and m op="reset", this will result in all the original members in a contact group being dropped.
+    4. Again send ModifyContactRequest, add members in group and verify members will be added successfully.
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First1.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last1.${TIME}.${COUNTER}</a>
+                    <a n="email">email1.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact_ref.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+               <cn fileAsStr="${contact1.mailid}">
+                   <a n="filesAs">${contact1.mailid}</a>
+                   <a n="type">group</a>
+					<m type="C" value="${contact_ref.id}"/>
+                    <m type="I" value="${contact2.mailid}"/>
+               </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact_group.id"/>
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}"/> 
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
+               <cn id="${contact_group.id}">
+                    <a n="type">group</a>
+                    <m op="reset"/>
+               </cn>     
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyContactResponse/mail:cn">
+            <t:select attr="id" set="contact_group.id"/>
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}" emptyset="1"/>   
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact2.mailid}" emptyset="1"/> 
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns="urn:zimbraMail" replace="0">
+               <cn id="${contact_group.id}">
+                  <a n="filesAs">${contact1.mailid}</a>
+                   <a n="type">group</a>
+					<m op="+" type="C" value="${contact_ref.id}"/>
+                    <m op="+" type="I" value="${contact3.mailid}"/>
+               </cn>     
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyContactResponse/mail:cn">
+            <t:select attr="id" set="contact_group.id"/>
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}" />   
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact3.mailid}" /> 
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case>
+
+<t:test_case testcaseid="ModifyContacts3" type="smoke" bugids="75912" >
+    <t:objective>Send ModifyContactRequest(ReplaceMode=1) and m op="reset".</t:objective>
+    <t:steps>
+    1. login as a account1
+    2. Create contact group > add members in the contacts.
+    3. Send ModifyContactRequest(ReplaceMode=1) and m op="reset". > service.INVALID_REQUEST
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First2.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last2.${TIME}.${COUNTER}</a>
+                    <a n="email">email2.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact_ref.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+               <cn fileAsStr="${contact3.mailid}">
+                   <a n="filesAs">${contact3.mailid}</a>
+                   <a n="type">group</a>
+					<m type="C" value="${contact_ref.id}"/>
+                    <m type="I" value="${contact3.mailid}"/>
+               </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact_group.id"/>
+			<t:select path='//mail:m[@type="C"]' attr="value" match="${contact_ref.id}"/>   
+            <t:select path='//mail:m[@type="I"]' attr="value" match="${contact3.mailid}"/> 
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns="urn:zimbraMail" replace="1">
+               <cn id="${contact_group.id}">
+                    <a n="type">group</a>
+                    <m op="reset"/>
+               </cn>     
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+           <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>  
+        </t:response>
+    </t:test>
+   
+</t:test_case>
+
+</t:tests>

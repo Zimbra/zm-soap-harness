@@ -1,0 +1,521 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="timezone.pst" value="America/Los_Angeles"/>
+<t:property name="timezone.pst.regex" value="America\\/Los_Angeles"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTaskRequest_RecurringDaily_01" type="smoke" areas="Tasks" bugids="33797">
+    <t:objective>Create an daily recurring appointment</t:objective>
+
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    
+   
+	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account1.name}"/>
+							<recur>
+								<add>
+									<rule freq="DAI">
+										<interval ival="1"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateTaskRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTaskResponse">
+            	<t:select attr="calItemId" set="appt1.calItemId"/>
+            	<t:select attr="invId" set="appt1.invId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appt1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt1.invId}']">
+            	<t:select path="//mail:inv">
+            		<t:select path="//mail:comp">
+						<t:select attr="name" match="${appointment.subject}"/>
+            			<t:select attr="calItemId" match="${appt1.calItemId}"/>
+            			<t:select attr="isOrg" match="1"/>
+            			<t:select path="//mail:or" attr="a" match="${account1.name}"/>
+            			<t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20180101120000.pst}]}"/>
+            			<t:select path="//mail:s" attr="tz" match="${timezone.pst.regex}"/>
+            			<t:select path="//mail:e" attr="d" match="${ICALTIME(+3h)[${time.20180101120000.pst}]}"/>
+            			<t:select path="//mail:e" attr="tz" match="${timezone.pst.regex}"/>
+	            		<t:select path="//mail:recur">
+	            			<t:select path="//mail:rule" attr="freq" match="DAI">
+	            				<t:select path="//mail:interval" attr="ival" match="1"/>
+            				</t:select>
+	            		</t:select>
+            		</t:select>
+            	</t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTaskRequest_RecurringDaily_02" type="smoke" areas="Tasks">
+    <t:objective>Create an daily recurring appointment.  5 occurrences.</t:objective>
+
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account2.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+   
+	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account2.name}"/>
+							<recur>
+								<add>
+									<rule freq="DAI">
+										<interval ival="1"/>
+										<count num="5"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateTaskRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTaskResponse">
+            	<t:select attr="calItemId" set="appt1.calItemId"/>
+            	<t:select attr="invId" set="appt1.invId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appt1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt1.invId}']">
+        		<t:select path="//mail:comp">
+        			<t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20180101120000.pst}]}"/>
+        			<t:select path="//mail:s" attr="tz" match="${timezone.pst.regex}"/>
+        			<t:select path="//mail:e" attr="d" match="${ICALTIME(+3h)[${time.20180101120000.pst}]}"/>
+        			<t:select path="//mail:e" attr="tz" match="${timezone.pst.regex}"/>
+            		<t:select path="//mail:recur">
+            			<t:select path="//mail:rule" attr="freq" match="DAI">
+            				<t:select path="//mail:interval" attr="ival" match="1"/>
+            				<t:select path="//mail:count" attr="num" match="5"/>
+        				</t:select>
+            		</t:select>
+        		</t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="CreateTaskRequest_RecurringDaily_03" type="smoke" areas="Tasks">
+    <t:objective>Create an daily recurring appointment, every 3 days.</t:objective>
+
+
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account3.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+   
+	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account3.name}"/>
+							<recur>
+								<add>
+									<rule freq="DAI">
+										<interval ival="3"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateTaskRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTaskResponse">
+            	<t:select attr="calItemId" set="appt1.calItemId"/>
+            	<t:select attr="invId" set="appt1.invId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appt1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt1.invId}']">
+        		<t:select path="//mail:comp">
+        			<t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20180101120000.pst}]}"/>
+        			<t:select path="//mail:s" attr="tz" match="${timezone.pst.regex}"/>
+        			<t:select path="//mail:e" attr="d" match="${ICALTIME(+3h)[${time.20180101120000.pst}]}"/>
+        			<t:select path="//mail:e" attr="tz" match="${timezone.pst.regex}"/>
+            		<t:select path="//mail:recur">
+            			<t:select path="//mail:rule" attr="freq" match="DAI">
+            				<t:select path="//mail:interval" attr="ival" match="3"/>
+        				</t:select>
+            		</t:select>
+        		</t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTaskRequest_RecurringDaily_04" type="smoke" areas="Tasks">
+    <t:objective>Create an daily recurring appointment, every 3 days.  4 occurences</t:objective>
+
+
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account4.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+   
+	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account4.name}"/>
+							<recur>
+								<add>
+									<rule freq="DAI">
+										<interval ival="3"/>
+										<count num="4"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateTaskRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTaskResponse">
+            	<t:select attr="calItemId" set="appt1.calItemId"/>
+            	<t:select attr="invId" set="appt1.invId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appt1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt1.invId}']">
+        		<t:select path="//mail:comp">
+        			<t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20180101120000.pst}]}"/>
+        			<t:select path="//mail:s" attr="tz" match="${timezone.pst.regex}"/>
+        			<t:select path="//mail:e" attr="d" match="${ICALTIME(+3h)[${time.20180101120000.pst}]}"/>
+        			<t:select path="//mail:e" attr="tz" match="${timezone.pst.regex}"/>
+            		<t:select path="//mail:recur">
+            			<t:select path="//mail:rule" attr="freq" match="DAI">
+            				<t:select path="//mail:interval" attr="ival" match="3"/>
+            				<t:select path="//mail:count" attr="num" match="4"/>
+        				</t:select>
+            		</t:select>
+            	</t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+
+</t:tests>

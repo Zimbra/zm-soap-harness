@@ -1,0 +1,1045 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+
+<t:property name="message.content1" value="content${TIME}.${COUNTER}"/>
+<t:property name="message2.subject" value="subject${TIME}.${COUNTER}"/>
+<t:property name="message2.content" value="content${TIME}.${COUNTER}"/>
+
+<t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
+<t:property name="folder.pname" value="1"/> <!-- Folder's parent ID -->
+<t:property name="folder2.id" value="98765"/>  <!-- pick a number that hopefully isn't a real folder ID -->
+<t:property name="folder3.name" value="folder${TIME}${COUNTER}"/>
+<t:property name="folder4.name" value="folder${TIME}${COUNTER}"/>
+<t:property name="subfolder4.name" value="folder${TIME}${COUNTER}"/>
+<t:property name="tag1.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag.colorvalid" value="4"/>
+
+<t:property name="mail.spchar" value="//\\'^%"/>
+<t:property name="mail.blank" value=""/>
+<t:property name="mail.sometext" value="some text"/>
+<t:property name="mail.number" value="123"/>
+<t:property name="mail.negative" value="-2"/>
+<t:property name="mail.decimal" value="2.09"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_add_message" type="always" >
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a mail account 
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account2.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acctLogin1_add_message" type="always" >
+    <t:objective>login as the test account</t:objective>
+    
+    <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <!-- find out which folder ID is the inbox -->
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest1" type="smoke" >
+    <t:objective> Adding a message to default folders.</t:objective>
+    <t:steps>1. Add message in default folder 
+             2. Search to verify whether it is added.
+    </t:steps>
+    
+    <!-- Add a mail to the inbox-->
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Search the mail in inbox.--> 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.inbox}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message1.id}']" />
+        </t:response>
+    </t:test>
+    
+    <!-- Add a mail to the Drafts-->
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${draftsFolder.id}">
+                    <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Search the mail in drafts folder.--> 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.drafts}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message2.id}']" />
+        </t:response>
+    </t:test>
+
+    <!-- Add a mail to the sent folder-->
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${sentFolder.id}">
+                    <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message3.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Search the mail in sent folder.--> 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.sent}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message3.id}']" />
+        </t:response>
+    </t:test>
+
+    <!-- Add a mail to the spam folder-->
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${spamFolder.id}">
+                    <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message4.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Search the mail in spam folder.--> 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.spam}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message4.id}']" />
+        </t:response>
+    </t:test>
+
+    <!-- Add a mail to the trash-->
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${trashFolder.id}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message5.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Search the mail in trash folder.--> 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.trash}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message5.id}']" />
+        </t:response>
+    </t:test>
+ </t:test_case>
+    
+    
+ <t:test_case testcaseid="AddMsgRequest2" type="smoke" >
+    <t:objective> Adding a message to user defined folder.</t:objective>
+    <t:steps>1.Create a folder.
+             2.Add a mail to the newly created folder.
+             3.Search the mail in newly created folder.
+    </t:steps>    
+    
+    <!-- Create a folder.-->
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Add a mail to the newly created folder.-->
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder1.id}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message6.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Search the mail in newly created folder.--> 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:"${folder1.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message6.id}']" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest3" type="negative" >
+    <t:objective> Adding a message to a non-existing folder.</t:objective>
+    
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                    <m l="${folder2.id}">
+                         <content>"${message.content1}"</content>
+                    </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_ITEM$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest4" type="negative" >
+    <t:objective> Adding a message to a deleted folder.</t:objective>
+    <t:steps> 1.Create a folder.
+              2.Delete it.
+              3.Add a mail to the deleted folder.
+    </t:steps>
+    
+    <!-- Create a folder.-->
+    <t:test id="AddMsgRequest4a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- delete the new folder.-->
+    <t:test id="AddMsgRequest4b" depends="AddMsgRequest4a">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action xmlns="" op="delete" id="${folder3.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action">
+            <t:select attr="id" match="${folder3.id}"/>      
+            </t:select>
+        </t:response>
+    </t:test>
+    
+
+    <!-- Add a mail to the deleted folder.-->
+    <t:test depends="AddMsgRequest4a,AddMsgRequest4b">
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder3.id}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_ITEM$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest5" type="functional" >
+    <t:objective> Adding a message in inbox and tag it.</t:objective>
+    <t:steps> 1.Create a tag.
+              2.Tag a mail and add in the inbox.
+    </t:steps>
+    
+    <t:test id="AddMsgRequest5a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag1.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag1.id"/>
+            </t:select>
+    </t:response>
+    </t:test>
+   
+    <!-- Tag a mail and add in the inbox-->
+    <t:test id="AddMsgRequest5b" depends="AddMsgRequest5a">
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  t="${tag1.id}" l="${inboxFolder.id}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!-- 'l' attribute cannot be used to specify names, only ID numbers -->
+<t:test_case testcaseid="AddMsgRequest6" type="deprecated" >
+    <t:objective> Adding a message in a sub folder.</t:objective>
+    <t:steps>1.create a folder.
+             2.create a sub folder for that.
+             3.add the mail to the subfolder giving path.
+    </t:steps>
+   
+    <!-- Create a folder.-->
+    <t:test id="AddMsgRequest6a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder4.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Create a sub folder for the above created folder.-->
+    <t:test id="AddMsgRequest6b" depends="AddMsgRequest6a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${subfolder4.name}" l="${folder4.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="subfolder4.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Add a mail to the sub folder.-->
+    <t:test id="AddMsgRequest6c" depends="AddMsgRequest6b">
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="/${folder4.name}/${subfolder4.name}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message8.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Search the mail in the sub folder.--> 
+    <t:test depends="AddMsgRequest6c">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail">
+                <query>in:"${folder4.name}/${subfolder4.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message8.id}']" />
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest7" type="negative" >
+    <t:objective> Adding a message in inbox giving an invalid path of folder.</t:objective>
+        
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="/*+">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="AddMsgRequest8" type="negative" bugids="4002">
+    <t:objective>Test AddMsgRequest without a folder specified - 'l' option</t:objective>
+    
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="f" a='${test_account1.name}'/>
+					<e t="t" a='${test_account2.name}'/>
+					<su> ${message2.subject} </su>
+					<content> ${message2.content} </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest9" type="functional">
+    <t:objective> Adding a message in inbox and flag it.</t:objective>
+    <t:steps> 1. AddMsgRequest to add a message
+              2. Flag a message in inbox added by AddMsgRequest.
+    </t:steps>
+    
+    <t:test id="AddMsgRequest9a">
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message9.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="AddMsgRequest9a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message9.id}" op = "flag"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "flag"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message9.id}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest10" type="functional">
+    <t:objective> Unflagged a message added by AddMsgRequest </t:objective>
+
+    <t:test depends="AddMsgRequest9a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message9.id}" op = "!flag"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "!flag"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message9.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest11" type="functional">
+    <t:objective> Mark message added by AddMsgRequest as read/unread </t:objective>
+
+    <t:test depends="AddMsgRequest9a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message9.id}" op = "read"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "read"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message9.id}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="AddMsgRequest9a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message9.id}" op = "!read"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "!read"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message9.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest12" type="functional" bugids="7010">
+    <t:objective> AddMsgRequest with attribute 'd' as valid time </t:objective>
+
+    <t:test id="AddMsgRequest12a">
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" d="1127476800000">
+                     <content>From: foo@foo.com
+To: foo@foo.com
+Subject: email01A
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+
+
+simple text string in the body
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message10.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message10.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="AddMsgRequest12a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <tz id="(GMT) Greenwich Mean Time - Dublin / Edinburgh / Lisbon / London"/>
+                <query>date:9/23/2005</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message10.id}']" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest13" type="negative">
+    <t:objective> AddMsgRequest with attribute 'd' as invalid (sonetext/spchar/number/negative/decimal/blank) </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" d="${mail.sometext}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" d="${mail.spchar}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" d="${mail.number}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" d="${mail.negative}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" d="${mail.decimal}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" d="${mail.blank}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest14" type="negative">
+    <t:objective> AddMsgRequest with attribute 'aid' as invalid (sonetext/spchar/number/negative/decimal/blank) </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" aid="${mail.sometext}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" aid="${mail.spchar}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" aid="${mail.number}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" aid="${mail.negative}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" aid="${mail.decimal}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" aid="${mail.blank}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest15" type="functional">
+    <t:objective> AddMsgRequest with attribute 'noICal' as valid (TRUE/FALSE)</t:objective>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" noICal="TRUE">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" noICal="FALSE">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest16" type="negative">
+    <t:objective> AddMsgRequest with attribute 'noICal' as invalid (sonetext/spchar/number/negative/decimal/blank)</t:objective>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" noICal="${mail.sometext}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" noICal="${mail.spchar}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" noICal="${mail.number}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" noICal="${mail.negative}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" noICal="${mail.decimal}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}" noICal="${mail.blank}">
+                     <content>"${message.content1}"</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest17" type="negative">
+    <t:objective> AddMsgRequest with attribute 'uid' as invalid (sometext/spchar/number/negative/decimal/blank)</t:objective>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}">
+                     <content>"${message.content1}"</content>
+                     <inv uid="${mail.sometext}"/>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}">
+                     <content>"${message.content1}"</content>
+                     <inv uid="${mail.spchar}"/>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}">
+                     <content>"${message.content1}"</content>
+                     <inv uid="${mail.number}"/>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}">
+                     <content>"${message.content1}"</content>
+                     <inv uid="${mail.negative}"/>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}">
+                     <content>"${message.content1}"</content>
+                     <inv uid="${mail.decimal}"/>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m  l="${inboxFolder.id}">
+                     <content>"${message.content1}"</content>
+                     <inv uid="${mail.blank}"/>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddMsgRequest18" type="negative">
+    <t:objective> AddMsgRequest without "m" element </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>
+

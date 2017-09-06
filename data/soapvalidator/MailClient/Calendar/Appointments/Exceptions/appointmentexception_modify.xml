@@ -1,0 +1,3017 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="acct1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct4.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct5.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct6.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct7.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="acct.password" value="test123"/>
+
+<t:property name="appointment1.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment1a.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment2.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment3.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment4.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment4a.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment5.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment6.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment7.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment8.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment9.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment10.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment10a.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment11.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment11a.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment12.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment13.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment14.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment15.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment14.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment15.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment16.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment17.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment18.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment19.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment20.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment21.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment22.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment23.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment24.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment25.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment26.subject" value="Subj${TIME}.${COUNTER}"/>
+
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Cont${TIME}.${COUNTER}"/>
+
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="Time3" value="${ICALTIME(+1h)}"/>
+<t:property name="Time4" value="${ICALTIME(+2h)}"/>
+<t:property name="Time5" value="${ICALTIME(+2h)}"/>
+<t:property name="Time6" value="${ICALTIME(+3h)}"/>
+<t:property name="Time7" value="${ICALTIME(+30d)}"/>
+<t:property name="Time8" value="${CURRDATE}"/>
+<t:property name="Time9" value="${ICALTIME(+10d)}"/>
+<t:property name="Time10" value="${ICALTIME(+10d)(+1h)}"/>
+<t:property name="Time11" value="${ICALTIME(+11d)}"/>
+
+<t:property name="TimeRangeStart" value="${TIME(-1d)}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+5d)}"/>
+
+<t:property name="calendar.negative" value="-1"/>
+<t:property name="calendar.zero" value="0"/>
+<t:property name="calendar.largeNumber" value="1234567890123456789012"/>
+<t:property name="calendar.space" value="          "/>
+<t:property name="calendar.blank" value=""/>
+<t:property name="calendar.sometext" value="some text"/>
+<t:property name="calendar.spchar" value="//\\:''*^%"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup1_modifyAppointmentException" type="always">
+    <t:objective>Create test accounts</t:objective>
+    <t:steps> 1.Login to admin
+              2.Create test accounts
+    </t:steps>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+
+    <!-- Create test accounts -->
+    <t:test id="create_acct1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct1.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_acct2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct2.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_acct4" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct4.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_acct6" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct6.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_acct7" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct7.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct7.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup2_modifyAppointmentException" type="always" >
+    <t:objective>Login as the test account and create appointments</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	
+    <!-- login as the test account -->
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct1.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:property name="mail1.authToken" value="${authToken}"/>
+
+    
+    <!--Create Appointments-->
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI" ival="1">
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+          <t:select path = "//mail:CreateAppointmentResponse"/> 
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment2.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment3.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment3.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment4.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment5.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment5.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment6.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment6.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment7.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment7.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+   
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment8.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment8.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test> 
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment10.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment10.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment11.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment11.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment12.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment12.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment13.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment13.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment14.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment14.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment15.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment15.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment16.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment16.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment17.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment17.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment18.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="WEE">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment18.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment19.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="MON">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment19.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment20.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="YEA">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment20.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment21.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment21.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+          <t:select path = "//mail:CreateAppointmentResponse"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+  
+<t:test_case testcaseid="acct_setup3_modifyAppointmentException" type="always">
+    <t:objective>Modify an instance of appointments.</t:objective>
+    <t:steps> 1.Search appointments.
+              2.Modify an instance of appointment (CreateAppointmentExceptionRequest). 
+    </t:steps>
+    
+    <!--Search the appointment.-->
+        <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment2.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment3.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment4.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment4.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment5.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment5.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment6.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment6.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment7.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment7.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment8.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment8.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment10.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment10.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment11.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment11.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment12.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment12.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment13.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment13.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment14.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment14.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment15.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment15.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment16.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment16.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment17.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment17.id"/>
+        </t:response>
+    </t:test>
+
+	<t:delay msec="3000"/>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment18.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment18.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment19.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment19.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment20.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment20.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment21.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment21.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify an instance of appointment (CreateAppointmentExceptionRequest).-->
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+       </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment2.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment3.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment3.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment3.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment4.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment4.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+       </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment5.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment5.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment5.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment6.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment6.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment6.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment7.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment7.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment7.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment8.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment8.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment8.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment10.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment10.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment10.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment11.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment11.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment11.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment12.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment12.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment12.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment13.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment13.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment13.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment14.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment14.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment14.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment15.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment15.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment15.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment16.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment16.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment16.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment17.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment17.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment17.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment18.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment18.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment18.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment19.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment19.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment19.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment20.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment20.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment20.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" id="appointment21a">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment21.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment21.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment21.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest1" type="smoke" areas="Calendar">
+    <t:objective>Modify an already modified daily appointment instance with valid values.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest).
+    </t:steps>
+
+    <!--Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment1.subject}']" attr="invId" set="appointment1a.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify the instance of appointment(ModifyAppointmentRequest).-->
+    <t:test>
+        <t:request>
+        <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1a.id}" comp="0">
+            <m>
+                <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
+                    <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                    <s d="${Time5}"/>
+                    <e d="${Time6}"/>
+                    <or a="${acct1.name}"/>
+                </inv>
+                <e a="${acct2.name}" t="t"/>
+                <mp content-type="text/plain">
+                    <content>${appointment.content}</content>
+                </mp>
+                <su>${appointment2.subject}</su>
+            </m>
+        </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest2" type="functional" areas="Calendar">
+    <t:objective>Modify an already modified daily appointment instance with all old values.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest) with all old values.
+    </t:steps>
+
+    <!--Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment2.subject}']" attr="invId" set="appointment2a.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify the instance of appointment(ModifyAppointmentRequest) with all old values.-->
+    <t:test>
+        <t:request>
+        <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment2a.id}" comp="0">
+            <m>
+                <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
+                    <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                    <s d="${Time1}"/>
+                    <e d="${Time2}"/>
+                    <or a="${acct1.name}"/>
+                </inv>
+                <e a="${acct2.name}" t="t"/>
+                <mp content-type="text/plain">
+                    <content>${appointment.content}</content>
+                </mp>
+                <su>${appointment2.subject}</su>
+            </m>
+        </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest3" type="functional" areas="Calendar" bugids="8446">
+    <t:objective>Modify a daily appointment instance with non-existing account name in attendees.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest) with non-existing account name in attendees.
+    </t:steps>
+
+    <!--Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment3.subject}']" attr="invId" set="appointment3a.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify the instance of appointment(ModifyAppointmentRequest) with non-existing account name in attendees.-->
+    <t:test>
+        <t:request>
+        <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment3a.id}" comp="0">
+            <m>
+                <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment3.subject}" loc="${appointment.location}">
+                    <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
+                    <s d="${Time1}"/>
+                    <e d="${Time2}"/>
+                    <or a="${acct1.name}"/>
+                </inv>
+                <e a="${acct3.name}" t="t"/>
+                <mp content-type="text/plain">
+                    <content>${appointment.content}</content>
+                </mp>
+                <su>${appointment3.subject}</su>
+            </m>
+        </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <!-- t:select path="//zimbra:Code" match="^mail.SEND_ABORTED_ADDRESS_FAILURE$"/ -->
+            <!-- You should get a successful response, and then a bounceback -->
+            <t:select path="//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest4" type="negative" areas="Calendar" bugids="4255">
+    <t:objective>Modify an already modified daily appointment instance with start and end time as Non numeric invalid values(Space/blanks/sometext/special charcters)</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment with start and end time as Non numeric invalid values(ModifyAppointmentRequest).
+    </t:steps>
+
+    <!-- Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment4.subject}']" attr="invId" set="appointment4a.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment with start and end time as space.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment4.subject}" loc="${appointment.location}">
+                        <s d="${calendar.space}"/>  
+                        <e d="${calendar.space}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment with start and end time as blank.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment4a.subject}" loc="${appointment.location}">
+                        <s d="${calendar.blank}"/>  
+                        <e d="${calendar.blank}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4a.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment with start and end time as sometext.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment4a.subject}" loc="${appointment.location}">
+                        <s d="${calendar.sometext}"/>  
+                        <e d="${calendar.sometext}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4a.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment with start and end time as spchar.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment4a.subject}" loc="${appointment.location}">
+                        <s d="${calendar.spchar}"/>  
+                        <e d="${calendar.spchar}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4a.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest5" type="negative" areas="Calendar" bugids="4255">
+    <t:objective>Modify a daily appointment instance with start and end time as invalid numeric value (negative, very large number 20 digits /zero)</t:objective>
+
+    <!-- Modify an instance of appointment with start and end time as zero.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment4a.subject}" loc="${appointment.location}">
+                        <s d="${calendar.zero}"/>  
+                        <e d="${calendar.zero}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4a.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment with start and end time as large number.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment4a.subject}" loc="${appointment.location}">
+                        <s d="${calendar.largeNumber}"/>  
+                        <e d="${calendar.largeNumber}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4a.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment with start and end time as negative.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment4a.subject}" loc="${appointment.location}">
+                        <s d="${calendar.negative}"/>  
+                        <e d="${calendar.negative}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4a.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest6" type="smoke" areas="Calendar">
+    <t:objective>Modify a daily appointment instance inviting multiple people.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest) inviting multiple people.
+    </t:steps>
+
+    <!--Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment5.subject}']" attr="invId" set="appointment5a.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify the instance of appointment(ModifyAppointmentRequest).-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment5a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment5.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct4.name}"/>
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <e a="${acct4.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment5.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest7" type="functional" areas="Calendar" bugids="8446">
+    <t:objective>Modify a daily appointment instance inviting multiple people in which address of one attendee is non-existing..</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest) inviting multiple people in which address of one attendee is non-existing.
+    </t:steps>
+
+    <!--Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment6.subject}']" attr="invId" set="appointment6a.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify the instance of appointment(ModifyAppointmentRequest) inviting multiple people in which address of one attendee is non-existing.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment6a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment6.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <e a="${acct3.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment6.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <!-- t:select path="//zimbra:Code" match="^mail.SEND_ABORTED_ADDRESS_FAILURE$"/ -->
+            <!-- You should get a successful response, and then a bounceback -->
+            <t:select path="//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest8" type="functional" areas="Calendar" bugids="8446">
+    <t:objective>Modify a daily appointment instance inviting multiple people in which address of all attendees is non-existing.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest) inviting multiple people in which address of all attendees is non-existing.
+    </t:steps>
+
+    <!--Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment7.subject}']" attr="invId" set="appointment7a.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify the instance of appointment(ModifyAppointmentRequest) inviting multiple people in which address of all attendee is non-existing.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment7a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment7.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct5.name}"/>
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct3.name}" t="t"/>
+                    <e a="${acct5.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment7.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <!-- t:select path="//zimbra:Code" match="^mail.SEND_ABORTED_ADDRESS_FAILURE$"/ -->
+            <!-- You should get a successful response, and then a bounceback -->
+            <t:select path="//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest9" type="functional" areas="Calendar" bugids="8446">
+    <t:objective>Modify a daily appointment instance having attendee whose account has been deleted.</t:objective>
+    <t:steps> 1.Delete an account.
+              2.Search the appointment.
+              3.Modify the instance of appointment(ModifyAppointmentRequest) having attendee whose account has been deleted.
+    </t:steps>
+ 
+	<t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test depends="create_acct6">
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${acct6.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:property name="authToken" value="${mail1.authToken}"/>
+
+
+    <!--Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment8.subject}']" attr="invId" set="appointment8a.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify the instance of appointment(ModifyAppointmentRequest) having attendee whose account has been deleted.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment8a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment8.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct6.name}"/>
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct6.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment8.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <!-- t:select path="//zimbra:Code" match="^mail.SEND_ABORTED_ADDRESS_FAILURE$"/ -->
+            <!-- You should get a successful response, and then a bounceback -->
+            <t:select path="//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest10" type="functional" areas="Calendar">
+    <t:objective>Modify a daily appointment instance and check whether the attendee get both the mails or not.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest).
+              3.Login to account 2.
+              4.Search in the attendee's account both(created and modified) mails.
+    </t:steps>
+ 
+    <!--Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment10.subject}']" attr="invId" set="appointment10a.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Modify the instance of appointment(ModifyAppointmentRequest)-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment10a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment10a.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
+                        <or a="${acct1.name}"/>
+                    </inv>
+                            <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment10a.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <!--Login to account2.-->
+    <t:test id="auth1" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct2.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:delay msec="5000"/>
+
+	<t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:(${appointment10.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+
+    <!-- Search the created mail.-->
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:(${appointment10.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[1]">
+				<t:select path="//mail:su" match="${appointment10.subject}"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+    <!-- Search the modified mail.-->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:(${appointment10a.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:su" match="${appointment10a.subject}"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="authToken" value="${mail1.authToken}"/>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest11" type="functional" areas="Calendar">
+    <t:objective>Attempt to modify a daily appointment instance that has been modified already.(Re sending ModifyAppointmentRequest)</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify an instance of appointment(ModifyAppointmentRequest).
+              3.Search the appointment.
+              4.Modify an instance of appointment(ModifyAppointmentRequest) that has been modified already.
+    </t:steps>
+    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <!-- Search the appointment.-->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment11.subject}']" attr="invId" set="appointment11a.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment(ModifyAppointmentRequest).-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment11a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment11.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment11.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+   <!-- Search the appointment.-->
+   <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment11.subject}']" attr="invId" set="appointment11b.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify an instance of appointment(ModifyAppointmentRequest).-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment11b.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment11.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment10.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest12" type="negative" areas="Calendar" bugids="3847">
+    <t:objective>Verify NOT_THE_ORGANIZER return code (acct2 attempts to modify an appointment owned by acct1)</t:objective>
+    <t:steps> 1.Login to account2
+              2.Search the appointment.
+              3.Modify an instance of appointment.(ModifyAppointmentRequest).
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <!--Login to account2.-->
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct2.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <!-- Search the appointment. -->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment12.subject}']" attr="invId" set="appointment12.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Modify an instance of appointment. -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment12.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment12.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment12.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.MUST_BE_ORGANIZER"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="authToken" value="${mail1.authToken}"/>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest13" type="functional" areas="Calendar">
+    <t:objective>Modify a daily appointment instance making it a all day appointment.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest) making it a all day appointment.
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>    
+    <!-- Search the appointment. -->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment13.subject}']" attr="invId" set="appointment13a.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Modify an instance of appointment. -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment13a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="1" name="${appointment13.subject}" loc="${appointment.location}">
+                        <s d="${Time8}"/>  
+                        <e d="${Time8}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment13.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest15" type="negative" areas="Calendar">
+    <t:objective> Modify a daily appointment instance in which start time is greater than end time. </t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest) instance in which start time is greater than end time.
+    </t:steps>
+  
+    <!-- Search the appointment. -->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment14.subject}']" attr="invId" set="appointment14a.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Modify an instance of appointment. -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment14a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment14.subject}" loc="${appointment.location}">
+                        <s d="${Time2}"/>  
+                        <e d="${Time1}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment14.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest15" type="functional" areas="Calendar">
+    <t:objective>Modify a daily appointment instance making it schedule to some other day.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify the instance of appointment(ModifyAppointmentRequest) making it schedule to some other day .
+    </t:steps>
+    
+    <!-- Search the appointment. -->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment15.subject}']" attr="invId" set="appointment15a.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Modify an instance of appointment. -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment15a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment15.subject}" loc="${appointment.location}">
+                        <s d="${Time9}"/>  
+                        <e d="${Time10}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment15.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest16" type="negative" areas="Calendar">
+    <t:objective>Modify a daily appointment instance making it schedule to some other day in which start date is greater than end date.</t:objective>
+    <t:steps>1.Search the appointment.
+             2.Modify the instance of appointment(ModifyAppointmentRequest).
+    </t:steps>
+
+    <!-- Search the appointment. -->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment16.subject}']" attr="invId" set="appointment16a.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Modify an instance of appointment. -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment16a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment16.subject}" loc="${appointment.location}">
+                        <s d="${Time11}"/>  
+                        <e d="${Time9}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment16.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest17" type="negative" areas="Calendar">
+    <t:objective>Modify a daily appointment instance which was canceled.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Cancel the appointment.
+              3.Modify an instance of appointment which was canceled.
+    </t:steps>
+
+    <!-- Search the appointment. -->
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment17.subject}']" attr="invId" set="appointment17a.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Cancel the appointment.-->    
+    <t:test >
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment17a.id}" comp="0">
+                <m>
+                    <e a="${acct2.name}" t="t"/>
+                    <su>${appointment17.subject}</su>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify an instance of appointment which was canceled.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment17a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment17.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment17.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//soap:Text" match=".*cannot modify a calendar item under trash$"/>
+            <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest18" type="smoke" areas="Calendar">
+    <t:objective>Modify a weekly appointment instance with valid values.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify an instance of appointment.
+    </t:steps>
+
+    <!--Search the appointment.-->
+    <t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment18.subject}']" attr="invId" set="appointment18a.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment18a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment18.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment18.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest19" type="smoke" areas="Calendar">
+    <t:objective>Modify a monthly appointment instance with valid values.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify an instance of appointment.
+    </t:steps>
+
+    <!-- Search the appointment.-->
+    <t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment19.subject}']" attr="invId" set="appointment19a.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Modify an instance of appointment.-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment19a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment19.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment19.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest20" type="smoke" areas="Calendar">
+    <t:objective>Modify a yearly appointment instance with valid values.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify an instance of appointment.
+    </t:steps>
+    
+    <!-- Search the appointment.-->
+    <t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment20.subject}']" attr="invId" set="appointment20a.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment20a.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment20.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment20.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest21" type="negative" areas="Calendar" bugids="12459">
+    <t:objective>Modify a daily appointment instance with invalid positive value for id (Negative/Zero/large number).</t:objective>
+
+    <!--Modify an instance of appointment with id = Negative -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.negative}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment21.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment21.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^mail.NO_SUCH_CALITEM$"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify an instance of appointment with id = zero-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.zero}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment21.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment21.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^mail.NO_SUCH_ITEM$"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify an instance of appointment with id  = largeNumber-->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.largeNumber}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment21.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment21.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest22" type="negative" areas="Calendar" bugids="3843">
+    <t:objective>Modify a daily appointment instance with invalid value for id (Space/blank/sometext/special character)</t:objective>
+
+    <!--Modify an instance of appointment with id = space -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.space}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment22.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment22.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify an instance of appointment with id = blank -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.blank}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment22.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment22.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify an instance of appointment with id = some text -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.sometext}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment22.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment22.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Modify an instance of appointment with id = spchar -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.spchar}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment22.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment22.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest23" type="negative" areas="Calendar">
+    <t:objective>Modify a daily appointment instance with no m tag.</t:objective>
+    <t:steps> 1.Search the appointment.
+              2.Modify an instance of appointment with no m tag.
+    </t:steps>
+        
+    <!--Search the appointment.-->
+    <t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment21.subject}']" attr="invId" set="appointment21.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Modify an instance of appointment with no m tag -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment21.id}" comp="0">
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest25" type="negative" areas="Calendar">
+   <t:objective>Modify a daily appointment instance with no e and s tag.</t:objective>
+
+       <!--Search the appointment.-->
+    <t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment21.subject}']" attr="invId" set="appointment21.id"/>
+        </t:response>
+    </t:test>
+    
+   <!--Modify an instance of appointment with no e and s tag -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment21.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment26.subject}" loc="${appointment.location}">
+                       <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment26.subject}</su>
+                </m>
+           </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest26" type="negative" areas="Calendar">
+    <t:objective>Modify a daily appointment instance with no 'or' tag</t:objective>
+		<steps>1. Login as acct7.
+			  2. Create a appt.
+			  3. Modify with no OR tag.
+		</steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
+
+	<t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct7.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <!--Create Appointments-->
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct7.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI" ival="1">
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+   <!--Search the appointment.-->
+
+    <t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment1.subject}']" attr="invId" set="appointment26.id"/>
+        </t:response>
+    </t:test>
+    
+   <!--Modify an instance of appointment with no or tag -->
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment26.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment26.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment26.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+           <!--
+				Per Jiho, It's valid to omit the organizer as long as there is no attendee in the meeting.
+				I can't trace what has happened to appointment21 until this point, because several test cases have already used this appointment ID.
+				TODO: QA should clarify this test case to use a unique appointment for this test case.
+           -->
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ModifyAppointmentExceptionRequest24" type="negative" areas="Calendar" bugids="4480">
+    <t:objective>Modify a daily appointment instance with no subject tag.</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+        <!--Search the appointment.-->
+        <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct1.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetApptSummariesResponse/mail:appt[@name='${appointment21.subject}']" attr="invId" set="appointment21.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment21.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+
+</t:tests>
+

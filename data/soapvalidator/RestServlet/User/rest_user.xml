@@ -1,0 +1,548 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+
+
+<t:test_case testcaseid="RestServlet_User_Account_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraDefaultDomainName"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse">
+            </t:select>
+            	<t:select path="//admin:a[@n='zimbraDefaultDomainName']" set="default.domain.name"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account1.user" value="test${TIME}.${COUNTER}"/>
+	<t:property name="account1.domain" value="${default.domain.name}"/>
+	<t:property name="account1.name" value="${account1.user}@${account1.domain}"/>
+	<t:property name="account1.password" value="${defaultpassword.value}"/>
+	
+	<t:property name="account2.name" value="test${TIME}.${COUNTER}@${default.domain.name}"/>
+	<t:property name="account2.password" value="${defaultpassword.value}"/>
+	
+	<t:property name="account3.user" value="test${TIME}.${COUNTER}"/>
+	<t:property name="account3.domain" value="domain.${TIME}.${COUNTER}.com"/>
+	<t:property name="account3.name" value="${account3.user}@${account3.domain}"/>
+	<t:property name="account3.password" value="${defaultpassword.value}"/>
+	
+	
+	<t:property name="message1.content" value="content${TIME}.${COUNTER}"/>
+	<t:property name="message1.subject" value="subject${TIME}.${COUNTER}"/>
+	<t:property name="message3.content" value="content${TIME}.${COUNTER}"/>
+	<t:property name="message3.subject" value="subject${TIME}.${COUNTER}"/>
+	
+	<t:property name="account4.name" value="test${TIME}.${COUNTER}@${default.domain.name}"/>
+
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${account1.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${account2.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+    <t:test id="CreateDomainRequest0a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.domain}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain3.id"/>
+        </t:response>
+    </t:test>
+	
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>${account3.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account4.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+		</t:response>
+	</t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+	<t:test required="true">
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${account2.name}'/>
+					<su> ${message1.subject} </su>
+					<mp ct="text/plain">
+						<content> ${message1.content} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${account3.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+	<t:test required="true">
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${account2.name}'/>
+					<su> ${message3.subject} </su>
+					<mp ct="text/plain">
+						<content> ${message3.content} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message3.id"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="RestServlet_user_ID_01" type="smoke" >
+	<t:objective>Basic verification of Rest Servlet - get a message with the user ID default ("~")</t:objective>
+	<t:steps>
+	1. Use the rest servlet with the user ID = "~"
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>~</user>
+			<id>${message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="To" match="${account2.name}"/>
+			<t:select attr="Subject" match="${message1.subject}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="RestServlet_user_ID_02" type="smoke" >
+	<t:objective>Basic verification of Rest Servlet - get a message with the user ID ("name")</t:objective>
+	<t:steps>
+	1. Use the rest servlet with the user ID = the first name
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account1.user}</user>
+			<id>${message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="To" match="${account2.name}"/>
+			<t:select attr="Subject" match="${message1.subject}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="RestServlet_user_ID_03" type="smoke" >
+	<t:objective>Basic verification of Rest Servlet - get a message with the full user ID ("name@domain.com")</t:objective>
+	<t:steps>
+	1. Use the rest servlet with the user ID = the email address
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account1.name}</user>
+			<id>${message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="To" match="${account2.name}"/>
+			<t:select attr="Subject" match="${message1.subject}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="RestServlet_user_ID_04" type="functional" >
+	<t:objective>Basic verification of Rest Servlet - get a message with the user ID ("name"), non-default domain</t:objective>
+	<t:steps>
+	1. Use the rest servlet with the user ID = the first name
+	2. Expect: 403 - forbidden
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${account3.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account3.user}</user>
+			<id>${message3.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="404"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="RestServlet_user_ID_05" type="functional" >
+	<t:objective>Basic verification of Rest Servlet - get a message with the full user ID ("name@domain.com")</t:objective>
+	<t:steps>
+	1. Use the rest servlet with the user ID = the email address
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${account3.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account3.name}</user>
+			<id>${message3.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="To" match="${account2.name}"/>
+			<t:select attr="Subject" match="${message3.subject}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_user_ID_06" type="functional" bugids="18799">
+	<t:objective>Harvesting: verify 401 when accessing an existing account without an auth token</t:objective>
+	<t:steps>
+	1. Clear the authtoken
+	2. Access REST, specify an existing account
+	3. Verify 401
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	<t:property name="authToken" value=""/>
+
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account4.name}</user>
+			<folder>${globals.inbox}</folder>
+			<fmt>zip</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="401"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_user_ID_07" type="functional" bugids="18799">
+	<t:objective>Harvesting: verify 401 when accessing an existing account without an auth token</t:objective>
+	<t:steps>
+	1. Clear the authtoken
+	2. Access REST, specify a non-existing account
+	3. Verify 401
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	<t:property name="authToken" value=""/>
+
+
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>test${TIME}${COUNTER}@${defaultdomain.name}</user>
+			<folder>${globals.inbox}</folder>
+			<fmt>zip</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="401"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_user_ID_08" type="functional" bugids="18799">
+	<t:objective>Harvesting: verify 403 when accessing an existing account with an auth token</t:objective>
+	<t:steps>
+	1. Login as account4
+	2. Access REST, specify another existing account
+	3. Verify 403
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+	<t:property name="server.restServlet" value="${account3.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account3.name}</user>
+			<folder>${globals.inbox}</folder>
+			<fmt>zip</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="404"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_user_ID_09" type="functional" bugids="18799">
+	<t:objective>Harvesting: verify 403 when accessing a non-existing account with an auth token</t:objective>
+	<t:steps>
+	1. Login as account4
+	2. Access REST, specify a non-existing account
+	3. Verify 403
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+	<t:property name="server.restServlet" value="${account3.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>test${TIME}${COUNTER}@${defaultdomain.name}</user>
+			<folder>${globals.inbox}</folder>
+			<fmt>zip</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="404"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+
+</t:tests>

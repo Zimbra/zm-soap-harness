@@ -1,0 +1,140 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+ 	
+
+<t:test_case testcaseid="License_CreateAccountRequest_AccountSetup" areas="network" type="smoke">
+    <t:objective>Login as admin, flush the license cache</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- initialize the count in the server cache-->
+	<t:test>
+        <t:request>
+			<FlushCacheRequest xmlns="urn:zimbraAdmin">
+				<cache type="license"/>
+				<cache type="config"/>
+			</FlushCacheRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:FlushCacheResponse"/>
+        </t:response>
+    </t:test> 
+
+	<t:test>
+        <t:request>
+            <GetLicenseRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLicenseResponse"/>
+		</t:response>
+    </t:test>  
+
+	<t:delay sec="30"/>
+	
+	<t:test>
+        <t:request>
+            <GetLicenseRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLicenseResponse"/>
+		</t:response>
+    </t:test>  
+
+
+</t:test_case>
+ 	
+
+<t:test_case testcaseid="License_CreateAccountRequest_01" areas="network" type="smoke">
+    <t:objective>Verify CreateAccountRequest adds a new value to the account count</t:objective>
+	<t:steps>
+			1. Login into admin.
+			2. Create account.
+			3. Verify the license usage count increases.
+	</t:steps>
+
+	<t:test>
+        <t:request>
+            <GetLicenseRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLicenseResponse"/>
+		</t:response>
+    </t:test>  
+
+	<t:delay sec="30"/>
+	
+	<t:test>
+        <t:request>
+            <GetLicenseRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+				<t:select path="//admin:attr[@name='TotalAccounts']" set="license.account.count" />
+		</t:response>
+    </t:test>  
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>account${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse"/>
+		</t:response>        
+	</t:test>
+
+	<!-- initialize the count in the server cache-->
+	<t:test>
+        <t:request>
+            <GetLicenseRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLicenseResponse"/>
+		</t:response>
+    </t:test>  
+
+	<t:delay sec="30"/>
+	
+	<t:test>
+        <t:request>
+            <GetLicenseRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLicenseResponse">
+				<t:select path="//admin:attr[@name='TotalAccounts']" match="${license.account.count}" emptyset="1"/>
+			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+</t:tests>

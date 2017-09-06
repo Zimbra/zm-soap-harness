@@ -1,0 +1,373 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain0.name" value="rights.${TIME}.${COUNTER}.com"/>
+
+<t:property name="account0.name" value="domainadmin${TIME}${COUNTER}@${domain0.name}"/>
+<t:property name="account1.name" value="acoount1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invalidaccount.name" value="invalidname${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invalid.id" value="invalidid${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="destination.name" value="rights${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthToken_AccountSetup" type="always" >
+	<t:objective>create test accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain0.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain0.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account0.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDomainAdminAccount">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${destination.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="destination.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="destination.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxVolumesRequest_Basic01" type="smoke" areas="network">
+    <t:objective>Use an admin token to GetMailboxVolumesRequest</t:objective>
+    <t:steps>
+    1. Login as account1 so that mailbox for account1 gets created.
+    2. Login as admin
+	3. Use admin authtoken to GetMailboxVolumesRequest  - Success
+	</t:steps>
+
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account1.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse">
+	            <t:select path="//admin:mbox" attr="mbxid" set="account1.mailbox.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+        <t:request>
+            <GetMailboxVolumesRequest  xmlns="urn:zimbraAdmin">
+            	<account name="${account1.name}" id="${account1.id}"/> 
+            </GetMailboxVolumesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxVolumesResponse"/>
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxVolumesRequest_Basic02" type="smoke" areas="network">
+    <t:objective>Use an admin token to GetMailboxVolumesRequest</t:objective>
+    <t:steps>
+    1. Login as admin
+	2. Use admin authtoken to GetMailboxVolumesRequest  - service.FAILURE [As no mailbox get created yet]
+	</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+    <t:test>
+        <t:request>
+            <GetMailboxVolumesRequest  xmlns="urn:zimbraAdmin">
+            	<account name="${account2.name}" id="${account2.id}"/> 
+            </GetMailboxVolumesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxVolumesRequest_Basic03" type="smoke" areas="network">
+    <t:objective>Test GetMailboxVolumesRequest without account ID</t:objective>
+    <t:steps>
+    1. Login as admin
+	2. Send GetMailboxVolumesRequest without account ID - Success
+	</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test depends="AuthToken_Admin_GetMailboxVolumesRequest_Basic01">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account1.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse">
+	            <t:select path="//admin:mbox" attr="mbxid" set="account1.mailbox.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="AuthToken_Admin_GetMailboxVolumesRequest_Basic01">
+        <t:request>
+            <GetMailboxVolumesRequest  xmlns="urn:zimbraAdmin">
+            	<account name="${account1.name}"/> 
+            </GetMailboxVolumesRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:GetMailboxVolumesResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxVolumesRequest_Basic04" type="smoke" areas="network">
+    <t:objective>Test GetMailboxVolumesRequest without account name</t:objective>
+    <t:steps>
+    1. Login as admin
+	2. Send GetMailboxVolumesRequest without account name- service.INVALID_REQUEST
+	</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test depends="AuthToken_Admin_GetMailboxVolumesRequest_Basic01">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test depends="AuthToken_Admin_GetMailboxVolumesRequest_Basic01">
+        <t:request>
+            <GetMailboxVolumesRequest  xmlns="urn:zimbraAdmin">
+            	<account id="${account1.id}"/> 
+            </GetMailboxVolumesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxVolumesRequest_Basic05" type="smoke" areas="network" >
+    <t:objective>Test GetMailboxVolumesRequest with Invalid account name</t:objective>
+    <t:steps>
+    1. Login as admin
+	2. Send GetMailboxVolumesRequest Invalid account name - service.FAILURE
+	</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test depends="AuthToken_Admin_GetMailboxVolumesRequest_Basic01">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test depends="AuthToken_Admin_GetMailboxVolumesRequest_Basic01">
+        <t:request>
+            <GetMailboxVolumesRequest  xmlns="urn:zimbraAdmin">
+            	<account name="${invalidaccount.name}"/> 
+            </GetMailboxVolumesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.NO_SUCH_ACCOUNT"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxVolumesRequest_Basic06" type="smoke" areas="network">
+    <t:objective>Test GetMailboxVolumesRequest blank account name</t:objective>
+    <t:steps>
+    1. Login as admin
+	2. Send GetMailboxVolumesRequest with blank account name  - service.INVALID_REQUEST
+	</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test depends="AuthToken_Admin_GetMailboxVolumesRequest_Basic01">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMailboxVolumesRequest  xmlns="urn:zimbraAdmin">
+            	<account name="" /> 
+            </GetMailboxVolumesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.NO_SUCH_ACCOUNT"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

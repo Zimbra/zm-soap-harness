@@ -1,0 +1,201 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="${COUNTER}.${TIME}.${defaultdomain.name}"/>
+<t:property name="domain1.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="domain1.galaccount.datasource.name" value="name${TIME}${COUNTER}"/>
+<t:property name="domain1.account1.name" value="acct${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="domain1.account1.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="domain1.account1.lastname" value="last${TIME}${COUNTER}"/>
+<t:property name="domain1.account2.name" value="acct${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="domain1.account2.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="domain1.account2.lastname" value="last${TIME}${COUNTER}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+            	<name>${domain1.name}</name>
+            	<a n="zimbraGalMode">zimbra</a>
+            	<a n="zimbraGalMaxResults">100</a>
+        	</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain1.galaccount.datasource.name}" type="zimbra" domain="${domain1.name}" server="${server.zimbraAdmin}">
+        		<account by="name">${domain1.galaccount.name}</account>
+    		</CreateGalSyncAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.account1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${domain1.account1.firstname} ${domain1.account1.lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account1.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.account2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${domain1.account2.firstname} ${domain1.account2.lastname}</a>
+				<a n="givenName">${domain1.account2.firstname}</a>
+				<a n="sn">${domain1.account2.lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account2.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${domain1.account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${domain1.account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+				<pref xmlns="" name="zimbraPrefGalAutoCompleteEnabled">TRUE</pref>
+			</ModifyPrefsRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:ModifyPrefsResponse"/>
+		</t:response>
+    </t:test>  
+
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="GalAccount_AutoCompleteRequest_01" type="smoke" >
+    <t:objective>Verify basic AutoCompleteRequest for GalAccount</t:objective>
+	<t:steps>
+	1. Login as account1
+	6. Send AutoCompleteRequest
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail" includeGal="1">
+				<name>foo</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse"/>
+		</t:response>
+    </t:test>  
+
+
+</t:test_case>
+
+<t:test_case testcaseid="GalAccount_AutoCompleteRequest_02" type="smoke" >
+    <t:objective>Verify basic AutoCompleteRequest for GalAccount</t:objective>
+	<t:steps>
+	1. Login as account1
+	6. Send AutoCompleteRequest
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail" includeGal="1">
+				<name>${domain1.account2.firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match">
+ 					<t:select attr="type" match="gal"/>
+ 					<t:select attr="email" match=".*${domain1.account2.name}.*"/>
+ 				</t:select>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+
+</t:test_case>
+
+<t:test_case testcaseid="GalAccount_AutoCompleteRequest_03" type="smoke" bugids="18753">
+    <t:objective>Verify basic AutoCompleteRequest for GalAccount</t:objective>
+	<t:steps>
+	1. Login as account1
+	6. Send AutoCompleteRequest with "first last"
+	</t:steps>
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail" includeGal="1">
+				<name>${domain1.account2.firstname} ${domain1.account2.lastname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match">
+ 					<t:select attr="type" match="gal"/>
+ 					<t:select attr="email" match=".*${domain1.account2.name}.*"/>
+ 				</t:select>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+
+</t:test_case>
+
+
+
+</t:tests>

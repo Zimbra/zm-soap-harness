@@ -1,0 +1,66 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="search.name" value="search${TIME}.${COUNTER}"/>
+<t:property name="search1" value="test"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAdminSavedSearchesRequest01" type="smoke" areas="dev_sanity">
+    <t:objective> Test for GetAdminSavedSearchesRequest </t:objective>
+    <t:steps>1. Save a search with some search criteria
+			 2. Fire GetAdminSavedSearchesRequest for verifying proper response
+	</t:steps>
+
+	<t:test id="GetAdminSavedSearchesRequest01a">
+		<t:request>
+			<ModifyAdminSavedSearchesRequest xmlns="urn:zimbraAdmin">
+				<search name="${search.name}">(uid=*${search1}*)</search>
+			</ModifyAdminSavedSearchesRequest>            
+		</t:request>
+		<t:response>
+			<t:select path="//admin:ModifyAdminSavedSearchesResponse" />
+		</t:response>
+	</t:test>
+
+	<t:test id="GetAdminSavedSearchesRequest01b" depends="GetAdminSavedSearchesRequest01a" >
+		<t:request>
+			<GetAdminSavedSearchesRequest xmlns="urn:zimbraAdmin"/>         
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAdminSavedSearchesResponse/admin:search" attr="name" match="${search.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>
+
+
+
+

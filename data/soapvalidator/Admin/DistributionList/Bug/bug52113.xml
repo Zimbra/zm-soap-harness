@@ -1,0 +1,298 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="domain" value="dl.example.com${COUNTER}${TIME}"/>
+<t:property name="list1" value="test@${domain}"/>
+
+
+<t:property name="user1" value="user1@${domain}"/>
+<t:property name="user2" value="user2@${domain}"/>
+<t:property name="user3" value="user3@${domain}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create two test account</t:objective>
+    
+    <steps>
+    	1. Login to admin account  
+        2. Create the domains
+        3. Create a test accounts 
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="createDomainRequest" required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id"/>            
+        </t:response>
+    </t:test>
+    
+    
+    <t:test id="create_user1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user1}</name>
+                <password>${defaultpassword.value}</password>             
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_user2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user2}</name>
+                <password>${defaultpassword.value}</password>           
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_user3" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user3}</name>
+                <password>${defaultpassword.value}</password>             
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+     
+</t:test_case>
+
+
+<t:test_case testcaseid = "#52113" type = "functional"  bugids="52113">
+    <t:objective> Verify DL has isGroup and exp attribute when message searched with needExp=1 </t:objective>
+    
+    <t:steps> 1. Login to admin
+              2. Create an distribution list              
+			  3. Add accounts to the distribution list
+			  4. Login to test account and send email to the distributionlist
+			  5. reply to the message so that it become a conversation
+			  6. Send GetMsgRequest with needExp="1"
+			  7. Verify DL has isGroup="1" exp="1"
+			  8. Send SearchConvRequest with  needExp="1"
+			  9. Verify DL has isGroup="1" exp="1"
+    </t:steps>
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+     
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+				<name>${list1}</name>
+				<a n="description">A test distribution list</a>
+			</CreateDistributionListRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+		</t:response>
+	</t:test>
+           
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${user1}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+     
+     <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${user2}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${user3}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetDistributionListRequest xmlns="urn:zimbraAdmin" limit="25" offset="0">
+				<dl by="name">${list1}</dl>
+				<dl by="id">${list1.id}</dl>
+			</GetDistributionListRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//admin:GetDistributionListResponse"/>
+        </t:response>
+	</t:test>
+	
+	 <t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov grr domain ${domain} dom ${domain} viewDistList'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:test required="true">
+        <t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${user1}</account>
+				<password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${list1}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>
+							"How you dress at work definitely shapes how others perceive you".
+						</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+	  <t:request>
+	    <SendMsgRequest xmlns="urn:zimbraMail">
+	      <m origid="${message1.id}" rt="r">
+			<e t="t" a='${list1}'/>
+			<e t="t" a='${user1}'/>
+			<su>RE: ${message.subject} </su>
+			<mp ct="text/plain">
+		    	<content>Reply tp"How you dress at work definitely shapes how others perceive you".</content>
+			</mp>
+	     </m>
+	    </SendMsgRequest>
+	  </t:request>
+	  <t:response>
+		 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
+	   </t:response>
+	</t:test>
+    
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(${message.subject})</query>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
+		 </t:response>
+	</t:test>
+    
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail" >
+                <m id="${message2.id}" needExp="1"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>            
+            <t:select path = "//mail:GetMsgResponse/mail:m/mail:e[@a='${list1}']" attr="isGroup" match="1"/>
+			<t:select path = "//mail:GetMsgResponse/mail:m/mail:e[@a='${list1}']" attr="exp" match="1"/>           
+        </t:response>
+	</t:test>
+   
+    <t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+		   <query>subject:(${message.subject})</query>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="msg.cid"/>
+		 </t:response>
+	</t:test>
+
+	<t:test >
+        <t:request>
+            <SearchConvRequest  cid="${msg.cid}"  xmlns="urn:zimbraMail" needExp="1" fetch="${message2.id}" max="100" >               
+            </SearchConvRequest>
+        </t:request>
+        <t:response>          
+            <t:select path = "//mail:SearchConvResponse/mail:m/mail:e[@a='${list1}']" attr="isGroup" match="1"/>
+			<t:select path = "//mail:SearchConvResponse/mail:m/mail:e[@a='${list1}']" attr="exp" match="1"/>
+        </t:response>
+	</t:test>
+</t:test_case>
+
+</t:tests>

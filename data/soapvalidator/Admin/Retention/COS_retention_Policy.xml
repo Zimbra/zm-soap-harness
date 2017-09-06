@@ -1,0 +1,467 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="policy1.name" value="policy1${TIME}${COUNTER}"/>
+<t:property name="policy2.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy3.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy4.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy5.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy6.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy7.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy8.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy9.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy9a.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy10.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy11.name" value="policy2${TIME}${COUNTER}"/>
+<t:property name="policy12.name" value="policy2${TIME}${COUNTER}"/>
+
+<t:property name="COS.name1" value="cos${TIME}${COUNTER}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test  id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="COSRetentionPolicy_acctSetup" type="always" >
+    <t:objective>Login</t:objective>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+ <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS.name1}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name1}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="Cos1.id"/>
+        </t:response>
+  </t:test>  
+  
+
+<t:test_case testcaseid="CreateCOSRetentionPolicy01" type="smoke" >
+	 <t:objective>Create COS retention policy lifetime in seconds</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <keep>
+    				<policy name="${policy1.name}" lifetime="2s" xmlns="urn:zimbraMail"/>
+  				</keep>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy1.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy1.interval" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateCOSRetentionPolicy02" type="smoke" >
+	 <t:objective>Create COS retention policy lifetime in minutes</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy2.name}" lifetime="1m" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy2.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy2.interval" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateCOSRetentionPolicy03" type="smoke" >
+	 <t:objective>Create COS retention policy lifetime in days</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy3.name}" lifetime="1d" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy3.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy3.interval" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateCOSRetentionPolicy04" type="smoke" >
+	 <t:objective>Create COS retention policy lifetime in hours</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	 <cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy4.name}" lifetime="2h" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy4.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy4.interval" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCOSRetentionPolicy05" type="negative" >
+	 <t:objective>Create COS retention policy lifetime invalid values</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	 <cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy5.name}" lifetime="29h67m" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" />
+        </t:response>
+    </t:test>
+    
+    	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy5.name}" lifetime="---2h" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" />
+        </t:response>
+    </t:test>
+    	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy5.name}" lifetime="1d25h" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" />
+        </t:response>
+    </t:test>
+    	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy5.name}" lifetime="-2h" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" />
+        </t:response>
+    </t:test>
+    	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy5.name}" lifetime="asdash" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" />
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy5.name}" lifetime="1209d25m" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" />
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy5.name}" lifetime="-24d" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" />
+        </t:response>
+    </t:test>
+        
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyCOSRetentionPolicy01" type="smoke" >
+	 <t:objective>Modify COS retention policies with change lifetime</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	 <cos by="id">${Cos1.id}</cos>
+				 <keep>
+    				<policy name="${policy7.name}" lifetime="2s" xmlns="urn:zimbraMail"/>
+  				</keep>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy7.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy7.interval" />
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifySystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            		<cos by="id">${Cos1.id}</cos>
+					<policy id="${policy7.id}" lifetime="5d" xmlns="urn:zimbraMail"/>
+  			</ModifySystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifySystemRetentionPolicyResponse/mail:policy" attr="lifetime" match="5d" />
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyCOSRetentionPolicy02" type="smoke" >
+	 <t:objective>Modify COS retention policies change name</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <keep>
+    				<policy name="${policy8.name}" lifetime="2s" xmlns="urn:zimbraMail"/>
+  				</keep>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy8.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy8.interval" />
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifySystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            		<cos by="id">${Cos1.id}</cos>
+					<policy id="${policy8.id}" name="new${policy8.name}" xmlns="urn:zimbraMail"/>
+  			</ModifySystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifySystemRetentionPolicyResponse/mail:policy" attr="name" match="new${policy8.name}" />
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="ModifyCOSRetentionPolicy03" type="smoke" >
+	 <t:objective>Modify COS retention policies without cos id</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <keep>
+    				<policy name="${policy11.name}" lifetime="2s" xmlns="urn:zimbraMail"/>
+  				</keep>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy11.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy11.interval" />
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifySystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">            		
+					<policy id="${policy11.id}" name="new${policy11.name}" xmlns="urn:zimbraMail"/>
+  			</ModifySystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" />
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="GetCOSRetentionPolicy01" type="smoke" >
+	 <t:objective>Get COS retention policy for Cos.name1</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <keep>
+    				<policy name="${policy9.name}" lifetime="2s" xmlns="urn:zimbraMail"/>
+  				</keep>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy9.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy9.interval" />
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <purge>
+    				<policy name="${policy9a.name}" lifetime="2s" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy9a.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy9a.interval" />
+        </t:response>
+    </t:test>
+    
+	<t:test>
+        <t:request>
+            <GetSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+             	<cos by="id">${Cos1.id}</cos>
+ 			</GetSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetSystemRetentionPolicyResponse/mail:retentionPolicy/mail:keep/mail:policy" attr="id" match="${policy9.id}" />
+			<t:select path="//admin:GetSystemRetentionPolicyResponse/mail:retentionPolicy/mail:keep/mail:policy[@id='${policy9.id}']" attr="lifetime" match="${policy9.interval}" />
+			<t:select path="//admin:GetSystemRetentionPolicyResponse/mail:retentionPolicy/mail:keep/mail:policy[@id='${policy9.id}']" attr="type" match="system" />
+            <t:select path="//admin:GetSystemRetentionPolicyResponse/mail:retentionPolicy/mail:purge/mail:policy[@id='${policy9a.id}']" attr="id" match="${policy9a.id}" />
+			<t:select path="//admin:GetSystemRetentionPolicyResponse/mail:retentionPolicy/mail:purge/mail:policy[@id='${policy9a.id}']" attr="lifetime" match="${policy9a.interval}" />
+			<t:select path="//admin:GetSystemRetentionPolicyResponse/mail:retentionPolicy/mail:purge/mail:policy[@id='${policy9a.id}']" attr="type" match="system" />
+         </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="GetCOSRetentionPolicy02" type="smoke" >
+	 <t:objective>Verify COS retention policy of Cos.name1 does not appear in the GetSystemRetentionPolicyRequest with cos id/name </t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>          	
+				 <keep>
+    				<policy name="${policy12.name}" lifetime="2s" xmlns="urn:zimbraMail"/>
+  				</keep>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy12.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy12.interval" />
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+ 			</GetSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:GetSystemRetentionPolicyResponse/mail:retentionPolicy/mail:keep/mail:policy[@id='${policy12.id}']"/>
+         </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">            	
+ 			</GetSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:GetSystemRetentionPolicyResponse/mail:retentionPolicy/mail:keep/mail:policy[@id='${policy12.id}']" emptyset="1" />
+         </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="DeleteCOSRetentionPolicy01" type="smoke" >
+	 <t:objective>Delete COS retention policy</t:objective>
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+				 <keep>
+    				<policy name="${policy10.name}" lifetime="2s" xmlns="urn:zimbraMail"/>
+  				</keep>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy10.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy10.interval" />
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <DeleteSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+            	<policy id="${policy10.id}" xmlns="urn:zimbraMail"/>
+ 			</DeleteSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+    	</t:response>
+    </t:test>
+    
+	<t:test>
+        <t:request>
+            <GetSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+            	<cos by="id">${Cos1.id}</cos>
+ 			</GetSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:GetSystemRetentionPolicyResponse/mail:retentionPolicy/mail:keep/mail:policy[@id='${policy10.id}']" emptyset="1" />
+         </t:response>
+    </t:test>    
+ 
+    
+</t:test_case>
+
+
+
+</t:tests>

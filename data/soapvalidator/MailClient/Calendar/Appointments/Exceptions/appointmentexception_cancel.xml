@@ -1,0 +1,831 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="acct1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="acct.password" value="${defaultpassword.value}"/>
+
+<t:property name="appointment1.subject" value="Subj1${TIME}.${COUNTER}"/>
+<t:property name="appointment2.subject" value="Subj2${TIME}.${COUNTER}"/>
+<t:property name="appointment3.subject" value="Subj3${TIME}.${COUNTER}"/>
+<t:property name="appointment4.subject" value="Subj4${TIME}.${COUNTER}"/>
+<t:property name="appointment5.subject" value="Subj5${TIME}.${COUNTER}"/>
+
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Cont${TIME}.${COUNTER}"/>
+
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="Time3" value="${ICALTIME(+1h)}"/>
+<t:property name="Time4" value="${ICALTIME(+2h)}"/>
+<t:property name="Time5" value="${ICALTIME(+1h)}"/>
+<t:property name="Time6" value="${ICALTIME(+2h)}"/>
+<t:property name="Time7" value="${ICALTIME(+30d)}"/>
+
+<t:property name="Time5a" value="${ICALTIME(+1d)(+1h)}"/>
+<t:property name="Time5b" value="${ICALTIME(+2d)(+1h)}"/>
+
+
+<t:property name="TimeRangeStart" value="${TIME}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+2d)}"/>
+
+<t:property name="calendar.negative" value="-1"/>
+<t:property name="calendar.zero" value="0"/>
+<t:property name="calendar.largeNumber" value="1112223333"/>
+<t:property name="calendar.space" value="          "/>
+<t:property name="calendar.blank" value=""/>
+<t:property name="calendar.sometext" value="some text"/>
+<t:property name="calendar.spchar" value="//\\:''*^%"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup1_cancelappointmentexception" type="always">
+    <t:objective>Create test accounts</t:objective>
+    <t:steps> 1.Login to admin
+              2.Create test accounts
+    </t:steps>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+
+    <!-- Create test accounts -->
+    <t:test id="create_acct1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct1.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_acct2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct2.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_acct3" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct3.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct3.id"/>
+        </t:response>
+    </t:test>   
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="acct_setup2_cancelappointmentexception" type="always" >
+    <t:objective>login as the test account and create appointments</t:objective>
+
+    <!-- login as the test account -->
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct1.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:property name="mail1.authToken" value="${authToken}"/>
+    
+    <t:test>
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
+        </t:response>
+    </t:test>
+
+    
+    <!--Create Appointments-->
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI" ival="1">
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment2.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment3.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct3.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment3.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment4.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct3.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment4.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment5.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct3.name}"/>
+                        <s d="${Time5}"/>
+                        <e d="${Time6}"/>
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI">
+                                    <interval ival="1"/>
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct3.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment5.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment2.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment3.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment4.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment4.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment5.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment5.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest1" type="smoke" areas="Calendar">
+    <t:objective>Cancel an instance of daily appointment</t:objective>
+    
+    <t:test id="CancelAppointmentExceptionRequest1a">
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
+                <inst d="${Time1}"/>
+                <m>
+                    <e a="${acct2.name}" t="t"/>
+                    <su>Cancelled${appointment1.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct2.name} Subject:"Cancelled:${appointment1.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest2" type="negative" areas="Calendar">
+    <t:objective>Cancel the whole series (No inst element) and verify cancelling it again  </t:objective>
+    <t:steps>1. Cancel an instance of series
+             2. Cancel the instance again
+        
+    </t:steps>
+
+    <t:test id="cancelAppointmentExceptionRequest2a">
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">                
+                <m>
+                    <e a="${acct2.name}" t="t"/>
+                    <su> Cancelled:${appointment2.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct2.name} Subject:"Cancelled:${appointment1.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="CancelAppointmentExceptionRequest2a">
+        <t:request>            
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">              
+                <m>
+                    <e a="${acct2.name}" t="t"/>
+                    <su> Cancelled:${appointment1.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct2.name} Subject:"Cancelled:${appointment1.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+			<t:select path = "//soap:Text" match=".*cannot cancel a calendar item under trash.*"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment2.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse">
+            	<t:select path="//mail:appt" attr="l" matach="${folder.trash}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="CancelAppointmentExceptionRequest3" type="negative" areas="Calendar">
+    <t:objective>Modify the series which is already cancelled</t:objective>
+
+    <t:test depends="CancelAppointmentExceptionRequest2a">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="Modified${appointment1.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>
+                        <e d="${Time2}"/>
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>Modified${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+			<t:select path = "//soap:Text" match=".*cannot modify a calendar item under trash.*"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest4" type="functional" areas="Calendar">
+    <t:objective> CancelAppointmentRequest without optional m and id elements </t:objective>    
+    
+    <t:test id="CancelAppointmentExceptionRequest4a">
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment3.id}" comp="0">                
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest5" type="negative" areas="Calendar">
+    <t:objective> CancelAppointmentRequest with the id of cancelled appointment</t:objective>
+    <t:steps> 1.Cancel the created series
+              2.Cancel any instance of that series
+    </t:steps>    
+
+    <t:test id="CancelAppointmentExceptionRequest5a">
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4.id}" comp="0">
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment4.id}" comp="0">                
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+			<t:select path = "//soap:Text" match=".*cannot cancel a calendar item under trash.*"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment4.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse">
+            	<t:select path="//mail:appt" attr="l" matach="${folder.trash}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest6" type="negative" areas="Calendar">
+    <t:objective> CancelAppointmentRequest with the invalid numeric id (negative/zero/largepositive)</t:objective>
+    <t:steps> 1.Cancel the created series
+              2.Cancel any instance of that series
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="-994785686748" comp="0">                
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="000000" comp="0">
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.largeNumber}" comp="0">
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="negative" areas="Calendar" bugids="3843">
+    <t:objective> CancelAppointmentRequest with the invalid non-numeric id (blank/spaces/special character/some text)</t:objective>
+    <t:steps> 1.Cancel the created series
+              2.Cancel any instance of that series
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.blank}" comp="0">                
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.space}" comp="0">
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.spchar}" comp="0">
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${calendar.sometext}" comp="0">
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="negative" areas="Calendar">
+    <t:objective> CancelAppointmentRequest with the invalid missing id attribute </t:objective>
+    <t:steps> 1.Cancel the created series
+              2.Cancel any instance of that series
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" comp="0">                
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest8" type="functional" areas="Calendar">
+    <t:objective> Searching the mail in another account for cancelled instance</t:objective>
+    <t:steps>1. Login to any account2
+             2. Search the mail for cancelled instance of series
+             3. Login back to account1
+    </t:steps>
+
+    <t:test id="CancelAppointmentExceptionRequest8a" depends="CancelAppointmentExceptionRequest1a" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct2.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test depends="CancelAppointmentExceptionRequest8a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>in:inbox</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test depends="CancelAppointmentExceptionRequest8a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct1.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CancelAppointmentExceptionRequest9" type="functional" areas="Calendar">
+    <t:objective>To cancel two different instance of same series </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment5.id}" comp="0">
+                <inst d="${Time5a}"/>
+                <m>
+                    <e a="${acct3.name}" t="t"/>
+                    <su>Cancelled${appointment5.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct3.name} Subject:"Cancelled:${appointment5.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment5.id}" comp="0">
+                <inst d="${Time5b}"/>
+                <m>
+                    <e a="${acct3.name}" t="t"/>
+                    <su>Cancelled${appointment5.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct3.name} Subject:"Cancelled:${appointment5.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment5.id}" comp="0">
+                <inst d="${Time7}"/>
+                <m>
+                    <e a="${acct3.name}" t="t"/>
+                    <su>Cancelled${appointment5.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct3.name} Subject:"Cancelled:${appointment5.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+     
+<t:test_case testcaseid="CancelAppointmentExceptionRequest10" type="negative" areas="Calendar">
+    <t:objective>CancelAppointmentRequest with invalid value of 'd' in inst element </t:objective>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment5.id}" comp="0">
+                <inst d="${calendar.blank}"/>
+                <m>
+                    <e a="${acct3.name}" t="t"/>
+                    <su>Cancelled${appointment5.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct3.name} Subject:"Cancelled:${appointment5.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment5.id}" comp="0">
+                <inst d="${calendar.space}"/>
+                <m>
+                    <e a="${acct3.name}" t="t"/>
+                    <su>Cancelled${appointment5.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct3.name} Subject:"Cancelled:${appointment5.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment5.id}" comp="0">
+                <inst d="${calendar.sometext}"/>
+                <m>
+                    <e a="${acct3.name}" t="t"/>
+                    <su>Cancelled${appointment5.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct3.name} Subject:"Cancelled:${appointment5.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment5.id}" comp="0">
+                <inst d="${calendar.spchar}"/>
+                <m>
+                    <e a="${acct3.name}" t="t"/>
+                    <su>Cancelled${appointment5.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct3.name} Subject:"Cancelled:${appointment5.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+    
+  
+
+</t:tests>

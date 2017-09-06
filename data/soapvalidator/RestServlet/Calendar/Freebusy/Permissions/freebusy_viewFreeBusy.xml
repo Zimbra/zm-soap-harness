@@ -1,0 +1,781 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="accountA.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="accountB.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_calendar_ics_account_setup" type="always" >
+    <t:objective>create test account</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountA.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountA.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="accountA.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountB.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountB.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="accountB.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_01" type="smoke" bugids="41926">
+    <t:objective>Verify if viewFreeBusy=all, only internal users are allowed F/B access</t:objective>
+	<t:steps>
+	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
+	</t:steps>
+
+
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<RevokePermissionRequest xmlns="urn:zimbraMail">
+				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
+			</RevokePermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:RevokePermissionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail">
+				<ace right="viewFreeBusy" gt="all"/>
+			</GrantPermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="freebusy.start" value="1263902400000"/>	<!-- Jan 19, 2010 12:00:00 -->
+	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
+	
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>content${TIME}${COUNTER}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<!-- clear the auth token to be a non-authenticated user -->
+	<t:property name="authToken" value=""/>
+	
+	<t:property name="server.restServlet" value="${account1.server}"/>
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account1.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" emptyset="1" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:property name="server.restServlet" value="${accountA.server}"/>
+	<t:property name="server.zimbraAccount" value="${accountA.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account1.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_02" type="smoke" >
+    <t:objective>Verify if viewFreeBusy=pub, all users are allowed F/B access</t:objective>
+	<t:steps>
+	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
+	</t:steps>
+
+
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<RevokePermissionRequest xmlns="urn:zimbraMail">
+				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
+			</RevokePermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:RevokePermissionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail">
+				<ace right="viewFreeBusy" gt="pub"/>
+			</GrantPermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="freebusy.start" value="1295438400000"/>	<!-- Jan 19, 2011 12:00:00 -->
+	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
+	
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <or a="${account2.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>content${TIME}${COUNTER}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<!-- clear the auth token to be a non-authenticated user -->
+	<t:property name="authToken" value=""/>
+	
+	<t:property name="server.restServlet" value="${account2.server}"/>
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account2.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:property name="server.restServlet" value="${accountA.server}"/>
+	<t:property name="server.zimbraAccount" value="${accountA.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account2.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_03" type="smoke" bugids="41926" >
+    <t:objective>Verify if viewFreeBusy=all/deny=1, all users are allowed F/B access</t:objective>
+	<t:steps>
+	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
+	</t:steps>
+
+
+	
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<RevokePermissionRequest xmlns="urn:zimbraMail">
+				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
+			</RevokePermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:RevokePermissionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail">
+				<ace right="viewFreeBusy" gt="all" deny="1"/>
+			</GrantPermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="freebusy.start" value="1295438400000"/>	<!-- Jan 19, 2011 12:00:00 -->
+	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
+	
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <or a="${account3.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>content${TIME}${COUNTER}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<!-- clear the auth token to be a non-authenticated user -->
+	<t:property name="authToken" value=""/>
+	
+	<t:property name="server.restServlet" value="${account3.server}"/>
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account3.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" emptyset="1" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:property name="server.restServlet" value="${accountA.server}"/>
+	<t:property name="server.zimbraAccount" value="${accountA.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account3.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" emptyset="1" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_04" type="smoke" bugids="41926" >
+    <t:objective>Verify if viewFreeBusy=usr, only specified users are allowed F/B access</t:objective>
+	<t:steps>
+	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
+	</t:steps>
+
+
+	
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<RevokePermissionRequest xmlns="urn:zimbraMail">
+				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
+			</RevokePermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:RevokePermissionResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="viewFreeBusy" gt="usr" d="${accountA.name}"/>
+			</GrantPermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="freebusy.start" value="1295438400000"/>	<!-- Jan 19, 2011 12:00:00 -->
+	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
+	
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <or a="${account4.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>content${TIME}${COUNTER}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<!-- clear the auth token to be a non-authenticated user -->
+	<t:property name="authToken" value=""/>
+	
+	<t:property name="server.restServlet" value="${account4.server}"/>
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account4.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" emptyset="1" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:property name="server.restServlet" value="${accountA.server}"/>
+	<t:property name="server.zimbraAccount" value="${accountA.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account4.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:property name="server.restServlet" value="${accountB.server}"/>
+	<t:property name="server.zimbraAccount" value="${accountB.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountB.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account4.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" emptyset="1" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_Calendar_Freebusy_viewFreeBusy_05" type="smoke" bugids="41926" >
+    <t:objective>Verify if viewFreeBusy=usr (multiple users), only specified users are allowed F/B access</t:objective>
+	<t:steps>
+	1. Hit http://server/service/pubcal/freebusy.ifb?acct=account@domain.com
+	</t:steps>
+
+
+	
+	<t:property name="server.zimbraAccount" value="${account5.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account5.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<RevokePermissionRequest xmlns="urn:zimbraMail">
+				<ace right="viewFreeBusy" gt="pub" zid="99999999-9999-9999-9999-999999999999"/>
+			</RevokePermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:RevokePermissionResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="viewFreeBusy" gt="usr" d="${accountA.name}"/>
+				<ace right="viewFreeBusy" gt="usr" d="${accountB.name}"/>
+			</GrantPermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+        </t:response>
+    </t:test>
+
+
+
+	<t:property name="freebusy.start" value="1295438400000"/>	<!-- Jan 19, 2011 12:00:00 -->
+	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
+	
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                        <s d="${ICALTIME[${freebusy.start}]}Z"/>  
+	                        <e d="${ICALTIME(+1h)[${freebusy.start}]}Z"/>  
+	                        <or a="${account5.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>content${TIME}${COUNTER}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<!-- clear the auth token to be a non-authenticated user -->
+	<t:property name="authToken" value=""/>
+	
+	<t:property name="server.restServlet" value="${account5.server}"/>
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account5.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" emptyset="1" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:property name="server.restServlet" value="${accountA.server}"/>
+	<t:property name="server.zimbraAccount" value="${accountA.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account5.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:property name="server.restServlet" value="${accountB.server}"/>
+	<t:property name="server.zimbraAccount" value="${accountB.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountB.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/service/pubcal/freebusy.ifb</basepath>
+			<acct>${account5.name}</acct>
+			<s>${TIME(-1d)[${freebusy.start}]}</s>
+			<e>${TIME(+1d)[${freebusy.start}]}</e>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="FREEBUSY" match="FBTYPE=BUSY:${ICALTIME[${freebusy.start}]}Z/${ICALTIME(+1h)[${freebusy.start}]}Z"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+</t:tests>

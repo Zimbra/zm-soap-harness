@@ -1,0 +1,550 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="folder.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder2.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder3.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder4.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder5.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder6.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder6.newname" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder7a.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder7b.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder8a.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder8b.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder9.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder10.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder11.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder12.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder.blankname" value=""/>
+<t:property name="folder.space" value="            "/>
+<t:property name="folder.spchar" value=":/\\.;&lt;*''"/>
+<t:property name="folder.pname" value="1"/> <!-- Folder's parent ID -->
+<t:property name="folder.pnameZero" value="0"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="smoke" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test id="ping" required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="smoke" >
+ <t:objective>create test account</t:objective>
+
+	<t:test id="admin_login" required="true" depends="ping">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+			<name>${admin.user}</name>
+			<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="create_test_account1" required="false" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+			<name>${test_account1.name}</name>
+			<password>${test_account1.password}</password>
+			<!-- 
+			<a n="zimbraMailHost">${LOCALHOST}</a>
+			<a n="zimbraMailStatus">enabled</a>
+			<a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+			<a n="zimbraPasswordMinAge">7</a>
+			Commenting out the optional attributes and sending the request with minimal requirement
+			-->
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="smoke" >
+ <t:objective>login as the test account</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+			<account by="name">${test_account1.name}</account>
+			<password>${test_account1.password}</password>
+			<!--<prefs/>-->
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest1" type="smoke" >
+ <t:objective>Create a folder with valid name </t:objective>
+
+	<t:test >
+		<t:request>
+			<CreateFolderRequest xmlns="urn:zimbraMail">
+			<folder name="${folder.name}" l="${folder.pname}"/>
+			</CreateFolderRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateFolderResponse/mail:folder">
+			<t:select attr="id" set="folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest2" type="functional" >
+ <t:objective>Create a folder with blank folder name </t:objective>
+
+	<t:test >
+		<t:request>
+			<CreateFolderRequest xmlns="urn:zimbraMail">
+			<folder name="${folder.blankname}" l="${folder.pname}"/>
+			</CreateFolderRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^mail.INVALID_NAME">
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest3" type="functional" >
+ <t:objective>Create a folder with all spaces in folder name </t:objective>
+
+	<t:test >
+		<t:request>
+			<CreateFolderRequest xmlns="urn:zimbraMail">
+			<folder name="${folder.space}" l="${folder.pname}"/>
+			</CreateFolderRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^mail.INVALID_NAME">
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest4" type="functional" >
+ <t:objective>Create a folder with special characters in folder name </t:objective>
+
+	<t:test >
+		<t:request>
+			<CreateFolderRequest xmlns="urn:zimbraMail">
+			<folder name="${folder.spchar}" l="${folder.pname}"/>
+			</CreateFolderRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^mail.INVALID_NAME">
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest5" type="functional" >
+ <t:objective>Create a folder with duplicate folder name </t:objective>
+
+	<t:test id="createfolder5a">
+		<t:request>
+			<CreateFolderRequest xmlns="urn:zimbraMail">
+			<folder name="${folder2.name}" l="${folder.pname}"/>
+			</CreateFolderRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateFolderResponse/mail:folder">
+			<t:select attr="id" set="folder.id2"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:test depends="createfolder5a">
+		<t:request>
+			<CreateFolderRequest xmlns="urn:zimbraMail">
+			<folder name="${folder2.name}" l="${folder.pname}"/>
+			</CreateFolderRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS">
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest6" type="functional" >
+ <t:objective>Create a folder with nonexisting parent folder name </t:objective>
+
+	<t:test >
+		<t:request>
+			<CreateFolderRequest xmlns="urn:zimbraMail">
+			<folder name="${folder3.name}" l="${folder.pnameZero}"/>
+			</CreateFolderRequest>
+		</t:request>
+  <t:response>
+	<t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER|^mail.NO_SUCH_ITEM">
+  </t:select>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest7" type="negative" bugids="1744" >
+ <t:objective>Create a folder with blank parent folder name </t:objective>
+
+<t:test >
+ <t:request>
+   <CreateFolderRequest xmlns="urn:zimbraMail">
+     <folder name="${folder4.name}" l="${folder.blankname}"/>
+   </CreateFolderRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$">
+  </t:select>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest8" type="negative" >
+ <t:objective>Create a folder with No parent folder name </t:objective>
+
+<t:test >
+ <t:request>
+   <CreateFolderRequest xmlns="urn:zimbraMail">
+     <folder name="${folder5.name}"/>
+   </CreateFolderRequest>
+ </t:request>
+	 <t:response>
+		<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder6.id"/>
+	 </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FolderActionRequest1" type="smoke" >
+ <t:objective>Rename a folder to unique name </t:objective>
+
+	<t:test id="folderaction1a">
+	 <t:request>
+	   <CreateFolderRequest xmlns="urn:zimbraMail">
+	     <folder name="${folder6.name}" l="${folder.pname}"/>
+	   </CreateFolderRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder6.id"/>
+	  </t:response>
+	</t:test>
+
+	<t:test depends="folderaction1a">
+	 <t:request>
+		<FolderActionRequest xmlns="urn:zimbraMail">
+			<action op="rename" id="${folder6.id}" name="${folder6.newname}"/>
+		</FolderActionRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//mail:FolderActionResponse/mail:action">
+		<t:select attr="id" match="${folder6.id}"/>
+		<t:select attr="op" match="rename"/>
+	 </t:select>
+	  </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FolderActionRequest2" type="functional" >
+ <t:objective>Rename a folder to duplicate name </t:objective>
+
+	<!-- First : Create a folder with any name -->
+
+	<t:test id="folderaction2a">
+	 <t:request>
+	   <CreateFolderRequest xmlns="urn:zimbraMail">
+	     <folder name="${folder7a.name}" l="${folder.pname}"/>
+	   </CreateFolderRequest>	
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateFolderResponse/mail:folder">
+		<t:select attr="id" set="folder7a.id"/>
+	  </t:select>
+	  </t:response>
+	</t:test>
+
+	<!-- Second : Create a folder with another name -->
+
+	<t:test id="folderaction2b" depends="folderaction2a">
+	 <t:request>
+	   <CreateFolderRequest xmlns="urn:zimbraMail">
+	     <folder name="${folder7b.name}" l="${folder.pname}"/>
+	   </CreateFolderRequest>	
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateFolderResponse/mail:folder">
+		<t:select attr="id" set="folder7b.id"/>
+	  </t:select>
+	  </t:response>
+	</t:test>
+
+	<!-- Third: Rename the first folder to the second folder name -->
+	<t:test depends="folderaction2b">
+	 <t:request>
+		<FolderActionRequest xmlns="urn:zimbraMail">
+			<action op="rename" id="${folder7a.id}" name="${folder7b.name}"/>
+		</FolderActionRequest>	
+	 </t:request>
+	  <t:response>
+		<t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
+	  </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FolderActionRequest3" type="negative" >
+ <t:objective>Rename a folder with nonexisting folder id </t:objective>
+
+	<t:test >
+	 <t:request>
+		<FolderActionRequest xmlns="urn:zimbraMail">
+			<action op="rename" id="10000" name="${folder.name}"/>
+		</FolderActionRequest>	
+	 </t:request>
+	  <t:response>
+		<t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER"/>
+	  </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FolderActionRequest4" type="smoke" >
+ <t:objective>Move a folder within some existing folder </t:objective>
+ <t:steps> create folderA, create folderB, move folderB under folderA </t:steps>
+
+	<t:test id="folderaction4a">
+	 <t:request>
+	   <CreateFolderRequest xmlns="urn:zimbraMail">
+	     <folder name="${folder8a.name}" l="${folder.pname}"/>
+	   </CreateFolderRequest>	
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateFolderResponse/mail:folder">
+		<t:select attr="id" set="folder8a.id"/>
+	  </t:select>
+	  </t:response>
+	</t:test>
+
+	<t:test id="folderaction4b" depends="folderaction4a">
+	 <t:request>
+	   <CreateFolderRequest xmlns="urn:zimbraMail">
+	     <folder name="${folder8b.name}" l="${folder.pname}"/>
+	   </CreateFolderRequest>	
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateFolderResponse/mail:folder">
+		<t:select attr="id" set="folder8b.id"/>
+	  </t:select>
+	  </t:response>
+	</t:test>
+
+	<t:test >
+ 	<t:request>
+	   <FolderActionRequest xmlns="urn:zimbraMail">
+	     <action op="move" id="${folder8b.id}" l="${folder8a.id}"/>
+	   </FolderActionRequest>
+	 </t:request>
+ 	 <t:response>
+		<t:select path="//mail:FolderActionResponse/mail:action">
+		  <t:select attr="id" match="${folder8b.id}"/>	  
+  	 	  <t:select attr="op" match="move"/>	  
+		</t:select>
+	 </t:response>
+
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FolderActionRequest5" type="functional" >
+ <t:objective>Move a folder within itself </t:objective>
+
+	<t:test id="folderaction5a">
+	 <t:request>
+	   <CreateFolderRequest xmlns="urn:zimbraMail">
+	     <folder name="${folder9.name}" l="${folder.pname}"/>
+	   </CreateFolderRequest>	
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateFolderResponse/mail:folder">
+		<t:select attr="id" set="folder9.id"/>
+	  </t:select>
+	  </t:response>
+	</t:test>
+
+	<!-- Move a folder within itself -->
+	<t:test depends="folderaction5a">
+	 <t:request>
+ 	  <FolderActionRequest xmlns="urn:zimbraMail">
+ 	    <action op="move" id="${folder9.id}" l="${folder9.id}"/>
+ 	  </FolderActionRequest>
+	 </t:request>
+	  <t:response>
+	<t:select path="//zimbra:Code" match="^mail.CANNOT_CONTAIN"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FolderActionRequest6" type="smoke" >
+ <t:objective>Delete a Folder,i.e move it to trash </t:objective>
+
+	<t:test id="folderaction6a">
+	 <t:request>
+	   <CreateFolderRequest xmlns="urn:zimbraMail">
+	     <folder name="${folder10.name}" l="${folder.pname}"/>
+	   </CreateFolderRequest>	
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateFolderResponse/mail:folder">
+		<t:select attr="id" set="folder10.id"/>
+	  </t:select>
+	  </t:response>
+	</t:test>
+
+<!--
+	Matt: 05/04/2005 -
+	 - How do we know that ID=3 is trash?
+-->
+<t:test depends="folderaction6a">
+ <t:request>
+   <FolderActionRequest xmlns="urn:zimbraMail">
+     <action op="move" id="${folder10.id}" l="3"/>
+   </FolderActionRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:FolderActionResponse/mail:action"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FolderActionRequest7" type="negative" >
+ <t:objective>Move a folder within a non existing folder </t:objective>
+
+	<t:test id="folderaction7a">
+	 <t:request>
+	   <CreateFolderRequest xmlns="urn:zimbraMail">
+	     <folder name="${folder11.name}" l="${folder.pname}"/>
+	   </CreateFolderRequest>	
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateFolderResponse/mail:folder">
+		<t:select attr="id" set="folder11.id"/>
+	  </t:select>
+	  </t:response>
+	</t:test>
+
+	<t:test depends="folderaction7a">
+ 	<t:request>
+ 	  <FolderActionRequest xmlns="urn:zimbraMail">
+ 	    <action op="move" id="${folder11.id}" l="-1"/>
+ 	  </FolderActionRequest>
+	 </t:request>
+ 	  <t:response>
+		<t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER"/>
+	  </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FolderActionRequest7" type="smoke" >
+ <t:objective>Move a folder within a non existing folder </t:objective>
+
+<t:test id="folderaction7a">
+ <t:request>
+   <CreateFolderRequest xmlns="urn:zimbraMail">
+     <folder name="${folder12.name}" l="${folder.pname}"/>
+   </CreateFolderRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateFolderResponse/mail:folder">
+	<t:select attr="id" set="folder12.id"/>
+  </t:select>
+  </t:response>
+</t:test>
+
+<t:test id="folderaction7b" depends="folderaction7a">
+ <t:request>
+   <FolderActionRequest xmlns="urn:zimbraMail">
+     <action xmlns="" op="delete" id="${folder12.id}"/>
+   </FolderActionRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:FolderActionResponse/mail:action">
+	  <t:select attr="id" match="${folder12.id}"/>	  
+	</t:select>
+ </t:response>
+</t:test>
+
+<!-- delete an non existing folder -->
+<!-- try again with folder2 -->
+<t:test depends="folderaction7b">
+ <t:request>
+   <FolderActionRequest xmlns="urn:zimbraMail">
+     <action op="delete" id="${folder12.id}"/>
+   </FolderActionRequest>
+ </t:request>
+
+  <t:response>
+	<t:select path="//mail:FolderActionResponse"/>
+
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

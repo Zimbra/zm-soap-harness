@@ -1,0 +1,270 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="Identity1.name" value="identity1${TIME}.${COUNTER}"/>
+<t:property name="Identity2.name" value="identity2${TIME}.${COUNTER}"/>
+<t:property name="Identitynonexist.name" value="Identitynonexist"/>
+
+<t:property name="DisplayFrom1.name" value="newdisplayname1${TIME}.${COUNTER}"/>
+<t:property name="DisplayFrom2.name" value="newdisplayname2${TIME}.${COUNTER}"/>
+<t:property name="DisplayFrom3.name" value="newdisplayname3${TIME}.${COUNTER}"/>
+
+<t:property name="blank" value=""/>
+<t:property name="space" value="             "/>
+<t:property name="spchar" value=":''&lt;//\\"/>
+<t:property name="sometext" value="some text"/>
+<t:property name="negative" value="-1"/>
+<t:property name="zero" value="0"/>
+<t:property name="largenumber" value="12345678901234567890"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="delete_identity_acctsetup1" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
+
+<t:test_case testcaseid="delete_identity01" type="smoke" >
+    <t:objective>Verify that a identity can be deleted by=name.</t:objective>
+	<t:steps>
+		1. login into the account.
+		2. Add a new identity.
+		3. Delete the identity  by=name.
+	</t:steps>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<CreateIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${Identity1.name}">
+					<a name="zimbraPrefIdentityName">${Identity1.name}</a>
+					<a name="zimbraPrefFromDisplay">${DisplayFrom1.name}</a>
+					<a name="zimbraPrefFromAddress">${account1.name}</a>
+				</identity>
+			</CreateIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity/acct:a[@ name='zimbraPrefFromAddress']" match="${account1.name}"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${Identity1.name}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:DeleteIdentityResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="delete_identity02" type="smoke" >
+    <t:objective>Verify that a identity can be deleted by=id.</t:objective>
+
+    <t:test required="true">
+        <t:request>
+			<CreateIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${Identity2.name}">
+					<a name="zimbraPrefIdentityName">${Identity2.name}</a>
+					<a name="zimbraPrefFromDisplay">${DisplayFrom2.name}</a>
+					<a name="zimbraPrefFromAddress">${account1.name}</a>
+				</identity>
+			</CreateIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="identity1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity id="${identity1.id}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:DeleteIdentityResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="delete_identity03" type="functional" >
+    <t:objective>Verify deletion of already deleted identity.</t:objective>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity id="${identity1.id}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^account.NO_SUCH_IDENTITY$"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="delete_identity04" type="negative" >
+    <t:objective>Verify deletion of non-existing identity.</t:objective>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${Identitynonexist.name}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^account.NO_SUCH_IDENTITY$"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="delete_identity05" type="negative" >
+    <t:objective>Verify deletion of identity spaces/blank/spchar/sometext/negative/zero/largenumber.</t:objective>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${space}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^account.NO_SUCH_IDENTITY$"/>
+		</t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${blank}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^account.NO_SUCH_IDENTITY$"/>
+		</t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${spchar}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+       <t:response>
+			<t:select path="//zimbra:Code"  match="^account.NO_SUCH_IDENTITY$"/>
+		</t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${sometext}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^account.NO_SUCH_IDENTITY$"/>
+		</t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${negative}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^account.NO_SUCH_IDENTITY$"/>
+		</t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${zero}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^account.NO_SUCH_IDENTITY$"/>
+		</t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${largenumber}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+       <t:response>
+			<t:select path="//zimbra:Code"  match="^account.NO_SUCH_IDENTITY$"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

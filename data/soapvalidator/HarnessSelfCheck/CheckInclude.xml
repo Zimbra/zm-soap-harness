@@ -1,0 +1,24 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="PASS-CheckInclude_01" type="functional" areas="selfcheck" >
+    <t:objective>SOAP Harness -- CheckTestLoop - Verify t:include</t:objective>
+    
+    <t:include filename="CheckInclude.inc"/>
+    
+    <t:test >
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

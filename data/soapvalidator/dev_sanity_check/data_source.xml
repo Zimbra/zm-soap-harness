@@ -1,0 +1,240 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="user" value="${user1.user}"/>
+<t:property name="password" value="${user1.password}"/>
+
+<!-- Initial values for data source -->
+<t:property name="dsName" value="Unit test"/>
+<t:property name="dsIsEnabled" value="1"/>
+<t:property name="dsHost" value="pop.myisp.com"/>
+<t:property name="dsPort" value="110"/>
+<t:property name="dsConnectionType" value="cleartext"/>
+<t:property name="dsUsername" value="mylogin"/>
+<t:property name="dsPassword" value="mypassword"/>
+<t:property name="dsFolderId" value="2"/>
+<t:property name="dsLeaveOnServer" value="1"/>
+
+<!-- Modified values for data source -->
+<t:property name="dsNewName" value="Unit test 2"/>
+<t:property name="dsNewIsEnabled" value="0"/>
+<t:property name="dsNewHost" value="pop.mynewisp.com"/>
+<t:property name="dsNewPort" value="210"/>
+<t:property name="dsNewConnectionType" value="ssl"/>
+<t:property name="dsNewUsername" value="mynewlogin"/>
+<t:property name="dsNewFolderId" value="3"/>
+<t:property name="dsNewLeaveOnServer" value="0"/>
+
+<t:property name="uri" value="${admin.uri}"/>
+
+<t:test>
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+<t:property name="uri" value="${mailclient.uri}"/>
+
+<t:test id="auth" required="true">
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${user}</account>
+    <password>${password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+ </t:response>
+</t:test>
+
+<t:test id="create pop" required="true">
+ <t:request>
+  <CreateDataSourceRequest xmlns="urn:zimbraMail">
+   <pop3 name="${dsName}" isEnabled="${dsIsEnabled}"
+     host="${dsHost}" port="${dsPort}" connectionType="${dsConnectionType}"
+     username="${dsUsername}" password="${dsPassword}" l="${dsFolderId}"
+     leaveOnServer="${dsLeaveOnServer}" />
+  </CreateDataSourceRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//mail:CreateDataSourceResponse"/>
+	<t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="dsId"/>
+ </t:response>
+</t:test>
+
+<t:test id="get initial" required="true">
+ <t:request>
+  <GetDataSourcesRequest xmlns="urn:zimbraMail"/>
+ </t:request>
+ <t:response>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="name" match="${dsName}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="isEnabled" match="${dsIsEnabled}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="host" match="${dsHost}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="port" match="${dsPort}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="connectionType" match="${dsConnectionType}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="username" match="${dsUsername}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="l" match="${dsFolderId}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="leaveOnServer" match="${dsLeaveOnServer}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="pollingInterval" emptyset="1"/>
+ </t:response>
+</t:test>
+
+<t:test id="get info" required="true">
+ <t:request>
+  <GetInfoRequest xmlns="urn:zimbraAccount"/>
+ </t:request>
+ <t:response>
+  <t:select path="//acct:GetInfoResponse/acct:dataSources/acct:pop3[@id='${dsId}']" attr="name" match="${dsName}"/>
+  <t:select path="//acct:GetInfoResponse/acct:dataSources/acct:pop3[@id='${dsId}']" attr="isEnabled" match="${dsIsEnabled}"/>
+  <t:select path="//acct:GetInfoResponse/acct:dataSources/acct:pop3[@id='${dsId}']" attr="host" match="${dsHost}"/>
+  <t:select path="//acct:GetInfoResponse/acct:dataSources/acct:pop3[@id='${dsId}']" attr="port" match="${dsPort}"/>
+  <t:select path="//acct:GetInfoResponse/acct:dataSources/acct:pop3[@id='${dsId}']" attr="connectionType" match="${dsConnectionType}"/>
+  <t:select path="//acct:GetInfoResponse/acct:dataSources/acct:pop3[@id='${dsId}']" attr="username" match="${dsUsername}"/>
+  <t:select path="//acct:GetInfoResponse/acct:dataSources/acct:pop3[@id='${dsId}']" attr="l" match="${dsFolderId}"/>
+  <t:select path="//acct:GetInfoResponse/acct:dataSources/acct:pop3[@id='${dsId}']" attr="leaveOnServer" match="${dsLeaveOnServer}"/>
+  <t:select path="//acct:GetInfoResponse/acct:dataSources/acct:pop3[@id='${dsId}']" attr="pollingInterval" emptyset="1"/>
+ </t:response>
+</t:test>
+
+<t:test id="get status" required="true">
+ <t:request>
+  <GetImportStatusRequest xmlns="urn:zimbraMail"/>
+ </t:request>
+ <t:response>
+  <t:select path="//mail:GetImportStatusResponse/mail:pop3[@id='${dsId}']" attr="isRunning" match="0"/>
+  <t:select path="//mail:GetImportStatusResponse/mail:pop3[@id='${dsId}']" attr="success" emptyset="1"/>
+  <t:select path="//mail:GetImportStatusResponse/mail:pop3[@id='${dsId}']" attr="error" emptyset="1"/>
+ </t:response>
+</t:test>
+
+<!-- Verify optional attributes -->
+<t:test id="modify nothing" required="true">
+ <t:request>
+  <ModifyDataSourceRequest xmlns="urn:zimbraMail">
+   <pop3 id="${dsId}"/>
+  </ModifyDataSourceRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//mail:ModifyDataSourceResponse"/>
+ </t:response>
+</t:test>
+
+<!-- Make sure attributes haven't changed -->
+<t:test id="get after modify nothing" required="true">
+ <t:request>
+  <GetDataSourcesRequest xmlns="urn:zimbraMail"/>
+ </t:request>
+ <t:response>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="name" match="${dsName}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="isEnabled" match="${dsIsEnabled}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="host" match="${dsHost}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="port" match="${dsPort}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="connectionType" match="${dsConnectionType}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="username" match="${dsUsername}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="l" match="${dsFolderId}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="leaveOnServer" match="${dsLeaveOnServer}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="pollingInterval" emptyset="1"/>
+ </t:response>
+</t:test>
+
+<t:test id="modify" required="true">
+ <t:request>
+  <ModifyDataSourceRequest xmlns="urn:zimbraMail">
+   <pop3 id="${dsId}" name="${dsNewName}" isEnabled="${dsNewIsEnabled}"
+     host="${dsNewHost}" port="${dsNewPort}" connectionType="${dsNewConnectionType}"
+     username="${dsNewUsername}" l="${dsNewFolderId}" leaveOnServer="${dsNewLeaveOnServer}"
+     />
+  </ModifyDataSourceRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//mail:ModifyDataSourceResponse"/>
+ </t:response>
+</t:test>
+
+<t:test id="get modified" required="true">
+ <t:request>
+  <GetDataSourcesRequest xmlns="urn:zimbraMail"/>
+ </t:request>
+ <t:response>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="name" match="${dsNewName}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="isEnabled" match="${dsNewIsEnabled}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="host" match="${dsNewHost}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="port" match="${dsNewPort}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="connectionType" match="${dsNewConnectionType}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="username" match="${dsNewUsername}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="l" match="${dsNewFolderId}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:pop3[@id='${dsId}']" attr="leaveOnServer" match="${dsNewLeaveOnServer}"/>
+ </t:response>
+</t:test>
+
+<t:test id="delete pop" required="true">
+ <t:request>
+  <DeleteDataSourceRequest xmlns="urn:zimbraMail">
+   <pop3 id="${dsId}"/>
+  </DeleteDataSourceRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//mail:DeleteDataSourceResponse"/>
+ </t:response>
+</t:test>
+
+<t:test id="create imap" required="true">
+ <t:request>
+  <CreateDataSourceRequest xmlns="urn:zimbraMail">
+   <imap name="${dsName}" isEnabled="${dsIsEnabled}"
+     host="${dsHost}" port="${dsPort}" connectionType="${dsConnectionType}"
+     username="${dsUsername}" password="${dsPassword}" l="${dsFolderId}"
+     leaveOnServer="${dsLeaveOnServer}"/>
+  </CreateDataSourceRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//mail:CreateDataSourceResponse"/>
+	<t:select path="//mail:CreateDataSourceResponse/mail:imap" attr="id" set="dsId"/>
+ </t:response>
+</t:test>
+
+<t:test id="modify imap" required="true">
+ <t:request>
+  <ModifyDataSourceRequest xmlns="urn:zimbraMail">
+   <imap id="${dsId}" name="${dsNewName}" isEnabled="${dsNewIsEnabled}"
+     host="${dsNewHost}" port="${dsNewPort}" connectionType="${dsNewConnectionType}"
+     username="${dsNewUsername}" l="${dsNewFolderId}"/>
+  </ModifyDataSourceRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//mail:ModifyDataSourceResponse"/>
+ </t:response>
+</t:test>
+
+<t:test id="get modified imap" required="true">
+ <t:request>
+  <GetDataSourcesRequest xmlns="urn:zimbraMail"/>
+ </t:request>
+ <t:response>
+  <t:select path="//mail:GetDataSourcesResponse/mail:imap[@id='${dsId}']" attr="name" match="${dsNewName}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:imap[@id='${dsId}']" attr="isEnabled" match="${dsNewIsEnabled}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:imap[@id='${dsId}']" attr="host" match="${dsNewHost}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:imap[@id='${dsId}']" attr="port" match="${dsNewPort}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:imap[@id='${dsId}']" attr="connectionType" match="${dsNewConnectionType}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:imap[@id='${dsId}']" attr="username" match="${dsNewUsername}"/>
+  <t:select path="//mail:GetDataSourcesResponse/mail:imap[@id='${dsId}']" attr="l" match="${dsNewFolderId}"/>
+ </t:response>
+</t:test>
+
+<t:test id="delete imap" required="true">
+ <t:request>
+  <DeleteDataSourceRequest xmlns="urn:zimbraMail">
+   <imap id="${dsId}"/>
+  </DeleteDataSourceRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//mail:DeleteDataSourceResponse"/>
+ </t:response>
+</t:test>
+
+</t:tests>

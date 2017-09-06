@@ -1,0 +1,487 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="AcctSetup1_filters" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefTimeZoneId">UTC</a>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	    </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+	    </t:response>
+    </t:test>
+
+    
+</t:test_case>
+
+<t:test_case testcaseid="bulkTest_01" type="smoke" bugids="42185" >
+    <t:objective>Verify that bulk messages gets flagged for bulkTest filter</t:objective>
+    
+    <t:steps> 1. Create filter for bulkTest for account1
+			  2. Inject  bulk messages to account1 			 
+			  3. Verify that the bulk messages gets flagged in account1 inbox
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter_bulk.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk1.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk2.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk3.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk4.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter_bulk5.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk6.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk7.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk8.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk9.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter_bulk10.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk11.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk12.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk13.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk14.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter_bulk15.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_bulk16.subject" value="filter${TIME}${COUNTER}"/>
+			
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_bulk.name}" active="1">
+						<filterTests condition="allof">
+							<bulkTest/>
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="bulk_msg01.file" value="${testMailRaw.root}/bug42185/bulk.txt" />
+	<t:property name="bulk_msg03.file" value="${testMailRaw.root}/bug42185/bulk-02.txt" />
+	<t:property name="bulk_msg04.file" value="${testMailRaw.root}/bug42185/bulk-03.txt" />
+	<t:property name="bulk_msg05.file" value="${testMailRaw.root}/bug42185/bulk-04.txt" />
+	<t:property name="bulk_msg06.file" value="${testMailRaw.root}/bug42185/bulk-05.txt" />
+	<t:property name="bulk_msg07.file" value="${testMailRaw.root}/bug42185/bulk-06.txt" />
+	<t:property name="bulk_msg08.file" value="${testMailRaw.root}/bug42185/bulk-07.txt" />
+	<t:property name="bulk_msg09.file" value="${testMailRaw.root}/bug42185/bulk-08.txt" />
+	<t:property name="bulk_msg10.file" value="${testMailRaw.root}/bug42185/bulk-09.txt" />
+	<t:property name="bulk_msg11.file" value="${testMailRaw.root}/bug42185/bulk-10.txt" />
+	<t:property name="bulk_msg12.file" value="${testMailRaw.root}/bug42185/bulk-11.txt" />
+	<t:property name="bulk_msg14.file" value="${testMailRaw.root}/bug42185/bulk-13.txt" />
+	<t:property name="bulk_msg15.file" value="${testMailRaw.root}/bug42185/bulk-14.txt" />
+	<t:property name="bulk_msg16.file" value="${testMailRaw.root}/bug42185/bulk-15.txt" />
+	
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk1.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+	    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg03.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk3.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg04.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk4.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg05.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk5.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg06.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk6.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg07.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk7.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg08.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk8.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg09.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk9.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg10.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk10.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg11.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk11.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg12.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk12.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+       
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg14.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk14.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg15.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk15.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bulk_msg16.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_bulk16.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+        
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk1.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+      
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk3.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk3.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk4.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk4.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk5.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk5.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+   
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk6.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk6.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk7.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk7.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk8.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk8.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk9.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk9.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk10.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk10.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk11.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk11.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk12.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk12.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+        
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk14.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk14.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk15.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk15.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>   
+       
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_bulk16.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_bulk16.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>    
+
+</t:test_case> 
+
+
+
+</t:tests>

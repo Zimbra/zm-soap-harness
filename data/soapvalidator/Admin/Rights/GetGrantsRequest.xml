@@ -1,0 +1,189 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain.name" value="right.${COUNTER}${TIME}"/>
+<t:property name="admin1.account" value="admin1.${COUNTER}${TIME}"/>
+<t:property name="admin2.account" value="admin2.${COUNTER}${TIME}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="name">${defaultdomain.name}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetDomainResponse/admin:domain" attr="id"  set="defaultdomain.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${admin1.account}@${domain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="admin1.fullName"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${admin2.account}@${domain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="admin2.fullName"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin2.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetGrantsRequest01" type="smoke" >
+ <t:objective>basic request check</t:objective>
+
+	<t:test>
+		<t:request>
+			<GetGrantsRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+			</GetGrantsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetGrantsResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetGrantsRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="id">${defaultdomain.id}</target>
+			</GetGrantsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetGrantsResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetGrantsRequest02" type="smoke" >
+ <t:objective> Test after assigning "viewGrants" right </t:objective>
+
+	<t:steps>
+		1. give "viewGrants" right to admin1
+		2. Authenticate with admin1
+		3. send GetGrantsRequest
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.fullName}</grantee>
+				<right>viewGrants</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin1.fullName}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetGrantsRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+			</GetGrantsRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetGrantsResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetGrantsRequest03" type="smoke" >
+ <t:objective> admin2 don't have "viewGrants" rights hence it should get "PERM_DENIED"</t:objective>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin2.fullName}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetGrantsRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+			</GetGrantsRequest>    
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^service.PERM_DENIED" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>

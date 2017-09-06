@@ -1,0 +1,331 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup_contactRaningTest" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefTimeZoneId">UTC</a>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	    </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+	    </t:response>
+    </t:test>
+    
+       
+</t:test_case>
+
+
+<t:test_case testcaseid="contactRankingTest_01" type="smoke" bugids="42185" >
+    <t:objective>Verify that message received from a contactRanking list is filtered for contactRankingTest filter</t:objective>
+    
+    <t:steps> 1. Create filter for contactRankingTest with header="From" for accoun1 to flag
+			  2. account1 sends a message  to account2 and account2 sends message to the account 1.
+			  3. Verify that the message gets flagged in accoun1 inbox.
+    </t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	
+	<t:property name="filter_ContactRankingTest1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_ContactRankingTest2.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_ContactRankingTest1.subject" value="ContactRankingTest 1 ${TIME}${COUNTER}"/>
+	<t:property name="filter_ContactRankingTest2.subject" value="ContactRankingTest 2 ${TIME}${COUNTER}"/>		
+	<t:property name="message.content1" value="content of the message01"/>
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_ContactRankingTest1.name}" active="1">
+						<filterTests condition="allof">
+						 <contactRankingTest header="From"/>			
+						</filterTests>
+						<filterActions>
+							<actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>    
+   
+	<t:test id="sendmail1" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account2.name}'/>
+                    <su>${filter_ContactRankingTest1.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account1.name}'/>
+                    <su>${filter_ContactRankingTest2.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" />
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_ContactRankingTest2.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_ContactRankingTest2.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>
+              
+</t:test_case>
+
+<t:test_case testcaseid="contactRankingTest_02" type="smoke" bugids="42185" >
+    <t:objective>Verify that received message includes CC to a user from a contactRanking list is filtered for contactRankingTest filter</t:objective>
+    
+    <t:steps> 1. Create filter for contactRankingTest with header="CC" for accoun1 to flag
+			  2. account1 sends a message  to account3 
+			  3. account2 sends message to the account 1 and CC to account3.
+			  4. Verify that the message gets flagged in accoun1 inbox.
+    </t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	
+    
+	<t:property name="filter_ContactRankingTest2.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_ContactRankingTest3.subject" value="ContactRankingTest 3 ${TIME}${COUNTER}"/>
+	<t:property name="filter_ContactRankingTest4.subject" value="ContactRankingTest 4 ${TIME}${COUNTER}"/>		
+	<t:property name="message.content1" value="content of the message04 for contact ranking test"/>
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_ContactRankingTest2.name}" active="1">
+						<filterTests condition="allof">
+						 <contactRankingTest header="CC"/>			
+						</filterTests>
+						<filterActions>
+							<actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>    
+   
+	<t:test id="sendmail1" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account3.name}'/>
+                    <su>${filter_ContactRankingTest3.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test id="sendmail1" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account1.name}'/>
+                    <e t="c" a='${account3.name}'/>
+                    <su>${filter_ContactRankingTest4.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" />
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_ContactRankingTest4.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_ContactRankingTest4.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>
+              
+</t:test_case>
+
+</t:tests>

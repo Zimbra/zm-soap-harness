@@ -1,0 +1,44 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="PASS-CheckTestLoop_01" type="functional" areas="selfcheck" >
+    <t:objective>SOAP Harness -- CheckTestLoop - Verify the required t:test_loop attributes</t:objective>
+    
+	<t:test_loop >
+	
+	    <t:test >
+	        <t:request>
+	            <PingRequest xmlns="urn:zimbraAdmin"/>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:PingResponse"/>
+	        </t:response>
+	    </t:test>
+		
+	</t:test_loop>
+
+</t:test_case>
+
+<t:test_case testcaseid="PASS-CheckTestLoop_02" type="functional" areas="selfcheck" >
+    <t:objective>SOAP Harness -- CheckTestLoop - Verify the t:test_loop "count" attribute</t:objective>
+    
+	<t:test_loop count="10">
+	
+	    <t:test >
+	        <t:request>
+	            <PingRequest xmlns="urn:zimbraAdmin"/>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:PingResponse"/>
+	        </t:response>
+	    </t:test>
+		
+	</t:test_loop>
+
+</t:test_case>
+
+
+
+</t:tests>

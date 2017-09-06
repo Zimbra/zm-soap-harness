@@ -1,0 +1,260 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="cont_backup.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="cont_backup.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="sign" value="Regards, ${account1.name}"/>
+<t:property name="sign.new" value="Thanks and Regards, ${account2.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup_Contacts_Backup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Sign_Backup_01" type="smoke" areas="backup,nonappliance">
+    <t:objective>Verify that after backup and restore an account having a signature, sign is restored. </t:objective>
+    <t:steps>
+			1. Login into account1.
+			2. Create an Signature (zimbraPrefMailSignature).
+			3. Delete the account.
+			4. Restore the account.
+			5. Verify the Sign.
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+				<pref name="zimbraPrefMailSignature">${sign}</pref>
+			</ModifyPrefsRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+		</t:response>
+	</t:test>
+
+
+	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+     
+    
+	<t:include filename="BackupWorkflowFullDeleteRestore.inc"/> 
+ 	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="${sign}"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Sign_Backup_02" type="smoke" areas="backup,nonappliance">
+    <t:objective>Backup (incremental) and restore an account with a Signature. Verify that after backup and restore the signature is correctly restored. </t:objective>
+    <t:steps>
+			1. Login into account2.
+			2. Create an Signature (zimbraPrefMailSignature).
+			3. Backup the account.
+			4. Modify the Signature (zimbraPrefMailSignature).
+			5. Do incremental backup.
+			6. Delete the account.
+			7. Restore the account.
+			8. Verify the modified Signature is displayed.
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+				<pref name="zimbraPrefMailSignature">${sign}</pref>
+			</ModifyPrefsRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
+	<t:property name="account.name" value="${account2.name}"/>
+	<t:property name="account.id" value="${account2.id}"/>
+     
+    
+	<t:include filename="BackupRequestFullBasic.inc"/> 
+ 	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+				<pref name="zimbraPrefMailSignature">${sign.new}</pref>
+			</ModifyPrefsRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
+	<t:property name="account.name" value="${account2.name}"/>
+	<t:property name="account.id" value="${account2.id}"/>
+     
+    
+	<t:include filename="BackupWorkflowIncrementalDeleteRestore.inc"/> 
+ 	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="${sign}"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse" emptyset="0"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,208 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name"		value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="tgz.file"				value="${testMailRaw.root}/tgz01/5_0_11.tgz"/>
+
+
+<t:test_case testcaseid="RestServlet_FormatXML_AccountSetup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest required="true">
+		<t:restServletRequest method="POST">
+			<filename>${tgz.file}</filename>
+			<fmt>tgz</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+	
+</t:test_case>
+
+<t:test_case testcaseid="Import_Upgrades_Basic_5_0_11_01" type="smoke" >
+	<t:objective>Verify import messages using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Import tgz
+	3. Verify basic data
+	</t:steps>
+	<t:delay sec="45"/>
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+	<t:property name="account.server" value="${account1.server}"/>
+	<t:property name="account.password" value="${defaultpassword.value}"/>
+    <t:include filename="ImportUpgrades_BasicVerification.inc"/>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="Import_Upgrades_Messages_5_0_11_02" type="functional" >
+	<t:objective>Verify import messages using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Import tgz
+	3. Verify message data
+	</t:steps>
+
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+	<t:property name="account.server" value="${account1.server}"/>
+	<t:property name="account.password" value="${defaultpassword.value}"/>
+    <t:include filename="ImportUpgrades_Messages.inc"/>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="Import_Upgrades_Appointments_5_0_11_03" type="functional" >
+	<t:objective>Verify import appointments using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Import tgz
+	3. Verify appointment data
+	</t:steps>
+
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+	<t:property name="account.server" value="${account1.server}"/>
+	<t:property name="account.password" value="${defaultpassword.value}"/>
+    <t:include filename="ImportUpgrades_Appointments.inc"/>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="Import_Upgrades_Contacts_5_0_11_04" type="functional" >
+	<t:objective>Verify import contacts using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Import tgz
+	3. Verify contact data
+	</t:steps>
+
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+	<t:property name="account.server" value="${account1.server}"/>
+	<t:property name="account.password" value="${defaultpassword.value}"/>
+    <t:include filename="ImportUpgrades_Contacts.inc"/>
+
+</t:test_case>
+
+<t:test_case testcaseid="Import_Upgrades_Folders_5_0_11_05" type="functional" >
+	<t:objective>Verify import folders using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Import tgz
+	3. Verify folder data
+	</t:steps>
+
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+	<t:property name="account.server" value="${account1.server}"/>
+	<t:property name="account.password" value="${defaultpassword.value}"/>
+    <t:include filename="ImportUpgrades_Folders.inc"/>
+
+</t:test_case>
+
+<t:test_case testcaseid="Import_Upgrades_Tags_5_0_11_06" type="functional" >
+	<t:objective>Verify import tags using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Import tgz
+	3. Verify tag data
+	</t:steps>
+
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+	<t:property name="account.server" value="${account1.server}"/>
+	<t:property name="account.password" value="${defaultpassword.value}"/>
+    <t:include filename="ImportUpgrades_Folders.inc"/>
+
+</t:test_case>
+
+<t:test_case testcaseid="Import_Upgrades_Wikis_5_0_11_07" type="functional" >
+	<t:objective>Verify import wiki using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Import tgz
+	3. Verify wiki data
+	</t:steps>
+
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+	<t:property name="account.server" value="${account1.server}"/>
+	<t:property name="account.password" value="${defaultpassword.value}"/>
+    <t:include filename="ImportUpgrades_Wikis.inc"/>
+
+</t:test_case>
+
+<t:test_case testcaseid="Import_Upgrades_Briefcases_5_0_11_08" type="functional" >
+	<t:objective>Verify import briefcase using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Import tgz
+	3. Verify briefcase data
+	</t:steps>
+
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+	<t:property name="account.server" value="${account1.server}"/>
+	<t:property name="account.password" value="${defaultpassword.value}"/>
+    <t:include filename="ImportUpgrades_Briefcases.inc"/>
+
+</t:test_case>
+
+
+</t:tests>

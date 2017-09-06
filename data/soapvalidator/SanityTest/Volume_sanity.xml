@@ -1,0 +1,469 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="volume.name1" value="Volume${TIME}${COUNTER}"/>
+<t:property name="volume.name2" value="Volume${TIME}${COUNTER}"/>
+<t:property name="volume.name3" value="Volume${TIME}${COUNTER}"/>
+<t:property name="volume.name4" value="Volume${TIME}${COUNTER}"/>
+<t:property name="volume.name5" value="Volume${TIME}${COUNTER}"/>
+<t:property name="volume.name6" value="Volume${TIME}${COUNTER}"/>
+<t:property name="volume.name7" value="Volume${TIME}${COUNTER}"/>
+<t:property name="volume.newname" value="Volume${TIME}${COUNTER}"/>   
+
+<t:property name="type.index" value="10"/>
+<t:property name="tempdir" value="/tmp/volumes"/>
+
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "mkdir -p ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+<t:staftask >
+	<t:request>
+		<server>${zimbraServer.name}</server>
+		<service>PROCESS</service>
+		<params>START SHELL COMMAND "chmod 777 ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+	</t:request>
+</t:staftask>
+
+<t:property name="type" value="1"/>
+
+
+<t:property name="mgbits_default" value="8"/>
+<t:property name="mbits_default" value="12"/>
+<t:property name="fgbits_default" value="8"/>
+<t:property name="fbits_default" value="12"/>
+<t:property name="compressBlobs_default" value="0"/>
+<t:property name="compressionThreshold_default" value="4096"/>
+
+
+<t:test_case testcaseid="CreateVolumeRequest_01" type="sanity">
+    <t:objective> Sanity test for CreateVolumeRequest </t:objective>
+    
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+	<t:property name="rootpath" value="${tempdir}/rootpath${COUNTER}${TIME}"/>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type}" name= "${volume.name1}" rootpath= "${rootpath}" mgbits= "${mgbits_default}" mbits= "${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetVolumeRequest_01" type="sanity">
+    <t:objective> Sanity test for GetVolumeRequest </t:objective>
+    
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+	<t:property name="rootpath" value="${tempdir}/rootpath${COUNTER}${TIME}"/>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type}" name= "${volume.name2}" rootpath= "${rootpath}" mgbits= "${mgbits_default}" mbits= "${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume2.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Get the volume just created. -->
+    <t:test>
+        <t:request>
+            <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${volume2.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" match="${volume2.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllVolumesRequest_01" type="sanity">
+    <t:objective> Sanity test for GetAllVolumesRequest </t:objective>
+    
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+	<t:property name="rootpath" value="${tempdir}/rootpath${COUNTER}${TIME}"/>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type}" name= "${volume.name3}" rootpath= "${rootpath}" mgbits= "${mgbits_default}" mbits= "${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume3.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Get all the volume -->
+    <t:test>
+        <t:request>
+            <GetAllVolumesRequest xmlns="urn:zimbraAdmin" />
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${volume3.id}" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyVolumeRequest_01" type="sanity">
+    <t:objective> Sanity test for ModifyVolumeRequest </t:objective>
+    
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+	<t:property name="rootpath" value="${tempdir}/rootpath${COUNTER}${TIME}"/>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type}" name= "${volume.name4}" rootpath= "${rootpath}" mgbits= "${mgbits_default}" mbits= "${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume4.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Modify the volume just created. -->
+    <t:test>
+        <t:request>
+            <ModifyVolumeRequest xmlns="urn:zimbraAdmin" id="${volume4.id}">           
+                <volume type="${type}" name="${volume.newname}"/>
+            </ModifyVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyVolumeResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DeleteVolumeRequest_01" type="sanity">
+    <t:objective>Sanity test for DeleteVolumeRequest </t:objective>
+    
+    <!-- Login to admin -->
+    <t:test id="admin_login">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+	<t:property name="rootpath" value="${tempdir}/rootpath${COUNTER}${TIME}"/>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type}" name= "${volume.name5}" rootpath= "${rootpath}" mgbits= "${mgbits_default}" mbits= "${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume5.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Modify the volume just created. -->
+    <t:test>
+        <t:request>
+            <DeleteVolumeRequest  xmlns="urn:zimbraAdmin" id="${volume5.id}" />             
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteVolumeResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCurrentVolumesRequest_01" type="sanity">
+    <t:objective>Sanity test for GetCurrentVolumesRequest </t:objective>
+    
+    <!-- Login to admin -->
+    <t:test id="admin_login">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>	
+ 
+    <t:test >
+        <t:request>
+            <GetCurrentVolumesRequest  xmlns="urn:zimbraAdmin"  />             
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCurrentVolumesResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SetCurrentVolumeRequest_01" type="sanity">
+    <t:objective>Sanity test for SetCurrentVolumeRequest </t:objective>
+    
+    <!-- Login to admin -->
+    <t:test id="admin_login">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+ 	<t:property name="rootpath" value="${tempdir}/rootpath${COUNTER}${TIME}"/>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type.index}" name= "${volume.name6}" rootpath= "${rootpath}" mgbits= "${mgbits_default}" mbits= "${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume6.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SetCurrentVolumeRequest xmlns="urn:zimbraAdmin"  type="${type.index}" id="${volume6.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SetCurrentVolumeResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!--
+<t:test_case testcaseid="CheckBlobConsistencyRequest_01" type="sanity">
+    <t:objective>Sanity test for CheckBlobConsistencyRequest </t:objective>
+    
+    <t:test id="admin_login">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+ 	<t:property name="rootpath" value="${tempdir}/rootpath${COUNTER}${TIME}"/>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+    <t:test>
+        <t:request>
+            <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+                <volume type= "${type.index}" name= "${volume.name7}" rootpath= "${rootpath}" mgbits= "${mgbits_default}" mbits= "${mbits_default}" fgbits= "${fgbits_default}" fbits="${fbits_default}" compressBlobs="${compressBlobs_default}" compressionThreshold="${compressionThreshold_default}"/>
+            </CreateVolumeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="volume7.id"/>
+        </t:response>
+    </t:test>    
+   
+    <t:test>
+        <t:request>
+            <SetCurrentVolumeRequest xmlns="urn:zimbraAdmin"  type="${type.index}" id="${volume7.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SetCurrentVolumeResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CheckBlobConsistencyRequest xmlns="urn:zimbraAdmin" checkSize="0">
+            	<volume id="${volume7.id}" />
+            </CheckBlobConsistencyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CheckBlobConsistencyResponse"/>
+        </t:response>
+    </t:test>    
+
+</t:test_case> -->
+
+</t:tests>

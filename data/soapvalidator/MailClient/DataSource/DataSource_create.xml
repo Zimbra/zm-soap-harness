@@ -1,0 +1,636 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="folder1.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder2.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder3.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder4.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder5.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder6.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder7.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder8.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder10.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder11.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder12.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder13.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="pop3account1.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account3.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account5.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account6.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account7.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account8.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account9.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account10.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account11.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account12.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account13.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account1.id" value="pop3id${TIME}${COUNTER}"/>
+<t:property name="pop3account2.id" value="pop3id${TIME}${COUNTER}"/>
+<t:property name="pop3.true" value="true"/>
+<t:property name="pop3.false" value="false"/>
+<t:property name="pop3.blank" value=""/>
+<t:property name="pop3.space" value="             "/>
+<t:property name="pop3.negative" value="-1"/>
+<t:property name="pop3.zero" value="0"/>
+<t:property name="pop3.invalid" value="invalid"/>
+<t:property name="pop3.spchar" value=":''&lt;//\\"/>
+<t:property name="pop3.largenumber" value="12345678901234567890"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup_DataSource_create" type="always" >
+    <t:objective>Do account setup</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="parentfolder.id"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create1" type="smoke" >
+    <t:objective>Create a pop3 account with all valid values</t:objective>
+
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 id="${pop3account1.id}" name="${pop3account1.name}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder1.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account1.id"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create2" type="negative" >
+    <t:objective>Create a pop3 account with invalid values of name(blank/space/negative/largenumber/spchar/zero)</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}${COUNTER}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test id="DataSource_create2a">
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 id="${pop3account2.id}" name="${pop3.blank}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder2.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="ldap.LDAP_ERROR"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}${COUNTER}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test id="DataSource_create2b">
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 id="${pop3account2.id}" name="${pop3.space}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder2.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}${COUNTER}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test id="DataSource_create2c">
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 id="${pop3account2.id}" name="${pop3.negative}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder2.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account2.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}${COUNTER}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test id="DataSource_create2d">
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 id="${pop3account2.id}" name="${pop3.largenumber}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder2.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account2.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}${COUNTER}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test id="DataSource_create2e">
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 id="${pop3account2.id}" name="${pop3.spchar}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder2.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse" />
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}${COUNTER}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test id="DataSource_create2f">
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 id="${pop3account2.id}" name="${pop3.zero}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder2.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account2.id"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DataSource_create3" type="smoke" >
+    <t:objective>Create a pop3 account with minimum attributes</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="${pop3account3.name}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder3.id}" connectionType="${POP3.gmail.connectionType}" />
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account3.id"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create4" type="negative" >
+    <t:objective>To verify that a pop3 account cannot be created without providing name</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder4.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder4.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create5" type="smoke" >
+    <t:objective>Verify that a pop3 account can be created where mails are removed from the pop server</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder5.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="${pop3account5.name}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder5.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.false}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account5.id"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create6a" type="smoke" bugids="40033">
+    <t:objective>To verify that two pop3 accounts with same name cannot be created</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder6.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder6.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="${pop3account6.name}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder6.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account5.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="${pop3account6.name}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder6.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^account.DATA_SOURCE_EXISTS"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create6b" type="smoke" bugids="40033">
+    <t:objective> To verify server disallow creating datasource whose folder is within the subfolder list of another datasource </t:objective>
+
+<t:property name="folder6b.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="sub-folder6b.name" value="sub-folder.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder6b.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder6b.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${sub-folder6b.name}" l="${folder6b.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="sub-folder6b.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="popaccount${TIME}${COUNTER}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder6b.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account5.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="popaccount${TIME}${COUNTER}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${sub-folder6b.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create7" type="negative" >
+    <t:objective>Create a pop3 account with invalid user name</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder7.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder7.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${pop3.invalid}" password="${POP3.gmail.password}" l="${folder7.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create8" type="negative" >
+    <t:objective>Create a pop3 account with invalid password</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder8.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder8.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${pop3.invalid}" l="${folder8.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create9" type="negative" >
+    <t:objective>Create a pop3 account with invalid folder</t:objective>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${pop3.invalid}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create10" type="negative" >
+    <t:objective>Create a pop3 account with invalid port number</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder10.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder10.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${pop3.invalid}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder10.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create11" type="negative" >
+    <t:objective>Create a pop3 account with invalid host name</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder11.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder11.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}" host="${pop3.invalid}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder11.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create12" type="negative" >
+    <t:objective>Create a disabled pop3 account</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder12.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder12.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.false}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder12.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_create13" type="negative" >
+    <t:objective>Create a pop3 account with invalid connection type</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder13.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder13.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.false}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder13.id}" connectionType="${pop3.invalid}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>

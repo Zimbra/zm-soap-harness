@@ -1,0 +1,1017 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.password" value="test123"/>
+
+<t:property name="calendar.verb1" value="ACCEPT"/>
+<t:property name="calendar.verb2" value="DECLINE"/>
+<t:property name="calendar.verb3" value="TENTATIVE"/>
+
+<t:property name="calendar.comp1" value="0"/>
+<t:property name="calendar.comp2" value="1"/>    
+
+<t:property name="appointment.subject1" value="subject1 ${TIME}.${COUNTER}"/>
+<t:property name="appointment.subject2" value="subject2 ${TIME}.${COUNTER}"/>
+<t:property name="appointment.subject3" value="subject3 ${TIME}.${COUNTER}"/>
+<t:property name="appointment.subject4" value="subject4 ${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="tz.default" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+<t:property name="Time1" value="${ICALTIME(+1h)}"/>
+<t:property name="Time2" value="${ICALTIME(+2h)}"/>
+<t:property name="Time3" value="${ICALTIME(+3h)}"/>
+<t:property name="Time4" value="${ICALTIME(+4h)}"/>
+<t:property name="Time5" value="${ICALTIME(+5h)}"/>
+<t:property name="Time6" value="${ICALTIME(+6h)}"/>
+<t:property name="Time7" value="${ICALTIME(+7h)}"/>
+<t:property name="Time8" value="${ICALTIME(+8h)}"/>
+
+<!-- Make sure that the range includes all created appointments -->
+<t:property name="TimeRangeStart" value="${TIME(-2d)}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+2d)}"/>
+
+<t:property name="calendar.negative" value="-1"/>
+<t:property name="calendar.zero" value="0"/>
+<t:property name="calendar.largeNumber" value="1112223333"/>
+<t:property name="calendar.space" value="          "/>
+<t:property name="calendar.blank" value=""/>
+<t:property name="calendar.sometext" value="some text"/>
+<t:property name="calendar.spchar" value="//\\:''*^%"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_acct_setup1_sendInviteReply" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account2.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="new_acct_setup2_sendInviteReply" type="always" >
+    <t:objective>Setting the account for test</t:objective>
+    <t:steps> 1. Login to account1
+              2. Send some invitations to account2
+              3. Login to account2
+    </t:steps>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject1}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time1}" tz="${tz.default}"/>  
+                        <e d="${Time2}" tz="${tz.default}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject1}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject2}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time3}" tz="${tz.default}"/>  
+                        <e d="${Time4}" tz="${tz.default}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject2}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject3}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time5}" tz="${tz.default}"/>  
+                        <e d="${Time6}" tz="${tz.default}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject3}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject4}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time7}" tz="${tz.default}"/>  
+                        <e d="${Time8}" tz="${tz.default}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject4}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment.subject1}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="test_account1.appointment1.id"/>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="id" set="account1_appt1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment.subject2}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="test_account1.appointment2.id"/>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="id" set="account1_appt2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment.subject3}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="test_account1.appointment3.id"/>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="id" set="account1_appt3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment.subject4}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="test_account1.appointment4.id"/>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="id" set="account4_appt4.id"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account2.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment.subject1}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="test_account2.appointment1.id"/>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="id" set="account2_appt1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment.subject1}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="test_account2.appointment2.id"/>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="id" set="account2_appt2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment.subject1}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="test_account2.appointment3.id"/>
+			 <t:select path = "//mail:SearchResponse/mail:appt" attr="id" set="account2_appt3.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest1" type="smoke">
+    <t:objective>Accepting invitation request</t:objective>    
+    <t:steps>1. Search the invitation
+             2. Accept it
+    </t:steps>
+    
+    <t:test >
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account2.appointment1.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account2.appointment1.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb1}${appointment.subject1}</su>
+                    <mp ct="text/plain">
+                        <content>Yes, I will attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//mail:SendInviteReplyResponse" attr="apptId" match="${account2_appt1.id}"/>
+        </t:response>
+    </t:test>    
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest2" type="smoke">
+    <t:objective>Declining invitation request</t:objective>
+    <t:steps>1. Search the invitation
+             2. Decline it
+    </t:steps>
+
+    <t:test >
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account2.appointment2.id}" compNum="0" verb="${calendar.verb2}" updateOrganizer="${globals.true}">
+                <m origid="${test_account2.appointment2.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb2}${appointment.subject2}</su>
+                    <mp ct="text/plain">
+                        <content>No, I won't attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//mail:SendInviteReplyResponse" attr="apptId" match="${account2_appt2.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest3" type="smoke">
+    <t:objective>Tentative reply for invitaion </t:objective>
+    <t:steps>1. Search the invitation
+             2. Send tentative reply
+    </t:steps>
+    
+    
+
+    <t:test id="new_SendInviteReplyRequest3b" >
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account2.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${globals.true}">
+                <m origid="${test_account2.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3}</su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//mail:SendInviteReplyResponse" attr="apptId" match="${account2_appt3.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:test_case testcaseid="new_SendInviteReplyRequest4" type="smoke">
+    <t:objective>Verify the mails for accept/tentative/decline of invitation are received properly</t:objective>
+    <t:steps>1. Login to account1 
+             2. Search the invitation replies
+    </t:steps>
+    
+    <t:test id="new_SendInviteReplyRequest4a" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest4a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${calendar.verb1}${appointment.subject1})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${calendar.verb1}${appointment.subject1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest4a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${calendar.verb2}${appointment.subject2})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${calendar.verb2}${appointment.subject2}"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest4a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${calendar.verb3}${appointment.subject3})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${calendar.verb3}${appointment.subject3}"/>
+        </t:response>
+    </t:test>
+
+    <!-- Test for scripts testing purpose -->
+    <t:test depends="new_SendInviteReplyRequest4a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>is:anywhere</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest5" type="negative">
+    <t:objective> SendInviteReplyRequest with invalid value for verb (Space/blank/sometext/special character)</t:objective>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.space}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.blank}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.spchar}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.sometext}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest6" type="negative" bugids="3830">
+    <t:objective> SendInviteReplyRequest with invalid positive value for id (Zero/large number)</t:objective>
+    
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${calendar.zero}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb1}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^mail.NO_SUCH_MSG$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${calendar.largeNumber}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb1}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^mail.NO_SUCH_MSG$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest7" type="negative" bugids="1797">
+    <t:objective> SendInviteReplyRequest with invalid value for id (Negative/Space/blank/sometext/special character)</t:objective>
+    
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${calendar.negative}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb1}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^mail.NO_SUCH_MSG$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${calendar.blank}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb1}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${calendar.space}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb1}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${calendar.spchar}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb1}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${calendar.sometext}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb1}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest8" type="negative">
+    <t:objective> SendInviteReplyRequest with deleted id </t:objective>
+    <t:steps>1. Search the invitation
+             2. Delete it 
+             3. Reply to the deleted invitation
+    </t:steps>
+
+   
+    <t:test id="new_SendInviteReplyRequest8a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${appointment.subject4})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="test_account1.invitation4.id"/>
+        </t:response>
+    </t:test>
+    
+
+    <t:test id="new_SendInviteReplyRequest8b" depends="new_SendInviteReplyRequest8a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id="${test_account1.invitation4.id}" op = "delete"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest8b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.invitation4.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.invitation4.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject4} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^mail.NO_SUCH_MSG$"/>
+        </t:response>
+    </t:test>    
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest9" type="negative" bugids="3831">
+    <t:objective> SendInviteReplyRequest with invalid numeric value for compNum (Negative/large positive number) </t:objective>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="${calendar.negative}" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="mail.NO_SUCH_ITEM|mail.NO_SUCH_CALITEM|mail.INVITE_OUT_OF_DATE"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="${calendar.largeNumber}" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="mail.NO_SUCH_ITEM|mail.NO_SUCH_CALITEM|mail.INVITE_OUT_OF_DATE"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest10" type="negative">
+    <t:objective> SendInviteReplyRequest with invalid non numeric value for compNum (Space/blank/sometext/special character) </t:objective>
+    
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="${calendar.space}" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="${calendar.blank}" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="${calendar.sometext}" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="${calendar.spchar}" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest11" type="functional">
+    <t:objective>SendInviteReplyRequest with updateOrganizer=True/False </t:objective>
+    
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${globals.true}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <!-- <t:select path = "//mail:SendInviteReplyResponse" attr="apptId" match="${account1_appt3.id}"/> -->
+            <t:select path = "//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${globals.false}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest12" type="functional">
+    <t:objective>SendInviteReplyRequest with updateOrganizer=zero/one </t:objective>    
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${calendar.zero}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="1">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <!-- <t:select path = "//mail:SendInviteReplyResponse" attr="apptId" match="${account1_appt3.id}"/>-->
+           <t:select path = "//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest13" type="negative">
+    <t:objective>SendInviteReplyRequest with updateOrganizer=Invalid values (blank/space/sometext/special charecter) </t:objective>
+    <t:steps>1. Search for the invitation
+             2. Verify updateOrganizer= true/false
+    </t:steps>
+    
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${calendar.blank}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${calendar.space}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${calendar.spchar}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${calendar.sometext}">
+                <m origid="${test_account1.appointment3.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${calendar.verb3}${appointment.subject3} </su>
+                    <mp ct="text/plain">
+                        <content>I might attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="new_SendInviteReplyRequest14" type="functional">
+    <t:objective>SendInviteReplyRequest without m element </t:objective>
+    
+    <t:test depends="new_SendInviteReplyRequest3b">
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${test_account1.appointment3.id}" compNum="0" verb="${calendar.verb3}" updateOrganizer="${globals.true}">                
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <!--  <t:select path = "//mail:SendInviteReplyResponse" attr="apptId" match="${account1_appt3.id}"/>-->
+           <t:select path = "//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+   
+</t:test_case>
+
+</t:tests>
+

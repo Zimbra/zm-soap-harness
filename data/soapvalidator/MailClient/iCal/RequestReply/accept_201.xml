@@ -1,0 +1,275 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="appt1.subject" value="appt1.subject"/>
+<t:property name="appt1.invitee" value="${account2.name}"/>
+<t:property name="appt1.location" value="appt1.location"/>
+<t:property name="appt1.content" value="appt1.content"/>
+<t:property name="appt1.start" value="${ICALTIME(-6h)}"/>
+<t:property name="appt1.end" value="${ICALTIME(-5h)}"/>
+<t:property name="appt1.stamp" value="${ICALTIME(-14h)}Z"/>
+<t:property name="acctServer" value="qa12.liquidsys.com"/>
+<t:property name="msgFile" value="${soapxml.root}/MailClient/iCal/RequestReply/msg_201.txt"/>
+<t:property name="appt1.start.local" value="${ICALTIME(-7h)}"/>
+
+<!--
+<t:property name="search.start" value="0"/>
+<t:property name="search.end" value="-1"/>
+-->
+<t:property name="search.start" value="${TIME(-100d)}"/>
+<t:property name="search.end" value="${TIME(+100d)}"/>
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+<t:property name="appt2.id" value="0"/>
+<t:property name="cnv2.id" value="0"/>
+<t:property name="compNum" value="0"/>
+
+
+<t:property name="contentServletServer" value="${test_acct.server}"/>
+<t:property name="server.restServlet" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="iCalReplyACCEPT201" type="functional" >
+    <t:objective> Verify in VEVENT attribute ATTENDEE is not compulsary </t:objective>
+    <t:steps>
+	1. Use lmtp inject to inject the message
+	2. Login as the invitee
+	3. Accept the invitation and verify now attendee is present
+	4. Check iCal
+	5. Check the MIME reply
+    </t:steps>
+    
+    <t:mailinjecttest>
+	<t:lmtpInjectRequest>
+		<filename>${msgFile}</filename>
+		<to>${account2.name}</to>
+		<from>${account1.name}</from>
+		<server>${test_acct.server}</server>
+<!-- harness does not handle properties correctly-->
+		<!--modify>
+                    <ical a="ORGANIZER">MAILTO:foo@zimbra.com</ical>
+                    <ical a="DTSTART">TZID=(GMT-09.00) Alaska:${appt1.start}</ical>
+                    <ical a="DTEND">${appt1.end}</ical>
+                    <ical a="DTSTAMP">${appt1.stamp}</ical>
+		</modify-->
+	</t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:test delay="15000">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+	    <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
+	    <query>in:inbox</query>
+	    </SearchRequest>
+	</t:request>
+	<t:response>
+	    <t:select  path="//mail:SearchResponse/mail:m" attr="id" set="appt2.id"/>
+	</t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request >
+            <GetICalRequest xmlns="urn:zimbraMail" s="${TIME(-36500d)}" e="${TIME(+1d)}"/>
+        </t:request>
+        <t:response>
+		<t:select path="//mail:GetICalResponse" attr="ical" set="ics.string"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+	<t:iCalParse ical="${ics.string}">
+	</t:iCalParse>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+           <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+           <query>in:inbox</query>
+           </SearchRequest>
+        </t:request>
+        <t:response>
+           <t:select  path="//mail:SearchResponse/mail:c" attr="id" set="appt2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+           <SearchConvRequest xmlns="urn:zimbraMail" cid="${appt2.id}">
+           <query>in:inbox</query>
+           </SearchConvRequest>
+        </t:request>
+        <t:response>
+		<t:select  path="//mail:SearchConvResponse/mail:m" attr="id" set="cnv2.id"/>
+                <!--t:select  path="//mail:SearchConvResponse/mail:m/mail:inv" attr="comp" set="compNum"/-->
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${cnv2.id}" verb="ACCEPT" compNum="${compNum}">
+            <query>in:inbox</query>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+            <t:select  path="//mail:SendInviteReplyResponse/mail:m" attr="id"/>
+        </t:response>
+        </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+            <query>in:sent</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select  path="//mail:SearchResponse/mail:c" attr="id" set="appt2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <SearchConvRequest xmlns="urn:zimbraMail" cid="${appt2.id}">
+            <query>in:inbox</query>
+            </SearchConvRequest>
+        </t:request>
+        <t:response>
+             <t:select  path="//mail:SearchConvResponse/mail:m" attr="id" set="cnv2.id"/>
+             <!--t:select  path="//mail:SearchConvResponse/mail:m/mail:inv" attr="comp" set="compNum"/-->
+        </t:response>
+    </t:test>
+
+    <!--t:test>
+        <t:request>
+           <GetMsgRequest xmlns="urn:zimbraMail">
+		<m id="${cnv2.id}" raw="1"/>
+	   </GetMsgRequest>
+        </t:request>
+        <t:response>
+		<t:select path="//mail:GetMsgResponse/mail:m/mail:content" match="To: foo@zimbra.com"/>
+        </t:response>
+    </t:test-->
+
+    <t:resttest>
+        <t:restServletRequest>
+             <type>get</type>
+             <id>${cnv2.id}</id>
+             <part>3</part>
+             <sync>1</sync>
+        </t:restServletRequest>
+        <t:restServletResponse>
+            <t:select attr="ATTENDEE" emptyset="0"/>
+        </t:restServletResponse>
+    </t:resttest>
+
+    <!--t:test >
+        <t:request >
+            <GetICalRequest xmlns="urn:zimbraMail" s="${TIME(-2d)}" e="${TIME(+2d)}"/>
+        </t:request>
+        <t:response>
+                <t:select path="//mail:GetICalResponse" attr="ical" set="ics.string"/>
+        </t:response>
+    </t:test-->
+
+    <t:test required="true">
+        <t:iCalParse ical="${ics.string}">
+        </t:iCalParse>
+    </t:test>
+
+    <!-- until soap harness can handle TZID -->
+<!--     <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start}" calExpandInstEnd="${search.end}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//mail:SearchResponse/mail:appt"/>
+        </t:response>
+    </t:test> -->
+
+</t:test_case>
+
+</t:tests>

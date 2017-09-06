@@ -1,0 +1,320 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- 
+    NOTE : It should be tested manually that if zimbraPrefAutoAddAddressEnabled = TRUE 
+    then the SendMsgRequest should contain add='1' in 'e' element 
+ -->    
+    
+<t:property name="account1.name" value="account1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2${TIME}.${COUNTER}@${defaultdomain.name}"/>    
+<t:property name="account3.name" value="account3${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account4${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message1.subject" value="subject1.${TIME}.${COUNTER}"/>
+<t:property name="message1.content" value="content1.${TIME}.${COUNTER}"/>
+
+<t:property name="message2.subject" value="subject2.${TIME}.${COUNTER}"/>
+<t:property name="message2.content" value="content2.${TIME}.${COUNTER}"/>
+
+<t:property name="message3.subject" value="subject3.${TIME}.${COUNTER}"/>
+<t:property name="message3.content" value="content3.${TIME}.${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>
+<t:property name="test_acct4.server" value="NOT_DEFINED"/>
+
+<!-- authentication -->
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_AutoAddAddress" type="always">
+    <t:objective>Prepare the account for testing</t:objective>
+    <t:steps>
+        1. Login to admin.
+        2. Create test accounts.
+        3. Login to test account        
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+    
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	<!-- Bug 3723 removed the add=1 attribute. Bug 47890 suggests to revert changes from 3723. As per 47890 resolution tc should be updated --> 
+	<!--t:test required="true">
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+				<pref xmlns="" name="zimbraPrefAutoAddAddressEnabled">TRUE</pref>
+			</ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test-->
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AutoAddAddressBasic01" type="smoke">
+    <t:objective>Verify that an account is automatically added to contact on sending Mail to if add = 1 </t:objective>
+    <t:steps>        
+        1. Verify that the Account2 was not previously present in contacts
+        2. Send mail from Account1 to Account2 with add="1".
+        3. Verify that account2 is added to contacts.
+    </t:steps>
+
+    <t:test id="AutoAddAddressBasic01a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${account2.name} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="AutoAddAddressBasic01b">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account2.name}' add='1'/>                   
+                    <su> ${message1.subject} </su>
+                    <mp ct="text/plain">
+                        <content>${message1.content}</content>
+                   </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="mail1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="AutoAddAddressBasic01b">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${account2.name} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn"/>                            
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+    
+<t:test_case testcaseid="AutoAddAddressBasic02" type="functional" bugids="47940">
+    <t:objective>Verify that only those accounts are automatically added to contact for which if add = 1 and not for other account</t:objective>
+    <t:steps>        
+        1. Verify that Account3 and Account4 was not previously added to contacts
+        2. Send mail from Account1 to Account3 and Account4 with add="1" for account3.
+        2. Verify that account3 is added to contacts.
+        3. Verify that account4 is not added to contacts
+    </t:steps>
+
+    <t:test id="AutoAddAddressBasic02a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${account3.name} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="AutoAddAddressBasic02b">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${account4.name} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="AutoAddAddressBasic02c">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account3.name}' add='1'/>
+                    <e t="t" a='${account4.name}'/>
+                    <su> ${message1.subject} </su>
+                    <mp ct="text/plain">
+                        <content>${message1.content}</content>
+                   </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="mail2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="AutoAddAddressBasic02c">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${account3.name} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="AutoAddAddressBasic02c">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${account4.name} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="AutoAddAddressBasic03" type="functional">
+    <t:objective>Verify that if a mail is sent to self then the accounts itself is added to contacts </t:objective>
+    <t:steps>        
+        1. Verify that Account1 is not present in contact
+        2. Send mail from Account1 to it self.
+        3. Verify that account1 is added to contacts.        
+    </t:steps>
+
+    <t:test id="AutoAddAddressBasic03a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${account1.name} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="AutoAddAddressBasic03b">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account1.name}' add='1'/>                    
+                    <su> ${message1.subject} </su>
+                    <mp ct="text/plain">
+                        <content>${message1.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="mail2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="AutoAddAddressBasic03b">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${account1.name} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>    
+    
+    
+</t:tests>

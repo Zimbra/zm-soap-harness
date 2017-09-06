@@ -1,0 +1,162 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.name" value="testserver${TIME}${COUNTER}"/>
+<t:property name="server.spaceinname" value="testserver    ${TIME}${COUNTER}"/>
+<t:property name="server.notes" value="test of adding Server via SOAP"/>
+<t:property name="server.desc" value="test server description"/>
+
+<t:property name="server.blank" value=""/>
+<t:property name="server.space" value="             "/>
+<t:property name="server.sometext" value="Some text"/>
+<t:property name="server.spchar" value=":''&lt;//\\"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>Login to Admin account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateServerRequest1" type="smoke" >
+    <t:objective> Create a Server with valid details</t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.name}</name>
+                <a n="zimbraNotes">${server.notes}</a>
+                <a n="description">${server.desc}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateServerResponse/admin:server" attr="id" set="server.id1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateServerRequest2" type="functional" >
+    <t:objective> Create a duplicate Server</t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.name}</name>
+                <a n="zimbraNotes">${server.notes}</a>
+                <a n="description">${server.desc}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.SERVER_EXISTS$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateServerRequest3" type="functional" >
+    <t:objective> Create a Server with blank name</t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.blank}</name>
+                <a n="zimbraNotes">${server.notes}</a>
+                <a n="description">${server.desc}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateServerRequest4" type="functional" >
+    <t:objective> Create a Server with all spaces name</t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.space}</name>
+                <a n="zimbraNotes">${server.notes}</a>
+                <a n="description">${server.desc}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateServerRequest4" type="functional" >
+    <t:objective> Create a Server with some spaces in name</t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.spaceinname}</name>
+                <a n="zimbraNotes">${server.notes}</a>
+                <a n="description">${server.desc}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>    
+            <t:select path="//admin:CreateServerResponse/admin:server"/>        
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateServerRequest5" type="functional" >
+    <t:objective> Create a Server with special charecters in name</t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.spchar}</name>
+                <a n="zimbraNotes">${server.notes}</a>
+                <a n="description">${server.desc}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>    
+            <t:select path="//admin:CreateServerResponse/admin:server"/>        
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+

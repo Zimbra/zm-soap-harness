@@ -1,0 +1,150 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="admin1.account" value="admin1.${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="right1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${admin1.account}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin1.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CheckRightRequest01" type="smoke" >
+<t:objective> Basic test case to verify CheckRightRequest </t:objective>
+	<t:steps>
+	1. Create a regular admin account (created in above request)
+	2. Grant few rights to admin1
+    3. Check all the rights with CheckRightRequest
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>setAccountPassword</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>addDistributionListAlias</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>createAlias</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<CheckRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>setAccountPassword</right>
+			</CheckRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:CheckRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CheckRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="id">${admin1.id}</grantee>
+				<right>addDistributionListAlias</right>
+			</CheckRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:CheckRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CheckRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${admin1.account}</grantee>
+				<right>createAlias</right>
+			</CheckRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:CheckRightResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

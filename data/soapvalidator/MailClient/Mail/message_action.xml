@@ -1,0 +1,794 @@
+<t:tests xmlns:t = "urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name = "test_account1.name" value = "test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name = "test_account1.password" value = "test123"/>
+<t:property name = "message.spchar" value = "//\\'^%"/>
+<t:property name = "message.space" value = "           "/>
+<t:property name = "message.blank" value = ""/>
+<t:property name = "message.sometext" value = "some text"/>
+<t:property name = "folder.inbox" value = "2"/>
+<t:property name = "op.read" value = "read"/>
+<t:property name = "op.unread" value = "!read"/>
+<t:property name = "op.flag" value = "flag"/>
+<t:property name = "op.unflag" value = "!flag"/>
+<t:property name = "op.tag" value = "tag"/>
+<t:property name = "op.untag" value = "!tag"/>
+<t:property name = "op.move" value = "move"/>
+<t:property name = "op.delete" value = "delete"/>
+
+<t:property name = "message.subject1" value = "Subject${TIME}.${COUNTER}"/>
+<t:property name = "message.content1" value = "content of the message${TIME}.${COUNTER}"/>
+<t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
+<t:property name="folder.pname" value="1"/> <!-- Folder's parent ID -->
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid = "Ping" type = "smoke">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id = "ping">
+        <t:request>
+            <PingRequest xmlns = "urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "acct1_setup" type = "always">
+    <t:objective>create test account</t:objective>
+    
+    <t:test id = "admin_login" required = "true" depends = "ping">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    <t:test id = "create_test_account1" required = "false" depends = "admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+                <!-- 
+                <a n="zimbraMailHost">${LOCALHOST}</a> 
+                <a n = "zimbraMailStatus">enabled</a>
+                <a n = "zimbraPasswordMinAge">7</a>
+                Commenting out the optional attributes and sending the request with minimal requirement
+                 -->
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test id = "auth" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test id = "Send_mail">
+        <t:request>
+            <SendMsgRequest xmlns = "urn:zimbraMail">
+                <m>
+                    <e t = "t" a = "${test_account1.name}"/>
+                    <su>${message.subject1}</su>
+                    <mp ct = "text/plain">
+                        <content>${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "message.id1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest1" type = "smoke" bugids = "2036">
+    <t:objective>Mark a mail as read</t:objective>
+
+    <t:test depends = "Send_mail">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.read}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest2" type = "smoke">
+    <t:objective>Mark a mail as unread</t:objective>
+
+    <t:test depends = "Send_mail">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.unread}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.unread}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest3" type = "smoke">
+    <t:objective>Mark a mail as flagged</t:objective>
+
+    <t:test depends = "Send_mail">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.flag}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.flag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest4" type = "smoke">
+    <t:objective>Mark a mail as unflagged</t:objective>
+
+    <t:test depends = "Send_mail">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.unflag}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.unflag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest5" type = "smoke">
+    <t:objective>Tag a Mail</t:objective>
+    <t:steps>
+        1. Create a TAG
+        2. Tag a Mail
+    </t:steps>
+
+    <t:test id = "MsgActionRequest5a">
+        <t:request>
+            <CreateTagRequest xmlns = "urn:zimbraMail">
+                <tag name = "tag${TIME}${COUNTER}" color = "0"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateTagResponse/mail:tag" attr = "id" set = "tag.id1"/>
+        </t:response>
+    </t:test>
+    <t:test id = "MsgActionRequest5b" depends = "MsgActionRequest5a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.tag}" tag = "${tag.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest6" type = "smoke">
+    <t:objective>Untag the mail</t:objective>
+
+    <t:test depends = "MsgActionRequest5a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.untag}" tag = "${tag.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.untag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest7" type = "negative">
+    <t:objective>Tag a mail with invalid id</t:objective>
+    <t:steps>
+        1. Delete the previously created tag
+        2. Tag a Mail
+    </t:steps>
+
+    <t:test id = "MsgActionRequest7a">
+        <t:request>
+            <TagActionRequest xmlns = "urn:zimbraMail">
+                <action op = "delete" id = "${tag.id1}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:TagActionResponse/mail:action" attr = "id" match = "${tag.id1}"/>
+        </t:response>
+    </t:test>
+    <t:test id = "MsgActionRequest7b" depends = "MsgActionRequest7a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.tag}" tag = "${tag.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^mail.NO_SUCH_TAG$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest8" type = "smoke">
+    <t:objective>Move a Mail to a custom folder</t:objective>
+    <t:steps>
+        1. Create a folder
+        2. Move a mail
+    </t:steps>
+
+    <t:test id = "MailAction008a">
+        <t:request>
+            <CreateFolderRequest xmlns = "urn:zimbraMail">
+                <folder name = "folder${TIME}${COUNTER}" l = "1"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateFolderResponse/mail:folder" attr = "id" set = "folder.id1"/>
+        </t:response>
+    </t:test>
+    <t:test id = "MailAction008b" depends = "MailAction008a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.move}" l = "${folder.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest9" type = "negative">
+    <t:objective>Move the mail to nonexisting folder</t:objective>
+    <t:steps>
+        1. Move the mail back to inbox
+        2. Delete the previously created folder
+        3. Move the mail to that folder
+    </t:steps>
+
+    <t:test id = "MsgActionRequest9a" depends = "MailAction008b">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.move}" l = "${folder.inbox}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+    <t:test id = "MsgActionRequest9b" depends = "MsgActionRequest9a">
+        <t:request>
+            <FolderActionRequest xmlns = "urn:zimbraMail">
+                <action op = "delete" id = "${folder.id1}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:FolderActionResponse/mail:action" attr = "id" match = "${folder.id1}"/>
+        </t:response>
+    </t:test>
+    <t:test id = "MsgActionRequest9c" depends = "MsgActionRequest9b">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.move}" l = "${folder.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^mail.NO_SUCH_FOLDER$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest10" type = "smoke">
+    <t:objective>delete a message</t:objective>
+
+    <t:test id = "MsgActionRequest10a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.delete}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest11" type = "negative">
+    <t:objective>delete a non existing message</t:objective>
+
+    <t:test depends = "MsgActionRequest10a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest12" type = "feature">
+    <t:objective>MsgActionRequest without Action tag</t:objective>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail"></MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest13" type = "feature">
+    <t:objective>MsgActionRequest without id in Action tag</t:objective>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action op = "${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest14" type = "feature">
+    <t:objective>MsgActionRequest without op in Action tag</t:objective>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest15" type = "negative">
+    <t:objective>MsgActionRequest with Blank id in Action tag</t:objective>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.blank}" op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest16" bugids = "1797" type = "negative">
+    <t:objective>MsgActionRequest with Spaces at id in Action tag</t:objective>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.space}" op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest17" bugids = "1797" type = "negative">
+    <t:objective>MsgActionRequest with Special char at id in Action tag</t:objective>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.spchar}" op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest18" bugids = "1797" type = "negative">
+    <t:objective>MsgActionRequest with Some text at id in Action tag</t:objective>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.sometext}" op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest19" type = "negative">
+    <t:objective>MsgActionRequest with Blank op but valid id in Action tag {op=""}</t:objective>
+    <t:steps>
+        1. send a mail with valid address in To field 
+        2. MsgActionRequest with Blank op but valid id in Action tag
+    </t:steps>
+
+    <t:test id = "MsgActionRequest19a">
+        <t:request>
+            <SendMsgRequest xmlns = "urn:zimbraMail">
+                <m>
+                    <e t = "t" a = "${test_account1.name}"/>
+                    <su>${message.subject1}</su>
+                    <mp ct = "text/plain">
+                        <content>${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "message.id1"/>
+        </t:response>
+    </t:test>
+    <t:test id = "MsgActionRequest19b" depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${message.blank}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest20" type = "negative">
+    <t:objective>MsgActionRequest with space in op but valid id in Action tag</t:objective>
+
+    <t:test depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${message.space}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest21" type = "negative">
+    <t:objective>MsgActionRequest with special char in op but valid id in Action tag {op="^//\\'"}</t:objective>
+
+    <t:test id = "MailAction021" depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${message.spchar}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest22" type = "negative">
+    <t:objective>MsgActionRequest with sometext in op but valid id in Action tag {op="some text"}</t:objective>
+
+    <t:test depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${message.sometext}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest23" bugids = "1797" type = "negative">
+    <t:objective>MsgActionRequest with valid id and valid operation but leading spaces in id</t:objective>
+
+    <t:test depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "         ${message.id1}" op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+			<t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest24" bugids = "1797" type = "negative">
+    <t:objective>MsgActionRequest with valid id and valid operation but trailing spaces in id</t:objective>
+
+    <t:test depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}               " op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+			<t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest25" bugids = "1797" type = "negative">
+    <t:objective>MsgActionRequest with valid id and valid operation but both leading trailing spaces in id</t:objective>
+
+    <t:test depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "          ${message.id1}               " op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+			<t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest26" type = "negative">
+
+    <t:objective>MsgActionRequest with valid id and valid operation but leading spaces in op</t:objective>
+    <t:test depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "        ${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "MsgActionRequest27" type = "negative">
+
+    <t:objective>MsgActionRequest with valid id and valid operation but trailing spaces in op</t:objective>
+    <t:test id = "MailAction027" depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "${op.read}        "/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "MsgActionRequest28" type = "negative">
+    <t:objective>MsgActionRequest with valid id and valid operation but both leading and trailing spaces in op</t:objective>
+
+    <t:test depends = "MsgActionRequest19a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "         ${op.read}        "/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MsgActionRequest29" type="deprecated">
+    <t:objective>Use MsgActionRequest to change an existing message's importance to important</t:objective>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>To: foo@example.com
+From: bar@example.com
+Subject: Subject${TIME}${COUNTER}
+Date: Fri, 28 Dec 2007 09:38:56 -0800
+
+
+Content${TIME}${COUNTER}
+
+
+                    </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message29.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message29.id}" f="!"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message29.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:m" attr="f" match=".*!.*"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MsgActionRequest30" type="smoke" bugids="28207">
+    <t:objective>Verify the MsgActionRequest(delete) after SyncRequest</t:objective>
+	<t:steps>
+	1. AddMsgRequest
+	2. MsgActionRequest(op=delete)
+	3. SyncRequest
+	4. MsgActionRequest(op=delete) with same ID ... should receive MsgActionResponse instead of NPE
+	</t:steps>
+	
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>To: foo@example.com
+From: bar@example.com
+Subject: Subject${TIME}${COUNTER}
+Date: Fri, 28 Dec 2007 09:38:56 -0800
+
+
+Content${TIME}${COUNTER}
+
+
+                    </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message30.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message30.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest1a">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message30.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+</t:tests>

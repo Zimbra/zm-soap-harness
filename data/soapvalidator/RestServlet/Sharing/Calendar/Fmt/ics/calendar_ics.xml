@@ -1,0 +1,261 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_calendar_ics_account_setup" type="always" >
+    <t:objective>create test account</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:property name="op.grant"			value="grant"/>
+	<t:property name="perm.usr"			value="usr"/>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${folder.calendar.id}">
+					<grant gt="${perm.usr}" d="${account2.name}" perm="r"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appt01.start.gmt" value="1164016800000"/> <!-- 11/20/2006 10:00:00 -->
+	<t:property name="appt01.subject" value="Appointment01.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt01.subject}">
+                        <s d="${ICALTIME[${appt01.start.gmt}]}"/>  
+                        <e d="${ICALTIME(+2h)[${appt01.start.gmt}]}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>Appointment01 Content</content>
+                    </mp>
+                    <su>${appt01.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="apptId" set="appt01.apptId"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_Sharing_Calendar_ics_01" type="smoke" >
+    <t:objective>Using the REST servlet, get a Shared calendar using ics format</t:objective>
+	<t:steps>
+	1. Account1 shared Calendar with Account2
+	2. Login as Account2
+	3. Get a specific calendar appointment by ID from Account1's calendar  using ics format
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${appt01.apptId}</id>
+			<fmt>ics</fmt>
+			<user>${account1.name}</user>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="SUMMARY" match="${appt01.subject}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_Sharing_Calendar_ics_02" type="smoke" >
+    <t:objective>Using the REST servlet, get a Shared calendar using ics format</t:objective>
+	<t:steps>
+	1. Account1 shared Calendar with Account2
+	2. Login as Account2
+	3. Get Account1's calendar using ics format
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<folder>Calendar</folder>
+			<fmt>ics</fmt>
+			<user>${account1.name}</user>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="SUMMARY" match="${appt01.subject}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_Sharing_Calendar_ics_03" type="smoke" bugids="12373">
+    <t:objective>Using the REST servlet, get a Shared calendar using ics format</t:objective>
+	<t:steps>
+	1. Account1 shared Calendar with Account2
+	2. Login as Account2
+	3. Get Account1's calendar using ics format
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<folder>Calendar.ics</folder>
+			<user>${account1.name}</user>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="SUMMARY" match="${appt01.subject}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+</t:tests>

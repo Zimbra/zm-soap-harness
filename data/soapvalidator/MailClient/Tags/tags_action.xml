@@ -1,0 +1,1043 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="tag.blankname" value=""/>
+<t:property name="tag.newname" value="newtag${TIME}${COUNTER}"/>
+
+<t:property name="tag.spaces" value="       "/>
+<t:property name="tag.blank" value=""/>
+<t:property name="tag.spchar" value="~!@#%"/>
+<t:property name="tag.sometext" value="some text"/>
+
+<t:property name="tag.negative" value="-1"/>
+<t:property name="tag.zero" value="0"/>
+<t:property name="tag.largenumber" value="1234567890"/>
+<t:property name="tag.decimal" value="12.34"/>
+
+<t:property name="tag.invalid" value="10"/>
+<t:property name="tag.colorvalid" value="4"/>
+<t:property name="tag.colorred" value="5"/>
+
+<t:property name="tag1.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag2.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag2.newname" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag4a.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag4b.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag5.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag5.newname" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag6.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag7.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag10.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag11.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag12.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag13.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag13.newname" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag14.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag15.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag16.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag17.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag18.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag19.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag20.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag21.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag22.name" value="tag${TIME}${COUNTER}"/>
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_tags_action" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+                <!--<prefs/>-->
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="TagActionRequest1" type="smoke" >
+    <t:objective>Delete a Tag</t:objective>
+    <t:steps> 1. Create a tag
+              2. delete the tag 
+    </t:steps>
+
+    <t:test id="tagactionrequest1a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag1.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag1.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test id="tagactionRequest1b" depends="tagactionrequest1a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="delete" id="${tag1.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+		    <t:select attr="id" match="${tag1.id}"/>
+		    <t:select attr="op" match="delete"/>
+    	    </t:select>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+<!--
+	IMPORTANT: TagActionRequest2 MUST follow TagActionRequest1 
+poonam: Added complete steps for TagActionRequest2
+-->
+
+<t:test_case testcaseid="TagActionRequest2" type="negative" >
+    <t:objective>Delete a non-existing TAG</t:objective>
+    <t:steps> 1. Create a tag
+              2. Delete the tag 
+              3. Again delete the deleted Tag
+    </t:steps>
+    
+    <t:test id="tagactionrequest2a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag1.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag1.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test id="tagactionRequest2b" depends="tagactionrequest2a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="delete" id="${tag1.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+		    <t:select attr="id" match="${tag1.id}"/>
+		    <t:select attr="op" match="delete"/>
+		    </t:select>
+	    </t:response>
+	</t:test>
+
+	<t:test depends="tagactionRequest2b" >
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="delete" id="${tag1.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action"/>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="TagActionRequest3" type="smoke" >
+    <t:objective>RENAME a tag with valid tag name and valid color</t:objective>
+    <t:steps> 1.Create a new tag
+              2.rename it to another name
+    </t:steps>
+
+    <!-- create a new Tag -->
+    <t:test id="tagactionrequest3a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag2.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag2.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+        </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test depends="tagactionrequest3a">
+        <t:request>
+            <TagActionRequest xmlns="urn:zimbraMail">
+                <action op="rename" id="${tag2.id}" name="${tag2.newname}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action">
+            <t:select attr="op" match="rename"/>
+            <t:select attr="id" match="${tag2.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="TagActionRequest4" type="functional" >
+    <t:objective>RENAME a tag with Duplicate tag name and valid color</t:objective>
+    <t:steps> 1. Create a new tag
+              2. create a second tag
+              3. rename the first tag to the second tag's name
+    </t:steps>
+
+    <t:test id="tagactionrequest4a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag4a.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag4a.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="tagactionrequest4b" depends="tagactionrequest4a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag4b.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag4b.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="tagactionrequest4b">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="rename" id="${tag4a.id}" name="${tag4b.name}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>	 
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="TagActionRequest5" type="negative" >
+    <t:objective>RENAME a tag with non existing tag id </t:objective>
+    <t:steps> 1. Create a new tag
+              2. delete it
+              3. then try to rename the non existing tag id
+    </t:steps>
+
+    <t:test id="tagactionrequest5a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag5.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag5.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="tagactionrequest5b" depends="tagactionrequest5a">
+        <t:request>
+            <TagActionRequest xmlns="urn:zimbraMail">
+                <action op="delete" id="${tag5.id}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action">
+            <t:select attr="id" match="${tag5.id}"/>
+            <t:select attr="op" match="delete"/>
+            </t:select>
+        </t:response>
+	</t:test>	
+
+	<t:test depends="tagactionrequest5b">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="rename" id="${tag5.id}" name="${tag5.newname}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest6" type="functional" >
+    <t:objective>Rename a tag with invalid name (special character/spaces/blank/negative/zero/large number/decimal number) and valid color.</t:objective>
+
+    <t:test id="tagactionrequest6a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag6.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag6.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="tagactionrequest6a" id="tagactionrequest6b">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="rename" id="${tag6.id}" name="${tag.spchar}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action">
+            <t:select attr="id" set="tag7.id"/>
+            </t:select>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest6b">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="rename" id="${tag7.id}" name="${tag.spaces}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path= "//zimbra:Code" match="^mail.INVALID_NAME"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest6b">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="rename" id="${tag7.id}" name="${tag.blank}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+
+	<t:test depends="tagactionrequest6b" id = "tagactionrequest6c">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="rename" id="${tag7.id}" name="${tag.negative}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action">
+            <t:select attr="id" set="tag8.id"/>
+            </t:select>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest6c" id = "tagactionrequest6d">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="rename" id="${tag8.id}" name="${tag.zero}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+            <t:select attr="id" set="tag9.id"/>
+            </t:select>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest6d" id = "tagactionrequest6e">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="rename" id="${tag9.id}" name="${tag.largenumber}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+            <t:select attr="id" set="tag10.id"/>
+            </t:select>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest6e">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="rename" id="${tag10.id}" name="${tag.decimal}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+            <t:select attr="id" match="${tag10.id}"/>
+            </t:select>
+	    </t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest7" type="smoke" >
+    <t:objective>Perform read operation on a tag</t:objective>
+
+    <t:test id="tagactionrequest7a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag10.name}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag10.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="tagactionrequest7a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="read" id="${tag10.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+		    <t:select attr="id" match="${tag10.id}"/>
+		    <t:select attr="op" match="read"/>
+    	    </t:select>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest8" type="negative" >
+    <t:objective>Read a non existing tag</t:objective>
+    <t:steps> 1. Delete a tag.
+              2. Read it.
+    </t:steps>
+
+	<t:test id="tagactionrequest8a" depends="tagactionrequest7a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="delete" id="${tag10.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+		    <t:select attr="id" match="${tag10.id}" set="tag10.id"/>
+		    <t:select attr="op" match="delete"/>
+    	    </t:select>
+	    </t:response>
+	</t:test>
+
+	<t:test depends="tagactionrequest8a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="read" id="${tag10.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest9" type="functional" >
+    <t:objective>Change the color of Tag</t:objective>
+
+    <t:test id="tagactionrequest9a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag11.name}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag11.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="tagactionrequest9a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="color" id="${tag11.id}" color="${tag.colorvalid}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+		    <t:select attr="id" match="${tag11.id}"/>
+		    <t:select attr="op" match="color"/>
+    	    </t:select>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest10" type="negative" >
+    <t:objective>Color a non existing tag with valid color</t:objective>
+
+    <t:test id="tagactionrequest10a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag17.name}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag17.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="tagactionrequest10b" depends="tagactionrequest10a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="delete" id="${tag17.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+		    <t:select attr="id" match="${tag17.id}" set="tag17.id"/>
+		    <t:select attr="op" match="delete"/>
+    	    </t:select>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest10b">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="color" id="${tag17.id}" color="${tag.colorvalid}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/>
+	    </t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest11" type="negative" bugids="47901">
+    <t:objective>Color a tag with invalid color(special character/ spaces/blank/negative/zero/large number/decimal number) and valid color.</t:objective>
+
+    <t:test id="tagactionrequest11a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag12.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag12.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="tagactionrequest11a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="color" id="${tag12.id}" color="${tag.spchar}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest11a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="color" id="${tag12.id}" color="${tag.spaces}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest11a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="color" id="${tag12.id}" color="${tag.blank}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+
+	<t:test depends="tagactionrequest11a" id="tagactionrequest11b">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="color" id="${tag12.id}" color="${tag.negative}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+	    	<!-- As per #2 of bug 47901, if the client sends an invalid color number, then use
+        the default color (orange). -->
+            <t:select path= "//mail:TagActionResponse/mail:action"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest11b"  id="tagactionrequest11c">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="color" id="${tag12.id}" color="${tag.zero}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action">
+            <t:select attr="id" set="tag12.id"/>
+            </t:select>
+	    </t:response>
+	</t:test>
+	
+	<t:test id="tagactionrequest11d"  depends="tagactionrequest11c">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="color" id="${tag12.id}" color="${tag.largenumber}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <!-- As per #2 of bug 47901, if the client sends an invalid color number, then use
+        the default color (orange). -->
+            <t:select path= "//mail:TagActionResponse"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest11d">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="color" id="${tag12.id}" color="${tag.decimal}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="TagActionRequest12" type="functional" >
+    <t:objective>Delete two tags simultaneously.</t:objective>
+    <t:steps> 1. Create two tag
+              2. delete those tags simultaneously. 
+    </t:steps>
+
+    <t:test id="tagactionrequest12a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag14.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag14.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="tagactionrequest12b">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag15.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag15.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+	<t:test depends="tagactionrequest12a,tagactionrequest12b" id="tagactionrequest12c">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="delete" id="${tag14.id},${tag15.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+		    <t:select attr="id" match="${tag14.id},${tag15.id}"/>
+		    <t:select attr="op" match="delete"/>
+    	    </t:select>
+	    </t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="TagActionRequest13" type="negative" >
+    <t:objective>Delete a tag giving only color.</t:objective>
+    <t:steps> 1. Create a tag
+              2. delete that tag giving only color. 
+    </t:steps>
+
+    <t:test id="tagactionrequest13a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag16.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag16.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+	<t:test depends="tagactionrequest13a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="delete" color="${tag.colorvalid}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest14" type="functional" >
+    <t:objective>TagActionRequest with invalid (special character/ spaces/blank/negative/zero/large number/decimal number) values of op.</t:objective>
+
+    <t:test id="tagactionrequest14a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag18.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag12.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="tagactionrequest14a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="${tag.spaces}" id="${tag12.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest14a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="${tag.blank}" id="${tag12.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest14a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="${tag.spchar}" id="${tag12.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+
+	<t:test depends="tagactionrequest14a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="${tag.sometext}" id="${tag12.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test  depends="tagactionrequest14a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="${tag.negative}" id="${tag12.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest14a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="${tag.zero}" id="${tag12.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest14a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="${tag.largenumber}" id="${tag12.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+	<t:test depends="tagactionrequest14a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    <action op="${tag.decimal}" id="${tag12.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+	    </t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="TagActionRequest_15" type="smoke" bugids="72312">
+    <t:objective>change the color of  a tag using only tag name in the action request </t:objective>
+    <t:steps> 1.Create a new tag
+              2 Change the color using tag name in action request
+              3.Check tag name is returned in response 
+    </t:steps>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag19.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag19.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+        </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="color" tn="${tag19.name}" color="${tag.colorred}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+			    <t:select attr="id" match="${tag19.id}"/>
+			    <t:select attr="tn" match="${tag19.name}"/>
+			    <t:select attr="op" match="color"/>
+    	    </t:select>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="TagActionRequest_16" type="smoke" bugids="72312">
+    <t:objective>change the color of a tag using tag  id in the action request </t:objective>
+    <t:steps> 1.Create a new tag
+              2 Change the color using id in action request
+              3 Check tag name is not returned in resonse 
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag20.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag20.id"/>
+            <t:select attr="color" match="${tag.colorvalid}"/>
+        </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="color" id="${tag20.id}"  color="${tag.colorred}" />
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+			    <t:select attr="id" match="${tag20.id}"/>
+			    <t:select attr="tn" match="${tag20.name}" emptyset="1"/>
+			    <t:select attr="op" match="color"/>
+    	    </t:select>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="TagActionRequest_17" type="negative" bugids="72312">
+    <t:objective>Try to change the color of a tag using non-existing tag name in the action request </t:objective>
+    <t:steps> 
+              1.Try to change the color using non-existing tag name in action request
+              2.Check error code is returned in response 
+    </t:steps>
+
+	<t:test>
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="color" tn="${tag22.name}"  color="${tag.colorred}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		   <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/> 
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="TagActionRequest_18" type="negative" bugids="72312">
+    <t:objective>Try to change the color of a tag using invalid tag name in the action request </t:objective>
+    <t:steps> 
+              1. Try to change the color using in-valid tag name in action request
+              2. Check error code is returned in response 
+    </t:steps>
+
+	<t:test>
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="color" tn="${tag.spchar}"  color="${tag.colorred}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		   <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/> 
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="TagActionRequest_19" type="negative" bugids="72312">
+    <t:objective>Try to change the color of a tag using blank tag name in the action request </t:objective>
+    <t:steps> 
+              1. Try to change the color using blank tag name in action request
+              2. Check error code is returned in response 
+    </t:steps>
+
+	<t:test>
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="color" tn="${tag.blank}"  color="${tag.colorred}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		   <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="TagActionRequest_20" type="negative" bugids="72312">
+    <t:objective>Try to change the color of a tag using tag name conataining space in the action request </t:objective>
+    <t:steps> 
+              1. Try to change the color using tag name conataining space in action request
+              2. Check error code is returned in response 
+    </t:steps>
+
+	<t:test>
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="color" tn="${tag.spaces}"  color="${tag.colorred}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		   <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>
+

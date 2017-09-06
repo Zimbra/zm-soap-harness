@@ -1,0 +1,506 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="alias.account4.name" value="alias.test4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="nx4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+    <t:test required="true">
+     <t:request>
+       <PingRequest xmlns="urn:zimbraAdmin"/>
+     </t:request>
+      <t:response>
+        <t:select path="//admin:PingResponse"/>
+     </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="admin_auth" type="always" >
+ <t:objective>login as the admin</t:objective>
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+		</t:response>
+	</t:test>
+	
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account4.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+		</t:response>
+	</t:test>
+
+	
+</t:test_case>
+
+<t:test_case testcaseid="CheckPermissionRequest_Account01" type="smoke" bugids="" >
+    <t:objective>CheckPermissionRequest Default user rights on other Account </t:objective>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+    	<t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${account2.name}</target>
+ 				<right>sendAs</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendAs" />
+        </t:response>
+    </t:test> 
+    
+      <t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${account2.name}}</target>
+ 				<right>sendOnBehalfOf</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendOnBehalfOf" />
+        </t:response>
+    </t:test> 
+
+    </t:test_case>
+
+<t:test_case testcaseid="CheckPermissionRequest_Account02" type="smoke" bugids="" >
+    <t:objective>CheckPermissionRequest Grated user rights on Account </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+
+			
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="account">${account2.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account1.name}</grantee>
+				<right xmlns="">sendAs</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+		<t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>	 
+
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="account">${account2.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account1.name}</grantee>
+				<right xmlns="">sendOnBehalfOf</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+		<t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>	 
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${account2.name}</target>
+ 				<right>sendAs</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendAs" />
+        </t:response>
+    </t:test> 
+    
+      <t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${account2.name}</target>
+ 				<right>sendOnBehalfOf</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendOnBehalfOf" />
+        </t:response>
+    </t:test> 
+
+
+    </t:test_case>
+
+<t:test_case testcaseid="CheckPermissionRequest_Account03" type="smoke" bugids="" >
+    <t:objective>CheckPermissionRequest Revoked  user rights on Account </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="account">${account3.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account1.name}</grantee>
+				<right xmlns="">sendAs</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+		<t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>	 
+
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="account">${account3.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account1.name}</grantee>
+				<right xmlns="">sendOnBehalfOf</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+		<t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>	
+
+	<t:test required="true">
+		<t:request>
+			<RevokeRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="account">${account3.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account1.name}</grantee>
+				<right xmlns="">sendAs</right>
+			</RevokeRightRequest>
+		</t:request>
+		<t:response>
+		<t:select path="//admin:RevokeRightResponse"/>
+		</t:response>
+	</t:test>	 
+
+	<t:test required="true">
+		<t:request>
+			<RevokeRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="account">${account3.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account1.name}</grantee>
+				<right xmlns="">sendOnBehalfOf</right>
+			</RevokeRightRequest>
+		</t:request>
+		<t:response>
+		<t:select path="//admin:RevokeRightResponse"/>
+		</t:response>
+	</t:test>	
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+	 <t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${account3.name}</target>
+ 				<right>sendAs</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendAs" />
+        </t:response>
+    </t:test> 
+	
+      <t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+				<target type="account" by="name">${account3.name}</target>
+ 				<right>sendOnBehalfOf</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendOnBehalfOf" />
+        </t:response>
+    </t:test> 
+
+
+    </t:test_case>
+
+<t:test_case testcaseid="CheckPermissionRequest_Account04" type="smoke" bugids="" >
+    <t:objective>CheckPermissionRequest on Account Alias AS zimbraPrefAllowAddressForDelegatedSender </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+
+
+    <t:test>
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${account4.id}</id>
+                <alias>${alias.account4.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test> 
+	
+	   <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account4.id}</id>
+                <a n="zimbraPrefAllowAddressForDelegatedSender">${alias.account4.name}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse"/> 
+        </t:response>
+    </t:test>
+			
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="account">${account4.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account1.name}</grantee>
+				<right xmlns="">sendAs</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>	 
+
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="account">${account4.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account1.name}</grantee>
+				<right xmlns="">sendOnBehalfOf</right>
+			</GrantRightRequest>
+		</t:request>
+			<t:select path="//admin:GrantRightResponse"/>
+		<t:response>
+		</t:response>
+	</t:test>	 
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+	
+    	<t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${account4.name}</target>
+ 				<right>sendAs</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendAs" />
+        </t:response>
+    </t:test> 
+    
+      <t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${account4.name}</target>
+ 				<right>sendOnBehalfOf</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendOnBehalfOf" />
+        </t:response>
+    </t:test> 
+
+    	<t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${alias.account4.name}</target>
+ 				<right>sendAs</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendAs" />
+        </t:response>
+    </t:test> 
+    
+      <t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${alias.account4.name}</target>
+ 				<right>sendOnBehalfOf</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='1']" match="sendOnBehalfOf" />
+        </t:response>
+    </t:test>
+	
+ </t:test_case>
+
+<t:test_case testcaseid="CheckPermissionRequest_Account05" type="smoke" bugids="" >
+    <t:objective>CheckPermissionRequest  on non existing Account </t:objective>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+    	<t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${account5.name}</target>
+ 				<right>sendAs</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendAs" />
+        </t:response>
+    </t:test> 
+    
+      <t:test >
+        <t:request >
+        	<CheckPermissionRequest  xmlns="urn:zimbraMail" >
+  				<target type="account" by="name">${account5.name}}</target>
+ 				<right>sendOnBehalfOf</right>
+			</CheckPermissionRequest>
+        </t:request>
+        <t:response>
+  			<t:select path="//mail:CheckPermissionResponse/mail:right[@allow='0']" match="sendOnBehalfOf" />
+        </t:response>
+    </t:test> 
+
+    </t:test_case>
+
+    </t:tests>

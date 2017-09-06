@@ -1,0 +1,219 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>  
+
+<t:property name="resource1.user" value="searchdir.${TIME}${COUNTER}"/>
+<t:property name="resource1.name" value="${resource1.user}@${domain1.name}"/>
+<t:property name="resource1.displayname" value="searchdir.${TIME}${COUNTER}"/>
+<t:property name="resource1.type" value="Location"/>
+<t:property name="resource2.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="resource2.displayname" value="searchdir.${TIME}${COUNTER}"/>
+<t:property name="resource2.type" value="Equipment"/>
+
+<t:property name="resource1.query1" value="(|(uid=*${resource1.user}*)(cn=*${resource1.user}*)(sn=*${resource1.user}*)(gn=*${resource1.user}*)(displayName=*${resource1.user}}*)(zimbraMailAlias=*${resource1.user}*)(zimbraId=*${resource1.user}*)(zimbraMailAddress=*${resource1.user}*)(zimbraMailDeliveryAddress=*${resource1.user}*))"/>
+<t:property name="resource1.query2" value="(|(uid=*${resource1.name}*)(cn=*${resource1.name}*)(sn=*${resource1.name}*)(gn=*${resource1.name}*)(displayName=*${resource1.name}*)(zimbraMailAlias=*${resource1.name}*)(zimbraId=vc)(zimbraMailAddress=*${resource1.name}*)(zimbraMailDeliveryAddress=*${resource1.name}*))"/>
+    
+<t:property name="domain1.query1" value="(|(uid=*${domain1.name}*)(cn=*${domain1.name}*)(sn=*${domain1.name}*)(gn=*${domain1.name}*)(displayName=*${domain1.name}*)(zimbraMailAlias=*${domain1.name}*)(zimbraId=vc)(zimbraMailAddress=*${domain1.name}*)(zimbraMailDeliveryAddress=*${domain1.name}*))"/>   
+    
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_account_search" type="always" >
+    <t:objective>Prepare the account for tests</t:objective>
+    <t:steps> 1. Login to admin
+              2. Create test-accounts
+              3. Create an alias 
+              4. Create a distribution list        
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test reuqired="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource1.name}</name>
+				<a n="zimbraCalResType">${resource1.type}</a>
+				<a n="displayName">${resource1.displayname}</a>
+	        </CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource2.name}</name>
+				<a n="zimbraCalResType">${resource2.type}</a>
+				<a n="displayName">${resource2.displayname}</a>
+	        </CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource2.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_Resources_01" type="functional">
+    <t:objective>Verify sorting order where sortAscending="1" types="resources", attrs="displayName", sortBy="name" </t:objective>    
+
+     <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" attrs="displayName" sortBy="name" sortAscending="1" types="resources">
+                <query>${domain1.query1}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:calresource[1]" attr="name" match="${resource1.name}"/>
+			<t:select path="//admin:SearchDirectoryResponse/admin:calresource[2]" attr="name" match="${resource2.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>       
+  
+
+<t:test_case testcaseid="SearchDirectoryRequest_Resources_02" type="functional">
+    <t:objective>Verify sorting order where sortAscending="0" types="resources" </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" attrs="displayName" sortBy="name" sortAscending="0" types="resources">
+                <query>${domain1.query1}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:calresource[1]" attr="name" match="${resource2.name}"/>
+			<t:select path="//admin:SearchDirectoryResponse/admin:calresource[2]" attr="name" match="${resource1.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>   
+
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_Resources_03" type="smoke">
+    <t:objective>Verify searching for a particular resource without domain name </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="resources">
+                <query>${resource1.query1}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:calresource" attr="name" match="${resource1.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_Resources_04" type="functional">
+    <t:objective>Verify searching for a particular resource with domain name </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domain1.name}" types="resources">
+                <query>${resource1.query2}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:calresource" attr="name" match="${resource1.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>     
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_Resources_05" type="functional">
+    <t:objective>Verify searching for types="accounts,aliases,distributionlists,resources,domains"  </t:objective>    
+
+
+	<t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="accounts,aliases,distributionlists,resources,domains">
+                <query>${resource1.query1}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:SearchDirectoryResponse/admin:calresource" attr="name" match="${resource1.name}"/>
+        </t:response>
+    </t:test> 
+
+
+</t:test_case> 
+
+
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_Resources_06" type="functional">
+    <t:objective>Search a deleted resource </t:objective>
+    <t:steps>1. Delete the resource
+             2. Search the deleted resource     
+    </t:steps>
+
+    <t:test id="searchDirectoryRequest23a">
+        <t:request>
+            <DeleteCalendarResourceRequest xmlns="urn:zimbraAdmin">
+                <id>${resource1.id}</id>
+            </DeleteCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="searchAccountsRequest21a">
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="resources">
+                <query>${resource1.query1}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>   
+
+</t:tests>

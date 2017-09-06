@@ -1,0 +1,281 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="list1" value="list1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="message.subject1" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="message.content1" value="content of the message${TIME}.${COUNTER}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup1" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="ModifyConfigRequest1"  depends="admin_login">
+        <t:request>
+           <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+     	  		 <a n="zimbraMilterServerEnabled">TRUE</a>
+    	   </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+        
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account3" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>         
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test id="CreateDistributionListRequest1"  required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list1}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="addDistributionListMemberRequest1" depends="addDistributionListMemberRequest1a">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${account2.name}</dlm>
+                <dlm>${account3.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="addDistributionListMemberRequest1" depends="addDistributionListMemberRequest1a">
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+      			<id>${list1.id}</id>
+      			<a n="zimbraPrefReplyToEnabled">TRUE</a>
+      			<a n="zimbraPrefReplyToDisplay">display_name</a>
+      			<a n="zimbraPrefReplyToAddress">${list1}</a>   		 
+    		</ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+       		  <t:select path='//admin:ModifyDistributionListResponse/admin:dl/admin:a[@n="zimbraPrefReplyToAddress"]' match="${list1}"/> 
+      		   <t:select path='//admin:ModifyDistributionListResponse/admin:dl/admin:a[@n="zimbraPrefReplyToEnabled"]' match="TRUE"/> 
+      		   <t:select path='//admin:ModifyDistributionListResponse/admin:dl/admin:a[@n="zimbraPrefReplyToDisplay"]' match="display_name"/> 
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="dl" by="name">${list1}</target>
+				<grantee type="usr" by="name">${account1.name}</grantee>
+				<right>sendToDistList</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc acl \'" RETURNSTDOUT RETURNSTDERR WAIT 50000</params>
+		</t:request>
+	</t:staftask>
+
+    <t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
+		</t:request>
+	</t:staftask>
+	
+ </t:test_case>   
+ 
+ <t:test_case testcaseid="bug15664_tc1" type="always" >
+ <t:objective>verify Reply-To header to the message</t:objective>
+ <t:steps>
+			1. Login into Account1.
+			2. Send mail to DL
+			3. Login as DL member,verify Reply-To header to the message
+	</t:steps>
+    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${account1.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="MsgGetRequest1a" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${list1}'/>
+                    <su> ${message.subject1} </su>
+                    <mp ct="text/plain">
+                        <content> ${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+        </t:response>
+    </t:test>
+  
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${account2.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>${message.subject1}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="mail01.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${mail01.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+         <t:select path="//mail:GetMsgResponse/mail:m">
+         <t:select path="//mail:e[@t='r']" attr="a" match="${list1}"/>
+         <t:select path="//mail:e" attr="d" match="display_name"/>
+         <t:select path="//mail:e" attr="p" match="display_name"/>
+         </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:finally areas="noncluster">
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="ModifyConfigRequest1"  depends="admin_login">
+        <t:request>
+           <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+     	  		 <a n="zimbraMilterServerEnabled">FALSE</a>
+    	   </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
+		</t:request>
+	</t:staftask>
+
+</t:finally>
+
+</t:tests>

@@ -1,0 +1,521 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="user" value="${user1.user}"/>
+<t:property name="password" value="${user1.password}"/>
+<t:property name="changedPassword" value="temporary"/>
+
+<t:property name="prop.name" value="zimbraPrefMailSignature"/>
+<t:property name="prop.value" value="abcd 1234"/>
+
+<t:property name="tag.name" value="zimbra"/>
+<t:property name="tag.newname" value="test"/>
+
+<t:property name="search.name" value="Satish"/>
+<t:property name="search.query" value="from:satish"/>
+
+<t:property name="search.newname" value="Unread"/>
+<t:property name="search.newquery" value="is:unread"/>
+
+<t:property name="uri" value="${admin.uri}"/>
+
+<t:test>
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+<t:property name="uri" value="${mailclient.uri}"/>
+
+<t:test id="auth" required="true">
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${user}</account>
+    <password>${password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+ </t:response>
+</t:test>
+
+<t:test id="passwd" depends="auth">
+ <t:request>
+  <ChangePasswordRequest xmlns="urn:zimbraAccount">
+    <account>${user}</account>
+    <oldPassword>${password}</oldPassword>
+    <password>${changedPassword}</password>
+  </ChangePasswordRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//acct:ChangePasswordResponse/acct:authToken" set="authToken"/>
+ </t:response>
+</t:test>
+
+<t:test depends="passwd">
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${user}</account>
+    <password>${changedPassword}</password>
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+ </t:response>
+</t:test>
+
+<t:test depends="passwd">
+ <t:request>
+  <ChangePasswordRequest xmlns="urn:zimbraAccount">
+    <account>${user}</account>
+    <oldPassword>${changedPassword}</oldPassword>
+    <password>${password}</password>
+    <password/>
+  </ChangePasswordRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//acct:ChangePasswordResponse/acct:authToken" set="authToken"/>
+ </t:response>
+</t:test>
+
+<t:test id="modifyPrefs">
+ <t:request>
+   <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+     <pref name="${prop.name}">${prop.value}</pref>
+   </ModifyPrefsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//acct:ModifyPrefsResponse"/>
+ </t:response>
+</t:test>
+
+<t:test id="prefs" depends="modifyPrefs">
+ <t:request>
+   <GetPrefsRequest xmlns="urn:zimbraAccount"/>
+ </t:request>
+ <t:response>
+	<t:select path="//acct:GetPrefsResponse">
+		<t:select path="acct:pref[@name='${prop.name}']">
+		  <t:match>${prop.value}</t:match>
+        </t:select>
+    </t:select>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <SearchGalRequest xmlns="urn:zimbraAccount">
+     <name>${user}</name>
+   </SearchGalRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//acct:SearchGalResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <SyncGalRequest xmlns="urn:zimbraAccount" token=""/>
+ </t:request>
+  <t:response>
+	<t:select path="//acct:SyncGalResponse"/>
+ </t:response>
+</t:test>
+
+<!-- folders -->
+
+<t:test>
+ <t:request>
+   <GetFolderRequest xmlns="urn:zimbraMail"/>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="1"/>
+ </t:response>
+</t:test>
+
+<t:test id="folder">
+ <t:request>
+   <CreateFolderRequest xmlns="urn:zimbraMail">
+     <folder name="subfolder" l="2"/>
+   </CreateFolderRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
+ </t:response>
+</t:test>
+
+<t:test id="fname" depends="folder">
+ <t:request>
+   <FolderActionRequest xmlns="urn:zimbraMail">
+     <action op="rename" id="${folder.id}" name="sub-phoaldre"/>
+   </FolderActionRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:FolderActionResponse/mail:action" attr="id" match="${folder.id}"/>
+ </t:response>
+</t:test>
+
+<t:test id="fmv" depends="folder">
+ <t:request>
+   <FolderActionRequest xmlns="urn:zimbraMail">
+     <action op="move" id="${folder.id}" l="3"/>
+   </FolderActionRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:FolderActionResponse/mail:action" attr="id" match="${folder.id}"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetFolderRequest xmlns="urn:zimbraMail"/>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="1">
+	  <t:select path="mail:folder" attr="name" match="Trash">
+	    <t:select path="mail:folder" attr="name" match="sub-phoaldre">
+	      <t:select attr="id" match="${folder.id}"/>
+	      <t:select attr="l" match="3"/>
+	    </t:select>
+	  </t:select>
+	</t:select>
+ </t:response>
+</t:test>
+
+<t:test id="frm" depends="folder">
+ <t:request>
+   <FolderActionRequest xmlns="urn:zimbraMail">
+     <action op="delete" id="${folder.id}"/>
+   </FolderActionRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:FolderActionResponse/mail:action" attr="id" match="${folder.id}"/>
+ </t:response>
+</t:test>
+
+<!-- tags -->
+
+<t:test>
+ <t:request>
+   <CreateTagRequest xmlns="urn:zimbraMail">
+     <tag name="${tag.name}" color="7"/>
+   </CreateTagRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateTagResponse/mail:tag">
+	  <t:select attr="id" set="tag.id"/>
+	</t:select>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <TagActionRequest xmlns="urn:zimbraMail">
+     <action op="rename" id="${tag.id}" name="${tag.newname}"/>
+   </TagActionRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:TagActionResponse/mail:action" attr="id" match="${tag.id}"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetTagRequest xmlns="urn:zimbraMail"/>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetTagResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <TagActionRequest xmlns="urn:zimbraMail">
+     <action op="delete" id="${tag.id}"/>
+   </TagActionRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:TagActionResponse/mail:action" attr="id" match="${tag.id}"/>
+ </t:response>
+</t:test>
+
+<!-- saved searches -->
+
+<t:test>
+ <t:request>
+   <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+     <search name="${search.name}" query="${search.query}" l="1"/>
+   </CreateSearchFolderRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateSearchFolderResponse/mail:search">
+	  <t:select attr="id" set="search.id"/>
+	</t:select>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <ModifySearchFolderRequest xmlns="urn:zimbraMail">
+     <search id="${search.id}" name="${search.newname}" query="${search.newquery}"/>
+   </ModifySearchFolderRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:ModifySearchFolderResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetSearchFolderRequest xmlns="urn:zimbraMail"/>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetSearchFolderResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <FolderActionRequest xmlns="urn:zimbraMail">
+     <action op="delete" id="${search.id}"/>
+   </FolderActionRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:FolderActionResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <BrowseRequest xmlns="urn:zimbraMail" browseBy="domains"/>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:BrowseResponse/mail:bd"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <BrowseRequest xmlns="urn:zimbraMail" browseBy="attachments"/>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:BrowseResponse/mail:bd"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <SearchRequest xmlns="urn:zimbraMail">
+   <query>contributing to xmlbeans</query>
+   </SearchRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse/mail:c"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <SearchRequest xmlns="urn:zimbraMail" groupBy="message">
+   <query>xml</query>
+   </SearchRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse/mail:m"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <SearchRequest xmlns="urn:zimbraMail">
+   <query>type:image/jpeg</query>
+   </SearchRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse/mail:c"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <SearchRequest xmlns="urn:zimbraMail" groupBy="message">
+   <query>type:image/jpeg</query>
+   </SearchRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse/mail:m"/>
+ </t:response>
+</t:test>
+
+<!--
+<t:test>
+ <t:request>
+   <SearchRequest xmlns="urn:zimbraMail" groupBy="none">
+   <query>type:image/jpeg</query>
+   </SearchRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse/mail:mp" attr="cid"/>
+ </t:response>
+</t:test>
+-->
+
+<t:test>
+ <t:request>
+   <SearchRequest xmlns="urn:zimbraMail">
+   <query>type:image/jpeg</query>
+   </SearchRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+	<t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="msg.id"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetConvRequest xmlns="urn:zimbraMail">
+     <!-- <c id="63"/> -->
+     <c id="${conv.id}"/>
+   </GetConvRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetConvResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <ConvActionRequest xmlns="urn:zimbraMail">
+     <action id="${conv.id}" op="flag"/>
+   </ConvActionRequest>
+ </t:request>
+ <t:response>
+   <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id}"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetMsgRequest xmlns="urn:zimbraMail">
+    <!-- 16/63/118/123-alt/178/386 -->
+     <m id="${msg.id}"/>
+   </GetMsgRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg.id}"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <CreateContactRequest xmlns="urn:zimbraMail">
+     <cn>
+     	<a n="firstName">Joe</a>
+     	<a n="lastName">Blow</a>
+     	<a n="email">joeblow@hotmail.com</a>     	
+     </cn>     
+   </CreateContactRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateContactResponse/mail:cn">
+	  <t:select attr="id" set="contact.id"/>
+	</t:select>	
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+        <cn id="${contact.id}"/>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetContactsResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <ModifyContactRequest xmlns="urn:zimbraMail" force="1">
+     <cn id="${contact.id}">
+     	<a n="email">joeblow@gmail.com</a>
+     </cn>     
+   </ModifyContactRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:ModifyContactResponse/mail:cn"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+        <cn id="${contact.id}"/>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetContactsResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <ContactActionRequest xmlns="urn:zimbraMail">
+     <action op="delete" id="${contact.id}"/>
+   </ContactActionRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:ContactActionResponse/mail:action" attr="id" match="${contact.id}"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+        <cn id="${contact.id}"/>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="mail.NO_SUCH_CONTACT"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetContactsResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+     <a n="email"/>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetContactsResponse"/>
+ </t:response>
+</t:test>
+
+<t:test>
+  <t:request>
+    <SyncRequest xmlns="urn:zimbraMail"/>
+  </t:request>
+  <t:response>
+    <t:select path="//mail:SyncResponse"/>
+  </t:response>
+</t:test>
+
+</t:tests>

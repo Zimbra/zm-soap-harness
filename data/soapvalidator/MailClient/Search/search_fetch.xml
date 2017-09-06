@@ -1,0 +1,468 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+
+<t:property name="test_account1.name" value="test1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test2${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="fetch_spaces" value="   "/>
+<t:property name="fetch_spchar" value="!#*"/>
+<t:property name="fetch_numbers" value="123"/>
+<t:property name="fetch_negative" value="-123"/>
+<t:property name="fetch_text" value="some text"/>
+<t:property name="fetch_alpha" value="1abc2"/>
+
+<t:property name="mail_content" value="this is to inform u that the following mail is to read the person who sent it is the mad person this is to inform u that the following mail is to content${TIME}${COUNTER}"/>
+<t:property name="msg_content" value="this is to inform u that the following mail is to read the person who sent it is the mad person this is to inform u that the following mail is to ..."/>
+<t:property name="conversation1.subject" value="subject${TIME}${COUNTER}"/>
+<t:property name="conversation1.message1.content" value="${COUNTER} message content ${TIMER}"/>
+<t:property name="conversation1.message2.content" value="${COUNTER} message content ${TIMER}"/>
+<t:property name="conversation1.message3.content" value="${COUNTER} message content ${TIMER}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_searchFetch" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps> 1. Login to Admin
+              2. Create test accounts
+    </t:steps>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>        
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>        
+    </t:test>     
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+<t:test_case testcaseid="acctSetup2_searchFetch" type="always">
+    <t:objective>Setup the accounts for test purpose </t:objective>
+    <t:steps>1. Login to account2 
+             2. Send a mail to account1
+             3. Login to account 1 for test purpose
+    </t:steps>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+     <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>test mail</su>
+                    <mp ct="text/plain">
+                        <content>${mail_content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+     <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m >
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>${conversation1.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${conversation1.message1.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="conversation1.message1.id"/>
+        </t:response>
+    </t:test>
+
+     <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${conversation1.message1.id}" rt="r">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>RE: ${conversation1.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${conversation1.message2.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="conversation1.message2.id"/>
+        </t:response>
+    </t:test>
+
+     <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${conversation1.message1.id}" rt="w">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>FWD: ${conversation1.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${conversation1.message3.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="conversation1.message3.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="start">
+               <mbox id="${test_account1.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse" attr="status" match="started"/>
+        </t:response>
+    </t:test>
+	
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
+				  <mbox id="${test_account1.id}"/>
+				</ReIndexRequest>  
+			</t:request>
+			<t:response>
+			    <t:select path="//admin:ReIndexResponse" attr="status" match="idle" query="response"/>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="start">
+               <mbox id="${test_account2.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse" attr="status" match="started"/>
+        </t:response>
+    </t:test>
+	
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
+				  <mbox id="${test_account2.id}"/>
+				</ReIndexRequest>  
+			</t:request>
+			<t:response>
+						    <t:select path="//admin:ReIndexResponse" attr="status" match="idle" query="response"/>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="search_fetch01" type="smoke">
+    <t:objective>Verify fetch attribute of search for fetch="1" along with type="message,appointment".</t:objective>
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="1">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account2.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${msg_content}"/>            
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="search_fetch02" type="smoke">
+    <t:objective>Verify fetch attribute of search for fetch="0".</t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="0">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account2.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
+            <t:select path="//mail:SearchResponse/mail:m/mail:mp" emptyset="1"/>            
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="search_fetch03" type="smoke">
+    <t:objective>Verify fetch attribute of search for fetch="all"</t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="all">
+                  <query>subject:(${conversation1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:content" match="(?s)${conversation1.message1.content}.*"/>            
+            	<t:select path="//mail:content" match="(?s)${conversation1.message2.content}.*"/>            
+            	<t:select path="//mail:content" match="(?s)${conversation1.message3.content}.*"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="search_fetch04" type="negative" bugids="27139">
+    <t:objective>Verify fetch attribute of search by putting invalid values of fetch. (blank,spchar,integers,negative,sometext,alpha,space) </t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_spchar}">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_numbers}">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_negative}">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_text}">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_alpha}">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="${fetch_spaces}">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="search_fetch05" type="negative" bugids="27139">
+    <t:objective>Verify fetch attributes of search by putting leading space with its value=1.</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch=" 1">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="search_fetch06" type="negative" bugids="27139">
+    <t:objective>Verify fetch attributes of search by putting trailing space with its value=1.</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="1 ">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			 <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="search_fetch07" type="negative">
+    <t:objective>Verify fetch attributes of search by putting decimal value.</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment" fetch="1.0">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+</t:tests>

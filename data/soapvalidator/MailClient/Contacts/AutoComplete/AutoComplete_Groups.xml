@@ -1,0 +1,475 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="deprecated">
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="AutoCompleteRequest_Groups_01" type="deprecated" bugids="56772">
+    <t:objective>AutoCompleteRequest matching a group by group name</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Create contact
+	3. Create group containint the contact
+	3. Send AutoCompleteRequest matching the group name
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="contact1.firstname" value="contactf${TIME}${COUNTER}"/>
+	<t:property name="contact1.lastname" value="contactl${TIME}${COUNTER}"/>
+	<t:property name="contact1.name" value="${contact1.firstname}@${defaultdomain.name}"/>
+	
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="email">${contact1.name}</a>
+                    <a n="firstName">${contact1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="group1.name" value="group${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+				<cn >
+					<a n="type">group</a>
+					<a n="fileAs">8:${group1.name}</a>
+					<a n="nickname">${group1.name}</a>
+					<a n="dlist">${contact1.name}</a>
+				</cn>
+			</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        </t:response>
+    </t:test>
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${group1.name}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[@id='${group1.id}']">
+ 					<t:select attr="display" match="${group1.name}"/>
+ 					<t:select attr="type" match="contact"/>
+ 					<t:select attr="isGroup" match="1"/>
+ 				</t:select>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_Groups_02" type="deprecated" bugids="45545">
+    <t:objective>AutoCompleteRequest matching a group by group member name</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Create contact
+	3. Create group containing the contact
+	4. Send AutoCompleteRequest for "contact"
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="contact1.firstname" value="contactf${TIME}${COUNTER}"/>
+	<t:property name="contact1.lastname" value="contactl${TIME}${COUNTER}"/>
+	<t:property name="contact1.name" value="${contact1.firstname}@${defaultdomain.name}"/>
+	<t:property name="contact.additional" value="additional${TIME}${COUNTER}@${defaultdomain.name}"/>
+	
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="email">${contact1.name}</a>
+                    <a n="firstName">${contact1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="group1.name" value="group${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+				<cn >
+					<a n="type">group</a>
+					<a n="fileAs">8:${group1.name}</a>
+					<a n="nickname">${group1.name}</a>
+					<a n="dlist">${contact1.name},${contact.additional}</a>
+				</cn>
+			</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${contact1.firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[@id='${group1.id}']">
+ 					<t:select attr="display" match="${group1.name}"/>
+					<t:select attr="type" match="contact"/>
+ 					<t:select attr="isGroup" match="1"/>
+  				</t:select>
+ 				<t:select path="//mail:match[@id='${contact1.id}']">
+ 					<t:select attr="email" match=".*${contact1.name}.*"/>
+ 					<t:select attr="type" match="contact"/>
+ 					<t:select attr="isGroup" match="0"/>
+ 				</t:select>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_Groups_03" type="deprecated" bugids="45545">
+    <t:objective>AutoCompleteRequest matching a group by group member name</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Create contact ("first last email@domain.com")
+	3. Create group containing the contact
+	4. Send AutoCompleteRequest for "email"
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="contact1.firstname" value="first${TIME}${COUNTER}"/>
+	<t:property name="contact1.lastname" value="last${TIME}${COUNTER}"/>
+	<t:property name="contact1.email" value="email${TIME}${COUNTER}"/>
+	<t:property name="contact1.name" value="${contact1.email}@${defaultdomain.name}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="email">${contact1.name}</a>
+                    <a n="firstName">${contact1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="group1.name" value="group${TIME}${COUNTER}"/>
+    <t:property name="contact.additional" value="additional${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+				<cn >
+					<a n="type">group</a>
+					<a n="fileAs">8:${group1.name}</a>
+					<a n="nickname">${group1.name}</a>
+					<a n="dlist">${contact1.name},${contact.additional}</a>
+				</cn>
+			</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        </t:response>
+    </t:test>
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${contact1.email}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[@id='${group1.id}']">
+ 					<t:select attr="display" match="${group1.name}"/>
+ 					<t:select attr="type" match="contact"/>
+ 					<t:select attr="isGroup" match="1"/>
+ 				</t:select>
+ 				<t:select path="//mail:match[@id='${contact1.id}']">
+ 					<t:select attr="email" match=".*${contact1.name}.*"/>
+ 					<t:select attr="type" match="contact"/>
+ 					<t:select attr="isGroup" match="0"/>
+ 				</t:select>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_Groups_04" type="deprecated" >
+    <t:objective>AutoCompleteRequest matching a group by group member name</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Create contact
+	3. Create group containing the contact
+	4. Send AutoCompleteRequest for "contact@domain.com"
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="contact1.firstname" value="contactf${TIME}${COUNTER}"/>
+	<t:property name="contact1.lastname" value="contactl${TIME}${COUNTER}"/>
+	<t:property name="contact1.name" value="${contact1.firstname}@${defaultdomain.name}"/>
+    <t:property name="contact.additional" value="additional${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="email">${contact1.name}</a>
+                    <a n="firstName">${contact1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="group1.name" value="group${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+				<cn >
+					<a n="type">group</a>
+					<a n="fileAs">8:${group1.name}</a>
+					<a n="nickname">${group1.name}</a>
+					<a n="dlist">${contact1.name},${contact.additional}</a>
+				</cn>
+			</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        </t:response>
+    </t:test>
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${contact1.name}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[@id='${group1.id}']">
+ 					<t:select attr="display" match="${group1.name}"/>
+					<t:select attr="type" match="contact"/>
+ 					<t:select attr="isGroup" match="1"/>
+  				</t:select>
+ 				<t:select path="//mail:match[@id='${contact1.id}']">
+ 					<t:select attr="email" match=".*${contact1.name}.*"/>
+ 					<t:select attr="type" match="contact"/>
+ 					<t:select attr="isGroup" match="0"/>
+ 				</t:select>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AutoCompleteRequest_Groups_05" type="deprecated" >
+    <t:objective>AutoCompleteRequest matching a group by group member name and group name</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Create contact (email=name@domain.com)
+	3. Create group containint the contact (group name=name)
+	4. Send AutoCompleteRequest for name
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="term" value="term${TIME}${COUNTER}"/>
+	<t:property name="contact1.firstname" value="${term}"/>
+	<t:property name="contact1.lastname" value="contactl${TIME}${COUNTER}"/>
+	<t:property name="contact1.name" value="${term}@${defaultdomain.name}"/>
+	<t:property name="contact.additional" value="additional${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="email">${contact1.name}</a>
+                    <a n="firstName">${contact1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="group1.name" value="${term}"/>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+				<cn >
+					<a n="type">group</a>
+					<a n="fileAs">8:${group1.name}</a>
+					<a n="nickname">${group1.name}</a>
+					<a n="dlist">${contact1.name},${contact.additional}</a>
+				</cn>
+			</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="group1.id"/>          
+        </t:response>
+    </t:test>
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${term}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[@id='${group1.id}']">
+ 					<t:select attr="display" match="${group1.name}"/>
+ 					<t:select attr="type" match="contact"/>
+ 					<t:select attr="isGroup" match="1"/>
+ 				</t:select>
+ 				<t:select path="//mail:match[@id='${contact1.id}']">
+ 					<t:select attr="email" match=".*${contact1.name}.*"/>
+ 					<t:select attr="type" match="contact"/>
+ 					<t:select attr="isGroup" match="0"/>
+ 				</t:select>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+</t:tests>

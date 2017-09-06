@@ -1,0 +1,439 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="conv.sometext" value="some text"/>
+<t:property name="message.subject1" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="message.content1" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="text" value="abcd"/>
+<t:property name="number.negative" value="-50"/>
+<t:property name="number.invalid" value="0099"/>
+<t:property name="number.decimal" value="10.10"/>
+<t:property name="spchar" value=":&lt;''//\\"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+    
+	<t:test id="ping">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+	<t:objective>Create a test account</t:objective>
+	<steps> 1. Login to admin account, 2. Create a test_account1 </steps>
+
+	<t:test id="admin_login" required="true" depends="ping">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	<t:test id="create_test_account1" required="false" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+				<!-- 
+                <a n="zimbraMailHost">${LOCALHOST}</a> 
+				<a n="zimbraMailStatus">enabled</a>
+		        <a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+				<a n="zimbraPasswordMinAge">7</a>
+                -->
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                    <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+<t:test_case testcaseid="acct_setup2" type="always" >
+	<t:objective>login as the test account</t:objective>
+	<t:steps> 
+        1. Login to account1 
+        2. Send a mail to account1        
+	</t:steps>
+    
+	<t:test id="auth1" required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.inboxFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.trashFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account1.sentFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account1.spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account1.draftsFolder.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="sendmail1" required="true">
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su> ${message.subject1}</su>
+					<mp ct="text/plain">
+					<content> ${message.content1}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+		</t:response>
+	</t:test>
+	<t:test id="sendmail2" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message.id1}" rt="w">
+                    <e t="t" a="${account1.name}"/>
+                    <su> Fwd: ${message.subject1}</su>
+                    <mp ct="text/plain">
+                        <content> $ Forwarded content : {message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+        </t:response>
+    </t:test>
+
+
+	<t:test id="searchConv">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:sent</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConvRequest1" type="smoke" >
+	<t:objective> get conversation by valid ID </t:objective>
+	<t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${conv.id}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetConvResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConvRequest2" type="smoke" >
+	<t:objective> get conversation by invalid ID </t:objective>
+	<t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="12345"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^mail.NO_SUCH_CONV"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConvRequest3" type="smoke" >
+	<t:objective> get conversation with ID as text </t:objective>
+	<t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${text}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConvRequest4" type="smoke" >
+	<t:objective> get conversation with ID as negative number </t:objective>
+	<t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${number.negative}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^mail.NO_SUCH_CONV"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConvRequest5" type="smoke" >
+	<t:objective> get conversation request with invalid number </t:objective>
+	<t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${number.invalid}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^mail.NO_SUCH_CONV"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConvRequest6" type="smoke" >
+	<t:objective> get conversation request with spchar in ID </t:objective>
+	<t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${spchar}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConvRequest7" type="smoke" >
+	<t:objective> get conversation request with ID as decimal number </t:objective>
+	<t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${number.decimal}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConvRequest8" type="smoke" >
+	<t:objective> get conversation request with blank ID </t:objective>
+	<t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id=""/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConvRequest9" type="functional" bugids="13436">
+	<t:objective> TC to verify GetConvRequest can access specific headers </t:objective>
+	<t:test>
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${conv.id}" fetch="1">
+				<header n="From" />
+				<header n="To" />
+				</c>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+            <t:select path='//mail:GetConvResponse/mail:c/mail:m/mail:header' emptyset="0"/>
+            <t:select path='//mail:GetConvResponse/mail:c/mail:m/mail:header[@n="From"]' emptyset="0"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchConvRequest_max_01" type="smoke">
+	<t:objective>Verify SearchConvRequest with max=10 only returns the first 10 bytes of data (text)</t:objective>
+	<t:steps>1. Login to account2 
+	         2. Send a mail to account1
+	         3. Login to account 1 for test purpose
+	</t:steps>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.inboxFolder.id}">
+                    <content>To: foo@example.com
+From:bar@example.com
+Subject: testing when you have an invalid skin - another upgrade test
+Date: Mon, 22 Oct 2007 16:36:44 -0700 (PDT)
+MIME-Version: 1.0
+Content-Type: text/plain
+
+
+The last two weeks have been tough for the No. 18 Cal football team. After sitting at No. 2 for a week, back-to-back losses have caused the Bears to plummet out of the top 10.
+
+Cal will even be an underdog for the first time Saturday when it travels to Sun Devil Stadium to play No. 7 Arizona State at 7 p.m.
+
+But even against the No. 4 team in the BCS, the Bears' goals have not changed one bit. 
+
+"Even though you say, all the pressure should be on Arizona State because they're highly ranked and all that kind of stuff, there's still always the expectation to win for us," Cal coach Jeff Tedford said.
+
+
+                    </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="cid" set="message1.cid"/>
+        </t:response>
+    </t:test>
+
+    <!-- Find the message ID's for account1 -->
+    <t:test>
+        <t:request>
+            <GetConvRequest xmlns="urn:zimbraMail" >
+            	<c id="${message1.cid}" fetch="1" max="10"/>
+            </GetConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetConvResponse">
+				<t:select path="//mail:mp[@ct='text/plain']" attr="truncated" match="1"/>
+				<t:select path="//mail:content" match="(?s).*The.*"/>
+				<t:select path="//mail:content" match="(?s)After.*" emptyset="1"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+    
+</t:test_case>
+
+<t:test_case testcaseid="SearchConvRequest_max_02" type="smoke" >
+    <t:objective>Verify that max will truncate the message body (html)</t:objective>
+
+    <!-- Add a mail to the inbox-->
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.inboxFolder.id}">
+                    <content>Date: Fri, 26 Oct 2007 16:19:02 -0700 (PDT)
+From: foo@example.com
+To: bar@example.com
+Subject: the fourth quarter has belonged to anyone but Cal
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_233_76654086.1193440742742"
+X-Originating-IP: [10.10.131.107]
+
+------=_Part_233_76654086.1193440742742
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+As soon as the whistle sounds at the end of the third quarter, Cal fans lift up four fingers and chant "Fourth Quarter's Ours!" And with an offense that scores 35.1 points per game, why shouldn't it be? The Bears have outscored opponents 70-55 in the final stanza this season, including out-scoring No. 5 Oregon 21-7 in Eugene, Ore. 
+
+But lately, the fourth quarter has belonged to anyone but Cal. In the Bears' back-to-back losses, they have been outscored down the stretch 21-14. Take away its last win over the Ducks, and Cal has been outscored 31-21 during the fourth quarter in Pac-10 play. 
+
+For the third-highest scoring team in the conference, a team with some of the fastest receivers in the nation and a stable full of top-tier running backs, there is no reason that the Bears should be taking their feet off the gas when the points matter most. 
+
+
+
+
+------=_Part_233_76654086.1193440742742
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+&lt;html&gt;&lt;head&gt;&lt;style type='text/css'&gt;body
+ { font-family: 'Arial'; font-size: 10pt; color: #000000}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;As soon
+ as the whistle sounds at the end of the third quarter, Cal
+fans lift up four fingers and chant "Fourth Quarter's Ours!" And with
+an offense that scores 35.1 points per game, why shouldn't it be? The
+Bears have outscored opponents 70-55 in the final stanza this season,
+including out-scoring No. 5 Oregon 21-7 in Eugene, Ore. &lt;p&gt;But lately, the fourth quarter has belonged
+ to anyone but Cal.
+In the Bears' back-to-back losses, they have been outscored down the
+stretch 21-14. Take away its last win over the Ducks, and Cal has been
+outscored 31-21 during the fourth quarter in Pac-10 play. &lt;/p&gt;&lt;p&gt;For the third-highest scoring
+ team in the conference, a team
+with some of the fastest receivers in the nation and a stable full of
+top-tier running backs, there is no reason that the Bears should be
+taking their feet off the gas when the points matter most. &lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+------=_Part_233_76654086.1193440742742--
+
+
+					</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="cid" set="message1.cid"/>
+        </t:response>
+    </t:test>
+
+
+    <!-- Find the message ID's for account1 -->
+    <t:test>
+        <t:request>
+            <GetConvRequest xmlns="urn:zimbraMail" >
+            	<c id="${message1.cid}" fetch="1" html="1" max="10"/>
+            </GetConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetConvResponse">
+				<t:select path="//mail:mp[@ct='text/html']" attr="truncated" match="1"/>
+				<t:select path="//mail:content" match="(?s).*html.*"/>
+				<t:select path="//mail:content" match="(?s).*As.*" emptyset="1"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+
+</t:tests>

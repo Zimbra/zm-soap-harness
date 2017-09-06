@@ -1,0 +1,321 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name"			value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name"			value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:test_case testcaseid="RestServlet_FormatXML_AccountSetup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_FormatTGZ_ExportImport_Tag_01" type="smoke" >
+	<t:objective>Verify export/import tags using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Add a tag
+	3. Export mailbox
+	4. Login as account2
+	5. Import mailbox
+	6. Verify tag.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="tag.name" value="tag${TIME}${COUNTER}"/>
+	<t:property name="tag.color" value="1"/>
+
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag.name}" color="${tag.color}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse" />
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<fmt>tgz</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:save file="${TIME}${COUNTER}.tgz" set="account1.tgz.file"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+	<t:resttest required="true">
+		<t:restServletRequest method="POST">
+			<filename>${account1.tgz.file}</filename>
+			<fmt>tgz</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test >
+		<t:request>
+	   		<GetTagRequest xmlns="urn:zimbraMail"/>
+	 	</t:request>
+	  	<t:response>
+			<t:select path="//mail:GetTagResponse"/>
+	 	</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_FormatTGZ_ExportImport_Tag_02" type="smoke" >
+	<t:objective>Verify export/import tagged messages using tgz format</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Add a tag.  Add a message.  Tag the message
+	3. Export mailbox
+	4. Login as account2
+	5. Import mailbox
+	6. Verify tagged message.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="tag.name" value="tag${TIME}${COUNTER}"/>
+	<t:property name="tag.color" value="1"/>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>From: foo@foo.com
+To: foo@foo.com
+Subject: ${message1.subject}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+
+
+email01A content
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag.name}" color="${tag.color}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse">
+            	<t:select path="//mail:tag" attr="id" set="tag.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.message1.id}" op="tag" tag="${tag.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<fmt>tgz</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:save file="${TIME}${COUNTER}.tgz" set="account1.tgz.file"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+	<t:resttest required="true">
+		<t:restServletRequest method="POST">
+			<filename>${account1.tgz.file}</filename>
+			<fmt>tgz</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test >
+		<t:request>
+	   		<GetTagRequest xmlns="urn:zimbraMail"/>
+	 	</t:request>
+	  	<t:response>
+			<t:select path="//mail:GetTagResponse">
+				<t:select path="//mail:tag[@name='${tag.name}']" attr="id" set="tag.id"/>
+			</t:select>
+	 	</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message1.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account2.message1.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account2.message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:m" attr="t" match="${tag.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

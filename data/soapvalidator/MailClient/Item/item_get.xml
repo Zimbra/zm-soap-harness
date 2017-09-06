@@ -1,0 +1,224 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="acct1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="acct2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup1" type="always" >
+    <t:objective>Create two test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a test_account1 
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="acct2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${acct1.server}"/>
+
+<t:test_case testcaseid="acct_setup2" type="always" >
+    <t:objective>login as the test account</t:objective>
+    <t:steps>1. Login to test_account1 
+        2. Send a mail to test_account1
+        3. Get the Conversation id        
+    </t:steps>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+            <t:select path="//mail:folder[@name='${globals.tasks}']" attr="id" set="account1.folder.tasks.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account1.folder.sent.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account1.folder.spam.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account1.folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root.id"/>
+			<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account1.folder.contact.id"/>
+			<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.folder.calendar.id"/>
+		</t:response>
+	</t:test>
+
+     <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.folder.calendar.id}" op="grant">
+                    <grant d="${account2.name}" gt="usr" perm="r"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="acct1.folder.zid"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetItemRequest01" type="smoke" >
+    <t:objective>Get Inbox by ID/path </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account1.folder.inbox.id}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item path="Inbox"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetItemRequest02" type="smoke" bugids="26304" >
+    <t:objective> GetItemRequest for shared calendar by ID/PATH </t:objective>
+    
+	<t:property name="server.zimbraAccount" value="${acct2.server}"/>
+	<t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
+            <t:select path="//mail:folder[@name='${globals.tasks}']" attr="id" set="account2.folder.tasks.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account2.folder.trash.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account2.folder.sent.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account2.folder.spam.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account2.folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root.id"/>
+			<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account2.folder.contact.id"/>
+			<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.calendar.id}" name="user1's Calendar" view="appointment" rid="${account1.folder.calendar.id}" zid="${account1.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="delegated.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="share.name"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${delegated.id}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item path="Calendar/${share.name}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!-- need to add more tc for shared contacts, briefcase -->
+
+</t:tests>
+
+

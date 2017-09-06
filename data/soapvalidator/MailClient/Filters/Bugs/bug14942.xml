@@ -1,0 +1,281 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="folder.pname" value="1"/> 
+<t:property name="folder.name" value="FilterFolder"/>
+<t:property name="filter.subject" value="split value"/>
+<t:property name="filter1.name" value="filter1.${TIME}.${COUNTER}"/>
+
+<t:property name="msg1.file" value="${testMailRaw.root}/14942/mime1.txt"/>
+<t:property name="msg2.file" value="${testMailRaw.root}/14942/mime2.txt"/>
+
+<t:property name="msg3.subject" value="mime3 ${filter.subject}"/>
+<t:property name="msg4.subject" value="Qbeamer and TeX on mime4 Re: mactex.tar.gz Pcomplete ... Re split value final tex live 2007"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="setup_bug_14942" type="always" >
+    <t:objective> Create two test accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Bug_14942_01" type="functional" >
+	<t:objective>Verify bug 14942: Mail Filter rule should still apply when the matching token in the Subject line is interrupted by a linefeed in the RFC822 message format</t:objective>
+	<t:steps>
+		1. Login to test account1.
+		2. Create a new folder.
+		3. Create a filter rule with action as "fileinto" folder created in step 2. 
+		4. Account2 sends a message that matches the filter (should be split)
+		5. Inject LMTP messages that matches the filter
+			A. one message has the subject split
+			B. one message does not have the subject split
+		6. Login to account1
+		7. Verify that all messages are in the filter folder
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateFolderRequest" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test id="CreateFilterRequest">
+        <t:request>
+            <SaveRulesRequest xmlns="urn:zimbraMail">
+                <rules>
+					<r name="${filter1.name}" active="1">
+						<g op="anyof">
+							<c name="header" k0="subject" op=":contains" k1="${filter.subject}"/>
+						</g>
+						<action name="fileinto">
+							<arg>/${folder.name}</arg>
+						</action>
+						<action name="stop"/>
+					</r>
+                 </rules>
+            </SaveRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveRulesResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetRulesResponse/mail:rules/mail:r[@name='${filter1.name}']"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${test_account1.name}"/>
+					<su>${msg3.subject}</su>
+					<mp ct="text/plain">
+						<content> typical message words </content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${test_account1.name}"/>
+					<su>${msg4.subject}</su>
+					<mp ct="text/plain">
+						<content> more words </content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg1.file}</filename>
+			<to>${test_account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${test_acct1.server}</server>
+         </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg2.file}</filename>
+			<to>${test_account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${test_acct1.server}</server>
+         </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <!-- subject is not split in the mime -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(mime1 ${filter.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@l='${folder.id}']"/>
+         </t:response>
+    </t:test>
+
+    <!-- subject is split in the mime -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(mime2 ${filter.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@l='${folder.id}']"/>
+         </t:response>
+    </t:test>
+
+    <!-- subject is not split in the mime -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(mime3 ${filter.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@l='${folder.id}']"/>
+         </t:response>
+    </t:test>
+
+    <!-- subject is split in the mime -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(mime4 ${filter.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@l='${folder.id}']"/>
+         </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

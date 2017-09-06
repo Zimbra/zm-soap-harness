@@ -1,0 +1,273 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="cert.issuer" value="DigiCert"/>
+
+<t:test_case testcaseid="GetCertRequest_setup" type="always" >
+    <t:objective>basic system check and create test accounts</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+
+	<t:test>
+	    <t:request>
+	        <GetServerRequest xmlns="urn:zimbraAdmin">
+	            <server by="name">${zimbraServer.name}</server>
+	        </GetServerRequest>
+	    </t:request>
+	    <t:response>
+			<t:select path="//admin:GetServerResponse/admin:server" attr="id" set="server.id"/>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_01" type="smoke">
+    <t:objective>Test for GetCertRequest when type="mailboxd"</t:objective>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetCertRequest type="mailboxd" option="self" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCertResponse/admin:cert" attr="server" match="${zimbraServer.name}"/>
+			<t:select path="//admin:GetCertResponse/admin:cert" attr="type" match="mailboxd"/>
+			<t:select path="//admin:GetCertResponse/admin:cert/admin:issuer" match=".*${cert.issuer}.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_02" type="smoke">
+    <t:objective>Test for GetCertRequest when type="proxy"</t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetCertRequest type="proxy" option="self" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCertResponse/admin:cert" attr="server" match="${zimbraServer.name}"/>
+			<t:select path="//admin:GetCertResponse/admin:cert" attr="type" match="proxy"/>
+			<t:select path="//admin:GetCertResponse/admin:cert/admin:issuer" match=".*${cert.issuer}.*"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_03" type="smoke">
+    <t:objective>Test for GetCertRequest when type="ldap"</t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetCertRequest type="ldap" option="self" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCertResponse/admin:cert" attr="server" match="${zimbraServer.name}"/>
+			<t:select path="//admin:GetCertResponse/admin:cert" attr="type" match="ldap"/>
+			<t:select path="//admin:GetCertResponse/admin:cert/admin:issuer" match=".*${cert.issuer}.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_04" type="smoke">
+    <t:objective>Test for GetCertRequest with blank type.</t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetCertRequest type="" option="self" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetCertRequest_05" type="smoke">
+    <t:objective>Test for GetCertRequest with blank server.</t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetCertRequest type="ldap" option="self" server="" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_06" type="smoke">
+    <t:objective>Test for GetCertRequest with negative value for type,server.</t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetCertRequest type="-1111" option="self" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetCertRequest type="ldap" option="self" server="-1111" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_07" type="smoke">
+    <t:objective>Test for GetCertRequest with type ,server as alphabets.</t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetCertRequest type="aaa" option="self" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+     
+    <t:test >
+        <t:request>
+            <GetCertRequest type="ldap" option="self" server="aaaa" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

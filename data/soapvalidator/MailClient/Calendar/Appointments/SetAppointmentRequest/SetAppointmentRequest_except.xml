@@ -1,0 +1,176 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="tz" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
+<t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
+<t:property name="appt1.location" value="location.${TIME}.${COUNTER}"/>
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SetAppointmentRequest_CreateAppointmentWithException_01" type="smoke" >
+    <t:objective>Create a daily recurring appointment with one exception</t:objective>
+    <t:steps>
+    1. Use SetAppointmentRequest to create a daily appointment
+    	A. 3 instances
+    	B. The 2 instance is modified to occur 1 hour later
+    2. Use GetAppointmentSummariesRequest to verify that the appointments were set correctly
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+        
+
+	<!-- PDT is -8 hours (+1 hour savings) from GMT -->
+	<t:property name="appt1.start.gmt" value="1787587200000"/>
+    <t:property name="appt1.start.pdt" value="${TIME(+1h)(-8h)[${appt1.start.gmt}]}"/>
+
+    <t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail" bugid="7619">
+                <default needsReply="0" ptst="AC">
+                    <m>
+                        <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" loc="${appt1.location}">
+                            <s d="${ICALTIME[${appt1.start.pdt}]}" tz="${tz}"/>  
+                            <e d="${ICALTIME(+1h)[${appt1.start.pdt}]}" tz="${tz}"/>  
+                            <or a="${account1.name}"/>
+	                        <recur><add>
+								<rule freq="DAI">
+									<interval ival="1"/>
+                        			<count num="3"/>
+								</rule>
+							</add></recur>
+                        </inv>
+                        <mp content-type="text/plain">
+                            <content>${appt1.content}</content>
+                        </mp>
+                        <su>${appt1.subject}</su>
+                    </m>
+                </default>
+				<except ptst="AC">
+					<m>
+						<inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" loc="${appt1.location}" >
+							<exceptId d="${ICALTIME(+1d)[${appt1.start.pdt}]}"  tz="${tz}"/>
+							<s d="${ICALTIME(+1d)(+2h)[${appt1.start.pdt}]}" tz="${tz}"/>
+							<e d="${ICALTIME(+1d)(+3h)[${appt1.start.pdt}]}" tz="${tz}"/>
+							<or a="${account1.name}" />
+						</inv>
+						<su>${appt1.subject}</su>
+						<mp ct="text/plain">
+							<content>${appt1.content}</content>
+						</mp>
+					</m>
+				</except>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt1.id"/>
+        </t:response>
+    </t:test>
+
+    
+    <t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${appt1.start.gmt}]}" e="${TIME(+4d)[${appt1.start.gmt}]}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt">
+				<t:select path="mail:inst" attr="s" match="${TIME[${appt1.start.gmt}]}"/>
+				<t:select path="mail:inst" attr="s" match="${TIME(+1d)[${appt1.start.gmt}]}" emptyset="1"/>
+				<t:select path="mail:inst" attr="s" match="${TIME(+1d)(+2h)[${appt1.start.gmt}]}"/>
+				<t:select path="mail:inst" attr="s" match="${TIME(+2d)[${appt1.start.gmt}]}"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

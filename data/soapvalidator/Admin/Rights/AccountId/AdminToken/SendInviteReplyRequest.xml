@@ -1,0 +1,181 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct1_setup_AccountBy" type="always" >
+ <t:objective>create test accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<!-- Remember these values for later -->
+	<t:property name="authToken.admin" value="${authToken}"/>
+
+	
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+	<!-- Account1 creates an appointment -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="appointment1.start" value="1162468800000"/>
+	<t:property name="appointment1.subject" value="1162468800000"/>
+
+	<t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail" >
+                <m >
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
+                        <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
+                        <s d="${ICALTIME[${appointment1.start}]}"/>  
+                        <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <e a="${account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>Appointment Content ${TIME} ${COUNTER}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
+        </t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="appointment">
+				<query>${appointment1.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment1.subject}']" attr="invId" set="account2.appointment1.invId"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthToken_Admin_SendInviteReplyRequest_Basic01" type="smoke" >
+    <t:objective>Use an admin token to SendInviteReplyRequest</t:objective>
+    <t:steps>
+    1. Login as admin
+	2. Use admin authtoken to SendInviteReplyRequest on another mailbox - Success
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:property name="authToken" value="${authToken.admin}"/>
+
+
+	<t:test>
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${account2.id}:${account2.appointment1.invId}" compNum="0" verb="ACCEPT" updateOrganizer="${globals.true}" >
+                <m origid="${account2.id}:${account2.appointment1.invId}" rt="r">
+                    <e t="t" a="${account1.name}"/>
+                    <su>ACCEPT: ${appointment1.subject} </su>
+                    <mp ct="text/plain">
+                        <content>Yes, I will attend.</content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse">
+            	<t:select attr="apptId" match="^${account2.id}:${regex.id}$"/>
+            	<t:select attr="invId" match="^${account2.id}:${regex.id}$"/>
+            	<t:select attr="calItemId" match="^${account2.id}:${regex.id}$"/>
+            </t:select>
+        </t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+</t:tests>

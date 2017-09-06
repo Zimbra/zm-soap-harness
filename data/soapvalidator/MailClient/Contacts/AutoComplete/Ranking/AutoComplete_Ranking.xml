@@ -1,0 +1,392 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="lastname" value="last${TIME}${COUNTER}"/>
+
+<!-- ContactXXX are destinations on the server (used for local contacts) -->
+<t:property name="contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="contact2.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${contact1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${firstname} ${lastname}</a>
+				<a n="givenName">${firstname}</a>
+				<a n="sn">${lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="contact1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="contact1.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${contact2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${firstname} ${lastname}</a>
+				<a n="givenName">${firstname}</a>
+				<a n="sn">${lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="contact2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="contact2.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraContactAutoCompleteMaxResults">5</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+    </t:test>  
+
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="AutoCompleteRequest_Ranking_01" type="smoke" >
+    <t:objective>Verify ranking in AutoCompleteResponse based on email frequency</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Send 1 mail to contact1
+	3. Send 2 mails to contact2
+	6. Send AutoCompleteRequest, verify contact2 has higher ranking than contact1
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${firstname}</a>
+                    <a n="lastName">${lastname}</a>
+                    <a n="email">${contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${firstname}</a>
+                    <a n="lastName">${lastname}</a>
+                    <a n="email">${contact2.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${contact1.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${contact2.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${contact2.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[1]" attr="email" match=".*${contact2.name}.*"/>
+ 				<t:select path="//mail:match[2]" attr="email" match=".*${contact1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+
+
+
+<t:test_case testcaseid="AutoCompleteRequest_Ranking_02" type="smoke" bugids="45886">
+    <t:objective>Verify ranking in AutoCompleteResponse based on email frequency with zimbraContactAutoCompleteMaxResults</t:objective>
+	<t:steps>
+	1. Login as account2, with zimbraContactAutoCompleteMaxResults=5
+	2. Create 6 contacts
+	3. Send mail to the last  contact
+	4. Send AutoCompleteRequest, verify the last contact has the highest ranking
+	</t:steps>
+
+    <t:test_loop count="6">      
+
+	    <t:test >
+	        <t:request>
+	            <AuthRequest xmlns="urn:zimbraAdmin">
+	                <name>${admin.user}</name>
+	                <password>${admin.password}</password>
+	            </AuthRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	        </t:response>
+	    </t:test>
+
+		<t:property name="contact.name" value="contact${TIME}${COUNTER}@${defaultdomain.name}"/>
+		
+		<t:test >
+	        <t:request>
+	            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	                <name>${contact.name}</name>
+	                <password>${defaultpassword.value}</password>
+					<a n="displayName">${firstname} ${lastname}</a>
+					<a n="givenName">${firstname}</a>
+					<a n="sn">${lastname}</a>
+	            </CreateAccountRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:CreateAccountResponse"/>
+			</t:response>
+	    </t:test>  
+
+		<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+	    <t:test>
+	        <t:request>
+	            <AuthRequest xmlns="urn:zimbraAccount">
+	                <account by="name">${account2.name}</account>
+	                <password>${defaultpassword.value}</password>
+	            </AuthRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+	        </t:response>
+	    </t:test>
+
+	    <t:test >
+	        <t:request>
+	        	<CreateContactRequest xmlns="urn:zimbraMail">
+	                <cn >
+	                    <a n="firstName">${firstname}</a>
+	                    <a n="lastName">${lastname}</a>
+	                    <a n="email">${contact.name}</a>
+	                </cn>     
+	        	</CreateContactRequest>
+	        </t:request>
+	        <t:response>
+	        	<t:select path="//mail:CreateContactResponse"/>          
+	        </t:response>
+	    </t:test>
+
+	</t:test_loop>
+
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="contact.name" value="contact${TIME}${COUNTER}@${defaultdomain.name}"/>
+	
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${contact.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${firstname} ${lastname}</a>
+				<a n="givenName">${firstname}</a>
+				<a n="sn">${lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse"/>
+		</t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${firstname}</a>
+                    <a n="lastName">${lastname}</a>
+                    <a n="email">${contact.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${contact.name}" p="${firstname} ${lastname}" />
+					<e t="f" a="${account2.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[1]" attr="email" match=".*${contact.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+</t:tests>

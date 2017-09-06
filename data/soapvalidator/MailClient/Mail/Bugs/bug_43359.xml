@@ -1,0 +1,489 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="extMailTestdomain1.com" />
+<t:property name="domain2.name" value="extMailTestdomain2.com" />
+
+<t:property name="account1.email" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.email" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<!-- Yahoo account properties -->
+<t:property name="yahooaccount.name" value="${IMAP.Yahoo.username}"/>
+<t:property name="yahooaccount.password" value="${IMAP.Yahoo.password}"/>
+<t:property name="yahooaccount.hostname" value="${IMAP.Yahoo.hostname}"/>
+<t:property name="yahooaccount.port" value="${IMAP.Yahoo.ssl.port}"/>
+<t:property name="yahooaccount.testhostname" value="${IMAP.Yahoo.hostname}"/>
+  
+<t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account3.port" value="993"/>
+
+<t:property name="message1" value="subject1.${TIME}.${COUNTER}"/>
+<t:property name="message1.content" value="content1.${TIME}.${COUNTER}"/>
+
+<t:property name="message2" value="PDF_LARGE_ADMIN_GUIDE"/>
+<t:property name="message2.content" value="test sending a large PDF and then importing it as exernal acc."/>
+
+<t:property name="uploadFile.basic" value="${testMailRaw.root}/attachments/admin.pdf"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account1.server" value="NOT_DEFINED"/>
+<t:property name="account2.server" value="NOT_DEFINED"/>
+<t:property name="relay.host" value="mta02.zimbra.com"/>
+
+<!-- authentication -->
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1" type="always">
+    <t:objective>Prepare the account for testing</t:objective>
+    <t:steps>1. Login to admin.
+             2. Create 2 test accounts.            
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- Creating the two accounts -->
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.email}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.email}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>   
+    
+     <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>   
+  
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Import_External_LargeMail_01" type="smoke" bugids="43359">
+    <t:objective> Verify if the externalmail fetch for IMap folders having large mails work properly </t:objective>
+    <t:steps>        
+  		 1. Login to the test account
+         2. Login to account1 and configure external mail pull with the yahoo imap account
+         3. Check if message having large attachement with pdf is present
+		 4. Reply to the mail with attachment and check if mail is delivered
+		 5. Check if the message is received.		 
+    </t:steps>     
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+    <!-- Login to account1 -->
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.email}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+           
+ 	<!-- Create a folder --> 
+    <t:test id="CreateFolderReq">
+        <t:request>
+		    <CreateFolderRequest xmlns="urn:zimbraMail" requestId="0">
+				<folder l="1" name="acct2" fie="1"/>
+			</CreateFolderRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="acct2.id"/>
+        </t:response>
+    </t:test>
+        
+    <!-- Configure externalImap pull --> 
+    <t:test id="ConfExternalImapImport">
+        <t:request>
+		    <CreateDataSourceRequest xmlns="urn:zimbraMail" requestId="0">
+				<imap name="acct2" isEnabled="true"	
+				emailAddress="${yahooaccount.name}" 
+				host="${yahooaccount.testhostname}" port="${yahooaccount.port}" 
+				username="${yahooaccount.name}" password="${yahooaccount.password}" 
+				l="${acct2.id}" connectionType="ssl" pollingInterval="0" leaveOnServer="true" 
+				fromAddress="${account1.email}"/>
+			</CreateDataSourceRequest>
+      	</t:request>
+        <t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:imap" attr="id" set="imap.conf1.id"/>
+        </t:response>
+    </t:test>
+    
+      
+   <t:test id="importDataReq">
+   		<t:request>	   
+	   		<ImportDataRequest xmlns="urn:zimbraMail">
+				<imap id="${imap.conf1.id}"/>
+			</ImportDataRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportDataResponse" />
+		</t:response>		
+	</t:test>
+	
+	 <t:delay msec="10000" />	
+
+   <t:test id="importDataReq">
+   		<t:request>	   
+	   		<ImportDataRequest xmlns="urn:zimbraMail">
+				<imap id="${imap.conf1.id}"/>
+			</ImportDataRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportDataResponse" />
+		</t:response>		
+	</t:test>
+	
+		<!-- Bug 51335 ImportDataRequest is now asynchronous so added loop to query till mails get imported. -->
+	<t:for start="1" end="30" break="response">
+		<t:delay msec="4000"/>
+		<t:test >
+        	<t:request>
+				<GetImportStatusRequest xmlns="urn:zimbraMail">
+				</GetImportStatusRequest>
+        	</t:request>
+        	<t:response>              
+            	<t:select path="//mail:GetImportStatusResponse/mail:imap[@isRunning='0']"  query="response"/>
+           	</t:response>
+    	</t:test>
+	</t:for>
+		
+	
+	 <t:delay msec="10000" />
+	 <!-- Search Msg  --> 
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   		<query>in:"acct2/Inbox" is:read subject:"${message2}"</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
+	 </t:response>
+	</t:test> 
+        
+	
+	 <t:test id="GetMsgRequest">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg01.id}" read="1" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse"/>            	
+        </t:response>
+    </t:test>	
+    	
+    <t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account4.name}"/>
+					<e t="f" a="${yahooaccount.name}"/>				
+					<su>Re: ${message2}</su>
+					<mp ct="text/plain">
+						<content> Test reply. </content>
+					</mp>
+					<attach>
+      					<mp mid="${msg01.id}" part="2"/>
+      				</attach>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test> 
+	
+	<t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:sent subject:"Re: ${message2}"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse"/>
+		</t:response>
+	</t:test>       
+    	
+</t:test_case>
+
+<t:test_case testcaseid="Import_External_LargeMail_02" type="smoke" bugids="43359"> 
+    <t:objective> Verify if the externalmail fetch for IMap folders work properly </t:objective>
+    <t:steps>        
+  		 1. Login to the test account1 and send 1 to self having large pdf attachment.
+         2. Login to account2 and configure external mail pull with the account1 imap account
+         3. Check if message1 is in unread state
+		 4. Reply to the mail and check if message is sent (send message response)		 
+    </t:steps>     
+    
+    <t:property name="uploadServletServer" value="${account3.server}"/>
+    <t:property name="server.zimbraAccount" value="${account3.server}"/>
+    
+    <!-- Login to account1 -->
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    
+    <t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.basic}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="upload.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+      
+     <t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account3.name}"/>			
+					<su>${message1}</su>
+					<mp ct="text/plain">
+						<content> This is important. I am sending this from 60 server and it should be unread. This will be read by Account1 </content>
+					</mp>
+					<attach aid="${upload.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>    
+	
+	<t:delay msec="3000"/>
+	
+	<t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message1})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message1})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="account3.message.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+    
+    <!-- Login to account4 -->
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test id="CreateFolderReq">
+        <t:request>
+		    <CreateFolderRequest xmlns="urn:zimbraMail" requestId="0">
+				<folder l="1" name="acct3" fie="1"/>
+			</CreateFolderRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="acct3.id"/>
+        </t:response>
+    </t:test>
+        
+    <!-- Configure externalImap pull --> 
+    <t:test id="ConfExternalImapImport">
+        <t:request>
+		    <CreateDataSourceRequest xmlns="urn:zimbraMail" requestId="0">
+				<imap name="acct3" isEnabled="true"	
+				emailAddress="${account3.name}" 
+				host="${account3.server}" port="${account3.port}" 
+				username="${account3.name}" password="${defaultpassword.value}" 
+				l="${acct3.id}" connectionType="ssl" pollingInterval="0" leaveOnServer="true" 
+				fromAddress="${account4.name}"/>
+			</CreateDataSourceRequest>
+      	</t:request>
+        <t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:imap" attr="id" set="imap.conf2.id"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:delay msec="2000" />
+      
+   <t:test id="importDataReq">
+   		<t:request>	   
+	   		<ImportDataRequest xmlns="urn:zimbraMail">
+				<imap id="${imap.conf2.id}"/>
+			</ImportDataRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportDataResponse" />
+		</t:response>		
+	</t:test>
+		
+	<t:delay msec="5000" />	
+
+	<t:test id="importDataReq">
+   		<t:request>	   
+	   		<ImportDataRequest xmlns="urn:zimbraMail">
+				<imap id="${imap.conf2.id}"/>
+			</ImportDataRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportDataResponse" />
+		</t:response>		
+	</t:test>
+		
+	<t:delay msec="5000" />	
+	
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   		<query>in:"acct3/Inbox" subject:"${message1}"</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg.id"/>
+	 </t:response>
+	</t:test> 
+        
+	
+	 <t:test id="GetMsgRequest">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg.id}" read="1" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse"/>            	
+        </t:response>
+    </t:test>	
+    	
+    <t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account3.name}"/>
+					<e t="f" a="${account3.name}"/>				
+					<su>Re: ${message1}</su>
+					<mp ct="text/plain">
+						<content> Test reply. </content>
+					</mp>
+					<attach>
+      					<mp mid="${msg.id}" part="2"/>
+      				</attach>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>    
+	
+	<t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:sent subject:(${message1})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse"/>
+		</t:response>
+	</t:test>    
+</t:test_case>
+	
+  
+</t:tests>

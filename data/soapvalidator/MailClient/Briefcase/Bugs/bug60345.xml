@@ -1,0 +1,164 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account1.document.file" value="${testMailRaw.root}/Bugs/60345/甲骨文.txt"/>
+<t:property name="account1.document.filename" value="甲骨文.txt"/>
+
+<!-- Properties of external user who will access the share -->
+<t:property name="perm.pub"		value="pub"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="deprecated" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="AccountSetup_bug60345" type="deprecated" >
+    <t:objective>login as the admin</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!--  Create User  -->	
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="Bug60345" type="deprecated" bugids="60345" >
+    <t:objective>invalid uri "escaped absolute path not valid" for non-ascii filenames</t:objective>
+	<steps>
+	1> Configure a two node (say node1 and node2) setup.
+	2> Provision a user (say user1) with node2 as the mailbox host.
+	3> Login to node2 ZWC and upload a file with chinese characters in the filename
+	to the Briefcase.
+	4> Edit the Briefcase properties and give Public access to the folder.
+	5> Try to download the above file from node1 (e.g>
+	http://node1host:node1port//home/user1@domain/Briefcase/%E6%B1%89%E5%AD%97.rtf), you will get http error 500.
+	</steps>
+
+
+	<!-- Login to the user id -->
+	  <t:test depends="create_test_account2" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+    <t:test id="getFolderRequest" required="true">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>  
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root"/>
+        </t:response>
+    </t:test>
+	
+	<!-- Create a briefcase folder and share it -->
+	<t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${COUNTER}" l="${folder.root}" view="document"/>
+            </CreateFolderRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse">
+				<t:select path="//mail:folder" attr="name" set="foldername1"/>
+            	<t:select path="//mail:folder" attr="id" set="account1.briefcase1.folder.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account1.document.file.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.briefcase1.folder.id}">
+			    <upload id="${account1.document.file.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document.file.id"/>
+        </t:response>
+    </t:test>   
+    
+	<t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.briefcase1.folder.id}" op="grant">                
+					<grant gt="${perm.pub}" perm="r" inh="1" pw=""/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>  
+    
+	
+	<!--Perform the rest test -->
+	<t:property name="authToken" value=""/>
+
+    <t:property name="server.restServlet" value="${account1.server}"/>
+ 	<t:property name="link.url" value="${account1.name}/${foldername1}/"/>  
+
+	<!-- Check if unauthorized access is possible -->
+	<t:resttest>
+		<t:restServletRequest>
+			<url>${link.url}</url>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+	
+</t:test_case>    
+
+</t:tests>

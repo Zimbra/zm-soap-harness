@@ -1,0 +1,942 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.server" value="NOT_DEFINED"/>
+<t:property name="account1.contact1.firstName" value="first.${TIME}.${COUNTER}"/>
+<t:property name="account1.contact1.lastName" value="last.${TIME}.${COUNTER}"/>
+<t:property name="account1.contact1.email" value="${nonZimbraUser.name}"/>
+
+<t:property name="account2.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.server" value="NOT_DEFINED"/>
+<t:property name="account2.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+
+<t:property name="account3.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account4.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.server" value="NOT_DEFINED"/>
+<t:property name="account4.contact1.firstName" value="first.${TIME}.${COUNTER}"/>
+<t:property name="account4.contact1.lastName" value="last.${TIME}.${COUNTER}"/>
+<t:property name="account4.contact1.email" value="${nonZimbraUser.name}"/>
+
+<t:property name="account5.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.server" value="NOT_DEFINED"/>
+<t:property name="account5.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+
+<t:property name="account6.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.server" value="NOT_DEFINED"/>
+<t:property name="account6.contact1.firstName" value="first.${TIME}.${COUNTER}"/>
+<t:property name="account6.contact1.lastName" value="last.${TIME}.${COUNTER}"/>
+<t:property name="account6.contact1.email" value="${nonZimbraUser.name}"/>
+
+<t:property name="account7.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account7.server" value="NOT_DEFINED"/>
+<t:property name="account7.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+
+<t:property name="account8.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account8.server" value="NOT_DEFINED"/>
+<t:property name="account8.contact1.firstName" value="first.${TIME}.${COUNTER}"/>
+<t:property name="account8.contact1.lastName" value="last.${TIME}.${COUNTER}"/>
+<t:property name="account8.contact1.email" value="${nonZimbraUser.name}"/>
+
+<t:property name="account9.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account9.server" value="NOT_DEFINED"/>
+<t:property name="account9.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+
+
+
+<t:property name="op.grant"			value="grant"/>
+
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.grp"			value="grp"/>
+<t:property name="grant.dom"			value="dom"/>
+<t:property name="grant.cos"			value="cos"/>
+<t:property name="grant.all"			value="all"/>
+<t:property name="grant.pub"			value="pub"/>
+<t:property name="grant.guest"			value="guest"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="view.conversation"	value="conversation"/>
+<t:property name="view.message"			value="message"/>
+<t:property name="view.contact"			value="contact"/>
+<t:property name="view.appointment"		value="appointment"/>
+<t:property name="view.note"			value="note"/>
+
+
+
+<t:test_case testcaseid="SharingContactsBasic_AccountSetup" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test  id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account1.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account2.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account3" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account3.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account4" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account4.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account5" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account5.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account6" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account6.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account7" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account7.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account7.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account8" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account8.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account8.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account8.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account9" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account9.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account9.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account9.server"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SharingContactsBasic_01" type="smoke" bugids="34339">
+    <t:objective>Verify that sharing contacts with read access allows contacts to be viewed, but not added, modified, deleted, or reshared</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Add a contact, share contacts with account2 (permissions = read)
+	3. Login as account2
+	4. Mount the drive, success.
+	5. Run a contacts search.  Success.
+	6. GetContactRequest.  Success.
+	7. CreateContactRequest.  PERM_DENIED.
+	8. ModifyContactRequest.  PERM_DENIED.
+	9. ContactActionRequest(delete).  PERM_DENIED.
+	10. ContactActionRequest(grant).  PERM_DENIED.
+	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${account1.contact1.firstName}</a>
+                    <a n="lastName">${account1.contact1.lastName}</a>
+                    <a n="email">${account1.contact1.email}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account1.contact1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account1.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account1.folder.contacts.id}">
+					<grant gt="${grant.usr}" d="${account2.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="account2.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.root.id}" name="${account2.folder.shared.name}" zid="${account1.id}" rid="${account1.folder.contacts.id}" view="${view.contact}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account2.folder.shared.id}"/>
+			</GetFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:"${account2.folder.shared.name}"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="^${account1.contact1.email}$"/>
+			<t:select path="//mail:SearchResponse/mail:cn"  attr="id" set="account2.contact1.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:test depends="getcontacts1a">
+		<t:request>
+			<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${account2.contact1.id}"/>
+			</GetContactsRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='firstName']" match="^${account1.contact1.firstName}$"/>
+			<t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match="^${account1.contact1.lastName}$"/>
+			<t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='email']" match="^${account1.contact1.email}$"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account2.folder.shared.id}">
+                    <a n="firstName">firstName</a>
+                    <a n="lastName">lastName</a>
+                    <a n="email">email@email.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyContactRequest xmlns="urn:zimbraMail">
+                <cn id="${account2.contact1.id}" md="${TIME}">
+                    <a n="firstName">new${account1.contact1.firstName}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+            	<action id="${account2.contact1.id}" op="delete"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account2.folder.shared.id}">
+					<grant gt="${grant.usr}" d="${account3.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+<t:test_case testcaseid="SharingContactsBasic_02" type="smoke" >
+    <t:objective>Verify that sharing contacts with manager (rwidx) access allows contacts to be viewed, added, modified, and deleted, but not reshared</t:objective>
+	<t:steps>
+	1. Login as account4
+	2. Add a contact, share contacts with account5 (permissions = rwidx)
+	3. Login as account5
+	4. Mount the drive, success.
+	5. Run a contacts search.  Success.
+	6. GetContactRequest.  Success.
+	7. CreateContactRequest.  Success.
+	8. ModifyContactRequest.  Success.
+	9. ContactActionRequest(delete).  Success.
+	10. ContactActionRequest(grant).  PERM_DENIED.
+	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${account4.contact1.firstName}</a>
+                    <a n="lastName">${account4.contact1.lastName}</a>
+                    <a n="email">${account4.contact1.email}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account4.contact1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account4.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account4.folder.contacts.id}">
+					<grant gt="${grant.usr}" d="${account5.name}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account5.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account5.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder[@name='${globals.root}']" attr="id" set="account5.folder.root.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account5.folder.root.id}" name="${account5.folder.shared.name}" zid="${account4.id}" rid="${account4.folder.contacts.id}" view="${view.contact}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account5.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account5.folder.shared.id}"/>
+			</GetFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:"${account5.folder.shared.name}"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="^${account4.contact1.email}$"/>
+			<t:select path="//mail:SearchResponse/mail:cn"  attr="id" set="account5.contact1.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:test depends="getcontacts1a">
+		<t:request>
+			<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${account5.contact1.id}"/>
+			</GetContactsRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='firstName']" match="^${account4.contact1.firstName}$"/>
+			<t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='lastName']" match="^${account4.contact1.lastName}$"/>
+			<t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='email']" match="^${account4.contact1.email}$"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account5.folder.shared.id}">
+                    <a n="firstName">firstName</a>
+                    <a n="lastName">lastName</a>
+                    <a n="email">email@email.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:CreateContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyContactRequest xmlns="urn:zimbraMail">
+                <cn id="${account5.contact1.id}" md="${TIME}">
+                    <a n="firstName">new${account4.contact1.firstName}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:ModifyContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+            	<action id="${account5.contact1.id}" op="delete"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account5.folder.shared.id}">
+					<grant gt="${grant.usr}" d="${account3.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SharingContactsBasic_03" type="smoke" bugids="8491, 8890">
+    <t:objective>Verify that sharing contacts with "none" access does not grant access to the contact information</t:objective>
+	<t:steps>
+	1. Login as account6
+	2. Add a contact, share contacts with account7 (permissions = none)
+	3. Login as account7
+	4. Mount the drive.  PERM_DENIED.
+	5. Run a contacts search.  No results.
+	6. GetContactRequest.  PERM_DENIED.
+	7. CreateContactRequest.  PERM_DENIED.
+	8. ModifyContactRequest.  PERM_DENIED. 
+	9. ContactActionRequest(delete).  PERM_DENIED. 
+	10. ContactActionRequest(grant).  PERM_DENIED.
+	11. Move a Contact into the folder.  CANNOT_CONTAIN (Server does not support this)
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${account6.contact1.firstName}</a>
+                    <a n="lastName">${account6.contact1.lastName}</a>
+                    <a n="email">${account6.contact1.email}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account6.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account6.folder.contacts.id}">
+					<grant gt="${grant.usr}" d="${account7.name}" perm="${rights.none}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account7.server}"/>
+	<t:property name="account7.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account7.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder[@name='${globals.root}']" attr="id" set="account7.folder.root.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account7.folder.root.id}" name="${account7.folder.shared.name}" zid="${account6.id}" rid="${account6.folder.contacts.id}" view="${view.contact}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account6.id}:${account6.folder.contacts.id}"/>
+			</GetFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>inid:"${account6.id}:${account6.folder.contacts.id}"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+
+	<t:test depends="getcontacts1a">
+		<t:request>
+			<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${account6.id}:${account6.contact1.id}"/>
+			</GetContactsRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyContactRequest xmlns="urn:zimbraMail">
+                <cn id="${account6.id}:${account6.contact1.id}" md="${TIME}">
+                    <a n="firstName">new${account6.contact1.firstName}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+            	<action id="${account6.id}:${account6.contact1.id}" op="delete"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account6.id}:${account6.folder.contacts.id}">
+                    <a n="firstName">firstName</a>
+                    <a n="lastName">lastName</a>
+                    <a n="email">email@email.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account6.id}:${account6.folder.contacts.id}">
+					<grant gt="${grant.usr}" d="${account3.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="SharingContactsBasic_11" type="deprecated" bugids="8491">
+    <t:objective>Verify that a contact shared with none permissions cannot be searched</t:objective>
+	<t:steps>
+	1. Login as account8
+	2. Add a contact, share contacts with account9 (permissions = none)
+	3. Login as account9, mount the drive
+	4. GetContactRequest should return PERM_DENIED
+	5. Run a contacts search.  The contacts MUST NOT be shown.
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account8.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account8.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${account8.contact1.firstName}</a>
+                    <a n="lastName">${account8.contact1.lastName}</a>
+                    <a n="email">${account8.contact1.email}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account8.contact1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account8.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account8.folder.contacts.id}">
+					<grant gt="${grant.usr}" d="${account9.name}" perm="${rights.none}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account9.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account9.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder[@name='${globals.root}']" attr="id" set="account9.folder.root.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account9.folder.root.id}" name="${account9.folder.shared.name}" zid="${account8.id}" rid="${account8.folder.contacts.id}" view="${view.contact}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account9.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account9.folder.shared.id}"/>
+			</GetFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="contact">
+				<query>in:"${account9.folder.shared.name}"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

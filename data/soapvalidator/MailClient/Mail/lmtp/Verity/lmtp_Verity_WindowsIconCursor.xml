@@ -1,0 +1,132 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="lmtp${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="root" value="${soapxml.root}/MailClient/Mail/lmtp/Verity/MIME"/>
+
+<t:property name="msg.file" value="${root}/Windows_Icon_Cursor.txt"/>
+<t:property name="subject.value" value="Windows_Icon_Cursor"/>
+<t:property name="attachment1.type" value="image/x-icon"/>
+<t:property name="attachment1.name" value="ftplogo.ico"/>
+<t:property name="sender.name" value="user1@test.com"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup_lmtp_Verity_WindowsIconCursor" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>1. Login to admin.
+                  2. Create a test account.       
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="lmtp_Verity_WindowsIconCursor" type="functional" bits="network">
+    <t:objective>Login to the test account </t:objective>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg.file}</filename>
+            <to>${account1.name}</to>
+            <from>${sender.name}</from>
+            <server>${test_acct1.server}</server>
+         </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(${subject.value})</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+	 </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp[@ct='multipart/mixed']">
+            	<t:select path="mail:mp" attr="filename" match="${attachment1.name}"/>
+            	<t:select path="mail:mp[@ct='${attachment1.type}']" attr="part" set="message1.part1.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.restServlet" value="${test_acct1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message1.id}</id>
+			<part>${message1.part1.id}</part>
+			<view>html</view>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<!-- To do match response -->
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+</t:tests>

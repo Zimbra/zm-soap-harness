@@ -1,0 +1,258 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="search.name1" value="Search01${TIME}.${COUNTER}"/>
+<t:property name="query01" value="in:inbox"/>
+
+<t:property name="type1" value="message"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test id="ping" required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${test_account1.name}</name>
+				<password>${test_account1.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+                    <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+	<t:objective>login as the test account</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${test_account1.password}</password>
+   			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetInfoRequest1" type="smoke" bugids="26254">
+	<t:objective> get info of account </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse/acct:name"/> 
+			<t:select path="//acct:GetInfoResponse/acct:cos" attr="name" match="default"/> 
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetInfoRequest2" type="functional" >
+	<t:objective> get info of account and verify the attributes </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse/acct:name" match="${test_account1.name}"/> 
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="GetInfoRequest3" type="functional" >
+	<t:objective> Verify that the used field of GetInfoRequest is the same after reloging in </t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${test_account1.password}</password>
+   			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse/acct:used" set="test_account1.used"/> 
+		</t:response>
+	</t:test>
+
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${test_account1.password}</password>
+   			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse/acct:used" match="${test_account1.used}"/> 
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetInfoRequest4" type="functional" >
+	<t:objective> Verify that the used field of GetInfoRequest is increased by the size of the message </t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${test_account1.password}</password>
+   			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse/acct:name" match="${test_account1.name}"/> 
+			<t:select path="//acct:GetInfoResponse/acct:used" match="^0$"/> 
+		</t:response>
+	</t:test>
+
+	<!-- This message is 35 bytes -->
+	<t:test>
+		<t:request>
+			<AddMsgRequest xmlns="urn:zimbraMail">
+				<m l="1">
+				<content>Subject: hello
+
+Content Text
+				</content></m>
+			</AddMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:AddMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse/acct:used" match="^3[\d]$"/> 
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetInfoRequest5" type="functional" bugids="4970">
+	<t:objective> Verify that the server should export version information </t:objective>
+	<t:steps>
+	1. Send GetInfoRequest
+	2. Verify the version information:
+		A. Verify major.minor.macro appears in the response
+		B. Verify NETWORK or FOSS appears in the response
+		C. Verify major,minor,macro appears in the response
+	</t:steps>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${test_account1.password}</password>
+   			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse">
+				<t:select path="//acct:version" match=".*\d+\.\d+\.\d+.*"/> 
+				<t:select path="//acct:version" match=".*[FOSS|NETWORK]"/> 
+				<!-- As per bug #27129, we don't need to test below attributes. -->
+				<!--t:select path="//acct:version" attr="major" match="\d+"/> 
+				<t:select path="//acct:version" attr="minor" match="\d+"/> 
+				<t:select path="//acct:version" attr="macro" match="\d+"/--> 
+			</t:select>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

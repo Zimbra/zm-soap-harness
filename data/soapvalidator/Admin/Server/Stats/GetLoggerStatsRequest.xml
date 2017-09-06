@@ -1,0 +1,222 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="GetLoggerStatsRequest_Setup" type="always" areas="nonappliance">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmloggerctl start\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+	<!-- Adding delay as getting stats immediately after logger starts fails on Ubuntu --> 
+	<t:delay msec="10000"/>
+
+    <t:test id="is_logger_enabled" required="true">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse//admin:hostname" attr="hn" set="hostname.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test depends="is_logger_enabled" id="t1">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin">
+				<hostname hn="${hostname.name}"/>
+			</GetLoggerStatsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse">
+            	<t:select path="//admin:stats" attr="name" set="stats.name"/>
+            </t:select>
+        </t:response>
+    </t:test>  
+	
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="GetLoggerStatsRequest_01" type="smoke" areas="nonappliance">
+    <t:objective>GetLoggerStatsRequest (basic request)</t:objective>
+    <t:steps>
+        1. Login into Admin
+        2. GetLoggerStatsRequest (no attributes)    
+    </t:steps>
+    
+    <t:test >
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse">
+            	<t:select path="//admin:hostname"/>
+            </t:select>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="GetLoggerStatsRequest_02" type="smoke" areas="nonappliance">
+    <t:objective>GetLoggerStatsRequest (basic request)</t:objective>
+    <t:steps>
+        1. Login into Admin
+        2. GetLoggerStatsRequest (host name attribute)    
+    </t:steps>
+    
+    <t:test id="is_logger_enabled1" required="true">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse//admin:hostname" attr="hn" set="hostname.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test depends="is_logger_enabled2" id="t1">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin">
+				<hostname hn="${hostname.name}"/>
+			</GetLoggerStatsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse">
+            	<t:select path="//admin:stats" attr="name" set="stats.name"/>
+            </t:select>
+        </t:response>
+    </t:test>  
+    
+    <t:test depends="is_logger_enabled1,is_logger_enabled2">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin">
+				<hostname hn="${hostname.name}"/>
+			</GetLoggerStatsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetLoggerStatsRequest_03" type="smoke" areas="nonappliance">
+    <t:objective>GetLoggerStatsRequest (basic request)</t:objective>
+    <t:steps>
+        1. Login into Admin
+        2. GetLoggerStatsRequest (stats name attribute)    
+    </t:steps>
+    
+    <t:test id="is_logger_enabled1" required="true">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse//admin:hostname" attr="hn" set="hostname.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test depends="is_logger_enabled2" id="t1">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin">
+				<hostname hn="${hostname.name}"/>
+			</GetLoggerStatsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse">
+            	<t:select path="//admin:stats" attr="name" set="stats.name"/>
+            </t:select>
+        </t:response>
+    </t:test>  
+	
+    
+    <t:test depends="is_logger_enabled1,is_logger_enabled2" id="t4">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin">
+				<hostname hn="${hostname.name}"/>
+				<stats name="${stats.name}">1</stats>
+			</GetLoggerStatsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="GetLoggerStatsRequest_04" type="smoke" bugids="39769" areas="nonappliance">
+    <t:objective>GetLoggerStatsRequest (verify type attribute in response)</t:objective>
+    <t:steps>
+        1. Login into Admin
+        2. GetLoggerStatsRequest - get MTA stats
+        3. Verify type attr exists    
+    </t:steps>
+    
+    <t:test id="is_logger_enabled1" required="true">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse//admin:hostname" attr="hn" set="hostname.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test depends="is_logger_enabled2" id="t1">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin">
+				<hostname hn="${hostname.name}"/>
+			</GetLoggerStatsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse">
+            	<t:select path="//admin:stats" attr="name" set="stats.name"/>
+            </t:select>
+        </t:response>
+    </t:test>  
+	
+    
+    <t:test depends="is_logger_enabled1,is_logger_enabled2" id="t5">
+        <t:request>
+			<GetLoggerStatsRequest xmlns="urn:zimbraAdmin">
+				<hostname hn="${hostname.name}"/>
+				<stats name="zmmtastats">1</stats>
+			</GetLoggerStatsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLoggerStatsResponse">
+            	<t:select path="//admin:stats[@name='zmmtastats']" />
+        	</t:select>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+
+</t:tests>

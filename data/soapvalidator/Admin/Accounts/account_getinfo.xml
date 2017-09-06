@@ -1,0 +1,463 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>
+<t:property name="test_acct4.server" value="NOT_DEFINED"/>
+<t:property name="test_acct5.server" value="NOT_DEFINED"/>
+
+<t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account5.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+    
+<t:property name="account.blank" value=""/>
+<t:property name="account.space" value="        "/>
+<t:property name="account.sometext" value="some text 009"/>
+<t:property name="account.spchar" value="//|.'\\-"/>
+<t:property name="account.negative" value="-109876"/>
+<t:property name="account.zero" value="0"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup1_account_getInfo" type="always" >
+    <t:objective>create test account</t:objective>
+    <t:steps> 1. Login to Admin
+              2. Create some test accounts
+    </t:steps>
+    
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <!--Create an account-->
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">       
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">closed</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+    <!--Delete an account-->
+    <t:test required="true">
+        <t:request>
+         <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+             <id>${test_account3.id}</id>
+         </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+         <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:test_case testcaseid="acct_setup2_account_getInfo" type="always" >
+    <t:objective>Login to the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="GetAccountInfoRequest1" type="smoke">
+    <t:objective>Get the account information by account name. </t:objective>     
+
+    <t:test id="getAccountInfoRequest1a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+              <account by="name">${test_account1.name}</account>
+        </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account1.name}"/>
+            <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account1.id}"/>
+        </t:response>
+        </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAccountInfoRequest2" type="smoke">
+    <t:objective>Get the account information by account id.</t:objective>     
+    <t:test id="getAccountInfoRequest2a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                  <account by="id">${test_account1.id}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account1.name}"/>
+            <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account1.id}"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAccountInfoRequest3" type="functional">
+    <t:objective>Get the account information by both account name and account id.</t:objective>     
+    
+    <t:test id="getAccountInfoRequest3a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="id">${test_account1.id}</account>
+                <account by="name">${test_account1.name}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account1.name}"/>
+            <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account1.id}"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+<t:test_case testcaseid="GetAccountInfoRequest4" type="negative">
+    <t:objective>Get the account information by id of one account and name of other account</t:objective>     
+    
+    <t:test id="getAccountInfoRequest4a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="id">${test_account2.id}</account>
+                <account by="name">${test_account1.name}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account2.name}"/>
+            <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account2.id}"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:test_case testcaseid="GetAccountInfoRequest5" type="negative">
+    <t:objective>Get the account information by name of one account and account id of other account</t:objective>     
+    
+    <t:test id="getAccountInfoRequest5a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>    
+                <account by="id">${test_account2.id}</account>                     
+        </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account1.name}"/>
+            <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account1.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAccountInfoRequest6" type="negative">
+    <t:objective>Get the account information by invalid values (blank/spaces/sometext/spchar) for name of an account.</t:objective> 
+    
+    <t:test id="getAccountInfoRequest6a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+             <account by="name">${account.blank}</account>                          
+         </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="getAccountInfoRequest6b">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+             <account by="name">${account.space}</account>                          
+         </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getAccountInfoRequest6c">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+             <account by="name">${account.sometext}</account>
+        </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getAccountInfoRequest6d">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account.spchar}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAccountInfoRequest7" type="negative">
+    <t:objective>Get the account information by writing invalid (blank/space/sometext/negative/zero/special characters) in account id.</t:objective>
+
+    <t:test id="getAccountInfoRequest7a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="id">${account.blank}{</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getAccountInfoRequest7b">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+             <account by="id">${account.sometext} </account>
+        </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>    
+
+    <t:test id="getAccountInfoRequest7c">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+             <account by="id">${account.space}</account>
+        </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getAccountInfoRequest7d">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="id">${account.negative}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getAccountInfoRequest7e">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="id">${account.negative}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getAccountInfoRequest7e">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="id">${account.spchar}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAccountInfoRequest8" type="smoke">
+    <t:objective>Get the account information by writing nonexisting account name.</t:objective>  
+    
+    <t:test id="getAccountInfoRequest8a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="id">${test_account5.name}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+<t:test_case testcaseid="GetAccountInfoRequest9" type="negative">
+    <t:objective>Get the account information with name of deleted account</t:objective>  
+
+    <t:test id="getAccountInfoRequest9a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>                 
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAccountInfoRequest10" type="negative">
+    <t:objective>Get the account information with the id of deleted account</t:objective>  
+
+    <t:test id="getAccountInfoRequest10">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="id">${test_account3.id}</account>                 
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+    
+<t:test_case testcaseid="GetAccountInfoRequest11" type="negative">
+    <t:objective>Get the account information by writing nonexisting account name of an account and existing id of an account.</t:objective>  
+
+    <t:test id="getAccountInfoRequest11a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account5.name}</account>
+                <account by="id">${test_account1.id}</account>
+         </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAccountInfoRequest12" type="negative">
+    <t:objective>Get the account information by writing domain name only</t:objective>  
+    
+    <t:test id="getAccountInfoRequest12a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="name">${defaultdomain.name}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+<t:test_case testcaseid="GetAccountInfoRequest13" type="negative">
+    <t:objective>Get the account information of an account whose status is closed </t:objective>  
+
+    <t:test id="getAccountInfoRequest13">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account4.name}</account>
+            </GetAccountInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account4.name}"/>
+            <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account4.id}"/>          
+        </t:response>
+    </t:test>
+
+</t:test_case>        
+ 
+</t:tests>

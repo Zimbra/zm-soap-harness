@@ -1,0 +1,506 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="virus1.file" value="${testMailRaw.root}/virus/eicar.txt"/>
+<t:property name="virus1.subject" value="test av"/>
+
+<t:property name="virus2.file" value="${testMailRaw.root}/virus/eicar-attachment.txt"/>
+<t:property name="virus2.subject" value="attachment av"/>
+
+<t:property name="spam.subject.header" value="Eicar-Test-Signature"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="virusBasic_Account_Setup" type="always">
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a account1 
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+	<t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${zimbraServer.name}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
+		</t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${account1.server}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account1.mta.server"/>
+		</t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${account2.server}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account2.mta.server"/>
+		</t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${account3.server}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account3.mta.server"/>
+		</t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${account4.server}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account4.mta.server"/>
+		</t:response>
+    </t:test>
+    
+    <!-- Keep the old settings so they can be reset in the future -->
+    <t:test required="true">
+        <t:request>
+            <GetAllConfigRequest  xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraAttachmentsScanEnabled']" set="zimbraAttachmentsScanEnabled.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraVirusWarnRecipient']" set="zimbraVirusWarnRecipient.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraVirusWarnAdmin']" set="zimbraVirusWarnAdmin.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraAttachmentsScanClass']" set="zimbraAttachmentsScanClass.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraAttachmentsViewInHtmlOnly']" set="zimbraAttachmentsViewInHtmlOnly.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraAttachmentsBlocked']" set="zimbraAttachmentsBlocked.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraVirusDefinitionsUpdateFrequency']" set="zimbraVirusDefinitionsUpdateFrequency.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraVirusBlockEncryptedArchive']" set="zimbraVirusBlockEncryptedArchive.value"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:finally areas="virus,noncluster" >
+
+    <!-- After all tests have run, reset the GlobalSettings settings to the default -->
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+				<a n="zimbraAttachmentsScanEnabled">${zimbraAttachmentsScanEnabled.value}</a>
+				<a n="zimbraVirusWarnRecipient">${zimbraVirusWarnRecipient.value}</a>
+				<a n="zimbraVirusWarnAdmin">${zimbraVirusWarnAdmin.value}</a>
+				<a n="zimbraAttachmentsScanClass">${zimbraAttachmentsScanClass.value}</a>
+				<a n="zimbraAttachmentsViewInHtmlOnly">${zimbraAttachmentsViewInHtmlOnly.value}</a>
+				<a n="zimbraAttachmentsBlocked">${zimbraAttachmentsBlocked.value}</a>
+				<a n="zimbraVirusDefinitionsUpdateFrequency">${zimbraVirusDefinitionsUpdateFrequency.value}</a>
+				<a n="zimbraVirusBlockEncryptedArchive">${zimbraVirusBlockEncryptedArchive.value}</a>
+			</ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<!-- Wait for postfix to be updated -->
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test >
+        <t:request>
+            <GetAllConfigRequest  xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllConfigResponse"/>
+        </t:response>
+    </t:test>
+	
+</t:finally>
+
+
+<t:test_case testcaseid="virusBasic_Virus_Setup" type="always" areas="virus,noncluster" >
+    <t:objective>Enable virus checking</t:objective>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Keep the old settings so they can be reset in the future -->
+    <t:test>
+        <t:request>
+            <GetAllConfigRequest  xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraAttachmentsScanEnabled']" set="zimbraAttachmentsScanEnabled.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraVirusWarnRecipient']" set="zimbraVirusWarnRecipient.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraVirusWarnAdmin']" set="zimbraVirusWarnAdmin.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraAttachmentsScanClass']" set="zimbraAttachmentsScanClass.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraAttachmentsViewInHtmlOnly']" set="zimbraAttachmentsViewInHtmlOnly.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraAttachmentsBlocked']" set="zimbraAttachmentsBlocked.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraVirusDefinitionsUpdateFrequency']" set="zimbraVirusDefinitionsUpdateFrequency.value"/>
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraVirusBlockEncryptedArchive']" set="zimbraVirusBlockEncryptedArchive.value"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+				<a n="zimbraAttachmentsScanEnabled">${globals.true}</a>
+				<a n="zimbraVirusWarnRecipient">${globals.true}</a>
+				<a n="zimbraVirusWarnAdmin">${globals.true}</a>
+				<a n="zimbraAttachmentsViewInHtmlOnly">${globals.true}</a>
+				<a n="zimbraAttachmentsBlocked">${globals.true}</a>
+				<a n="zimbraVirusBlockEncryptedArchive">${globals.true}</a>
+			</ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	<!-- Wait for postfix to be updated -->
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test >
+        <t:request>
+            <GetAllConfigRequest  xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllConfigResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="virusBasic_ReceiveVirus_01" type="smoke" areas="virus, smtp, noncluster" >
+    <t:objective>Verify that a eicar message is not sent to the mailbox</t:objective>
+    <t:steps>
+    1. Send the sample virus message to account1
+    2. Login to account1.
+    3. Verify that the message is not received in the inbox or junk folders
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	
+
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${account1.mta.server}</address>
+            <filename>${virus1.file}</filename>
+            <recipient>${account1.name}</recipient>
+        </t:smtpInjectRequest>
+    </t:smtpinjecttest>
+   
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" >
+		       <query>subject:(${virus1.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+		</t:response>
+	</t:test>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="virusBasic_ReceiveVirus_02" type="functional" areas="virus, smtp, noncluster" >
+    <t:objective>Verify that notification is sent to user's mailbox</t:objective>
+    <t:steps>
+    1. Send the sample virus message to account2
+    2. Login to account2.
+    3. Verify that the notification message is received
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${account2.mta.server}</address>
+            <filename>${virus1.file}</filename>
+            <recipient>${account2.name}</recipient>
+        </t:smtpInjectRequest>
+    </t:smtpinjecttest>
+   
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" >
+		       <query>subject:(${spam.subject.header})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" />
+		</t:response>
+	</t:test>
+   
+</t:test_case>
+
+<t:test_case testcaseid="virusBasic_ReceiveVirus_03" type="functional" areas="virus, smtp, noncluster" >
+    <t:objective>Verify that notification is sent to admin's mailbox</t:objective>
+    <t:steps>
+    1. Send the sample virus message to account3
+    2. Login to admin mailbox.
+    3. Verify that the notification message is received
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	<t:property name="server.zimbraAdmin" value="${account3.server}"/>
+	
+
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${account3.mta.server}</address>
+            <filename>${virus1.file}</filename>
+            <recipient>${account3.name}</recipient>
+        </t:smtpInjectRequest>
+    </t:smtpinjecttest>
+  
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${admin.user}</account>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	 
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" >
+		       <query>subject:(${spam.subject.header})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" />
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="virusBasic_ReceiveVirus_04" type="functional" areas="virus, smtp, noncluster" >
+    <t:objective>Verify that attachments are scanned</t:objective>
+    <t:steps>
+    1. Send the sample virus message to account4
+    2. Login to user mailbox.
+    3. Verify the message is not received
+    4. Verify that the notification message is received
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${account4.mta.server}</address>
+            <filename>${virus2.file}</filename>
+            <recipient>${account4.name}</recipient>
+        </t:smtpInjectRequest>
+    </t:smtpinjecttest>
+   
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" >
+		       <query>subject:(${virus1.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+		</t:response>
+	</t:test>
+   
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" >
+		       <query>subject:(${spam.subject.header})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" />
+		</t:response>
+	</t:test>
+   
+</t:test_case>
+
+
+
+
+</t:tests>
+
+

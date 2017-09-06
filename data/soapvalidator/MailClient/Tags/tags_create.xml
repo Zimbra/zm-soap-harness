@@ -1,0 +1,463 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="tag.name" value="tag${TIME}${COUNTER}" />
+<t:property name="tag1.name" value="tag${TIME}${COUNTER}" />
+<t:property name="tag2.name" value="tag${TIME}${COUNTER}" />
+<t:property name="tag3.name" value="tag${TIME}${COUNTER}" />
+<t:property name="tag4.name" value="tag${TIME}${COUNTER}" />
+<t:property name="tag5.name" value="tag${TIME}${COUNTER}" />
+<t:property name="tag.name2" value="tag${TIME}${COUNTER}" />
+<t:property name="tag15.name" value="tag${TIME}${COUNTER}" />
+<t:property name="tag16.name" value="tag${TIME}${COUNTER}" />
+
+<t:property name="tag.newname" value="newtag${TIME}${COUNTER}" />
+<t:property name="tag.blankname" value="" />
+
+<t:property name="tag.name_spchar1" value="~!@#%" />
+<t:property name="tag.name_spchar2" value="^*()_" />
+<t:property name="tag.name_spchar3" value=",./;'[" />
+<t:property name="tag_allspace.name" value="       " />
+<t:property name="tag_allspace.color" value="       " />
+<t:property name="tag_LeadingSpace.name" value="  abdc" />
+<t:property name="tag_LeadingSpace.color" value="   4" />
+<t:property name="tag_TrailingSpace.name" value="abdc   " />
+<t:property name="tag_TrailingSpace.color" value="4  " />
+<t:property name="tag_TrailingLeadingSpace.name" value="  abdc   " />
+<t:property name="tag_TrailingLeadingSpace.color" value="  4   " />
+
+<t:property name="tag.colorvalid" value="4" />
+<t:property name="tag.colorinvalid" value=":''/" />
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="test_account1.password" value="test123" />
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin" />
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse" />
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_tags_create" type="always">
+    <t:objective>create test account</t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always">
+    <t:objective>login as the test account</t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest1" type="smoke">
+    <t:objective>create a new Tag </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag.name}" color="${tag.colorvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag.id" />
+            <t:select attr="name" match="${tag.name}" />
+            <t:select attr="color" match="${tag.colorvalid}" />
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest2" type="functional">
+    <t:objective>create a new Tag with blank name  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag.blankname}" color="${tag.colorvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest3" type="functional">
+    <t:objective>create a new Tag with all spaces in name  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag_allspace.name}" color="${tag.colorvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.INVALID_NAME" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest5" type="functional">
+    <t:objective>create a Tag with Duplicate name  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag.name}" color="${tag.colorvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest6" type="functional">
+    <t:objective>create a Tag with Special Characters in name  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name=";''.//\\" color="${tag.colorvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.INVALID_NAME" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest7" type="negative">
+    <t:objective>create a Tag with Unique name and with color value > 8  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag10${TIME}${COUNTER}" color="10" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <!-- The decision for now is that the onus is on the client to check for invalid values
+        <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> -->
+            <t:select path="//mail:CreateTagResponse/mail:tag" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest8" type="negative">
+    <t:objective>create a Tag with Unique name and with color value negative  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tagneg${TIME}${COUNTER}" color="-1" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <!-- The decision for now is that the onus is on the client to check for invalid values
+        <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>  -->
+            <t:select path="//mail:CreateTagResponse/mail:tag" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest9" type="negative" bugids="1744">
+    <t:objective>create a new Tag with all spaces in the color  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tagSpaces" color="${tag_allspace.color}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest10" type="negative" bugids="1744">
+    <t:objective>create a new Tag with special chars in the color </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tagSpecialChars" color="${tag.colorinvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest11" type="negative" bugids="1744">
+    <t:objective>create a new Tag with blank in the color  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tagBlankColor" color="" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest12" type="negative">
+    <t:objective>create a new Tag with invalid attributes  </t:objective>
+        
+    <!--Create a tag without giving any attribute -->
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail"></CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+        </t:response>
+    </t:test>
+        
+    <!-- Create a tag by giving the attribute twice -->
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag1.name}" color="${tag.colorvalid}" />
+                <tag name="${tag2.name}" color="${tag.colorvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+                <t:select attr="name" match="${tag1.name}" />
+                <t:select attr="color" match="${tag.colorvalid}" />
+            </t:select>
+        </t:response>
+    </t:test>
+           
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest13" type="negative">
+    <t:objective>create a new Tag with spaces in the tag name and color  </t:objective>
+        
+        <!--create a new Tag with Leading spaces in the tag name and color -->
+        <t:test>
+            <t:request>
+                <CreateTagRequest xmlns="urn:zimbraMail">
+                    <tag name="${tag_LeadingSpace.name}" color="${tag_LeadingSpace.color}" />
+                </CreateTagRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+            </t:response>
+        </t:test>
+        
+        <!--create a new Tag with Trailing spaces in the tag name and color -->
+        <t:test>
+            <t:request>
+                <CreateTagRequest xmlns="urn:zimbraMail">
+                    <tag name="${tag_TrailingSpace.name}" color="${tag_TrailingSpace.color}" />
+                </CreateTagRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+            </t:response>
+        </t:test>
+        
+        <!--create a new Tag with Leading and Trailing spaces in the tag name and color -->
+        <t:test>
+            <t:request>
+                <CreateTagRequest xmlns="urn:zimbraMail">
+                    <tag name="${tag_TrailingLeadingSpace.name}" color="${tag_TrailingLeadingSpace.color}" />
+                </CreateTagRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+            </t:response>
+        </t:test>
+        
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateTagRequest14" type="negative">
+    <t:objective>Create a new Tag with valid name and Spaces in color  </t:objective>
+        
+        <!--create a new Tag with Leading spaces in color -->
+        <t:test>
+            <t:request>
+                <CreateTagRequest xmlns="urn:zimbraMail">
+                    <tag name="${tag3.name}" color="${tag_LeadingSpace.color}" />
+                </CreateTagRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+            </t:response>
+        </t:test>
+        
+        <!--create a new Tag with Trailing spaces in color -->
+        <t:test>
+            <t:request>
+                <CreateTagRequest xmlns="urn:zimbraMail">
+                    <tag name="${tag4.name}" color="${tag_TrailingSpace.color}" />
+                </CreateTagRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+            </t:response>
+        </t:test>
+        
+        <!--create a new Tag with Leading and Trailing spaces in color -->
+        <t:test>
+            <t:request>
+                <CreateTagRequest xmlns="urn:zimbraMail">
+                    <tag name="${tag5.name}" color="${tag_TrailingLeadingSpace.color}" />
+                </CreateTagRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$" />
+            </t:response>
+        </t:test>
+        
+</t:test_case>
+
+<t:test_case testcaseid="CreateTagRequest15" type="smoke" bugids="51823">
+    <t:objective>create a new Tag with default color </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag15.name}" color="0" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+	            <t:select attr="id" set="tag15.id" />
+	            <t:select attr="name" match="${tag15.name}" />
+	            <t:select attr="color" emptyset="1" />
+	      	</t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CreateTagRequest16" type="smoke" bugids="51823">
+    <t:objective>create a new Tag with different color modify it to default color. </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag16.name}" color="4" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+	            <t:select attr="id" set="tag16.id" />
+	            <t:select attr="name" match="${tag16.name}" />
+	            <t:select attr="color" match="4" />
+	      	</t:select>
+        </t:response>
+    </t:test>
+	<t:test>
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		    	<action op="color" id="${tag16.id}" color="0"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action">
+		    <t:select attr="id" match="${tag16.id}"/>
+		    <t:select attr="op" match="color"/>
+    	    </t:select>
+	    </t:response>
+	</t:test>
+	
+	<t:test >
+	 <t:request>
+	   <GetTagRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetTagResponse/mail:tag[@id='${tag16.id}']">
+		    <t:select attr="name" match="${tag16.name}"/>
+		    <t:select attr="color" emptyset="1"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+	
+</t:test_case>
+
+</t:tests>

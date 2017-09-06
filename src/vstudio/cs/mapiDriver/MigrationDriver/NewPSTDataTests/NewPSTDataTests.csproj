@@ -1,0 +1,104 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FAB2C64B-2118-4358-94A9-2B03EEC0C5F2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NewPSTDataTests</RootNamespace>
+    <AssemblyName>PstDataTests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Harness, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Harness\bin\Debug\Harness.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Harness\FileParser.cs" />
+    <Compile Include="Harness\OutlookProcess.cs" />
+    <Compile Include="Harness\PSTDownloader.cs" />
+    <Compile Include="Harness\PSTMigrationDriver.cs" />
+    <Compile Include="NUnit\BaseTestFixture.cs" />
+    <Compile Include="NUnit\GlobalSetupFixture.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tests\Basic\ImportEmpty.cs" />
+    <Compile Include="Tests\Basic\ImportFolders.cs" />
+    <Compile Include="Tests\Basic\ImportOne.cs" />
+    <Compile Include="Tests\Calendar\AppointmentExceptions.cs" />
+    <Compile Include="Tests\Calendar\Appointment_ContentTest.cs" />
+    <Compile Include="Tests\Calendar\BasicAppointments.cs" />
+    <Compile Include="Tests\Calendar\BasicMeetings.cs" />
+    <Compile Include="Tests\Calendar\Folders\CalendarFoldersTest.cs" />
+    <Compile Include="Tests\Calendar\Meeting_ContentTest.cs" />
+    <Compile Include="Tests\Calendar\FreeBusyAppointments.cs" />
+    <Compile Include="Tests\Calendar\RecurringAppointments.cs" />
+    <Compile Include="Tests\Calendar\RecurringMeetings.cs" />
+    <Compile Include="Tests\Calendar\ReminderAppointments.cs" />
+    <Compile Include="Tests\Contact\BasicContact.cs" />
+    <Compile Include="Tests\Contact\BasicDistlist.cs" />
+    <Compile Include="Tests\Contact\ContactFolder.cs" />
+    <Compile Include="Tests\Contact\ContactWithAttachment.cs" />
+    <Compile Include="Tests\Drafts\BlankDrafts.cs" />
+    <Compile Include="Tests\Drafts\DraftAttachment.cs" />
+    <Compile Include="Tests\Drafts\Drafts.cs" />
+    <Compile Include="Tests\Junk\EmptyJunk.cs" />
+    <Compile Include="Tests\Junk\Junk.cs" />
+    <Compile Include="Tests\Mail\Bugs\Bug71137.cs" />
+    <Compile Include="Tests\Mail\Bugs\Bug81037.cs" />
+    <Compile Include="Tests\Mail\MailFunctional.cs" />
+    <Compile Include="Tests\Mail\MailPriorityTag.cs" />
+    <Compile Include="Tests\Mail\MailSmoke.cs" />
+    <Compile Include="Tests\Mail\MessageFolder.cs" />
+    <Compile Include="Tests\Task\BasicTasks.cs" />
+    <Compile Include="Tests\Task\RecurringTask.cs" />
+    <Compile Include="Tests\Task\TaskContent.cs" />
+    <Compile Include="Tests\Task\TaskFolder.cs" />
+    <Compile Include="Tests\Task\TaskStartDueDateReminder.cs" />
+    <Compile Include="Tests\Task\TaskStatus.cs" />
+    <Compile Include="Tests\Task\TaskWithAttachment.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\Bugzilla\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

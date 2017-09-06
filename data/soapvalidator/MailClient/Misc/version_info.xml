@@ -1,0 +1,231 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" areas="noncluster">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="version_info_accountsetup" type="always" areas="noncluster">
+	<t:objective>version_info_accountsetup </t:objective>
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+	 <t:test  id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account1.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <GetServerRequest  xmlns="urn:zimbraAdmin">
+                <server by="name">${account1.server}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServerResponse/admin:server" attr="id" set="server1.id"/>
+        </t:response>
+    </t:test>	
+
+	<t:test>
+        <t:request>
+            <ModifyServerRequest  xmlns="urn:zimbraAdmin">
+                <id>${server1.id}</id>
+				<a n="zimbraSoapExposeVersion"/>
+            </ModifyServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyServerResponse"/>
+        </t:response>
+    </t:test>
+	
+	<t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSoapExposeVersion">${globals.false}</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraSoapExposeVersion"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetConfigResponse/admin:a[@n="zimbraSoapExposeVersion"]' match="${globals.false}"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:finally areas="noncluster">
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSoapExposeVersion">${globals.false}</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+	<t:delay msec="3000"/>
+	<t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraSoapExposeVersion"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetConfigResponse/admin:a[@n="zimbraSoapExposeVersion"]' match="${globals.false}"/>
+        </t:response>
+    </t:test>
+
+</t:finally>
+
+
+<t:test_case testcaseid="zimbraSoapExposeVersion01" type="smoke" bugids="30010" areas="noncluster">
+    <t:objective>Verify when "zimbraSoapExposeVersion" is FALSE, GetVersionInfoRequest on port 80 gives "service.PERM_DENIED" </t:objective>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="getVersionInfo01a">
+        <t:request>
+            <GetVersionInfoRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED"/>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="zimbraSoapExposeVersion02" type="smoke" bugids="30010" areas="noncluster">
+    <t:objective> Verify after setting "zimbraSoapExposeVersion" to TRUE, GetVersionInfoRequest can be sent on port 80 </t:objective>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraSoapExposeVersion">${globals.true}</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+	<t:delay msec="3000"/>
+	
+	<t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraSoapExposeVersion"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetConfigResponse/admin:a[@n="zimbraSoapExposeVersion"]' match="${globals.true}"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetVersionInfoRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetVersionInfoResponse/acct:info" attr="version"/>            
+            <t:select path="//acct:GetVersionInfoResponse/acct:info" attr="release" match="^\d+$"/>
+            <t:select path="//acct:GetVersionInfoResponse/acct:info" attr="buildDate" match="[0-9\-]*"/>
+            <t:select path="//acct:GetVersionInfoResponse/acct:info" attr="host"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+</t:tests>

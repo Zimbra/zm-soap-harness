@@ -1,0 +1,318 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="${defaultpassword.value}"/>
+<t:property name="account1.server" value="NOT_DEFINED"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.password" value="${defaultpassword.value}"/>
+<t:property name="account2.server" value="NOT_DEFINED"/>
+
+<t:property name="contact01.FirstName" value="FirstName01"/>
+<t:property name="contact01.LastName" value="LastName01"/>
+<t:property name="contact01.MiddleInitial" value="1"/>
+<t:property name="contact01.emailAddress" value="email01@domain.com"/>
+<t:property name="contact02.FirstName" value="FirstName02"/>
+<t:property name="contact02.LastName" value="LastName02"/>
+<t:property name="contact02.MiddleInitial" value="2"/>
+<t:property name="contact02.emailAddress" value="email02@domain.com"/>
+<t:property name="contact03.FirstName" value="FirstName03"/>
+<t:property name="contact03.LastName" value="LastName03"/>
+<t:property name="contact03.MiddleInitial" value="3"/>
+<t:property name="contact03.emailAddress" value="email03@domain.com"/>
+
+<t:property name="contact01.csv.file" value="${testMailRaw.root}/rest04/contact01.csv"/>
+<t:property name="contact02.csv.file" value="${testMailRaw.root}/rest04/contact02.csv"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_contact_csv_account_setup" type="always" >
+    <t:objective>create test account</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${account2.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${account1.password}</password>
+                <!--<prefs/>-->
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact01.FirstName}</a>
+                    <a n="lastName">${contact01.LastName}</a>
+                    <a n="email">${contact01.emailAddress}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+				<t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_contact_csv_01" type="smoke" >
+    <t:objective>Using the REST servlet, get a contact using csv format</t:objective>
+	<t:steps>
+	1. Create a contact
+	2. Get the contact using the REST servlet, using csv format
+	3. Compare the result to the 'golden' file
+	</t:steps>
+
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${contact.id}</id>
+			<fmt>csv</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:content file="${contact01.csv.file}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_contact_csv_02" type="smoke" >
+    <t:objective>Using the REST servlet, get all contacts using csv format</t:objective>
+	<t:steps>
+	1. Create a contact
+	2. Get the contact using the REST servlet, using csv format
+	3. Compare the result to the 'golden' file
+	</t:steps>
+
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<url>~/contacts.csv</url>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:content file="${contact01.csv.file}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<folder>contacts</folder>
+			<fmt>csv</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:content file="${contact01.csv.file}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<!--
+
+The CSV contact order is random, so the data cannot be compared to a 'golden' file.
+Other tests already verify that the contact information is correct by parsing, so
+deprecate this test case.
+
+-->
+
+<t:test_case testcaseid="RestServlet_contact_csv_03" type="deprecated" >
+    <t:objective>Using the REST servlet, get multiple (3) contacts using csv format</t:objective>
+	<t:steps>
+	1. Create 3 contacts
+	2. Get the contact using the REST servlet, using csv format
+	3. Compare the result to the 'golden' file
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${account2.password}</password>
+                <!--<prefs/>-->
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact01.FirstName}</a>
+                    <a n="lastName">${contact01.LastName}</a>
+                    <a n="email">${contact01.emailAddress}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+				<t:select attr="id" set="contact01.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact02.FirstName}</a>
+                    <a n="lastName">${contact02.LastName}</a>
+                    <a n="email">${contact02.emailAddress}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+				<t:select attr="id" set="contact02.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact03.FirstName}</a>
+                    <a n="lastName">${contact03.LastName}</a>
+                    <a n="email">${contact03.emailAddress}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+				<t:select attr="id" set="contact03.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<folder>contacts</folder>
+			<fmt>csv</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:content file="${contact02.csv.file}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_contact_csv_04" type="smoke" bugids="12689">
+    <t:objective>Using the REST servlet with spaces, get contact, the spaces should get trimmed.</t:objective>
+	<t:steps>
+	1. Create a contact
+	2. Get the contact using the REST servlet with spaces in the url in csv format (The trailing spaces should get trimmed and return same result with search without spaces.)
+	3. Compare the result to the 'golden' file
+	</t:steps>
+
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<folder>contacts  </folder>
+			<fmt>csv</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:content file="${contact01.csv.file}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<folder>contacts 	 </folder>
+			<fmt>csv</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:content file="${contact01.csv.file}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+</t:tests>

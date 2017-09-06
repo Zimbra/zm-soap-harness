@@ -1,0 +1,68 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+		<t:test id="ping" required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="bug69494" type="smoke">
+		<t:objective>Verify zimbraThrottleSafeHosts set on server</t:objective>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+    </t:test_case>
+
+    <t:test>
+        <t:request>
+            <GetAllServersRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+             <t:select path='//admin:GetAllServersResponse/admin:server[admin:a[@n="zimbraServiceEnabled"]="mailbox"][1]' attr="id" set="server.id1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="ModifyServer01">
+        <t:request>
+            <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                <id>${server.id1}</id>
+                <a n="zimbraThrottleSafeHosts">10.0.0.0</a>
+            </ModifyServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyServerResponse/admin:server" attr="id" set="server.id1"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="ServerRequest01">
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="id">${server.id1}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServerResponse/admin:server[@id='${server.id1}']">
+            	<t:select path="//admin:a[@n='zimbraThrottleSafeHosts']" match="10.0.0.0"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:tests>	

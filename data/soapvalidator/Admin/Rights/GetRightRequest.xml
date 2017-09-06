@@ -1,0 +1,102 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetRightRequest01" type="smoke" >
+ <t:objective>basic request check</t:objective>
+
+	<t:test>
+		<t:request>
+			<GetRightRequest xmlns="urn:zimbraAdmin">
+				<right>createAccount</right>
+			</GetRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetRightResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetRightRequest02" type="smoke" >
+ <t:objective>GetRightRequest with expandAllAttrs to "1" </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetRightRequest xmlns="urn:zimbraAdmin" expandAllAttrs="1">
+				<right>configureAdminUI</right>
+			</GetRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetRightRequest xmlns="urn:zimbraAdmin" expandAllAttrs="1">
+				<right>publishAccountShareInfo</right>
+			</GetRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_RIGHT$"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetRightRequest xmlns="urn:zimbraAdmin" expandAllAttrs="1">
+				<right>modifyAccount</right>
+			</GetRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetRightResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetRightRequest03" type="smoke" >
+ <t:objective> GetRightResponse now returns right type for nested rights </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetRightRequest xmlns="urn:zimbraAdmin">
+				<right>adminConsoleAccountsZimletsTabRights</right>
+			</GetRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GetRightResponse/admin:right" attr="type" match="combo"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>

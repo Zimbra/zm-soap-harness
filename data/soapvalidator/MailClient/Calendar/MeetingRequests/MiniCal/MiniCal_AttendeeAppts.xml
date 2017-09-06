@@ -1,0 +1,499 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="organizer1.name" value="organizer1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee1.name" value="invitee1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada)"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${organizer1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="organizer1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="organizer1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_invitee" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="invitee1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="invitee1.server"/>
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case>
+
+<t:test_case testcaseid="MiniCal_AttendeeCal_01" type="smoke" areas="Calendar">
+    <t:objective>Verify all status responses are available to the organizer</t:objective>
+    
+    <t:steps>
+	    1. Login as organizer
+	    2. Create a simple meeting request.  Invite the invitee.
+	    3. Login as the invitee
+	    4. RSVP (Accept) the meeting
+	    5. GetMiniCalRequest for Antendee's calendar 
+	    6. Verify the Meeting date is returned
+	    7. Repeat steps 3-6 for all status - ACCEPT, DECLINE, TENTATIVE
+    </t:steps>
+    
+   <t:property name="server.zimbraAccount" value="${organizer1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${organizer1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+   
+	<t:property name="appointment1.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment1.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment1.content" value="Content of the message${TIME}.${COUNTER}"/>
+	
+	<t:property name="appointment2.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment2.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment2.content" value="Content of the message${TIME}.${COUNTER}"/>
+	
+	<t:property name="appointment3.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment3.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment3.content" value="Content of the message${TIME}.${COUNTER}"/>
+	
+	<t:property name="appointment1.start" value="1448928000000"/> <!-- 12/1/2015 00:00:00 GMT -->
+	<t:property name="appointment2.start" value="1449014400000"/> <!-- 12/2/2015 00:00:00 GMT -->
+	<t:property name="appointment3.start" value="1449100800000"/> <!-- 12/3/2015 00:00:00 GMT -->   
+
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment1.subject}">
+							<or a="${organizer1.name}"/>
+							<at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="1"/>
+							<s d="${ICALTIME[${appointment1.start}]}" />
+							<e d="${ICALTIME(+1h)[${appointment1.start}]}" />
+						</comp>
+					</inv>
+					<e a="${invitee1.name}" t="t"/>
+					<su>${appointment1.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment1.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">            	
+            </t:select>
+        </t:response>
+    </t:test>
+      
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment2.subject}">
+							<or a="${organizer1.name}"/>
+							<at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="1"/>
+							<s d="${ICALTIME[${appointment2.start}]}" />
+							<e d="${ICALTIME(+1h)[${appointment2.start}]}"  />
+						</comp>
+					</inv>
+					<e a="${invitee1.name}" t="t"/>
+					<su>${appointment2.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment2.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">            	
+            </t:select>
+        </t:response>
+    </t:test>
+      
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment3.subject}">
+							<or a="${organizer1.name}"/>
+							<at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="1"/>
+							<s d="${ICALTIME[${appointment3.start}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+1h)[${appointment3.start}]}" tz="${timezone.pst}" />
+						</comp>
+					</inv>
+					<e a="${invitee1.name}" t="t"/>
+					<su>${appointment3.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment3.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">            	
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${invitee1.server}"/>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${invitee1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="invitee1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test required="true" >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${appointment1.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment1.start}]}" types="appointment">
+				<query>inid:${invitee1.calendar.folder.id}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment1.subject}']">
+            	<t:select attr="invId" set="invitee1.appt1.invId"/>
+            	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
+            	<t:select attr="name" set="invitee1.appt1.name"/>
+            	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
+            </t:select> 
+            <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment2.subject}']">
+            	<t:select attr="invId" set="invitee1.appt2.invId"/>
+            	<t:select attr="compNum" set="invitee1.appt2.compNum"/>
+            	<t:select attr="name" set="invitee1.appt2.name"/>
+            	<t:select path="//mail:or" attr="a" set="invitee1.appt2.or"/>            	
+            </t:select> 
+            <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment3.subject}']">
+            	<t:select attr="invId" set="invitee1.appt3.invId"/>
+            	<t:select attr="compNum" set="invitee1.appt3.compNum"/>
+            	<t:select attr="name" set="invitee1.appt3.name"/>
+            	<t:select path="//mail:or" attr="a" set="invitee1.appt3.or"/>
+            </t:select> 
+        </t:response>
+    </t:test>
+    
+    <t:property name="verb.response" value="ACCEPT"/>
+	<t:property name="verb.expected" value="AC"/>
+	
+	<t:test>
+        <t:request>
+			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${invitee1.appt1.invId}" compNum="${invitee1.appt1.compNum}" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${invitee1.appt1.or}"/>
+					<su>${verb.response}: ${invitee1.appt1.name}</su>
+					<mp ct="text/plain">
+						<content>${verb.response}: ${invitee1.appt1.name}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+    
+  <t:property name="verb.response" value="TENTATIVE"/>
+  <t:property name="verb.expected" value="TE"/>	
+
+	<t:test>
+        <t:request>
+			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${invitee1.appt2.invId}" compNum="${invitee1.appt2.compNum}" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${invitee1.appt2.or}"/>
+					<su>${verb.response}: ${invitee1.appt2.name}</su>
+					<mp ct="text/plain">
+						<content>${verb.response}: ${invitee1.appt2.name}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="verb.response" value="DECLINE"/>
+	<t:property name="verb.expected" value="DE"/>
+
+	<t:test>
+        <t:request>
+			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${invitee1.appt3.invId}" compNum="${invitee1.appt3.compNum}" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${invitee1.appt3.or}"/>
+					<su>${verb.response}: ${invitee1.appt3.name}</su>
+					<mp ct="text/plain">
+						<content>${verb.response}: ${invitee1.appt3.name}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${appointment1.start}]}" e="${TIME(+3d)[${appointment1.start}]}">       
+				<folder id="${invitee1.calendar.folder.id}" />				
+			</GetMiniCalRequest>
+        </t:request>        
+        <t:response>			 
+			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE()[${appointment1.start}]}"/>
+			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE(+1d)[${appointment1.start}]}"/>
+        </t:response>
+    </t:test> 
+</t:test_case>
+
+<t:test_case testcaseid="MiniCal_AttendeeCal_02" type="smoke" areas="Calendar" bugids="63291">
+    <t:objective>Verify all status responses are available to the organizer</t:objective>
+    
+    <t:steps>
+	    1. Login as organizer
+	    2. Create a simple meeting request.  Invite the invitee.
+	    3. Login as the invitee
+	    4. DECLINE the meeting
+	    5. GetMiniCalRequest for Antendee's calendar 
+	    6. Verify the minical should hide declined meeting
+	    
+    </t:steps>
+    
+   <t:property name="server.zimbraAccount" value="${organizer1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${organizer1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+   
+	<t:property name="appointment3.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment3.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment3.content" value="Content of the message${TIME}.${COUNTER}"/>
+	
+	
+	<t:property name="appointment3.start" value="1449100800000"/> <!-- 12/3/2015 00:00:00 GMT -->   
+  
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment3.subject}">
+							<or a="${organizer1.name}"/>
+							<at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="1"/>
+							<s d="${ICALTIME[${appointment3.start}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+2h)[${appointment3.start}]}" tz="${timezone.pst}" />
+						</comp>
+					</inv>
+					<e a="${invitee1.name}" t="t"/>
+					<su>${appointment3.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment3.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">            	
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${invitee1.server}"/>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${invitee1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="invitee1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+    
+    <t:test >
+        <t:request>
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME (-1d) [${appointment3.start}]}" e="${TIME(+3d)[${appointment3.start}]}">       
+				<folder id="${invitee1.calendar.folder.id}" />			
+			</GetMiniCalRequest>
+        </t:request>        
+        <t:response>			 
+			 <t:select path = "//mail:GetMiniCalResponse/mail:date" match="${CURRDATE()[${appointment3.start}]}"/>
+        </t:response>
+    </t:test> 
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="invitee1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test required="true" >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${appointment1.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment1.start}]}" types="appointment">
+				<query>inid:${invitee1.calendar.folder.id}</query>
+			</SearchRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt[@name='${appointment3.subject}']">
+            	<t:select attr="invId" set="invitee1.appt3.invId"/>
+            	<t:select attr="compNum" set="invitee1.appt3.compNum"/>
+            	<t:select attr="name" set="invitee1.appt3.name"/>
+            	<t:select path="//mail:or" attr="a" set="invitee1.appt3.or"/>
+            </t:select> 
+        </t:response>
+    </t:test>
+    
+    <t:property name="verb.response" value="DECLINE"/>
+	<t:property name="verb.expected" value="DE"/>
+
+	<t:test>
+        <t:request>
+			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${invitee1.appt3.invId}" compNum="${invitee1.appt3.compNum}" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${invitee1.appt3.or}"/>
+					<su>${verb.response}: ${invitee1.appt3.name}</su>
+					<mp ct="text/plain">
+						<content>${verb.response}: ${invitee1.appt3.name}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME [${appointment3.start}]}" e="${TIME(+3d)[${appointment3.start}]}">       
+				<folder id="${invitee1.calendar.folder.id}" />				
+			</GetMiniCalRequest>
+        </t:request>        
+        <t:response>			 
+			 <t:select path = "//mail:GetMiniCalResponse/mail:date" emptyset="1"/>
+        </t:response>
+    </t:test> 
+</t:test_case>
+
+</t:tests>

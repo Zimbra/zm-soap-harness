@@ -1,0 +1,440 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+<t:property name="test_account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test.${TIME}.${COUNTER}@@${defaultdomain.name}"/>
+
+<t:property name="folder.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder1.name" value="folder.1${TIME}${COUNTER}"/>
+<t:property name="folder2.name" value="folder.2${TIME}${COUNTER}"/>
+
+<t:property name="policy1.name" value="policy1${TIME}${COUNTER}"/>
+<t:property name="policy2.name" value="policy2${TIME}${COUNTER}"/>
+
+<t:property name="folder.pname" value="1"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test  id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FolderRetentionPolicy_acctSetup" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account1.name}</name>
+            <password>${test_account1.password}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test  id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account2.name}</name>
+            <password>${test_account2.password}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+				 <keep>
+    				<policy name="${policy1.name}" lifetime="1s" xmlns="urn:zimbraMail"/>
+  				</keep>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy1.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy1.interval" />
+        </t:response>
+    </t:test>
+		
+	<t:test>
+        <t:request>
+            <CreateSystemRetentionPolicyRequest xmlns="urn:zimbraAdmin">
+				 <purge>
+    				<policy name="${policy2.name}" lifetime="1s" xmlns="urn:zimbraMail"/>
+  				</purge>
+			</CreateSystemRetentionPolicyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="id" set="policy2.id" />
+			<t:select path="//admin:CreateSystemRetentionPolicyResponse/mail:policy" attr="lifetime" set="policy2.interval" />
+        </t:response>
+    </t:test>
+		
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="Folder_Retention_Policy_01" type="smoke" >
+	<t:objective>Set folder retention policy on a folder </t:objective>
+
+    <t:steps>1. Create a folder.
+             2. Set retention keep policy.
+    </t:steps>
+	
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	 <t:test  id="folderaction1a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder.pname}" view="message"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test  depends="folderaction1a">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="retentionpolicy" id="${folder.id}">
+					 <retentionPolicy>
+   						 <keep>
+      						<policy type="user" lifetime="1s"/>
+      						<policy type="system" id="${policy1.id}" name="${policy1.name}" lifetime="${policy1.interval}"/>
+   						 </keep>
+ 	 				</retentionPolicy>
+				</action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action">
+            <t:select attr="id" match="${folder.id}"/>
+            <t:select attr="op" match="retentionpolicy"/>        
+            </t:select>
+        </t:response>
+    </t:test>
+
+	 <t:test >
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder.pname}" view="message"/>
+            </GetFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder/mail:retentionPolicy/mail:keep/mail:policy" attr="lifetime" match="1s"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder/mail:retentionPolicy/mail:keep/mail:policy" attr="name" match="${policy1.name}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Folder_Retention_Policy_03" type="smoke" >
+	<t:objective>Set folder retention purge policy on a folder and check if message is purged </t:objective>
+
+    <t:steps>1. Create a folder.
+             2. Set retention purge policy.
+			 3. Verify that message is purged
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	 <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${folder.pname}" view="message"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="retentionpolicy" id="${folder1.id}">
+					 <retentionPolicy>
+   						 <purge>
+      						<policy type="user" lifetime="1s"/>
+      						<policy type="system" id="${policy2.id}" name="${policy2.name}" lifetime="${policy2.interval}"/>
+   						 </purge>
+ 	 				</retentionPolicy>
+				</action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action">
+            <t:select attr="id" match="${folder1.id}"/>
+            <t:select attr="op" match="retentionpolicy"/>        
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder1.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>	 
+
+	<t:delay msec="5000"/>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	 <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	 <t:test >
+        <t:request>
+            <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${test_account2.id}"/>
+            </PurgeMessagesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PurgeMessagesResponse/admin:mbox"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	
+	<t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>in:${folder1.name}</query>
+            </SearchRequest>
+        </t:request>
+			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+        <t:response/>
+	</t:test>
+		
+</t:test_case>
+
+
+<t:test_case testcaseid="Folder_Retention_Policy_04" type="smoke" >
+	<t:objective>Set folder retention keep policy on a folder and check if message is kept </t:objective>
+
+    <t:steps>1. Create a folder.
+             2. Set retention keep policy.
+			 3. Verify that message is purged
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	 <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder2.name}" l="${folder.pname}" view="message"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="retentionpolicy" id="${folder2.id}">
+					 <retentionPolicy>
+   						 <keep>
+      						<policy type="user" lifetime="1s"/>
+      						<policy type="system" id="${policy1.id}" name="${policy1.name}" lifetime="${policy1.interval}"/>
+   						 </keep>
+ 	 				</retentionPolicy>
+				</action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action">
+            <t:select attr="id" match="${folder2.id}"/>
+            <t:select attr="op" match="retentionpolicy"/>        
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder2.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
+        </t:response>
+    </t:test>	 
+
+	<t:delay msec="5000"/>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	 <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	 <t:test >
+        <t:request>
+            <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${test_account2.id}"/>
+            </PurgeMessagesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PurgeMessagesResponse/admin:mbox"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	
+	<t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>in:${folder2.name}</query>
+            </SearchRequest>
+        </t:request>
+			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+        <t:response/>
+	</t:test>
+		
+
+</t:test_case>
+
+
+</t:tests>

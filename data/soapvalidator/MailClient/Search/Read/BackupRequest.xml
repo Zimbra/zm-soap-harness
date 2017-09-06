@@ -1,0 +1,424 @@
+<t:tests xmlns:t = "urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>  
+
+<t:property name="account1.name" value="acct1${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="account2.name" value="acct2${TIME}${COUNTER}@${domain1.name}"/>
+
+
+<t:property name="msg01.subject" value="message1"/>
+<t:property name="msg02.subject" value="message2"/>
+<t:property name="msg03.subject" value="message3"/>
+<t:property name="msg04.subject" value="message4"/>
+<t:property name="message_content" value="this mail is to check whether the message is read or unread"/>
+
+<t:property name = "op.read" value = "read"/>
+<t:property name = "op.unread" value = "!read"/>
+
+<t:test_case testcaseid = "Ping" type = "always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id = "ping">
+        <t:request>
+            <PingRequest xmlns = "urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "acctSetup1_backup" type = "always">
+    <t:objective>create test account</t:objective>
+    
+    <t:test id = "admin_login" required = "true" depends = "ping">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test reuqired="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>   
+       
+</t:test_case>
+
+
+<t:test_case testcaseid="ReadUnread_mail_Backup_01" type="smoke" areas="backup,nonappliance">
+<t:objective>Backup and restore an account with read/unread mails. Verify that after backup and restore, the read/unread mails are correctly restored</t:objective>
+<t:steps>
+         1. Login to account1 
+         2. Send mails to account2.
+		 3. Mark mail as read/unread.
+         4. Backup the account1.
+		 5. Delete the account1.
+		 6. Restore the account1.
+		 7. Verify that read/unread mails are correctly restored
+</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+                    
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="msg01.id1"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01B
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+                    
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="msg02.id2"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${msg01.id1}" op = "${op.unread}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.unread}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${msg01.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${msg02.id2}" op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.read}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${msg02.id2}"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="server.zimbraAdmin" value="${account1.server}"/>
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+     
+   
+
+	<t:include filename="BackupWorkflowFullDeleteRestore.inc"/>
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>   
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>is:read </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m[@id='${msg02.id2}']"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>is:unread </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m[@id='${msg01.id1}']"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+	<t:test id="GetTagRequest1">
+	 	<t:request>
+	  		 <GetTagRequest xmlns="urn:zimbraMail"/>
+		 </t:request>
+	  	<t:response>
+			<t:select path="//mail:CreateTagResponse" attr="id" emptyset="1"/>
+			<t:select path="//mail:CreateTagResponse" attr="name" emptyset="1"/>
+	 	</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ReadUnread_mail_Backup_02" type="smoke" areas="backup,nonappliance">
+<t:objective>Backup (incremental) and restore an account with read/unread mails. Verify that after backup and restore, the read/unread mails are correctly restored</t:objective>
+<t:steps>
+         1. Backup the account2.
+		 2. Mark mails as read/unread. 
+		 3. Do incremental backup.
+		 4. Delete the account.
+		 5. Restore the account.
+		 6. Verify that read/unread mails are correctly restored
+</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
+	<t:property name="account.name" value="${account2.name}"/>
+	<t:property name="account.id" value="${account2.id}"/>
+     
+  
+
+	<t:include filename="BackupRequestFullBasic.inc"/> 
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01C
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+                    
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="msg01.id1"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inboxFolder.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01D
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+                    
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="msg02.id2"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${msg01.id1}" op = "${op.unread}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.unread}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${msg01.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${msg02.id2}" op = "${op.read}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.read}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${msg02.id2}"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="server.zimbraAdmin" value="${account2.server}"/>
+	<t:property name="account.name" value="${account2.name}"/>
+	<t:property name="account.id" value="${account2.id}"/>
+     
+   
+
+	<t:include filename="BackupWorkflowIncrementalDeleteRestore.inc"/> 
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>   
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>is:read </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m[@id='${msg02.id2}']"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>is:unread </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m[@id='${msg01.id1}']"/>
+			</t:select>
+        </t:response>
+    </t:test>
+
+	<t:test id="GetTagRequest2">
+	 	<t:request>
+	  		 <GetTagRequest xmlns="urn:zimbraMail"/>
+		 </t:request>
+	  	<t:response>
+			<t:select path="//mail:CreateTagResponse" attr="id" emptyset="1"/>
+			<t:select path="//mail:CreateTagResponse" attr="name" emptyset="1"/>
+	 	</t:response>
+	</t:test>
+</t:test_case>
+
+</t:tests>

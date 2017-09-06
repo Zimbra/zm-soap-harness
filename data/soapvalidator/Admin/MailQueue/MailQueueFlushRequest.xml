@@ -1,0 +1,77 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MailQueueFlushRequest_DetermineMTA" type="always" >
+    <t:objective>Login as the admin.  Determine the MTA server.</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+	<t:request>
+		<GetAccountRequest xmlns="urn:zimbraAdmin">
+			<account by="name">${admin.user}</account>
+		</GetAccountRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//admin:GetAccountResponse/admin:account" attr="id"  set="admin.id"/>
+		<t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="admin.server"/>
+	</t:response>
+    </t:test>
+
+    <t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${admin.server}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetServerResponse/admin:server/admin:a[@n='zimbraSmtpHostname']" set="mta.server"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MailQueueFlushRequest_01" type="smoke">
+    <t:objective>Sanity check of MailQueueFlushRequest</t:objective>
+
+    <t:test >
+        <t:request>
+            <MailQueueFlushRequest xmlns="urn:zimbraAdmin">
+				<server name="${mta.server}"/>
+            </MailQueueFlushRequest>
+        </t:request>
+		<t:response>
+			<t:select path="//admin:MailQueueFlushResponse"/>
+		</t:response>
+    </t:test >  
+
+</t:test_case>
+
+</t:tests>

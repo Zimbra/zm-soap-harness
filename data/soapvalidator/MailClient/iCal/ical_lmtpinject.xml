@@ -1,0 +1,164 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="mail1.subject" value="mail1_subject"/>
+
+<t:property name="appt1.subject" value="appt1_subject"/>
+<t:property name="appt1.invitee" value="${account2.name}"/>
+<t:property name="appt1.location" value="appt1.location"/>
+<t:property name="appt1.content" value="appt1.content"/>
+<t:property name="appt1.start" value="${ICALTIME(+1h)}"/>
+<t:property name="appt1.end" value="${ICALTIME(+2h)}"/>
+
+<t:property name="search.start" value="1121336254170"/>
+<t:property name="search.end" value="1138616254170"/>
+
+<t:property name="search.start1" value="1127586600000"/>
+<t:property name="search.end1" value="1131215400000"/>
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="iCalBasicFormat_lmtpinject1" type="functional" >
+    <t:objective>Verify the basic iCal format when lmtp inject is used to inject the iCal</t:objective>
+    <t:steps>
+	1. Use lmtp inject to inject the message
+	2. Login as the invitee
+	3. GetApptSummaries, verify the meeting was created
+    </t:steps>
+    
+	<t:mailinjecttest>
+		<t:lmtpInjectRequest>
+			<filename>${soapxml.root}/MailClient/iCal/msg01.txt</filename>
+			<to>${account2.name}</to>
+			<from>${account1.name}</from>
+			<server>${test_acct.server}</server>
+			<modify>
+				<header a="To">${account2.name}</header>
+				<header a="From">${account1.name}</header>
+				<header a="Subject">${mail1.subject}</header>
+				<header a="X-Zimbra-Received">${GENTIME(-2d)}</header>
+			</modify>
+		</t:lmtpInjectRequest>
+	</t:mailinjecttest>
+
+    <t:test delay="15000">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<!-- do a simple verification of the mail -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
+	   <query>in:inbox</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="appt1.id"/>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail1.subject}"/>
+	 </t:response>
+	</t:test>
+
+    <!-- do a simple verification of the appointment -->
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${search.start1}" calExpandInstEnd="${search.end1}">
+				<query>${mail1.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appt1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

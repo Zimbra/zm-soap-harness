@@ -1,0 +1,409 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_contact_loop" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>1. Login to admin.
+             2. Create test account. 
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:test_case testcaseid="acctSetup2_contact_loop" type="always">
+    <t:objective>Login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Contact_loop1" type="functional" duration="long">
+    <t:objective>Create 1000 Contacts</t:objective>
+    <t:steps> 1. Create contacts
+              2. Send GetInfoRequest        
+    </t:steps>
+
+    <t:test_loop count="1000">      
+        
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">First${TIME}${COUNTER}</a>
+                        <a n="lastName">Last${TIME}${COUNTER}</a>
+                        <a n="email">email${TIME}${COUNTER}@domain.com</a>
+                        <a n="company">zimbra</a>
+                        <a n="workFax">6345556666</a>
+                        <a n="workPhone2">9990008888</a>
+                        <a n="callbackPhone">9990008888</a>
+                        <a n="carPhone">9990008888</a>
+                        <a n="homePhone2">9990008888</a>
+                        <a n="homeFax">9990008888</a>
+                        <a n="otherPhone">9990008888</a>
+                        <a n="otherFax">6667778888</a>
+                        <a n="email">user${TIME}${COUNTER}@persistent.co.in</a>
+                        <a n="email2">user${TIME}${COUNTER}@persistent.co.in</a>
+                        <a n="middleName">s</a>
+                        <a n="jobTitle">QA</a>
+                        <a n="workPhone">6667778888</a>
+                        <a n="homePhone">3334445555</a>
+                        <a n="mobilePhone">1112223333</a>
+                        <a n="pager">6662223333</a>
+                        <a n="email3">user${TIME}${COUNTER}@persistent.co.in</a>
+                        <a n="workStreet">here</a>
+                        <a n="workCity">Ngp</a>
+                        <a n="workState">MH</a>
+                        <a n="workPostalCode">440022</a>
+                        <a n="workCountry">India</a>
+                        <a n="workURL">www.zimbra.com</a>
+                        <a n="notes">Notes ${TIME}</a>
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn"/>                    
+            </t:response>
+        </t:test> 
+        
+    </t:test_loop>
+
+    <t:test timeframeMax="2000">
+        <t:request>
+            <GetInfoRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetInfoResponse/acct:name"/>
+        </t:response>
+    </t:test>   
+    
+</t:test_case>
+
+
+<!--- Performing various operation in an account with huge contact list-->    
+
+<t:test_case testcaseid="acctSetup3_contact_loop" type="always">
+    <t:objective>Create contact to perform various operation</t:objective>
+      
+    <t:test required="true">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">SearchFirst</a>
+                    <a n="lastName">SearchLast</a>
+                    <a n="email">SearchEmail@${defaultdomain.name}</a>
+                    <a n="company">SearchCompany</a>
+                    <a n="workFax">1111</a>
+                    <a n="workPhone2">2222</a>
+                    <a n="callbackPhone">3333</a>
+                    <a n="carPhone">4444</a>
+                    <a n="homePhone2">5555</a>
+                    <a n="homeFax">6666</a>
+                    <a n="otherPhone">7777</a>
+                    <a n="otherFax">8888</a>
+                    <a n="email">searchmail1@${defaultdomain.name}</a>
+                    <a n="email2">searchmail2@${defaultdomain.name}</a>
+                    <a n="middleName">m</a>
+                    <a n="jobTitle">searchjobtitle</a>
+                    <a n="workPhone">9999</a>
+                    <a n="homePhone">0000</a>
+                    <a n="mobilePhone">1122</a>
+                    <a n="pager">2233</a>
+                    <a n="email3">searchmail3@${defaultdomain.name}</a>
+                    <a n="workStreet">seacrhstreet</a>
+                    <a n="workCity">searchcity</a>
+                    <a n="workState">searchstate</a>
+                    <a n="workPostalCode">searchPostalcode</a>
+                    <a n="workCountry">seacrchCountry</a>
+                    <a n="workURL">searchUrl.com</a>
+                    <a n="notes">searchnotes</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+       
+</t:test_case>
+
+
+<t:test_case testcaseid="Contact_loop2" type="functional"  duration="long">
+    <t:objective>Get a contact </t:objective>
+   
+    <t:test timeframeMax="2000">
+        <t:request>
+            <GetContactsRequest xmlns="urn:zimbraMail">
+                <cn id="${contact.id}"/>
+            </GetContactsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetContactsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+    
+<t:test_case testcaseid="Contact_loop3" type="functional" duration="long">
+    <t:objective>Search a contact</t:objective>
+    
+    <t:test timeframeMax="2000">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>SearchFirst</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id}']"/>            
+        </t:response>
+    </t:test>
+
+    <t:test timeframeMax="2000">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>SearchFirst</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact.id}']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="Contact_loop4" type="functional" duration="long" >
+    <t:objective>Search non existing contact </t:objective>
+    
+    <t:test timeframeMax="2000">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>Search${TIME}${COUNTER}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>            
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+ 
+<t:test_case testcaseid="Contact_loop5" type="functional" duration="long" >
+    <t:objective> Tag a contact </t:objective>
+    <t:steps> 1. Create a Tag                  
+              2. Tag a Contact
+    </t:steps>
+
+    <t:test id="contact_loop5a" >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="Tag${COUNTER}" color="1"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id"/>                       
+        </t:response>
+    </t:test>
+
+    <t:test depends="contact_loop5a" timeframeMax="2000">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id}" op="tag" tag="${tag.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="tag"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+    
+<t:test_case testcaseid="Contact_loop6" type="functional" duration="long" >
+    <t:objective> Untag a contact </t:objective>
+    
+    <t:test depends="contact_loop5a" timeframeMax="2000">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id}" op="!tag" tag="${tag.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="!tag"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Contact_loop7" type="functional" duration="long" >
+    <t:objective> Move a contact</t:objective>
+    <t:steps>1. Get root folder
+             2. Create a folder in root
+             3. Move the Contact
+    </t:steps>
+
+    <t:test id="contact_loop7a">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder[@name='${globals.root}']" attr="id" set="folder.pname"/>
+            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="folder.contact"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="contact_loop7b" depends="contact_loop7a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${COUNTER}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="contact_loop7a" timeframeMax="2000">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id}" op="move" l="${folder.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="move"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="Contact_loop8" type="functional" duration="long" >
+    <t:objective> Flag a contact </t:objective>
+    
+    <t:test timeframeMax="2000">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id}" op="flag"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="flag"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>   
+        
+    
+<t:test_case testcaseid="Contact_loop9" type="functional" duration="long" >
+    <t:objective> Unflag a contact </t:objective>
+    
+    <t:test timeframeMax="2000">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id}" op="!flag"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="!flag"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>   
+    
+    
+<t:test_case testcaseid="Contact_loop10" type="functional" duration="long" >
+    <t:objective> Update a contact </t:objective>
+    
+    <t:test depends="contact_loop5a,contact_loop7a" timeframeMax="2000">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id}" op="update" l="${folder.contact}" tag="${tag.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="update"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>       
+    
+    
+<t:test_case testcaseid="Contact_loop11" type="functional" duration="long" >
+    <t:objective> Delete a contact </t:objective>
+    
+    <t:test timeframeMax="2000">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id}" op="delete"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="delete"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>  
+    
+    
+</t:tests>

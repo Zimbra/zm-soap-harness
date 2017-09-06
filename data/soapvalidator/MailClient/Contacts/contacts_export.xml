@@ -1,0 +1,376 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name = "contacts.sometext" value = "abcd"/>
+<t:property name = "contacts.number" value = "1234"/>
+<t:property name = "contacts.negative" value = "-1"/>
+<t:property name = "contacts.decimal" value = "1.4"/>
+<t:property name = "contacts.spchar" value = "//\\|-'.^%_+"/>
+<t:property name = "contacts.blank" value = ""/>
+
+<t:property name = "contact.email" value = "email${TIME}${COUNTER}@hotmail.com"/>
+<t:property name = "contact.fname" value = "First${TIME}${COUNTER}"/>
+<t:property name = "contact.mname" value = "Middle${TIME}${COUNTER}"/>
+<t:property name = "contact.lname" value = "last${TIME}${COUNTER}"/>
+<t:property name = "contact.company" value = "Company${TIME}${COUNTER}"/>
+<t:property name = "contact.workFax" value = "workFax${TIME}${COUNTER}"/>
+<t:property name = "contact.workStreet" value = "workStreet${TIME}${COUNTER}"/>
+<t:property name = "contact.workCity" value = "City${TIME}${COUNTER}"/>
+<t:property name = "contact.workState" value = "State${TIME}${COUNTER}"/>
+<t:property name = "contact.workPostalCode" value = "Postal${TIME}${COUNTER}"/>
+<t:property name = "contact.Country" value = "Country${TIME}${COUNTER}"/>
+<t:property name = "contact.workURL1" value = "Url1${TIME}${COUNTER}"/>
+<t:property name = "contact.callBackPhone" value = "CBPhone${TIME}${COUNTER}"/>
+<t:property name = "contact.workPhone" value = "workPhone${TIME}${COUNTER}"/>
+<t:property name = "contact.workPhone2" value = "workPhone2${TIME}${COUNTER}"/>
+<t:property name = "contact.carPhone" value = "carPhone${TIME}${COUNTER}"/>
+<t:property name = "contact.homePhone" value = "homePhone${TIME}${COUNTER}"/>
+<t:property name = "contact.homePhone2" value = "homePhone2${TIME}${COUNTER}"/>
+<t:property name = "contact.homeFax" value = "homeFax${TIME}${COUNTER}"/>
+<t:property name = "contact.otherPhone" value = "otherPhone${TIME}${COUNTER}"/>
+<t:property name = "contact.otherFax" value = "otherFax${TIME}${COUNTER}"/>
+<t:property name = "contact.email" value = "email${TIME}${COUNTER}@hotmail.com"/>
+<t:property name = "contact.email1" value = "email1${TIME}${COUNTER}@yahoo.com"/>
+<t:property name = "contact.email2" value = "email2${TIME}${COUNTER}@example.com"/>
+<t:property name = "contact.email" value = "email${TIME}${COUNTER}@persistent.co.in"/>
+<t:property name = "contact.jobTitle" value = "Title${TIME}${COUNTER}"/>
+<t:property name = "contact.mobilePhone" value = "Mobile${TIME}${COUNTER}"/>
+<t:property name = "contact.pager" value = "Pager${TIME}${COUNTER}"/>
+<t:property name = "contact.notes1" value = "Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}Notes${TIME}${COUNTER}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ContactsExport_acctsetup1" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>   
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="ContactsExport_acctsetup2" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ExportContactsRequest1" bugids="7640" type="smoke" >
+    <t:objective> ExportContactsRequest from an account when the account has 0 contacts added in it </t:objective>
+
+    <t:test>
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ExportContactsResponse/mail:content"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ExportContactsRequest2" bugids="7640" type="functional" >
+    <t:objective> ExportContactsRequest from an account when the account has one contact added with all attributes </t:objective>
+    <t:steps> 1. Add a contact with all attributes.
+              2. Send ExportContactsRequest.
+    </t:steps>
+
+    <t:test id="ExportContactsRequest2a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact.fname}</a>
+                    <a n = "lastName">${contact.lname}</a>
+                    <a n = "email">${contact.email}</a>
+                    <a n = "company">${contact.company}</a>
+                    <a n = "workFax">${contact.workFax}</a>
+                    <a n = "workPhone2">${contact.workPhone2}</a>
+                    <a n = "callbackPhone">${contact.callBackPhone}</a>
+                    <a n = "carPhone">${contact.carPhone}</a>
+                    <a n = "homePhone2">${contact.homePhone2}</a>
+                    <a n = "homeFax">${contact.homeFax}</a>
+                    <a n = "otherPhone">${contact.otherPhone}</a>
+                    <a n = "otherFax">${contact.otherFax}</a>
+                    <a n = "email1">${contact.email1}</a>
+                    <a n = "email2">${contact.email2}</a>
+                    <a n = "email3">${contact.email}</a>
+                    <a n = "middleName">${contact.mname}</a>
+                    <a n = "jobTitle">${contact.jobTitle}</a>
+                    <a n = "workPhone">${contact.workPhone}</a>
+                    <a n = "homePhone">${contact.homePhone}</a>
+                    <a n = "mobilePhone">${contact.mobilePhone}</a>
+                    <a n = "pager">${contact.pager}</a>
+                    <a n = "workStreet">${contact.workStreet}</a>
+                    <a n = "workCity">${contact.workCity}</a>
+                    <a n = "workState">${contact.workState}</a>
+                    <a n = "workPostalCode">${contact.workPostalCode}</a>
+                    <a n = "workCountry">${contact.Country}</a>
+                    <a n = "workURL">${contact.workURL1}</a>
+                    <a n = "notes">${contact.notes1}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id"/> 	  
+        </t:response>
+    </t:test>
+
+    <t:test depends="ExportContactsRequest2a">
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ExportContactsResponse/mail:content"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ExportContactsRequest3" bugids="7640" type="functional" >
+    <t:objective> ExportContactsRequest from an account when the account has several contact </t:objective>
+    <t:steps> 1. Add a contact with all attributes.
+              2. Send ExportContactsRequest.
+    </t:steps>
+
+    <t:test_loop count="5">
+
+        <t:test id="ExportContactsRequest3a">
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="firstName">FirstName${TIME}${COUNTER}</a>
+                        <a n="lastName">LastName${TIME}${COUNTER}</a>
+                        <a n="email">email${COUNTER}</a>     	
+                    </cn>     
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id"/> 	  
+            </t:response>
+        </t:test>
+
+    </t:test_loop>
+
+    <t:test depends="ExportContactsRequest3a">
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ExportContactsResponse/mail:content"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ExportContactsRequest4" bugids="7640" type="functional" >
+    <t:objective> ExportContactsRequest from an account when the account has contact without firstname and email-id </t:objective>
+    
+    <t:test id="ExportContactsRequest4a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="lastName">LastName${TIME}${COUNTER}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id"/> 	  
+        </t:response>
+    </t:test>
+
+    <t:test depends="ExportContactsRequest4a">
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ExportContactsResponse/mail:content"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ExportContactsRequest5" bugids="7640" type="functional" >
+    <t:objective> ExportContactsRequest from an account containing contacts with long fields </t:objective>
+    
+    <t:test id = "ExportContactsRequest5a">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact.fname}</a>
+                    <a n = "lastName">${contact.lname}</a>
+                    <a n = "email">${contact.email}</a>
+                    <a n = "company">${contact.company}</a>
+                    <a n = "workFax">${contact.workFax}</a>
+                    <a n = "workPhone2">${contact.workPhone2}</a>
+                    <a n = "callbackPhone">${contact.callBackPhone}</a>
+                    <a n = "carPhone">${contact.carPhone}</a>
+                    <a n = "homePhone2">${contact.homePhone2}</a>
+                    <a n = "homeFax">${contact.homeFax}</a>
+                    <a n = "otherPhone">${contact.otherPhone}</a>
+                    <a n = "otherFax">${contact.otherFax}</a>
+                    <a n = "email1">${contact.email1}</a>
+                    <a n = "email2">${contact.email2}</a>
+                    <a n = "email3">${contact.email}</a>
+                    <a n = "middleName">${contact.mname}</a>
+                    <a n = "jobTitle">${contact.jobTitle}</a>
+                    <a n = "workPhone">${contact.workPhone}</a>
+                    <a n = "homePhone">${contact.homePhone}</a>
+                    <a n = "mobilePhone">${contact.mobilePhone}</a>
+                    <a n = "pager">${contact.pager}</a>
+                    <a n = "workStreet">${contact.workStreet}</a>
+                    <a n = "workCity">${contact.workCity}</a>
+                    <a n = "workState">${contact.workState}</a>
+                    <a n = "workPostalCode">${contact.workPostalCode}</a>
+                    <a n = "workCountry">${contact.Country}</a>
+                    <a n = "workURL">${contact.workURL1}</a>
+                    <a n = "notes">${contact.notes1}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact5.id"/>                
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test depends="ExportContactsRequest5a">
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="csv"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ExportContactsResponse/mail:content"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ExportContactsRequest6" type="negative">
+    <t:objective> ExportContactsRequest with value of attribute 'ct' invalid (sometext/number/negative/spchar/blank) </t:objective>
+    
+    <t:test>
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="${contacts.sometext}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="${contacts.number}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="${contacts.negative}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="${contacts.spchar}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail" ct="${contacts.blank}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ExportContactsRequest7" type="negative">
+    <t:objective> ExportContactsRequest without 'ct' attribute </t:objective>
+    
+    <t:test>
+        <t:request>
+            <ExportContactsRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{81D833C8-5497-497D-BA2C-3E7A7D400B32}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ActiveSync</RootNamespace>
+    <AssemblyName>ActiveSync</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\DLL\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ZGetAttachmentRequest.cs" />
+    <Compile Include="ZGetAttachmentResponse.cs" />
+    <Compile Include="ZItemOperationsRequest.cs" />
+    <Compile Include="ZItemOperationsResponse.cs" />
+    <Compile Include="ZSmartForwardRequest.cs" />
+    <Compile Include="ZSmartForwardResponse.cs" />
+    <Compile Include="ZSmartReplyRequest.cs" />
+    <Compile Include="ZClientMobile.cs" />
+    <Compile Include="Internal\EASPolicy.cs" />
+    <Compile Include="Internal\EASWbxml.cs" />
+    <Compile Include="Internal\EASWbxmlByteQueue.cs" />
+    <Compile Include="Internal\EASWbxmlCodePage.cs" />
+    <Compile Include="Internal\EncodedRequest.cs" />
+    <Compile Include="Internal\Utilities.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZFolderCreateRequest.cs" />
+    <Compile Include="ZFolderCreateResponse.cs" />
+    <Compile Include="ZFolderDeleteRequest.cs" />
+    <Compile Include="ZFolderDeleteResponse.cs" />
+    <Compile Include="ZFolderSyncRequest.cs" />
+    <Compile Include="ZFolderSyncResponse.cs" />
+    <Compile Include="ZClientHttp.cs" />
+    <Compile Include="ZFolderUpdateRequest.cs" />
+    <Compile Include="ZFolderUpdateResponse.cs" />
+    <Compile Include="ZMeetingResponse.cs" />
+    <Compile Include="ZMeetingResponse_Resp.cs" />
+    <Compile Include="ZMoveItemsRequest.cs" />
+    <Compile Include="ZMoveItemsResponse.cs" />
+    <Compile Include="ZOptionsRequest.cs" />
+    <Compile Include="ZOptionsResponse.cs" />
+    <Compile Include="ZPingRequest.cs" />
+    <Compile Include="ZPingResponse.cs" />
+    <Compile Include="ZProvisionRequest.cs" />
+    <Compile Include="ZProvisionResponse.cs" />
+    <Compile Include="ZRequest.cs" />
+    <Compile Include="ZResponse.cs" />
+    <Compile Include="ZSearchRequest.cs" />
+    <Compile Include="ZSearchResponse.cs" />
+    <Compile Include="ZSendMailRequest.cs" />
+    <Compile Include="ZSendMailResponse.cs" />
+    <Compile Include="ZSettingsRequest.cs" />
+    <Compile Include="ZSettingsResponse.cs" />
+    <Compile Include="ZSmartReplyResponse.cs" />
+    <Compile Include="ZSyncRequest.cs" />
+    <Compile Include="ZSyncResponse.cs" />
+    <Compile Include="ZGetItemEstimateRequest.cs" />
+    <Compile Include="ZGetItemEstimateResponse.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{17ACDC8D-9769-4651-9B3B-FBE70B96047D}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

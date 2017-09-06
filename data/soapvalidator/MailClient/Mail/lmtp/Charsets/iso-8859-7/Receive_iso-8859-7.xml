@@ -1,0 +1,265 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="iso88597${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="iso88597${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message.folder" value="${testMailRaw.root}/charsets/iso-8859-7/"/>
+
+<!--  A message with an encoded content -->
+<t:property name="message01.subject" value="subject12452810793563"/>
+<t:property name="message01.content" value="abcαβγδdef"/>
+
+<!--  A message with encoded subject -->
+<t:property name="message02.subject" value="abcαβγδdef"/>
+<t:property name="message02.content" value="content12452810793564"/>
+
+<!--  A message with encoded recipient -->
+<t:property name="message03.subject" value="subject12452810793565"/>
+<t:property name="message03.content" value="content12452811140406"/>
+<t:property name="contact03.first" value="abcαβ"/>
+<t:property name="contact03.last" value="γδdef"/>
+	
+	
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>1. Login to admin.
+                  2. Create a test account.       
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailDefaultCharset">ISO-8859-7</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <foldername>${message.folder}</foldername>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="Charsets_ISO_8859_7_Receive_01" type="smoke">
+    <t:objective>Verify account can receive iso 8859-7 encoded content</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message01.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="id" set="message01.id"/>
+            </t:select>
+		</t:response>
+    </t:test>
+
+	<t:test >
+        <t:request> 
+            <GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${message01.id}"/>
+			</GetMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetMsgResponse">
+				<t:select path="//mail:m">
+					<t:select path="//mail:content" match="(?s).*${message01.content}.*"/>
+				</t:select>
+			</t:select> 
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message01.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Content-Type" match="text/plain; charset=ISO-8859-7"/>
+			<t:select attr="Content-Transfer-Encoding" match="quoted-printable"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="Charsets_ISO_8859_7_Receive_02" type="smoke">
+    <t:objective>Verify account can receive iso 8859-7 encoded subject</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>content:(${message02.content})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="id" set="message02.id"/>
+            </t:select>
+		</t:response>
+    </t:test>
+
+	<t:test >
+        <t:request> 
+            <GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${message02.id}"/>
+			</GetMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetMsgResponse">
+				<t:select path="//mail:m">
+					<t:select path="//mail:su" match="${message02.subject}"/>
+				</t:select>
+			</t:select> 
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message02.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<!--  Should match =?ISO-8859-7?Q?abc=E1=E2=E3=E4def?= -->
+			<t:select attr="Subject" match="=\?ISO-8859-7\?Q\?abc=E1=E2=E3=E4def\?="/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="Charsets_ISO_8859_7_Receive_03" type="smoke">
+    <t:objective>Verify account can receive iso 8859-7 encoded recipient</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message03.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="message03.id"/>
+            </t:select>
+		</t:response>
+    </t:test>
+
+	<t:test >
+        <t:request> 
+            <GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${message03.id}"/>
+			</GetMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetMsgResponse">
+				<t:select path="//mail:m">
+	            	<t:select path="//mail:e[@t='t']" attr="d" match="${contact03.first}"/>
+	            	<t:select path="//mail:e[@t='t']" attr="p" match="${contact03.first} ${contact03.last}"/>
+				</t:select>
+			</t:select> 
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message03.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<!--  
+				should match:
+				=?ISO-8859-7?Q?abc=E1=E2_=E3=E4def?= <account@domain.com>
+			-->
+			<t:select attr="To" match="=\?ISO-8859-7\?Q\?abc=E1=E2_=E3=E4def\?=.*"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+</t:tests>

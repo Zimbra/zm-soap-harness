@@ -1,0 +1,197 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account1.name" value="test1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllEffectiveRightsRequest01" type="smoke">
+<t:objective>GetAllEffectiveRightsRequest on default Admin</t:objective>
+   <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test required="true">
+        <t:request>
+            <GetAllEffectiveRightsRequest xmlns="urn:zimbraAdmin">
+            </GetAllEffectiveRightsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='domain']/admin:all/admin:right" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='zimlet']/admin:all/admin:right" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='cos']/admin:all/admin:right" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='calresource']/admin:all/admin:right" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='server']/admin:all/admin:right" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='account']/admin:all/admin:right" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='global']/admin:all/admin:right" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='dl']/admin:all/admin:right" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='xmppcomponent']/admin:all/admin:right" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='domain']/admin:all/admin:getAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='zimlet']/admin:all/admin:getAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='cos']/admin:all/admin:getAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='config']/admin:all/admin:getAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='calresource']/admin:all/admin:getAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='server']/admin:all/admin:getAttrs" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='account']/admin:all/admin:getAttrs" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='global']/admin:all/admin:getAttrs" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='dl']/admin:all/admin:getAttrs" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='xmppcomponent']/admin:all/admin:getAttrs" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='domain']/admin:all/admin:setAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='zimlet']/admin:all/admin:setAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='cos']/admin:all/admin:setAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='config']/admin:all/admin:setAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='calresource']/admin:all/admin:setAttrs" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='server']/admin:all/admin:setAttrs" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='account']/admin:all/admin:setAttrs" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='global']/admin:all/admin:setAttrs" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='dl']/admin:all/admin:setAttrs" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='xmppcomponent']/admin:all/admin:setAttrs" />
+           	
+        </t:response>
+    </t:test>
+    
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllEffectiveRightsRequest02" type="smoke">
+<t:objective>GetAllEffectiveRightsRequest on delegated  admin</t:objective>
+   <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+      <t:test id="create_account1"  depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    
+     <t:test required="true">
+        <t:request>
+            <GetAllEffectiveRightsRequest xmlns="urn:zimbraAdmin">
+            	<grantee type="usr" by="name">${account1.name}</grantee>
+            </GetAllEffectiveRightsRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='domain']" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='zimlet']" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='cos']" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='calresource']" />
+            <t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='server']" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='account']" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='global']" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='dl']" />
+           	<t:select path="//admin:GetAllEffectiveRightsResponse/admin:target[@type='xmppcomponent']" />
+      </t:response>
+      </t:test>  
+ </t:test_case>
+
+<t:test_case testcaseid="GetAllEffectiveRightsRequest03" type="smoke">
+<t:objective>GetAllEffectiveRightsRequest on non- admin user account</t:objective>
+  <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+      <t:test id="create_account2"  depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    
+     <t:test required="true">
+        <t:request>
+            <GetAllEffectiveRightsRequest xmlns="urn:zimbraAdmin">
+            	<grantee type="usr" by="name">${account2.name}</grantee>
+            </GetAllEffectiveRightsRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+      </t:response>
+      </t:test>  
+      
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllEffectiveRightsRequest04" type="smoke">
+<t:objective>GetAllEffectiveRightsRequest on non existing account</t:objective>
+
+ <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+    
+     <t:test required="true">
+        <t:request>
+            <GetAllEffectiveRightsRequest xmlns="urn:zimbraAdmin">
+            	<grantee type="usr" by="name">${account3.name}</grantee>
+            </GetAllEffectiveRightsRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//zimbra:Code" match="service.PERM_DENIED" />
+      </t:response>
+      </t:test>  
+      
+</t:test_case>
+
+</t:tests>

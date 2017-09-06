@@ -1,0 +1,976 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.server" value="NOT_DEFINED"/>
+<t:property name="account2.server" value="NOT_DEFINED"/>
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="msg2.foldername" value="${testMailRaw.root}/blockextension"/>
+
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="account7.name" value="test3${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account7.foldername" value="${testMailRaw.root}/Bugs/35439"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>  
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup_block_extension01" type="always" areas="virus,mta,noncluster" >
+    <t:objective>Create test account and modify settings.</t:objective>
+    <t:steps>1.Login to admin.
+             2.Create test account.
+             3.Modify settings to un block attachments.
+             4.Login to account account2.
+             5.Set zimbraPrefSaveToSent to FALSE
+    </t:steps>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+
+    <!--Create test account-->
+    <t:test id="create_account1" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account1.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account2" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account2.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account2" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account3.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account2" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account4.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account2" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account5.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account2" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account6.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account7.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account7.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${zimbraServer.name}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
+		</t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <!-- Login to account account2--> 
+    
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <!--t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefSaveToSent">FALSE</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test-->
+
+</t:test_case>
+
+
+<t:finally areas="virus, mta, noncluster">
+
+    <!-- After all tests have run, reset the zimbraMtaBlockedExtension setting to the default -->
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraMtaBlockedExtension"/>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	
+    
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'source /opt/zimbra/.bashrc;/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'source /opt/zimbra/.bashrc;/opt/zimbra/bin/zmamavisdctl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test >
+        <t:request>
+            <GetAllConfigRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	
+</t:finally>
+
+
+
+<t:test_case testcaseid="server_setup_block_extension01" type="always" areas="virus,mta,noncluster">
+    <t:objective> Setup server with correct blocking settings. </t:objective>
+    <t:steps/>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraMtaBlockedExtension"/>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+    <!-- Modify COS to block some extension -->
+    <t:test >
+        <t:request>
+            <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraMtaBlockedExtension">bmp</a>
+                <a n="zimbraMtaBlockedExtension">jpg</a>
+                <a n="zimbraMtaBlockedExtension">theme</a>
+                <a n="zimbraMtaBlockedExtension">capitals</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'source /opt/zimbra/.bashrc;/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'source /opt/zimbra/.bashrc;/opt/zimbra/bin/zmamavisdctl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test >
+        <t:request>
+            <GetAllConfigRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllConfigResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ZimbraMtaBlockedExtension1" type="smoke" bugids="5173"  areas="virus,mta,noncluster" >
+    <t:objective> Send a mail with bmp attachment which is blocked. (contenttype=image/bmp)</t:objective>
+    <t:steps>
+		1. Login as admin
+		2. Block bmp attachments
+		3. upload attachment of bmp type
+		4. Send message with that attachment
+		5. Wait for bounceback
+    </t:steps>
+
+
+    <!-- Login to account account2--> 
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${msg2.foldername}/bitmap.bmp</filename>
+			<contenttype>image/bmp</contenttype>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message0.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <!-- Send a mail with a blocked extension -->
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content> content${TIME}${COUNTER} </content>
+					</mp>
+					<attach aid="${message0.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:SendMsgResponse"/>
+        </t:response>
+    </t:test>
+
+	<!-- wait for the subscribe request -->
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox ${message.subject}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m" attr="su" match=".*BANNED.*" query="response"/>
+				</t:select>
+			</t:response>
+		</t:test>
+		
+	</t:for>
+
+</t:test_case>
+
+<t:test_case testcaseid="ZimbraMtaBlockedExtension1a" type="smoke" bugids="5173"  areas="virus,mta,noncluster" >
+    <t:objective> Send a mail with bmp attachment which is blocked. (contenttype=octet-stream)</t:objective>
+    <t:steps>
+		1. Login as admin
+		2. Block bmp attachments
+		3. upload attachment of bmp type
+		4. Send message with that attachment
+    </t:steps>
+
+
+    <!-- Login to account account2--> 
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${msg2.foldername}/bitmap.bmp</filename>
+			<contenttype>octet-stream</contenttype>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message0.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <!-- Forward that mail.-->
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content> content${TIME}${COUNTER} </content>
+					</mp>
+					<attach aid="${message0.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:SendMsgResponse"/>
+        </t:response>
+    </t:test>
+
+	<!-- wait for the subscribe request -->
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox ${message.subject}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m" attr="su" match=".*BANNED.*" query="response"/>
+				</t:select>
+			</t:response>
+		</t:test>
+		
+	</t:for>
+
+</t:test_case>
+
+<t:test_case testcaseid="ZimbraMtaBlockedExtension2" type="smoke" bugids="5173"  areas="virus,mta,noncluster" >
+    <t:objective> Send a mail with png attachment which is not blocked. </t:objective>
+    <t:steps>
+		1. Login as admin
+		2. Don't block png attachments
+		3. upload attachment of png type
+		4. Send message with that attachment
+    </t:steps>
+
+
+    <!-- Login to account account2--> 
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${msg2.foldername}/png.PNG</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <!-- Forward that mail.-->
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content> content${TIME}${COUNTER} </content>
+					</mp>
+					<attach aid="${message1.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:SendMsgResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="su" match="${message.subject}"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ZimbraMtaBlockedExtension3" type="functional" bugids="5173" areas="virus,mta,noncluster" >
+    <t:objective> Forward a mail with bmp attachment which is blocked. </t:objective>
+    <t:steps>
+		1. Login as admin
+		2. Block bmp attachments
+		3. Receive a message with bmp attachment
+		4. Forward that message - mail.SEND_FAILURE
+    </t:steps>
+
+
+    <!-- Login to account account2--> 
+	<t:mailinjecttest >
+		<t:lmtpInjectRequest>
+			<filename>${msg2.foldername}/email-bmp.txt</filename>
+			<to>${account2.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account2.server}</server>
+		</t:lmtpInjectRequest>
+	</t:mailinjecttest>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="message2.subject" value="test mail with bmp attachment"/>
+
+	<!-- Search a mail with PSPDEFORMATIONMAP attachment-->
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message2.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="su" match="${message2.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message2.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m origid="${message2.id}" rt="w">
+					<e t="t" a="${account1.name}"/>
+					<su>Fwd: ${message.subject}</su>
+					<attach>
+						<mp mid="${message2.id}" part="2"/>
+					</attach>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:SendMsgResponse"/>
+        </t:response>
+    </t:test>
+
+	<!-- wait for the subscribe request -->
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox ${message.subject}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m" attr="su" match=".*BANNED.*" query="response"/>
+				</t:select>
+			</t:response>
+		</t:test>
+		
+	</t:for>
+
+</t:test_case>
+
+<t:test_case testcaseid="ZimbraMtaBlockedExtension5" type="smoke" areas="smtp,virus,mta,noncluster" >
+    <t:objective> Receive a mail (SMTP) with bmp attachment which is blocked. </t:objective>
+    <t:steps>
+		1. Login as admin
+		2. Block bmp attachments
+		3. Use SMTP to inject a message (OK)
+		4. Login to account
+		5. Verify message is not received.  Verify BANNED notification is received.
+    </t:steps>
+
+
+    <!-- Message should be blocked, because it has a bmp extension -->
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${mta.server}</address>
+            <recipient>${account3.name}</recipient>
+            <filename>${msg2.foldername}/email-bmp.txt</filename>
+            <sender>${admin.user}</sender>		<!-- set from because a bounceback may be generated -->
+        </t:smtpInjectRequest>
+<!--
+		<t:smtpInjectResponse>
+			<t:select match=".*550.*"/>
+		</t:smtpInjectResponse>
+-->
+    </t:smtpinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(BANNED)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" />
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ZimbraMtaBlockedExtension6" type="smoke"  areas="smtp,virus,mta,noncluster" >
+    <t:objective> Verify 5 character extension is blocked </t:objective>
+    <t:steps>
+		1. Login as admin
+		2. Block theme attachments
+		3. Use SMTP to inject a message with "theme" extension (550)
+    </t:steps>
+
+
+    <!-- Message should be blocked, because it has a theme extension -->
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${mta.server}</address>
+            <recipient>${account4.name}</recipient>
+            <filename>${msg2.foldername}/email-THEME.txt</filename>
+            <sender>${admin.user}</sender>		<!-- set from because a bounceback may be generated -->
+        </t:smtpInjectRequest>
+<!--
+		<t:smtpInjectResponse>
+			<t:select match=".*550.*"/>
+		</t:smtpInjectResponse>
+-->
+    </t:smtpinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(BANNED)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" />
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ZimbraMtaBlockedExtension7" type="smoke"  areas="smtp,virus,mta,noncluster" >
+    <t:objective> Verify uppercase and lowercase character extension is blocked </t:objective>
+    <t:steps>
+		1. Login as admin
+		2. Block capitals attachments
+		3. Use SMTP to inject a message with "capitals" and "CAPITALS" extension (550)
+    </t:steps>
+
+
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${mta.server}</address>
+            <recipient>${account5.name}</recipient>
+            <filename>${msg2.foldername}/email-CASELOWER.txt</filename>
+            <sender>${admin.user}</sender>		<!-- set from because a bounceback may be generated -->
+        </t:smtpInjectRequest>
+<!--
+		<t:smtpInjectResponse>
+			<t:select match=".*550.*"/>
+		</t:smtpInjectResponse>
+-->
+    </t:smtpinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${account5.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account5.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(BANNED)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" />
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${mta.server}</address>
+            <recipient>${account6.name}</recipient>
+            <filename>${msg2.foldername}/email-CASEUPPER.txt</filename>
+            <sender>${admin.user}</sender>		<!-- set from because a bounceback may be generated -->
+        </t:smtpInjectRequest>
+<!--
+		<t:smtpInjectResponse>
+			<t:select match=".*550.*"/>
+		</t:smtpInjectResponse>
+-->
+    </t:smtpinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(BANNED)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" />
+			</t:select>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+
+
+<t:test_case testcaseid="ZimbraMtaBlockedExtension39" type="functional"  areas="smtp,virus,mta,noncluster" bugids="35439">
+    <t:objective>File extension blocking does not work on filenames with special characters</t:objective>
+    <t:steps>
+    1. Login to admin.
+    2. Create test account.
+    3. Modify settings to block attachments with zzz extension.
+    4. Inject message with "coração.zzz" attachment
+    5. Login to account account7.
+    6. Verify message attachment is blocked
+    7. Modify settings to un block attachments.
+    </t:steps>
+
+
+
+    <!-- Message should be blocked, because it has a jpg extension -->
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${mta.server}</address>
+            <recipient>${account7.name}</recipient>
+            <sender>${admin.user}</sender>		<!-- set from because a bounceback may be generated -->
+            <filename>${account7.foldername}/email35439a.txt</filename>
+        </t:smtpInjectRequest>
+<!--
+		<t:smtpInjectResponse>
+			<t:select match=".*550.*"/>
+		</t:smtpInjectResponse>
+-->
+    </t:smtpinjecttest>
+
+    <!-- Message should be blocked, because it has a jpg extension -->
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${mta.server}</address>
+            <recipient>${account7.name}</recipient>
+            <filename>${account7.foldername}/email35439b.txt</filename>
+            <sender>${admin.user}</sender>		<!-- set from because a bounceback may be generated -->
+        </t:smtpInjectRequest>
+<!--
+		<t:smtpInjectResponse>
+			<t:select match=".*550.*"/>
+		</t:smtpInjectResponse>
+-->
+    </t:smtpinjecttest>
+
+    <!-- Message should be ok, because it has a txt extension -->
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${mta.server}</address>
+            <recipient>${account7.name}</recipient>
+            <filename>${account7.foldername}/email35439c.txt</filename>
+            <sender>${admin.user}</sender>		<!-- set from because a bounceback may be generated -->
+        </t:smtpInjectRequest>
+    </t:smtpinjecttest>
+
+
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account7.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>email35439a</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="su" match=".*BANNED.*"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>email35439b</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="su" match=".*BANNED.*"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(email35439c) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="account7.message3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account7.message3.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${account7.message3.id}"/>
+        	<t:select path="//mail:mp[@filename='coração.jpeg']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+</t:tests>
+

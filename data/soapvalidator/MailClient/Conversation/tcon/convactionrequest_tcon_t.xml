@@ -1,0 +1,951 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="op.read" value="read"/>
+<t:property name="op.unread" value="!read"/>
+<t:property name="op.flag" value="flag"/>
+<t:property name="op.unflag" value="!flag"/>
+<t:property name="op.tag" value="tag"/>
+<t:property name="op.untag" value="!tag"/>
+<t:property name="op.move" value="move"/>
+<t:property name="op.delete" value="delete"/>
+<t:property name="op.spam" value="spam"/>
+
+<t:property name="message.subject1" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="message.content1" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_conv_tcon" type="always" >
+    <t:objective>Create test account</t:objective>
+    <t:steps> 
+		1. Login to admin account
+        2. Create a test_account1
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="acctSetup2_conv_tcon" type="always" >
+    <t:objective>Create a conversation</t:objective>
+    <t:steps>
+        1. Login as Test account
+        2. Send message to own address
+        3. Forward the previous message
+        4. Search for the conversation in sent folder
+        5. Get the number of messages in the conversation
+    </t:steps>
+  
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account1.name}'/>
+                    <su> ${message.subject1}</su>
+                    <mp ct="text/plain">
+                        <content> ${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message.id1}" rt="w">
+                    <e t="t" a='${test_account1.name}'/>
+                    <su> Fwd: ${message.subject1}</su>
+                    <mp ct="text/plain">
+                        <content> Forwarded content : ${message.content1}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id2"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.sent}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id1"/>
+        </t:response>
+    </t:test>
+   
+    <t:test required="true" delay="20000">
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${conv.id1}"/>
+			</GetConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetConvResponse/mail:c" attr="n" set="msg.num"/>
+		</t:response>
+    </t:test>
+ 
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup3_conv_tcon" required="true" type="always">
+    <t:objective>Delete a message in a conversation</t:objective>
+    <t:steps>
+        1. Get folder id's of trash, inbox and sent folders
+        2. Move a message to Trash
+        3. Get msg ids of messages in trash, sent and inbox folders
+    </t:steps>
+    
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.id1}" op="${op.move}" l="${folder.trash}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.move}"/>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+		<t:request>
+			<GetConvRequest xmlns="urn:zimbraMail">
+				<c id="${conv.id1}"/>
+			</GetConvRequest>
+		</t:request>
+        <t:response>
+			<t:select path="//mail:GetConvResponse/mail:c" attr="n" match="${msg.num}"/>
+            <t:select path="//mail:GetConvResponse/mail:c/mail:m[@l='${folder.sent}']" attr="id" set="msg.id1"/>
+            <t:select path="//mail:GetConvResponse/mail:c/mail:m[@l='${folder.inbox}']" attr="id" set="msg.id2"/>
+            <t:select path="//mail:GetConvResponse/mail:c/mail:m[@l='${folder.trash}']" attr="id" set="msg.id3"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest1" type="functional" >
+    <t:objective>Tag only messages in trash folder in a conversation </t:objective>
+    <t:steps>
+        1. Create a TAG
+        2. Tag a conversation with trash constraint
+        3. Verify that the messages in trash are tagged
+    </t:steps>
+
+    <t:test id="ConvActionRequest1a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="1"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id1"/>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="name" set="tag.name1"/>
+        </t:response>
+    </t:test>
+   
+    <t:test depends="ConvActionRequest1a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.tag}" tag="${tag.id1}" tcon="t"/>
+            </ConvActionRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.tag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.trash} tag:${tag.name1}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="0"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest2" type="functional" >
+    <t:objective>Tag all messages except those in trash folder in a conversation </t:objective>
+    <t:steps>
+        1. Create a TAG
+        2. Tag a conversation with Not trash constraint
+		3. Verify that the messages not in trash are tagged
+    </t:steps>
+
+    <t:test id="ConvActionRequest1a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="2"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id2"/>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="name" set="tag.name2"/>
+        </t:response>
+    </t:test>
+
+
+   <t:test depends="ConvActionRequest1a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.tag}" tag="${tag.id2}" tcon="-t"/>
+            </ConvActionRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.tag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>not in:${globals.trash} tag:${tag.name2}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest3" type="functional" >
+    <t:objective>Untag only messages in trash folder in a conversation </t:objective>
+    <t:steps>
+		1. Create a tag
+        2. Tag all messages in a conversation
+        3. Untag the conversation with trash constraint
+        4. Verify that the messages in trash are untagged
+    </t:steps>
+
+    <t:test id="ConvActionRequest3a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="3"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id3"/>
+			<t:select path="//mail:CreateTagResponse/mail:tag" attr="name" set="tag.name3"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="ConvActionRequest3b" depends="ConvActionRequest3a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.tag}" tag="${tag.id3}"/>
+            </ConvActionRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.tag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="ConvActionRequest3b">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.untag}" tag="${tag.id3}" tcon="t"/>
+            </ConvActionRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.untag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.trash} not tag:${tag.name3}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="0"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest4" type="functional" >
+    <t:objective>Untag all messages except those in trash folder in a conversation </t:objective>
+    <t:steps>
+		1. Create a tag
+        2. Tag all messages in a conversation
+        3. Untag the conversation with Not trash constraint
+        4. Verify that the messages not in trash are untagged
+    </t:steps>
+
+    <t:test id="ConvActionRequest4a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="4"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id4"/>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="name" set="tag.name4"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="ConvActionRequest4b" depends="ConvActionRequest4a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.tag}" tag="${tag.id4}"/>
+            </ConvActionRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.tag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="ConvActionRequest4b">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.untag}" tag="${tag.id4}" tcon="-t"/>
+            </ConvActionRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.untag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>not in:${globals.trash} not tag:${tag.name4}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest5" type="functional" >
+    <t:objective>Flag all messages in trash folder in a conversation</t:objective>
+    <t:steps>
+		1. Flag a conversation with trash constraint
+        2. Verify that the messages in trash are Flagged
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.flag}" tcon="t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.flag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.trash} is:flagged</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="0"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest6" type="functional" >
+    <t:objective>Flag all messages except those in trash folder in a conversation</t:objective>
+    <t:steps>
+		1. Flag a conversation with Not trash constraint
+        2. Verify that the messages not in trash are flagged
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.flag}" tcon="-t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.flag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>not in:${globals.trash} is:flagged</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest7" type="functional" >
+    <t:objective>Unflag all messages in trash folder in a conversation</t:objective>
+    <t:steps>
+        1.Flag all messages in the conversation
+		2.Unflag the messages in trash folder in the conversation
+        3.Verify that the messages in trash are unflagged
+    </t:steps>
+
+    <t:test id="ConvActionRequest7a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.flag}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.flag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="ConvActionRequest7a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.unflag}" tcon="t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.unflag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.trash} is:unflagged</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="0"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest8" type="functional" >
+    <t:objective>Unflag all messages except those in trash folder in a conversation</t:objective>
+    <t:steps>
+        1.Flag all messages in the conversation
+		2.Unflag all messages except those in trash folder in a conversation
+        3.Verify that the messages not in trash are unflagged
+    </t:steps>
+
+    <t:test id="ConvActionRequest8a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.flag}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.flag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="ConvActionRequest8a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.unflag}" tcon="-t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.unflag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>not in:${globals.trash} is:unflagged</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest9" type="functional" >
+    <t:objective>Mark all messages in trash folder in a conversation as Read </t:objective>
+    <t:steps>
+		1. Mark all messages in trash folder in a conversation as Read
+        2. Verify that the messages in trash are read
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.read}" tcon="t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.read}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.trash} is:read</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="0"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest10" type="functional" >
+    <t:objective>Mark all messages in trash folder in a conversation as Unread </t:objective>
+    <t:steps>
+		1. Mark all messages in trash folder in a conversation as Unread
+        2. Verify that the messages in trash are unread
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.unread}" tcon="t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.unread}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.trash} is:unread</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="0"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest11" type="functional" >
+    <t:objective>Mark all messages except those in trash folder in a conversation as Read</t:objective>
+    <t:steps>
+		1. Mark all messages except those in trash folder in a conversation as Read
+        2. Verify that the messages not in trash are read
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.read}" tcon="-t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.read}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>not in:${globals.trash} is:read</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest12" type="functional" >
+    <t:objective>Mark all messages except those in trash folder in a conversation as Unread</t:objective>
+     <t:steps>
+		1. Mark all messages except those in trash folder in a conversation as Unread
+        2. Verify that the messages not in trash are unread
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.unread}" tcon="-t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.unread}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>not in:${globals.trash} is:unread</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest13" type="functional">
+    <t:objective>Move all messages in trash folder in a conversation to trash folder</t:objective>
+    <t:steps>
+        1.Move all messages not in trash folder in a conversation to trash folder
+        2.Verify that the messages in trash are moved to trash
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.move}" l="${folder.trash}" tcon="t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.move}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.trash}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="0"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest14" type="functional">
+    <t:objective>Move all messages not in trash folder in a conversation to a folder</t:objective>
+    <t:steps>
+        1. Create a folder
+        2. Move all messages not in trash folder in a conversation to a folder
+        3. Verify that messages not in trash are moved to the folder
+    </t:steps>
+    
+    <t:test id="ConvActionRequest14a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}${COUNTER}" l="${folder.root}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id1"/>
+           <t:select path="//mail:CreateFolderResponse/mail:folder" attr="name" set="folder.name1"/>
+        </t:response>
+    </t:test>
+    <t:test depends="ConvActionRequest14a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.move}" l="${folder.id1}" tcon="-t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.move}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${folder.name1}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="0"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest15" type="functional">
+    <t:objective>Move all messages in trash folder in a conversation to a folder</t:objective>
+    <t:steps>
+        1. Create a folder
+        2. Move all messages in trash folder in a conversation to the folder
+        3. Verify that messages in trash are moved to the folder
+    </t:steps>
+    
+    <t:test id="ConvActionRequest15a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}${COUNTER}" l="${folder.root}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id2"/>
+           <t:select path="//mail:CreateFolderResponse/mail:folder" attr="name" set="folder.name2"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="ConvActionRequest15a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.move}" l="${folder.id2}" tcon="t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.move}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${folder.name2}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="0"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="ConvActionRequest16" type="functional" >
+    <t:objective>Mark all messages except those in Trash folder in a conversation as spam</t:objective>
+    
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.spam}" tcon="-t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.spam}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>in:${globals.spam}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ConvActionRequest17" type="functional" >
+    <t:objective>Delete all messages in Trash folder in a conversation</t:objective>
+    <t:steps>
+        1. Move a message to trash folder
+        2. Delete a conversation with trash constraint
+    </t:steps>
+
+    <t:test id="ConvActionRequest17a">
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${msg.id3}" op="${op.move}" l="${folder.trash}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.move}"/>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${msg.id3}"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="ConvActionRequest17a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id1}" op="${op.delete}" tcon="t"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.delete}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id1}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>is:anywhere</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id1}"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${msg.id3}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+ 
+</t:tests>

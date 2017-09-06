@@ -1,0 +1,410 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="account1.name" value="doc1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="document.textfile1.rev1" value="${testMailRaw.root}/docs/rev1/data.txt"/>
+<t:property name="document.textfile1.rev2" value="${testMailRaw.root}/docs/rev2/data.txt"/>
+<t:property name="document.textfile1.rev3" value="${testMailRaw.root}/docs/rev3/data.txt"/>
+<t:property name="document.textfile2.rev1" value="${testMailRaw.root}/docs/rev1/data1.txt"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_account1"  depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${document.textfile1.rev1}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.textfile1.rev1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}" >
+			    <upload id="${document.textfile1.rev1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.textfile1.rev1.id"/>
+        </t:response>
+    </t:test> 
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${document.textfile1.rev2}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.textfile1.rev2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc  l="${account1.folder.briefcase.id}" ver="1" >
+			    <upload id="${document.textfile1.rev2.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Error/zimbra:a[@n='itemId']" match="${document.textfile1.rev1.id}"  />
+            <t:select path="//zimbra:Error/zimbra:a[@n='ver']" set="prever"  />
+        </t:response>
+    </t:test> 
+
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc ver="${prever}" l="${account1.folder.briefcase.id}" id="${document.textfile1.rev1.id}" >
+			    <upload id="${document.textfile1.rev2.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.textfile1.rev2.id"/>
+        </t:response>
+    </t:test>
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${document.textfile1.rev3}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.textfile1.rev3.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc  l="${account1.folder.briefcase.id}" ver="1" >
+			    <upload id="${document.textfile1.rev3.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Error/zimbra:a[@n='itemId']" match="${document.textfile1.rev2.id}"  />
+            <t:select path="//zimbra:Error/zimbra:a[@n='ver']" set="prever"  />
+        </t:response>
+    </t:test> 
+
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc ver="${prever}" l="${account1.folder.briefcase.id}" id="${document.textfile1.rev2.id}" >
+			    <upload id="${document.textfile1.rev3.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.textfile1.rev3.id"/>
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${document.textfile2.rev1}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.textfile2.rev1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}" >
+			    <upload id="${document.textfile2.rev1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.textfile2.rev1.id"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:test_case testcaseid="ListDocumentRevisionsRequest01" type="smoke" >
+<t:objective>Upload document and list revisions.</t:objective>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile2.rev1.id}" />
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc" attr="ver" match="1"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc/mail:fr" equals="This is revison1 File2 test2"/>
+            
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="ListDocumentRevisionsRequest02" type="smoke" >
+<t:objective>Upload document with multiple revisions and list revisions.</t:objective>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	<t:test>
+		<t:request>
+			<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile1.rev3.id}" />
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc" attr="ver" match="3"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc/mail:fr" match="This is revison3 File1 test1"/>
+         </t:response>
+    </t:test>
+
+
+	
+</t:test_case>
+
+<t:test_case testcaseid="ListDocumentRevisionsRequest03" type="smoke" >
+<t:objective>Upload document with multiple revisions and list revisions specify version.</t:objective>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	<t:test >
+		<t:request>
+			<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile1.rev3.id}"  ver="-1"/>
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc" attr="ver" match="3"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison3 File1 test1"/>
+        </t:response>
+    </t:test>
+
+	
+	<t:test >
+		<t:request>
+			<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile1.rev3.id}"  ver="2"/>
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc" attr="ver" match="2"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison2 File1 test1"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile1.rev3.id}"  ver="3"/>
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+        	 <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison3 File1 test1"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc" attr="ver" match="3"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+		<t:request>
+			<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile1.rev3.id}"  ver="4"/>
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc" emptyset="1"/>
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="ListDocumentRevisionsRequest04" type="smoke" >
+<t:objective>Upload document with multiple revisions and list revisions specify count.</t:objective>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	<t:test >
+	<t:request>
+		<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile1.rev3.id}"  ver="-1" count="3"/>
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc" attr="ver" match="3"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison3 File1 test1"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison2 File1 test1"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison1 File1 test1"/>
+        </t:response>
+    </t:test>
+	<t:test>
+	
+	<t:request>
+		<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile1.rev3.id}"  ver="3" count="2"/>
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']" attr="ver" match="2"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison3 File1 test1"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison2 File1 test1"/>
+        </t:response>
+    </t:test>
+    <t:test>
+	<t:request>
+		<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile1.rev3.id}"  ver="2" count="2"/>
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']" attr="ver" match="2"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison2 File1 test1"/>
+            <t:select path="//mail:ListDocumentRevisionsResponse/mail:doc[@name='data.txt']/mail:fr"  match="This is revison1 File1 test1"/>
+        </t:response>
+    </t:test>
+
+	
+</t:test_case>
+
+<t:test_case testcaseid="ListDocumentRevisionsRequest05" type="smoke" >
+<t:objective>listdocument revision request for non existing document.</t:objective>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+    </t:test>
+
+	<t:property name="document.textfile1.nx.id" value="0234278492374"/>
+	<t:test>
+	
+	<t:request>
+		<ListDocumentRevisionsRequest xmlns="urn:zimbraMail">
+			 <doc id="${document.textfile1.nx.id}"  ver="2" count="2"/>
+			</ListDocumentRevisionsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+	
+</t:test_case>
+
+</t:tests>

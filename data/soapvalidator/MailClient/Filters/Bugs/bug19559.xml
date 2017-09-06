@@ -1,0 +1,1254 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="setup_bug_14942" type="always" >
+    <t:objective> Create two test accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Bug_19102_01" type="functional" areas="backup" bugs="19559" >
+	<t:objective>Verify bug 19102: Create a mail filter greater than 21 KB</t:objective>
+	<t:steps>
+		1. Login to test account1.
+		2. Create a filter rule that is larger than 21 KB
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
+
+
+    <t:test >
+        <t:request>
+            <SaveRulesRequest xmlns="urn:zimbraMail">
+                <rules>
+					<r name="${filter2.name}" active="1">
+						<g op="anyof">
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+						</g>
+						<action name="flag">
+							<arg>flagged</arg>
+						</action>
+						<action name="stop"/>
+					</r>
+                 </rules>
+            </SaveRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveRulesResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetRulesResponse">
+            	<t:select path="//mail:r[@name='${filter2.name}']"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+     
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:include filename="BackupWorkflowFullDeleteRestore.inc"/> 
+ 	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetRulesResponse">
+            	<t:select path="//mail:r[@name='${filter2.name}']"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="Bug_19102_02" type="functional" areas="backup" bugs="19559" >
+	<t:objective>Verify bug 19102: Create a mail filter greater than 21 KB</t:objective>
+	<t:steps>
+		1. Login to test account1.
+		2. Create a filter rule that is larger than 21 KB
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
+
+
+    <t:test >
+        <t:request>
+            <SaveRulesRequest xmlns="urn:zimbraMail">
+                <rules>
+					<r name="${filter2.name}" active="1">
+						<g op="anyof">
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+						</g>
+						<action name="flag">
+							<arg>flagged</arg>
+						</action>
+						<action name="stop"/>
+					</r>
+					<r name="${filter3.name}" active="1">
+						<g op="anyof">
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+							<c name="header" k0="subject" op=":contains" k1="${TIME}.${COUNTER}"/>
+						</g>
+						<action name="flag">
+							<arg>flagged</arg>
+						</action>
+						<action name="stop"/>
+					</r>
+                 </rules>
+            </SaveRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveRulesResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetRulesResponse">
+            	<t:select path="//mail:r[@name='${filter2.name}']"/>
+            	<t:select path="//mail:r[@name='${filter3.name}']"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="account.name" value="${account1.name}"/>
+	<t:property name="account.id" value="${account1.id}"/>
+     
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:include filename="BackupWorkflowFullDeleteRestore.inc"/> 
+ 	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetRulesResponse">
+            	<t:select path="//mail:r[@name='${filter2.name}']"/>
+            	<t:select path="//mail:r[@name='${filter3.name}']"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+</t:tests>

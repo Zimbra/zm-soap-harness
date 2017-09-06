@@ -1,0 +1,453 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.name" value="jeeves"/>
+
+<t:property name="cos.name" value="testing"/>
+<t:property name="cos.newName" value="testing2"/>
+
+<t:property name="domain.name" value="testing.net"/>
+
+<t:property name="account.name" value="user1@testing.net"/>
+<t:property name="account.newName" value="user.one@testing.net"/>
+<t:property name="account.alias" value="user1.fool@testing.net"/>
+<t:property name="account.password" value="zimbratest"/>
+
+
+<t:property name="uri" value="${admin.uri}"/>
+
+<t:test_case testcaseid="volume" type="smoke" areas="dev_internal">
+    <t:objective>Volume management tests</t:objective>
+
+	<t:test>
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAdmin">
+	    <name>${admin.user}</name>
+	    <password>${admin.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+	    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test required="true">
+	 <t:request>
+	  <NoOpRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//mail:NoOpResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show all currently defined volumes. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetAllVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetAllVolumesResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show the current volumes. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetCurrentVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetCurrentVolumesResponse"/>
+	 </t:response>
+	</t:test>
+
+	<t:system command="mkdir" parms="/opt/zimbra/store1"/>
+	<t:system command="chmod" parms="777 /opt/zimbra/store1"/>
+
+	
+	<!-- Get volume 1. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetVolumeRequest xmlns="urn:zimbraAdmin" id="1"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetVolumeResponse/admin:volume" attr="id" match="1"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Try to create a new volume, but with incomplete request. -->
+	<t:test required="true">
+	 <t:request>
+	  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+	    <volume name="" rootpath="/opt/zimbra/store1"/>
+	  </CreateVolumeRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="volume.INVALID_REQUEST"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Create store1 volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+	    <volume type="1" name="New Volume 1" rootpath="/opt/zimbra/store1"
+	            compressBlobs="1" compressionThreshold="9999"/>
+	  </CreateVolumeRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="store1.id"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Get the store1 volume just created. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${store1.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetVolumeResponse/admin:volume"/>
+		<t:select path="//admin:GetVolumeResponse/admin:volume" attr="compressBlobs" match="1"/>
+		<t:select path="//admin:GetVolumeResponse/admin:volume" attr="compressionThreshold" match="9999"/>
+		<t:select path="//admin:GetVolumeResponse/admin:volume" attr="isCurrent" match="0"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show all currently defined volumes.  The new volume should be present. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetAllVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${store1.id}"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Modify the new volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <ModifyVolumeRequest xmlns="urn:zimbraAdmin" id="${store1.id}">
+	    <volume name="New Volume 1 - modified"/>
+	  </ModifyVolumeRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:ModifyVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show all currently defined volumes.  (Note the modified data.) -->
+	<t:test required="true">
+	 <t:request>
+	  <GetAllVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetAllVolumesResponse/admin:volume[@id='${store1.id}']" attr="name" match="New Volume 1 - modified"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Get the modified volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${store1.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetVolumeResponse/admin:volume" attr="name" match="New Volume 1 - modified"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Delete the modified volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <DeleteVolumeRequest xmlns="urn:zimbraAdmin" id="${store1.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:DeleteVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Try to get the deleted volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${store1.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="volume.NO_SUCH_VOLUME"/>
+	 </t:response>
+	</t:test>
+
+	<!-- Create store2 volume. -->
+	<t:system command="mkdir" parms="/opt/zimbra/store2"/>
+	<t:system command="chmod" parms="777 /opt/zimbra/store2"/>
+
+	<t:test required="true">
+	 <t:request>
+	  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+	    <volume type="1" name="New Message Volume" rootpath="/opt/zimbra/store2"
+	            compressBlobs="1" compressionThreshold="9998"/>
+	  </CreateVolumeRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="store2.id"/>
+	 </t:response>
+	</t:test>
+
+	<!-- Get the new volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${store2.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetVolumeResponse/admin:volume"/>
+		<t:select path="//admin:GetVolumeResponse/admin:volume" attr="compressBlobs" match="1"/>
+		<t:select path="//admin:GetVolumeResponse/admin:volume" attr="compressionThreshold" match="9998"/>
+	 </t:response>
+	</t:test>
+
+	<!-- Create one more new volume. -->
+	<t:system command="mkdir" parms="/opt/zimbra/store3"/>
+	<t:system command="chmod" parms="777 /opt/zimbra/store3"/>
+
+	<t:test required="true">
+	 <t:request>
+	  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+	    <volume type="2" name="New Secondary Message Volume" rootpath="/opt/zimbra/store3"
+	            compressBlobs="0" compressionThreshold="9997"/>
+	  </CreateVolumeRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="store3.id"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Get the new volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${store3.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetVolumeResponse/admin:volume"/>
+	 </t:response>
+	</t:test>
+
+	<!-- Create new index volume. -->
+	<t:system command="mkdir" parms="/opt/zimbra/index2"/>
+	<t:system command="chmod" parms="777 /opt/zimbra/index2"/>
+
+	<t:test required="true">
+	 <t:request>
+	  <CreateVolumeRequest xmlns="urn:zimbraAdmin">
+	    <volume type="10" name="New Index Volume" rootpath="/opt/zimbra/index2"
+	            compressBlobs="0" compressionThreshold="9996"/>
+	  </CreateVolumeRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:CreateVolumeResponse/admin:volume" attr="id" set="index2.id"/>
+	 </t:response>
+	</t:test>
+
+	<!-- Get the new volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${index2.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetVolumeResponse/admin:volume" attr="isCurrent" match="0"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show all currently defined volumes.  The new volumes should be present. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetAllVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="id" match="${index2.id}"/>
+		<t:select path="//admin:GetAllVolumesResponse/admin:volume" attr="isCurrent" match="0"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Set the current message volume to the new message volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <SetCurrentVolumeRequest xmlns="urn:zimbraAdmin" type="1" id="${store2.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:SetCurrentVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Make sure the volume is now marked as current. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetVolumeRequest xmlns="urn:zimbraAdmin" id="${store2.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetVolumeResponse/admin:volume" attr="isCurrent" match="1"/>
+	 </t:response>
+	</t:test>
+
+	<!-- Set the current secondary message volume to the new secondary message volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <SetCurrentVolumeRequest xmlns="urn:zimbraAdmin" type="2" id="${store3.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:SetCurrentVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Set the current index volume to the new index volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <SetCurrentVolumeRequest xmlns="urn:zimbraAdmin" type="10" id="${index2.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:SetCurrentVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show the new current volumes. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetCurrentVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetCurrentVolumesResponse/admin:volume"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Unset the current secondary message volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <SetCurrentVolumeRequest xmlns="urn:zimbraAdmin" type="2"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:SetCurrentVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show the new current volumes. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetCurrentVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetCurrentVolumesResponse/admin:volume"/>
+	 </t:response>
+	</t:test>
+	
+	<!--
+	  Try to delete the new message volume.
+	  It should fail because it is being used as current message volume.
+	-->
+	<t:test required="true">
+	 <t:request>
+	  <DeleteVolumeRequest xmlns="urn:zimbraAdmin" id="${store2.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="volume.CANNOT_DELETE_CURRVOL"/>
+	 </t:response>
+	</t:test>
+	
+	<!--
+	  Try to delete the new index volume.
+	  It should fail because it is being used as current index volume.
+	-->
+	<t:test required="true">
+	 <t:request>
+	  <DeleteVolumeRequest xmlns="urn:zimbraAdmin" id="${index2.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="volume.CANNOT_DELETE_CURRVOL"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Set the current message volume back to original. (volume 1) -->
+	<t:test required="true">
+	 <t:request>
+	  <SetCurrentVolumeRequest xmlns="urn:zimbraAdmin" type="1" id="1"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:SetCurrentVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Set the current index volume back to original. (volume 2) -->
+	<t:test required="true">
+	 <t:request>
+	  <SetCurrentVolumeRequest xmlns="urn:zimbraAdmin" type="10" id="2"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:SetCurrentVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show the new current volumes. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetCurrentVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetCurrentVolumesResponse/admin:volume"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Delete the new message volume.  It should work this time. -->
+	<t:test required="true">
+	 <t:request>
+	  <DeleteVolumeRequest xmlns="urn:zimbraAdmin" id="${store2.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:DeleteVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Delete the new index volume.  It should work this time. -->
+	<t:test required="true">
+	 <t:request>
+	  <DeleteVolumeRequest xmlns="urn:zimbraAdmin" id="${index2.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:DeleteVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Delete the new secondary message volume. -->
+	<t:test required="true">
+	 <t:request>
+	  <DeleteVolumeRequest xmlns="urn:zimbraAdmin" id="${store3.id}"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:DeleteVolumeResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show all currently defined volumes.  Note the new volumes are gone. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetAllVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetAllVolumesResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Show the current volumes. -->
+	<t:test required="true">
+	 <t:request>
+	  <GetCurrentVolumesRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:GetCurrentVolumesResponse"/>
+	 </t:response>
+	</t:test>
+</t:test_case>
+
+</t:tests>

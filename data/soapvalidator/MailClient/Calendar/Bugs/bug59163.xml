@@ -1,0 +1,105 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="root"				value="${testMailRaw.root}/Bugs/59163/"/>
+<t:property name="ical.ics"			value="${root}/Calendar.ics"/>
+<t:property name="ical.subject"		value="AudioAlarm"/>
+<t:property name="ical.start"		value="1543536000000"/> <!-- 20181130T000000Z -->
+<t:property name="ical.end"			value="1543708800000"/> <!-- 20181202T000000Z -->
+
+
+<t:test_case testcaseid="Bug59163_Account_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Bug59163_01" type="smoke" bugids="59163">
+	<t:objective>Verify events with audio alarm are converted to visual alarm when synced from ical.</t:objective>
+	<t:steps>
+	1. Use the rest servlet to upload a calendar ICS
+	2. Verify that the appointment imported has visual alarm converted from the audio alarm of ics.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest method="POST">
+			<filename>${ical.ics}</filename>
+			<folder>calendar</folder>
+			<fmt>ics</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+    <t:test required="true" >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${ical.start}" calExpandInstEnd="${ical.end}" types="appointment">
+				<query>${ical.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse/mail:appt/mail:alarmData/mail:alarm" attr="action" match="DISPLAY"/>
+			<t:select path="//mail:SearchResponse/mail:appt/mail:alarmData/mail:alarm/mail:trigger/mail:rel" attr="h" match="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

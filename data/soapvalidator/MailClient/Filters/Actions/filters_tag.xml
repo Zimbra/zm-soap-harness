@@ -1,0 +1,619 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="filtertag${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="filtertag${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="filtertag${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_filters_action_tag_basic" type="always" >
+    <t:objective> Create test account and login to first account </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Filters_Tag_01" type="smoke">
+    <t:objective>Create Rule with action as "tag" for already existing tag</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="message1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+    <t:property name="message1.subject" value="email01A"/>
+    <t:property name="tag1.name" value="tag${TIME}${COUNTER}"/>
+
+    <t:test  >
+        <t:request>
+			<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="${tag1.name}" color="0"/>
+			</CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag1.id"/>
+        </t:response>
+	</t:test>
+	
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${message1.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions> 
+                        	<actionTag tagName="${tag1.name}" />
+                        	<actionStop />                 
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+    <!-- Get the rules to check if it has got created -->
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message1.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+       
+    <t:test id="filters_basic02d" depends="filters_basic01a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+	            <t:select path="//mail:m" attr="t" match=".*${tag1.id}.*"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="Filters_Tag_02" type="functional" bugids="45688, 46951">
+    <t:objective>Create Rule with action as "tag" a deleted tag</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="message2.file" value="${testMailRaw.root}/email01/msg02.txt"/>
+    <t:property name="message2.subject" value="email01B"/>
+    <t:property name="tag2.name" value="tag${TIME}${COUNTER}"/>
+
+    <t:test  >
+        <t:request>
+			<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="${tag2.name}" color="0"/>
+			</CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag2.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${message2.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions> 
+                        	<actionTag tagName="${tag2.name}" />
+                        	<actionStop />                 
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Create a temp tag, so the tag ID is not reused -->
+    <t:test  >
+        <t:request>
+			<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="temp${TIME}${COUNTER}" color="0"/>
+			</CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag2a.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test id="tagactionRequest1b" depends="tagactionrequest1a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="delete" id="${tag2.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse"/>
+	    </t:response>
+	</t:test>
+
+	<!-- Get the rules to check if it has got created -->
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message2.file}</filename>
+			<to>${account2.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+       
+    <t:test id="filters_basic02d" depends="filters_basic01a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message2.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+	            <t:select path="//mail:m" attr="id" set="message2.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!--
+    	The message must be tagged for the "t" element to appear.
+    	So, tag it with a new tag, then make sure the other tag does not appear
+	-->
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                <action id="${message2.id}" op="tag" tag="${tag2a.id}"/>
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="MsgGetRequest1b" depends="MsgGetRequest1a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:m" attr="t" match=".*${tag2a.id}.*"/>
+            	<t:select path="//mail:m" attr="t" match=".*${tag2.id}.*" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Filters_Tag_03" type="functional">
+    <t:objective>Create Rule with action as "tag" a recreated tag</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="message3.file" value="${testMailRaw.root}/email01/msg03.txt"/>
+    <t:property name="message3.subject" value="email01C"/>
+    <t:property name="tag3.name" value="tag${TIME}${COUNTER}"/>
+
+    <t:test  >
+        <t:request>
+			<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="${tag3.name}" color="0"/>
+			</CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag3.id"/>
+        </t:response>
+	</t:test>
+
+   <t:property name="filter1.name" value="Filter${TIME}${COUNTER}"/>
+
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="${filter1.name}" active="1">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${message3.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions> 
+                        	<actionTag tagName="${tag3.name}" />
+                        	<actionStop />                 
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test id="tagactionRequest1b" depends="tagactionrequest1a">
+	    <t:request>
+		    <TagActionRequest xmlns="urn:zimbraMail">
+		        <action op="delete" id="${tag3.id}"/>
+		    </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse"/>
+	    </t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+			<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="${tag3.name}" color="0"/>
+			</CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag3.id"/>
+        </t:response>
+	</t:test>
+
+     <t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule" attr="active" match="0"/>
+        </t:response>
+    </t:test>
+
+
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter1.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="is" value="${message3.subject}" />
+						</filterTests>
+						<filterActions>
+							<actionTag tagName="${tag3.name}" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+	
+	<!-- Get the rules to check if it has got created -->
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule" attr="active" match="1"/>
+        </t:response>
+    </t:test>
+	
+	
+     <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message3.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+       
+    <t:test id="filters_basic02d" depends="filters_basic01a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message3.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+	            <t:select path="//mail:m" attr="t" match="${tag3.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+
+</t:test_case>
+
+<t:test_case testcaseid="Filters_Tag_04" type="functional" bugids="19610">
+    <t:objective>Create 2 rules that match a message.  First has tag and stop.  Second has file into folder.</t:objective>
+    <t:steps>
+    1. Auth as account3
+    2. Create two filters that will match a message
+    	A. Filter1 - matches "From", then tag, stop
+    	B. Filter2 - matches "Subject", then fileinto subfolder.
+    </t:steps>
+    
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="message4a.file" value="${testMailRaw.root}/email37/message4a.txt"/>
+    <t:property name="message4b.file" value="${testMailRaw.root}/email37/message4b.txt"/>
+    <t:property name="message4a.subject" value="test case modification"/>
+    <t:property name="message4b.subject" value="some other checkin"/>
+    <t:property name="tag4.name" value="tag${TIME}${COUNTER}"/>
+    <t:property name="folder4.name" value="folder${TIME}${COUNTER}"/>
+
+    <t:test  >
+        <t:request>
+			<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="${tag4.name}" color="0"/>
+			</CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag4.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account3.folder.inbox.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder4.name}" l="${account3.folder.inbox.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test id="filters_basic01a">
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+						<filterTests condition="allof">
+							<headerTest header="X-From-Perforce" stringComparison="is" value="Indeed" />
+							<headerTest header="subject" stringComparison="contains" value="${message4a.subject}" />
+						</filterTests>
+						<filterActions>
+							<actionTag tagName="${tag4.name}" />
+							<actionStop />
+						</filterActions>
+					</filterRule>     
+					
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+						<filterTests condition="allof">
+							<headerTest header="X-From-Perforce" stringComparison="is" value="Indeed" />
+							
+						</filterTests>
+						<filterActions>
+							<actionFileInto folderPath="/${globals.inbox}/${folder4.name}" />
+							
+						</filterActions>
+					</filterRule>     
+					                             
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+	
+     <!-- Get the rules to check if it has got created -->
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message4a.file}</filename>
+			<to>${account3.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account3.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+       
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message4b.file}</filename>
+			<to>${account3.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account3.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+       
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message4a.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+	            <t:select path="//mail:m" attr="t" match="${tag4.id}"/>
+	            <t:select path="//mail:m" attr="l" match="${folder4.id}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message4b.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+	            <t:select path="//mail:m" attr="l" match="${folder4.id}"/>
+	            <t:select path="//mail:m" attr="t" match="${tag4.id}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+
+</t:test_case>
+
+</t:tests>
+

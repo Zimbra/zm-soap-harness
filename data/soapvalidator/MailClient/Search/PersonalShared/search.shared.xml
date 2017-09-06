@@ -1,0 +1,406 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_Mountpoint_Share_AccountSetup" type="always">
+    <t:objective> Create test account </t:objective>
+    <t:steps>
+            1. Login to admin.
+            2. Create two accounts.
+            3. Get those accounts.
+            4. Get auth token of the 2 accounts created.
+			5. Create contact and tasks
+			6. Share them with account2.name
+			7. Login to account2.name
+			8. Create mountpoints for shared task and contact
+    </t:steps>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+
+    <t:test  id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test depends="create_test_account1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest" required="true">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+            <t:select path="//mail:folder[@name='${globals.tasks}']" attr="id" set="account1.folder.tasks.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account1.folder.sent.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account1.folder.spam.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account1.folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root.id"/>
+			<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account1.folder.contact.id"/>
+
+		</t:response>
+    </t:test>
+    
+	<t:property name="contact1.firstname" value="First1.${TIME}.${COUNTER}"/>
+	<t:property name="contact1.lastname" value="First-Last1.${TIME}.${COUNTER}"/>
+	<t:property name="contact1.email" value="aemail1.${TIME}.${COUNTER}@domain1.com"/>
+	<t:property name="contact2.firstname" value="Second.${TIME}.${COUNTER}"/>
+	<t:property name="contact2.lastname" value="Last2.${TIME}.${COUNTER}"/>
+	<t:property name="contact2.email" value="cemail2.${TIME}.${COUNTER}@domain2.com"/>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                    <a n="email">${contact1.email}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact2.firstname}</a>
+                    <a n="lastName">${contact2.lastname}</a>
+                    <a n="email">${contact2.email}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+	<t:property name="task1.subject" value="Subject${TIME}.${COUNTER}"/>
+	<t:property name="task1.content" value="Content${TIME}.${COUNTER}"/>
+	<t:property name="task1.location" value="Location${TIME}.${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m l="${account1.folder.tasks.id}">
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="25" status="INPR" allDay="0" name="${task1.subject}" loc="${task1.location}">
+						<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>${task1.content}</content>
+					</mp>
+					<su>${task1.subject}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="calItemId" set="account1.task1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.folder.contact.id}" op="grant">
+                    <grant d="${account2.name}" gt="usr" perm="rwidax"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.folder.tasks.id}" op="grant">
+                    <grant d="${account2.name}" gt="usr" perm="rwidax"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+     
+    <t:test depends="create_test_account2" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+ 
+    <t:test id="getFolderRequest" required="true">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
+            <t:select path="//mail:folder[@name='${globals.tasks}']" attr="id" set="account2.folder.tasks.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account2.folder.trash.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account2.folder.sent.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="account2.folder.spam.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="account2.folder.drafts.id"/> 
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root.id"/>
+			<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account2.folder.contact.id"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="account2.mountpoint.name" value="Mountpoint.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.root.id}" name="${account2.mountpoint.name}" view="contact" rid="${account1.folder.contact.id}" zid="${account1.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.mountpoint1.id"/>
+        </t:response>
+    </t:test>
+  
+  	<t:property name="account2.mountpoint.name2" value="Mountpoint2.${TIME}.${COUNTER}"/>
+
+      <t:test>
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.root.id}" name="${account2.mountpoint.name2}" view="task" rid="${account1.folder.tasks.id}" zid="${account1.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.mountpoint1.id2"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+  
+
+<t:test_case testcaseid="Search_Mountpoint_Share_01" type="functional">
+    <t:objective>Verify a mountpoint can be searched with query "is:local or is:remote"</t:objective>
+    <t:steps>
+            1. Login to delegatee account.
+            2. Search for shared contact with query "is:local or is:remote"
+            3. Search with query "is:local" and type="contact" should not return the shared contact 
+            4. Search for shared task with query "is:local or is:remote"
+            5. Search with query "is:local" and type="task" should not return the shared task 
+    </t:steps>
+     
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+     
+    <t:test depends="create_test_account2" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+ 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${contact1.firstname} (is:local or is:remote)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:cn/mail:a[@n='firstName']" match="${contact1.firstname}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${contact1.firstname} (is:local)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:cn/mail:a[@n='firstName']" match="${contact1.firstname}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="task">
+                <query>${task1.subject} (is:local or is:remote)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:task" attr="name" match="${task1.subject}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="task">
+                <query>${task1.subject} (is:local)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:task" attr="name" match="${task1.subject}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+  
+
+<t:test_case testcaseid="Search_Mountpoint_Share_02" type="functional" bugids="21532">
+    <t:objective> Verify 'is:local in:trash'  returns results even if there are entries in the trash folder</t:objective>
+    <t:steps>
+           1. Login to account1
+		   2. Add a message to Trash
+		   3. Search with query "is:local in:trash"
+    </t:steps>
+     
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+     
+    <t:test depends="create_test_account1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+  
+     <t:test>
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder_trash.id"/>
+        </t:response>
+    </t:test>
+
+<t:property name="subject1" value="Test Mail"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder_trash.id}">
+                    <content>To: foo@example.com
+From: bar@example.com
+Subject: ${subject1}
+Date: Wed, 15 Aug 2007 10:11:05 -0700 (PDT)
+
+Hello how r u?
+                    
+                    </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:local in:trash </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${subject1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

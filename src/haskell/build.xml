@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="ZimbraQAHaskell" default="build">
+  <target name="clean">
+    <delete>
+      <fileset dir="." includes="**/*.o"/>
+      <fileset dir="." includes="**/*.hi"/>
+    </delete>
+  </target>
+  <target name="prep-buildserver">
+    <exec executable="cabal" failonerror="false">
+       <arg value="install"/>
+       <arg value="HSH"/>
+       <arg value="haxr"/>
+       <arg value="haskelldb-hdbc-postgresql"/>
+       <arg value="--reinstall"/>
+    </exec>
+  </target>
+  <target name="build">
+    <exec executable="ghc" failonerror="true">
+       <arg value="-O"/>
+       <arg value="-package HSH"/>
+       <arg value="--make"/>
+       <arg value="updateTestTools.hs"/>
+    </exec>
+    <exec executable="ghc" failonerror="true">
+       <arg value="-O"/>
+       <arg value="-package haskelldb-hdbc-postgresql"/>
+       <arg value="--make"/>
+       <arg value="waitjob.hs"/>
+    </exec>
+    <exec executable="ghc" failonerror="true">
+       <arg value="-O"/>
+       <arg value="--make"/>
+       <arg value="zversion.hs"/>
+    </exec>
+  </target>
+</project>

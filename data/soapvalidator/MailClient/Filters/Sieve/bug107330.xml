@@ -1,0 +1,897 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <!-- Test accounts declaration -->
+    <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_notify_account4.name" value="notify4.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_notify_account5.name" value="notify5.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account5_1.name" value="test5_1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account5_2.name" value="test5_2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="account_partial" value=".${TIME}.${COUNTER}" />
+    <t:property name="address_prefix" value="abc"/>
+    <t:property name="address_suffix" value="xyz_test_text_123"/>
+    <t:property name="test_account6.name" value="test6_${address_prefix}$\{sample}${address_suffix}${account_partial}@${defaultdomain.name}" />
+    <t:property name="account_partial2" value=".${TIME}.${COUNTER}" />
+    <t:property name="test_redirect_account6.name" value="redirect6_${address_prefix}$\{sample}${address_suffix}${account_partial}@${defaultdomain.name}" />
+
+    <!-- Variables declaration -->
+    <t:property name="folder_inbox" value="Inbox" />
+    <t:property name="dollar1" value="$\{1}"/>
+    <t:property name="dollar2" value="$\{2}"/>
+    <t:property name="dollar_variable" value="$\{dollar}"/>
+    <t:property name="sample_variable" value="$\{sample}"/>
+    <t:property name="string_variable" value="$\{string}"/>
+
+    <t:property name="prefix" value="abc"/>
+    <t:property name="suffix" value="xyz test text 123"/>
+    <t:property name="source_string" value="${prefix}${sample_variable}${suffix}"/>
+    <t:property name="msg_subject1" value="${source_string}"/>
+    <t:property name="msg_subject2" value="Test message"/>
+
+    <!-- Sieve rules declaration -->
+    <t:property name="sieve_rule1" value='require ["editheader", "variables"];
+set "dollar" "$";
+set "sample" "test text";
+if header :matches :comparator "i;ascii-casemap" "Subject" "*${dollar_variable}{sample}*" {
+    addheader :last "X-New-Header-1" "${dollar1}";
+    addheader :last "X-New-Header-2" "${dollar2}";
+}
+if header :contains :comparator "i;ascii-casemap" "Subject" "${dollar_variable}{sample}${suffix}" {
+    addheader :last "X-New-Header-3" "contains";
+}
+if header :is :comparator "i;ascii-casemap" "Subject" "${prefix}${dollar_variable}{sample}${suffix}" {
+    addheader :last "X-New-Header-4" "is";
+}'/>
+
+<!-- If bug 107229 and bug 107368 are fixed, the following sieve script should be used for the test of Test String -->
+<!--
+    <t:property name="sieve_rule2" value='require ["editheader", "variables"];
+set "dollar" "$";
+set "sample" "test text";
+if string :matches :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{sample}${suffix}" "*${dollar_variable}{sample}*" {
+    addheader :last "X-New-Header-1" "${dollar1}";
+    addheader :last "X-New-Header-2" "${dollar2}";
+}
+if string :contains :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{sample}${suffix}" "${dollar_variable}{sample}${suffix}" {
+    addheader :last "X-New-Header-3" "contains";
+}
+if string :is :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{sample}${suffix}" "${prefix}${dollar_variable}{sample}${suffix}" {
+    addheader :last "X-New-Header-4" "is";
+}'/>
+-->
+    <t:property name="sieve_rule2" value='require ["editheader", "variables"];
+set "dollar" "$";
+set "sample" "test text";
+if string :matches :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{sample}${suffix}" "*${sample_variable}*" {
+    addheader :last "X-New-Header-1" "${dollar1}";
+    addheader :last "X-New-Header-2" "${dollar2}";
+}
+if string :contains :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{sample}${suffix}" "${sample_variable}${suffix}" {
+    addheader :last "X-New-Header-3" "contains";
+}
+if string :is :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{sample}${suffix}" "${prefix}${sample_variable}${suffix}" {
+    addheader :last "X-New-Header-4" "is";
+}'/>
+    <t:property name="sieve_rule3" value='require ["editheader", "variables"];
+set "dollar" "$";
+set "sample" "test text";
+set "string" "${prefix}${dollar_variable}{sample}${suffix}";
+replaceheader :newname "X-New-Header-1" :newvalue "ONE:${dollar1} TWO:${dollar2}" :matches :comparator "i;ascii-casemap" "X-Test-Header-1" "*${dollar_variable}{sample}*";
+replaceheader :newname "X-New-Header-2" :newvalue "contains" :contains :comparator "i;ascii-casemap" "X-Test-Header-2" "${dollar_variable}{sample}${suffix}";
+replaceheader :newname "X-New-Header-3" :newvalue "is" :is :comparator "i;ascii-casemap" "X-Test-Header-3" "${prefix}${dollar_variable}{sample}${suffix}";
+replaceheader :newname "X-New-Header-4" :newvalue "[REPLACED]${dollar_variable}{sample}[END]" :matches :comparator "i;ascii-casemap" "X-Test-Header-5" "*";
+deleteheader :matches :comparator "i;ascii-casemap" "X-Test-Header-5" "*${dollar_variable}{sample}*";
+deleteheader :contains :comparator "i;ascii-casemap" "X-Test-Header-6" "${dollar_variable}{sample}${suffix}";
+deleteheader :is :comparator "i;ascii-casemap" "X-Test-Header-7" "${prefix}${dollar_variable}{sample}${suffix}";
+addheader :last "X-New-Header-8" "[NEW]${dollar_variable}{sample}[END]";
+addheader :last "X-New-Header-9" "${string_variable}";
+'/>
+    <t:property name="sieve_rule4" value='require ["notify", "variables"];
+set "dollar" "$";
+set "sample" "test text";
+notify :from "notification_test@${defaultdomain.name}" :message "${prefix}${dollar_variable}{sample}${suffix}"
+"mailto:${test_notify_account4.name}?body=NotificationMessage1";
+notify :from "notification_test@${defaultdomain.name}"
+"mailto:${test_notify_account4.name}?body=NotificationMessage2&amp;subject=${prefix}${dollar_variable}{sample}${suffix}";
+notify :from "notification_test@${defaultdomain.name}" :message "NotificationMessage3"
+"mailto:${test_notify_account4.name}?body=${prefix}${dollar_variable}{sample}${suffix}";
+'/>
+    <t:property name="sieve_rule5" value='require ["reject", "variables"];
+set "dollar" "$";
+set "sample" "test text";
+reject "${prefix}${dollar_variable}{sample}${suffix}";
+'/>
+    <t:property name="sieve_rule6" value='require ["editheader", "variables", "tag", "fileinto"];
+set "dollar" "$";
+set "sample" "test_text";
+if address :matches :comparator "i;ascii-casemap" "To" "test6_*${dollar_variable}{sample}*${account_partial}@${defaultdomain.name}" {
+    addheader :last "X-New-Header-1" "${dollar1}";
+    addheader :last "X-New-Header-2" "${dollar2}";
+}
+if address :contains :comparator "i;ascii-casemap" "To" "${dollar_variable}{sample}${address_suffix}" {
+    addheader :last "X-New-Header-3" "contains";
+}
+if address :is :comparator "i;ascii-casemap" "To" "test6_${address_prefix}${dollar_variable}{sample}${address_suffix}${account_partial}@${defaultdomain.name}" {
+    addheader :last "X-New-Header-4" "is";
+}
+if envelope :matches :comparator "i;ascii-casemap" "To" "test6_*${dollar_variable}{sample}*${account_partial}@${defaultdomain.name}" {
+    addheader :last "X-New-Header-5" "${dollar1}";
+    addheader :last "X-New-Header-6" "${dollar2}";
+}
+if envelope :contains :comparator "i;ascii-casemap" "To" "${dollar_variable}{sample}${address_suffix}" {
+    addheader :last "X-New-Header-7" "contains";
+}
+if envelope :is :comparator "i;ascii-casemap" "To" "test6_${address_prefix}${dollar_variable}{sample}${address_suffix}${account_partial}@${defaultdomain.name}" {
+    addheader :last "X-New-Header-8" "is";
+}
+tag "${address_prefix}${dollar_variable}{sample}${address_suffix}";
+fileinto "${address_prefix}${dollar_variable}{sample}${address_suffix}";
+redirect "redirect6_${address_prefix}${dollar_variable}{sample}${address_suffix}${account_partial}@${defaultdomain.name}";
+keep;
+'/>
+
+<!--  Test of ereject is unnecessary because the message (reason) is not customizable -->
+<!--
+    <t:property name="sieve_rule7" value='require ["ereject", "variables"];
+set "dollar" "$";
+set "sample" "test text";
+ereject "${prefix}${dollar_variable}{sample}${suffix}";
+'/>
+-->
+
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
+    <t:test_case testcaseid="GlobalConfigSetup" type="deprecated">
+        <t:objective>set globalconfig and restart mailboxd</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        
+        <t:test>
+            <t:request>
+                <ModifyConfigRequest xmlns="urn:zimbraAdmin">                
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-1</a>
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-2</a>
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-3</a>
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-4</a>
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-5</a>
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-6</a>
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-7</a>
+                </ModifyConfigRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyConfigResponse" />
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+
+    <t:test_case testcaseid="AcctSetup1_create_account" type="always">
+        <t:objective>create test accounts</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+        
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account3.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account4.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account4.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_notify_account4.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account4.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account5_1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account5_1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account5_2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account5_2.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account6.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account6.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_redirect_account6.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_redirect_account6.id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107330_rule1" type="deprecated" bugids="107330">
+        <t:objective>Test header - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>${msg_subject1}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg1.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="X-New-Header-1" match="${prefix}" />
+                <t:select attr="X-New-Header-2" match="${suffix}" />
+                <t:select attr="X-New-Header-3" match="contains" />
+                <t:select attr="X-New-Header-4" match="is" />
+            </t:restServletResponse>
+        </t:resttest>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107330_rule2" type="deprecated" bugids="107330">
+        <t:objective>Test string - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="modifyaccountrequest2">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account2.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account2.name}" />
+                        <su>${msg_subject2}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg2.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg2.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="X-New-Header-1" match="abctest textxyz" />
+                <t:select attr="X-New-Header-2" match="123" />
+                <t:select attr="X-New-Header-3" emptyset="1" />
+                <t:select attr="X-New-Header-4" emptyset="1" />
+            </t:restServletResponse>
+        </t:resttest>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107330_rule3" type="deprecated" bugids="107330">
+        <t:objective>editheader - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="modifyaccountrequest3">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account3.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account3.name}" />
+                        <su>${msg_subject2}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                        <header name="X-Test-Header-1">${source_string}</header>
+                        <header name="X-Test-Header-2">${source_string}</header>
+                        <header name="X-Test-Header-3">${source_string}</header>
+                        <header name="X-Test-Header-4">${source_string}</header>
+                        <header name="X-Test-Header-5">${source_string}</header>
+                        <header name="X-Test-Header-6">${source_string}</header>
+                        <header name="X-Test-Header-7">${source_string}</header>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg3.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account3.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg3.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="X-New-Header-1" match="ONE:${prefix} TWO:${suffix}" />
+                <t:select attr="X-New-Header-2" match="contains" />
+                <t:select attr="X-New-Header-3" match="is" />
+                <t:select attr="X-New-Header-4" match="\[REPLACED\]\$\{sample\}\[END\]" />
+                <t:select attr="X-Test-Header-5" emptyset="1" />
+                <t:select attr="X-Test-Header-6" emptyset="1" />
+                <t:select attr="X-Test-Header-7" emptyset="1" />
+                <t:select attr="X-New-Header-8" match="\[NEW\]\$\{sample\}\[END\]" />
+                <t:select attr="X-New-Header-9" match="${prefix}\$\{sample\}${suffix}" />
+            </t:restServletResponse>
+        </t:resttest>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107330_rule4" type="smoke" bugids="107330">
+        <t:objective>notify - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="modifyaccountrequest4">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account4.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account4.name}" />
+                        <su>${msg_subject2}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg4.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_notify_account4.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>NotificationMessage1</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${prefix}\$\{sample\}${suffix}" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>NotificationMessage2</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${prefix}\$\{sample\}${suffix}" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
+                    <query>NotificationMessage3</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:mp/mail:content" match="${prefix}\$\{sample\}${suffix}[\\r\\n]*" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107330_rule5" type="smoke" bugids="107330">
+        <t:objective>reject - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="modifyaccountrequest5">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account5_2.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule5}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account5_1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account5_2.name}" />
+                        <su>${msg_subject2}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg5.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg5.id" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg5.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:content match=".*${prefix}\$\{sample\}${suffix}.*" />
+            </t:restServletResponse>
+        </t:resttest>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107330_rule6" type="deprecated" bugids="107330">
+        <t:objective>Test header/envelope, tag, fileinto and redirect - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="modifyaccountrequest6">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account6.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule6}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account6.name}" />
+                        <su>${msg_subject2}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg6.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account6.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg6.id" />
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" match="${address_prefix}\$\{sample\}${address_suffix}" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:"${address_prefix}${sample_variable}${address_suffix}"</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg_subject2}" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg6.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="X-New-Header-1" match="${address_prefix}" />
+                <t:select attr="X-New-Header-2" match="${address_suffix}" />
+                <t:select attr="X-New-Header-3" match="contains" />
+                <t:select attr="X-New-Header-4" match="is" />
+                <t:select attr="X-New-Header-1" match="${address_prefix}" />
+                <t:select attr="X-New-Header-2" match="${address_suffix}" />
+                <t:select attr="X-New-Header-3" match="contains" />
+                <t:select attr="X-New-Header-4" match="is" />
+            </t:restServletResponse>
+        </t:resttest>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_redirect_account6.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg_subject2}" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+                    <a n="zimbraCustomMimeHeaderNameAllowed"></a>
+                </ModifyConfigRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyConfigResponse" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveNotifyActionRFCCompliant">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+    
+    </t:finally>
+</t:tests>

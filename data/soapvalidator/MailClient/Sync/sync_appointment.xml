@@ -1,0 +1,1309 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="sync1.name" value="sync1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="sync2.name" value="sync2.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="sync3.name" value="sync3.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="sync4.name" value="sync4.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="appointment.name" value="Meeting${TIME}"/>    
+<t:property name="StartDate" value="20060201T080000"/>
+<t:property name="EndDate" value="20060201T090000"/>
+<t:property name="Date" value="1138785758666"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>    
+
+<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test_case testcaseid="Ping" type="always">
+	<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin"/>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse"/>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup1_SyncRequest" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps> 1. Login to Admin
+              2. Create test accounts
+    </t:steps>
+    
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${test_account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>        
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${test_account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+		</t:response>        
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${sync1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="sync1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="sync1.server"/>
+		</t:response>        
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${sync2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="sync2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="sync2.server"/>
+		</t:response>        
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${sync3.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="sync3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="sync3.server"/>
+		</t:response>        
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${sync4.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="sync4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="sync4.server"/>
+		</t:response>        
+	</t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="AcctSetup2_SyncRequest" type="always">
+    <t:objective>Setup the accounts for test purpose </t:objective>
+    <t:steps>1. Login to account3 
+             2. Send a mail to account2
+             3. Login to account 1 for other test purpose
+    </t:steps>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<GetFolderRequest xmlns = "urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+			<t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
+			<t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
+			<t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/> 
+			<t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/> 
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Appt1" type="functional">
+    <t:objective>Verify Sync after creation of "Every Day" appointment </t:objective>
+     <t:steps> 1. Get the sync token
+               2. Create an everyday appointment
+               4. Check for the synchronization
+    </t:steps>
+    
+	<t:test>
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response> 
+			<t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="SyncAppointment1">
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m d="${Date}">
+					<inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+					<s tz="(GMT+06.00) Astana / Dhaka" d="${StartDate}"/>
+					<e tz="(GMT+06.00) Astana / Dhaka" d="${EndDate}"/> 
+					<or a="${test_account1.name}"/>
+					<recur>
+					<add>
+					<rule freq="DAI">
+					<interval ival="1"/>
+					</rule>
+					</add>
+					</recur>
+					</inv>
+				<mp ct="text/plain">
+				<content/>
+				</mp>
+					<su>${appointment.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response> 
+			<t:select path = "//mail:CreateAppointmentResponse" attr="apptId" set="appointment1.id"/>
+			<t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="inv1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token1.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse/mail:appt"  attr="id" match="${appointment1.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Appt2" type="functional">
+    <t:objective>Verify Sync after changing an every day appointment to every week </t:objective>
+     <t:steps> 1. Get the sync token
+               2. Modify allday appointment to every week appointment
+               4. Check for the synchronization
+    </t:steps>
+
+	<t:test>
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response> 
+			<t:select path="//mail:SyncResponse"  attr="token" set="token2.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="SyncAppointment2" depends="SyncAppointment1">
+		<t:request>
+			<ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${inv1.id}" comp="0">
+				<m d="${Date}">
+					<inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+					<s tz="(GMT+06.00) Astana / Dhaka" d="${StartDate}"/>
+					<e tz="(GMT+06.00) Astana / Dhaka" d="${EndDate}"/> 
+					<or a="${test_account1.name}"/>
+					<recur>
+					<add>
+					<rule freq="WEE">
+					<interval ival="1"/>
+					</rule>
+					</add>
+					</recur>
+					</inv>
+				<mp ct="text/plain">
+				<content/>
+				</mp>
+				<su>${appointment.subject}</su>
+				</m>
+			</ModifyAppointmentRequest>
+		</t:request>
+		<t:response> 
+			<t:select path = "//mail:ModifyAppointmentResponse" attr="apptId" set="appointment2.id"/>
+			<t:select path = "//mail:ModifyAppointmentResponse" attr="invId" set="inv2.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test depends="SyncAppointment2">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token2.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:appt"  attr="id" match="${appointment2.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Appt3" type="functional">
+    <t:objective>Verify Sync after changing every week appointment to every month </t:objective>
+     <t:steps> 1. Get the sync token
+               2. Modify every week appointment to every month appointment
+               4. Check for the synchronization
+    </t:steps>
+
+	<t:test>
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response> 
+			<t:select path="//mail:SyncResponse"  attr="token" set="token3.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="SyncAppointment3" depends="SyncAppointment2">
+		<t:request>
+		<ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${inv2.id}" comp="0">
+			<m d="${Date}">
+				<inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+				<s tz="(GMT+06.00) Astana / Dhaka" d="${StartDate}"/>
+				<e tz="(GMT+06.00) Astana / Dhaka" d="${EndDate}"/> 
+				<or a="${test_account1.name}"/>
+				<recur>
+				<add>
+				<rule freq="MON">
+				<interval ival="1"/>
+				</rule>
+				</add>
+				</recur>
+				</inv>
+			<mp ct="text/plain">
+			<content/>
+			</mp>
+			<su>${appointment.subject}</su>
+			</m>
+		</ModifyAppointmentRequest>
+		</t:request>
+	<t:response> 
+		<t:select path = "//mail:ModifyAppointmentResponse" attr="apptId" set="appointment3.id"/>
+		<t:select path = "//mail:ModifyAppointmentResponse" attr="invId" set="inv3.id"/>
+	</t:response>
+	</t:test>
+
+	<t:test depends="SyncAppointment3">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token3.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse/mail:appt"  attr="id" match="${appointment3.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Appt4" type="functional">
+    <t:objective>Verify Sync after changing every month appointment to every year </t:objective>
+     <t:steps> 1. Get the sync token
+               2. Modify every month appointment to occur every year
+               4. Check for the synchronization
+    </t:steps>
+
+	<t:test>
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response> 
+			<t:select path="//mail:SyncResponse"  attr="token" set="token4.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="SyncAppointment4" depends="SyncAppointment3">
+		<t:request>
+			<ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${inv3.id}" comp="0">
+			<m d="${Date}">
+				<inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+				<s tz="(GMT+06.00) Astana / Dhaka" d="${StartDate}"/>
+				<e tz="(GMT+06.00) Astana / Dhaka" d="${EndDate}"/> 
+				<or a="${test_account1.name}"/>
+				<recur>
+				<add>
+				<rule freq="YEA">
+				<interval ival="1"/>
+				</rule>
+				</add>
+				</recur>
+				</inv>
+			<mp ct="text/plain">
+			<content/>
+			</mp>
+			<su>${appointment.subject}</su>
+			</m>
+			</ModifyAppointmentRequest>
+		</t:request>
+		<t:response> 
+			<t:select path = "//mail:ModifyAppointmentResponse" attr="apptId" set="appointment4.id"/>
+			<t:select path = "//mail:ModifyAppointmentResponse" attr="invId" set="inv4.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test depends="SyncAppointment4">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token4.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse/mail:appt"  attr="id" match="${appointment4.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Appt5" type="negative">
+    <t:objective>Verify Sync while creating an allday invalid appointment </t:objective>
+     <t:steps> 1. Get the sync token
+               2. Create appointment with allDay=1 but with some time specified
+               4. Check for the synchronization
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token5.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="SyncAppointment5">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m d="${Date}">
+                <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="1" name="${appointment.subject}" loc="${appointment.location}">
+                <s tz="(GMT+06.00) Astana / Dhaka" d="${StartDate}"/>
+                <e tz="(GMT+06.00) Astana / Dhaka" d="${EndDate}"/> 
+                <or a="${test_account1.name}"/>
+                </inv>
+             <mp ct="text/plain">
+             <content/>
+           </mp>
+            <su>${appointment.subject}</su>
+            </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response> 
+            <t:select path = "//mail:CreateAppointmentResponse" attr="apptId" set="appointment5.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token5.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:appt" attr="id" match="${appointment5.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Appt6" type="smoke">
+    <t:objective> Create a valid AllDay appointment and verify the sync token </t:objective>
+     <t:steps> 1. Get the sync token
+               2. Create an allDay appointment
+               4. Check for the synchronization
+    </t:steps>
+
+	<t:test>
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response> 
+			<t:select path="//mail:SyncResponse"  attr="token" set="token6.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="SyncAppointment6">
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+			<m d="${Date}">
+				<inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="1" name="${appointment.subject}" loc="${appointment.location}">
+				<s tz="(GMT+06.00) Astana / Dhaka" d="20060201"/>
+				<e tz="(GMT+06.00) Astana / Dhaka" d="20060201"/> 
+				<or a="${test_account1.name}"/>
+				</inv>
+			<mp ct="text/plain">
+			<content/>
+			</mp>
+			<su>${appointment.subject}</su>
+			</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response> 
+			<t:select path = "//mail:CreateAppointmentResponse" attr="apptId" set="appointment6.id"/>
+			<t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="inv6.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test depends="SyncAppointment6">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token6.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse/mail:appt"  attr="id" match="${appointment6.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_SetAppointmentRequest_01" type="functional" >
+    <t:objective>Create a recurring appointment, check that the sync response contains a move and delete</t:objective>
+    <t:steps>
+    1. Use SetAppointmentRequest
+    	A. a daily appointment
+    	B. 5 instances
+	2. Move it to trash
+	3. Hard delete it
+    </t:steps>
+
+	<!--
+		Gabe at Notify was asking about this feature.  He says the "<deleted/>" element
+		doesn't show at the end.  (I think he was failing to do a send/receive from ZCO.)
+		Since I wrote up the SOAP test to verify, I'm saving it here.
+	-->
+		    
+	<t:property name="server.zimbraAccount" value="${sync1.server}"/>
+	
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${sync1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response> 
+			<t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>
+		</t:response>
+	</t:test>
+
+	<!-- PST is -8 hours from GMT time -->
+	<t:property name="appt1.start.gmt" value="1267430400000"/> <!-- 03/01/2010 08:00:00 -->
+	<t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>
+
+	<t:property name="appt1.uid" value="${TIME}${COUNTER}"/>
+	<t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.tz" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+	<t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail">
+                <default needsReply="0" ptst="AC">
+                    <m>
+                        <inv 
+                        		uid="${appt1.uid}"
+                        		seq="1"
+                        		method="REQUEST" 
+                        		type="event" 
+                        		fb="B" 
+                        		transp="O" 
+                        		allDay="0" 
+                        		name="${appt1.subject}" 
+                        		loc="${appt1.location}">
+                        		
+                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <or a="${sync1.name}"/>
+	                        <recur><add>
+								<rule freq="DAI">
+									<interval ival="1"/>
+                        			<count num="5"/>
+								</rule>
+							</add></recur>
+                        </inv>
+                        <mp content-type="text/plain">
+                            <content>${appt1.content}</content>
+                        </mp>
+                        <su>${appt1.subject}</su>
+                    </m>
+                </default>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt1.apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appt1.start.gmt}]}" calExpandInstEnd="${TIME(+6d)[${appt1.start.gmt}]}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt"/>
+        </t:response>
+    </t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token1.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse"  attr="token" set="token2.id"/>
+			<t:select path="//mail:appt[@uid='${appt1.uid}']" attr="id" match="${appt1.apptId}"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${appt1.apptId}" l="${folder.trash.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token2.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse"  attr="token" set="token3.id"/>
+			<t:select path="//mail:appt[@id='${appt1.apptId}']"  attr="l" match="${folder.trash.id}"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action op="delete" id="${appt1.apptId}" />
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token3.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse"  attr="token" set="token4.id"/>
+			<t:select path="//mail:deleted"  attr="ids" match=".*${appt1.apptId}.*"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_SetAppointmentRequest_02" type="functional" >
+    <t:objective>Create a recurring appointment, check that the sync response contains exceptions</t:objective>
+    <t:steps>
+    1. Use SetAppointmentRequest
+    	A. a daily appointment
+    	B. 5 instances
+	2. Use SetAppointmentRequest
+		A. modify the appointment, change the fourth instance
+	3. Use SyncRequest to get the changed ID
+    </t:steps>
+
+	<!--
+		Gabe at Notify was asking about this feature.  He says the "<deleted/>" element
+		doesn't show at the end.  (I think he was failing to do a send/receive from ZCO.)
+		Since I wrote up the SOAP test to verify, I'm saving it here.
+	-->
+		    
+	<t:property name="server.zimbraAccount" value="${sync2.server}"/>
+	
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${sync2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response> 
+			<t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>
+		</t:response>
+	</t:test>
+
+	<!-- PST is -8 hours from GMT time -->
+	<t:property name="appt1.start.gmt" value="1267430400000"/> <!-- 03/01/2010 08:00:00 -->
+	<t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>
+
+	<t:property name="appt1.uid" value="${TIME}${COUNTER}"/>
+	<t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.tz" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+	<t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail">
+                <default needsReply="0" ptst="AC">
+                    <m>
+                        <inv 
+                        		uid="${appt1.uid}"
+                        		seq="1"
+                        		method="REQUEST" 
+                        		type="event" 
+                        		fb="B" 
+                        		transp="O" 
+                        		allDay="0" 
+                        		name="${appt1.subject}" 
+                        		loc="${appt1.location}">
+                        		
+                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <or a="${sync2.name}"/>
+	                        <recur><add>
+								<rule freq="DAI">
+									<interval ival="1"/>
+                        			<count num="5"/>
+								</rule>
+							</add></recur>
+                        </inv>
+                        <mp content-type="text/plain">
+                            <content>${appt1.content}</content>
+                        </mp>
+                        <su>${appt1.subject}</su>
+                    </m>
+                </default>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt1.apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appt1.start.gmt}]}" calExpandInstEnd="${TIME(+6d)[${appt1.start.gmt}]}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt">
+            	<t:select path="mail:inst" attr="s" match="${appt1.start.gmt}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token1.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse"  attr="token" set="token2.id"/>
+			<t:select path="//mail:appt[@uid='${appt1.uid}']" attr="id" match="${appt1.apptId}"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail">
+                <default needsReply="0" ptst="AC">
+                    <m>
+                        <inv 
+                        		uid="${appt1.uid}"
+                        		seq="2"
+                        		method="REQUEST" 
+                        		type="event" 
+                        		fb="B" 
+                        		transp="O" 
+                        		allDay="0" 
+                        		name="${appt1.subject}" 
+                        		loc="${appt1.location}">
+                        		
+                            <s d="${ICALTIME(+4h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <e d="${ICALTIME(+5h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <or a="${sync2.name}"/>
+	                        <recur><add>
+								<rule freq="DAI">
+									<interval ival="1"/>
+                        			<count num="5"/>
+								</rule>
+							</add></recur>
+                        </inv>
+                        <mp content-type="text/plain">
+                            <content>${appt1.content}</content>
+                        </mp>
+                        <su>${appt1.subject}</su>
+                    </m>
+                </default>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt1.apptId"/>
+            <t:select path="//mail:SetAppointmentResponse/mail:default" attr="id" set="appt1.defaultId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appt1.start.gmt}]}" calExpandInstEnd="${TIME(+6d)[${appt1.start.gmt}]}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt">
+            	<t:select path="mail:inst" attr="s" match="${TIME(+4h)[${appt1.start.gmt}]}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token2.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse"  attr="token" set="token3.id"/>
+			<t:select path="//mail:appt[@uid='${appt1.uid}']" attr="id" match="${appt1.apptId}"/>
+			<t:select path="//mail:appt[@uid='${appt1.uid}']" attr="ms" match="4"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_SetAppointmentRequest_03" type="functional" >
+    <t:objective>Create a recurring appointment, check that the sync response contains exceptions</t:objective>
+    <t:steps>
+    1. Use SetAppointmentRequest
+    	A. a daily appointment
+    	B. 5 instances
+	2. Use SetAppointmentRequest
+		A. modify the appointment, change all instances
+	3. Delete the appointment
+    </t:steps>
+
+	<!--
+		Gabe at Notify was asking about this feature.  He says the "<deleted/>" element
+		doesn't show at the end.  (I think he was failing to do a send/receive from ZCO.)
+		Since I wrote up the SOAP test to verify, I'm saving it here.
+	-->
+		    
+	<t:property name="server.zimbraAccount" value="${sync3.server}"/>
+	
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${sync3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response> 
+			<t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>
+		</t:response>
+	</t:test>
+
+	<!-- PST is -8 hours from GMT time -->
+	<t:property name="appt1.start.gmt" value="1267430400000"/> <!-- 03/01/2010 08:00:00 -->
+	<t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>
+
+	<t:property name="appt1.uid" value="${TIME}${COUNTER}"/>
+	<t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.tz" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+	<t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail">
+                <default needsReply="0" ptst="AC">
+                    <m>
+                        <inv 
+                        		uid="${appt1.uid}"
+                        		seq="1"
+                        		method="REQUEST" 
+                        		type="event" 
+                        		fb="B" 
+                        		transp="O" 
+                        		allDay="0" 
+                        		name="${appt1.subject}" 
+                        		loc="${appt1.location}">
+                        		
+                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <or a="${sync3.name}"/>
+	                        <recur><add>
+								<rule freq="DAI">
+									<interval ival="1"/>
+                        			<count num="5"/>
+								</rule>
+							</add></recur>
+                        </inv>
+                        <mp content-type="text/plain">
+                            <content>${appt1.content}</content>
+                        </mp>
+                        <su>${appt1.subject}</su>
+                    </m>
+                </default>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt1.apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appt1.start.gmt}]}" calExpandInstEnd="${TIME(+6d)[${appt1.start.gmt}]}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt">
+            	<t:select path="mail:inst" attr="s" match="${appt1.start.gmt}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token1.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse"  attr="token" set="token2.id"/>
+			<t:select path="//mail:appt[@uid='${appt1.uid}']" attr="id" match="${appt1.apptId}"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail">
+                <default needsReply="0" ptst="AC">
+                    <m>
+                        <inv 
+                        		uid="${appt1.uid}"
+                        		seq="2"
+                        		method="REQUEST" 
+                        		type="event" 
+                        		fb="B" 
+                        		transp="O" 
+                        		allDay="0" 
+                        		name="${appt1.subject}" 
+                        		loc="${appt1.location}">
+                        		
+                            <s d="${ICALTIME(+4h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <e d="${ICALTIME(+5h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <or a="${sync3.name}"/>
+	                        <recur><add>
+								<rule freq="DAI">
+									<interval ival="1"/>
+                        			<count num="5"/>
+								</rule>
+							</add></recur>
+                        </inv>
+                        <mp content-type="text/plain">
+                            <content>${appt1.content}</content>
+                        </mp>
+                        <su>${appt1.subject}</su>
+                    </m>
+                </default>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt1.apptId"/>
+            <t:select path="//mail:SetAppointmentResponse/mail:default" attr="id" set="appt1.defaultId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appt1.start.gmt}]}" calExpandInstEnd="${TIME(+6d)[${appt1.start.gmt}]}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt">
+            	<t:select path="mail:inst" attr="s" match="${TIME(+4h)[${appt1.start.gmt}]}"/>
+				<t:select attr="invId" set="appt1.invId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appt1.apptId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse/mail:appt[@id='${appt1.apptId}']">
+            	<t:select path="//mail:inv" attr="compNum" set="appt1.compNum"/>
+            	<t:select path="//mail:inv" attr="id" set="appt1.defaultId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appt1.invId}" comp="${appt1.compNum}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="empty" id="${folder.trash.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token2.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse"  attr="token" set="token3.id"/>
+			<t:select path="//mail:deleted"  attr="ids" match=".*${appt1.apptId}.*"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_SetAppointmentRequest_04" type="functional" >
+    <t:objective>Create a recurring appointment, check that the sync response contains exceptions</t:objective>
+    <t:steps>
+    1. Use SetAppointmentRequest
+    	A. a bi-monthly appointment
+    	B. 2 instances
+	2. Use SetAppointmentRequest
+		A. modify the appointment, change all instances
+	3. Delete the appointment
+    </t:steps>
+
+	<!--
+		Gabe at Notify was asking about this feature.  He says the "<deleted/>" element
+		doesn't show at the end.  (I think he was failing to do a send/receive from ZCO.)
+		Since I wrote up the SOAP test to verify, I'm saving it here.
+	-->
+		    
+	<t:property name="server.zimbraAccount" value="${sync4.server}"/>
+	
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${sync4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response> 
+			<t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>
+		</t:response>
+	</t:test>
+
+	<!-- PST is -8 hours from GMT time -->
+	<t:property name="appt1.start.gmt" value="1267430400000"/> <!-- 03/01/2010 08:00:00 -->
+	<t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>
+
+	<t:property name="appt1.uid" value="${TIME}${COUNTER}"/>
+	<t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appt1.tz" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+	<t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail">
+                <default needsReply="0" ptst="AC">
+                    <m>
+                        <inv 
+                        		uid="${appt1.uid}"
+                        		seq="1"
+                        		method="REQUEST" 
+                        		type="event" 
+                        		fb="B" 
+                        		transp="O" 
+                        		allDay="0" 
+                        		name="${appt1.subject}" 
+                        		loc="${appt1.location}">
+                        		
+                            <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <or a="${sync4.name}"/>
+							<recur><add>
+								<rule freq="MON">
+									<interval ival="2"/>
+									<bymonthday modaylist="01"/>
+									<x-name name="repeatCustomType" value="S"/>
+								</rule>
+							</add></recur>
+                        </inv>
+                        <mp content-type="text/plain">
+                            <content>${appt1.content}</content>
+                        </mp>
+                        <su>${appt1.subject}</su>
+                    </m>
+                </default>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt1.apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appt1.start.gmt}]}" calExpandInstEnd="${TIME(+6d)[${appt1.start.gmt}]}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt">
+            	<t:select path="mail:inst" attr="s" match="${appt1.start.gmt}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token1.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse"  attr="token" set="token2.id"/>
+			<t:select path="//mail:appt[@uid='${appt1.uid}']" attr="id" match="${appt1.apptId}"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail">
+                <default needsReply="0" ptst="AC">
+                    <m>
+                        <inv 
+                        		uid="${appt1.uid}"
+                        		seq="2"
+                        		method="REQUEST" 
+                        		type="event" 
+                        		fb="B" 
+                        		transp="O" 
+                        		allDay="0" 
+                        		name="${appt1.subject}" 
+                        		loc="${appt1.location}">
+                        		
+                            <s d="${ICALTIME(+4h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <e d="${ICALTIME(+5h)[${appt1.start.pst}]}" tz="${appt1.tz}"/>  
+                            <or a="${sync4.name}"/>
+							<recur><add>
+								<rule freq="MON">
+									<interval ival="2"/>
+									<bymonthday modaylist="01"/>
+									<x-name name="repeatCustomType" value="S"/>
+								</rule>
+							</add></recur>
+                        </inv>
+                        <mp content-type="text/plain">
+                            <content>${appt1.content}</content>
+                        </mp>
+                        <su>${appt1.subject}</su>
+                    </m>
+                </default>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="appt1.apptId"/>
+            <t:select path="//mail:SetAppointmentResponse/mail:default" attr="id" set="appt1.defaultId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appt1.start.gmt}]}" calExpandInstEnd="${TIME(+6d)[${appt1.start.gmt}]}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt">
+            	<t:select path="mail:inst" attr="s" match="${TIME(+4h)[${appt1.start.gmt}]}"/>
+				<t:select attr="invId" set="appt1.invId1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appt1.apptId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse/mail:appt[@id='${appt1.apptId}']">
+            	<t:select path="//mail:inv" attr="compNum" set="appt1.compNum"/>
+            	<t:select path="//mail:inv" attr="id" set="appt1.defaultId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appt1.invId1}" comp="${appt1.compNum}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	 <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="empty" id="${folder.trash.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:test depends="SyncAppointment1">
+		<t:request>
+			<SyncRequest xmlns="urn:zimbraMail" token="${token2.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SyncResponse"  attr="token" set="token3.id"/>
+			<t:select path="//mail:deleted"  attr="ids" match=".*${appt1.apptId}.*"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>

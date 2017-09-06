@@ -1,0 +1,115 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	            <name>${account1.name}</name>
+	            <password>${defaultpassword.value}</password>
+	        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="EndSessionRequest01" type="smoke" bugids="34441">
+    <t:objective>Verify basic EndSessionRequest</t:objective>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse"/> 
+		</t:response>
+	</t:test>
+
+    <t:test depends="getVersionInfo01a">
+        <t:request>
+            <EndSessionRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:EndSessionResponse"/>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="EndSessionRequest02" type="smoke">
+    <t:objective>Verify basic EndSessionRequest - with no session created</t:objective>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="getVersionInfo01a">
+        <t:request>
+            <EndSessionRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:EndSessionResponse"/>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+
+</t:tests>

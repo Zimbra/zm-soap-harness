@@ -1,0 +1,411 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.document.textfile" value="${testMailRaw.root}/Contact/contact1.txt"/>
+
+<t:property name="account0.name" value="account0.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="guest1.name" value="guest1${TIME}.${COUNTER}@foo.com"/>
+<t:property name="guest1.password" value="guest1password"/>
+
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.read"			value="read"/>
+<t:property name="op.unread"		value="!read"/>
+<t:property name="op.flag"			value="flag"/>
+<t:property name="op.unflag"		value="!flag"/>
+<t:property name="op.tag"			value="tag"/>
+<t:property name="op.untag"			value="!tag"/>
+<t:property name="op.move"			value="move"/>
+<t:property name="op.delete"		value="delete"/>
+
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.grp"			value="grp"/>
+<t:property name="grant.dom"			value="dom"/>
+<t:property name="grant.cos"			value="cos"/>
+<t:property name="grant.all"			value="all"/>
+<t:property name="grant.pub"			value="pub"/>
+<t:property name="grant.guest"			value="guest"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="view.conversation"	value="conversation"/>
+<t:property name="view.message"			value="message"/>
+<t:property name="view.contact"			value="contact"/>
+<t:property name="view.appointment"		value="appointment"/>
+<t:property name="view.note"			value="note"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+
+<t:test_case testcaseid="Briefcase_Sharing_GranteeGuest_AccountSetup" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps>
+            1. Login to admin.
+            2. Create two accounts.
+            3. Get those accounts.
+            4. Get auth token of the 2 accounts created.
+    </t:steps>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account0.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account0.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+ 
+    <t:test >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="account0.folder.briefcase.id"/> 
+        </t:response>
+    </t:test>
+    
+</t:test_case>  
+
+ 
+
+<t:test_case testcaseid="BriefcaseSharing_GranteeGuest_01" type="smoke">
+    <t:objective>Share a briefcase folder to guest.  Verify that the guest has access.</t:objective>
+    <t:steps>
+            1. Login to account0
+            2. Get briefcase folder.
+            3. Create a briefcase folder.
+            4. Share (manager) with  gt=guest
+            5. Another user sends GetMsgRequest (PERM_DENIED)
+            6. Guest (valid credentials) send REST request (success)
+            7. Guest (invalid credentials) send REST request (PERM_DENIED)
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+ 
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account0.folder.briefcase.id}" name="folder${TIME}${COUNTER}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account0.folder1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account0.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.textfile.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account0.folder1.id}">
+			    <upload id="${document.textfile.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account0.document1.id"/>        
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account0.folder1.id}">
+					<grant gt="${grant.guest}" d="${guest1.name}" args="${guest1.password}" perm="${rights.manager}" />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+   <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account0.id}:${account0.document1.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>   
+    
+
+	<t:property name="authToken" value=""/>
+
+	<t:property name="server.restServlet" value="${account0.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account0.name}</user>
+			<id>${account0.document1.id}</id>
+			<guest>${guest1.name}</guest>
+			<password>${guest1.password}</password>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+	<t:property name="authToken" value=""/>
+
+	<t:property name="server.restServlet" value="${account0.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account0.name}</user>
+			<id>${account0.document1.id}</id>
+			<guest>${guest1.name}</guest>
+			<password>invalid</password>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="404"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+    
+</t:test_case>
+
+<t:test_case testcaseid="BriefcaseSharing_GranteeGuest_02" type="smoke">
+    <t:objective>Unshare a folder to guest.  Verify that the guest no longer has access.</t:objective>
+    <t:steps>
+            1. Login to account0
+            2. Get Root folder.
+            3. Create a folder.
+            4. Share (manager) with gt=guest
+            5. Unshare (manager) with gt=guest
+            6. Another user sends GetItemRequest (PERM_DENIED)
+            7. Guest (valid credentials) send REST request (PERM_DENIED)
+            8. Guest (invalid credentials) send REST request (PERM_DENIED)
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account0.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+ 
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${account0.folder.briefcase.id}" name="folder${TIME}${COUNTER}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account0.folder2.id"/>
+        </t:response>
+    </t:test>
+
+   <t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account0.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.textfile.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account0.folder2.id}">
+			    <upload id="${document.textfile.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account0.document2.id"/>        
+        </t:response>
+    </t:test>
+    
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account0.folder1.id}">
+					<grant gt="${grant.guest}" d="${guest1.name}" args="${guest1.password}" perm="${rights.manager}" />
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="mail.GRANT_EXISTS"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="!${op.grant}" id="${account0.folder1.id}" zid="${guest1.name}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account0.id}:${account0.document2.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+   
+    
+
+	<t:property name="authToken" value=""/>
+
+	<t:property name="server.restServlet" value="${account0.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account0.name}</user>
+			<id>${account0.document2.id}</id>
+			<guest>${guest1.name}</guest>
+			<password>${guest1.password}</password>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="404"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+	<t:property name="authToken" value=""/>
+
+	<t:property name="server.restServlet" value="${account0.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account0.name}</user>
+			<id>${account0.document2.id}</id>
+			<guest>${guest1.name}</guest>
+			<password>invalid</password>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="404"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+    
+</t:test_case>
+
+
+</t:tests>

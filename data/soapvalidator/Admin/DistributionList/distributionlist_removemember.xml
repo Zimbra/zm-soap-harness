@@ -1,0 +1,697 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="domain" value="dl.example.com${COUNTER}${TIME}"/>
+<t:property name="list1" value="test@${domain}"/>
+<t:property name="list2" value="humor@${domain}"/>
+<t:property name="list3" value="MultiUser@${domain}"/>
+
+<t:property name="user1" value="user1@${domain}"/>
+<t:property name="user2" value="user2@${domain}"/>
+<t:property name="user3" value="user3@${domain}"/>
+<t:property name="user4" value="user4@${domain}"/>
+<t:property name="user5" value="user5@${domain}"/>
+<t:property name="user6" value="user6@${domain}"/>
+<t:property name="user7" value="user7@${domain}"/>
+<t:property name="user8" value="user8@${domain}"/>
+<t:property name="user9" value="user9@${domain}"/>
+<t:property name="user10" value="user10@${domain}"/>
+
+<t:property name="alias1.name" value="alias1.${TIME}.${COUNTER}@${domain}"/>
+<t:property name="alias2.name" value="alias2.${TIME}.${COUNTER}@${domain}"/>
+<t:property name="alias3.name" value="alias4.${TIME}.${COUNTER}@${domain}"/>
+
+<t:property name="spchar" value="!^*()_+"/>
+<t:property name="sometext" value="abcd"/>
+<t:property name="number" value="1234"/>
+<t:property name="zero" value="0"/>
+<t:property name="negative" value="-2"/>
+<t:property name="decimal" value="2.4"/>
+<t:property name="blank" value=""/>
+
+<t:test_case testcaseid = "Ping" type = "always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+ 
+
+<t:test_case testcaseid = "acctSetup1_distributionlist_removemember" type = "always">
+    <t:objective>Create test Distribution List </t:objective>
+    <t:steps> 1. AuthRequest as admin
+              2. Create a test domain
+              3. Create Distribution Lists
+    </t:steps>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain}</name>
+                <a n="zimbraNotes">Domain for distribution list testing</a>
+            </CreateDomainRequest>
+        </t:request>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list1}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list2}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list3}</name>
+                <a n="description">A MultiUser distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list3.id"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest1" type = "smoke">
+    <t:objective> Remove an account from the distribution list </t:objective>
+    <t:steps> 1. Create an account
+              2. Add account to the distribution list
+              3. Remove the same account from the distribution list
+    </t:steps>
+
+    <t:test id="removeDistributionListMemberRequest1a">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user1}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>  
+           
+    <t:test depends="removeDistributionListMemberRequest1a">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${user1}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+   
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${user1}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RemoveDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest2" type = "negative" bugids="4103">
+    <t:objective> Try to again remove deleted account from the DL  </t:objective>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${user1}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.NO_SUCH_MEMBER"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest3" type = "smoke">
+    <t:objective> Remove an alias from the distribution list without deleting account from the DL </t:objective>
+    <t:steps> 1. Create an account
+              2. Create an alias of the same account
+              3. Add that alias to distribution list
+              4. Remove the alias fron the distribution list
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user2}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account1.id}</id>
+                <alias>${alias1.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${alias1.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${alias1.name}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RemoveDistributionListMemberResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest4" type = "negative" bugids="4103">
+    <t:objective> Try again to remove the deleted alias from the DL </t:objective>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${alias1.name}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.NO_SUCH_MEMBER"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest5" type = "functional">
+    <t:objective> Remove an account from the distribution list with its alias exixting in the DL </t:objective>
+    <t:steps> 1. Create an account 
+              2. Add an alias to the account
+              3. Add account to the DL
+              4. Add alias to the DL
+              5. Delete account from the DL
+              ---- 6. Verify alias does not get deleted from the DL ---
+              As per bug 10010 6. Verify alias also get deleted from the DL
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user3}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account2.id}</id>
+                <alias>${alias2.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${user3}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${alias2.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${user3}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RemoveDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetDistributionListRequest xmlns="urn:zimbraAdmin">
+                <dl by="name">${list1}</dl>
+            </GetDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetDistributionListResponse/admin:dl/admin:dlm" match="^${user3}" emptyset="1"/>
+            <t:select path="//admin:GetDistributionListResponse/admin:dl/admin:dlm" match="^${alias2.name}" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest6" type = "functional">
+    <t:objective> Remove an alias from the distribution list with its account in the DL </t:objective>
+    <t:steps> 1. Create an account 
+              2. Add an alias to the account
+              3. Add account to the DL
+              4. Add alias to the DL
+              5. Delete an alias from the DL
+              --- Removed 6. Verify alias get deleted and account is till there in the DL
+              As per bug 10010 6. Verify alias get deleted and account also be removed from the DL
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user4}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account3.id}</id>
+                <alias>${alias3.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${user4}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${alias3.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${alias3.name}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RemoveDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetDistributionListRequest xmlns="urn:zimbraAdmin">
+                <dl by="name">${list2}</dl>
+            </GetDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetDistributionListResponse/admin:dl/admin:dlm" match="^${user4}" emptyset="1"/>
+            <t:select path="//admin:GetDistributionListResponse/admin:dl/admin:dlm" match="^${alias3.name}" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest7" type = "negative">
+    <t:objective> RemoveDistributionListMemberRequest with only id attribute </t:objective>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest8" type = "negative">
+    <t:objective> RemoveDistributionListMemberRequest with invalid valued in the "id" attribute (sometext/spchar/number/zero/negative/decimal/blank)</t:objective>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${sometext}</id>
+                <dlm>${user4}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${spchar}</id>
+                <dlm>${user4}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${number}</id>
+                <dlm>${user4}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${zero}</id>
+                <dlm>${user4}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${negative}</id>
+                <dlm>${user4}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${decimal}</id>
+                <dlm>${user4}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${blank}</id>
+                <dlm>${user4}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest9" type = "negative" bugids="4103">
+    <t:objective> RemoveDistributionListMemberRequest with invalid value in the "dlm" attribute (sometext/spchar/number/zero/negative/decimal/blank)</t:objective>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${sometext}@test----.com</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.NO_SUCH_MEMBER"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${spchar}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${number}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${zero}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${negative}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${decimal}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${blank}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest11" type = "functional">
+    <t:objective> Remove All the members from the Distribution List </t:objective>
+	<t:steps>
+			1. Add multiple members to the DL.
+			2. Remove All the members from DL.
+	</t:steps>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list3.id}</id>
+                <dlm>${user5}</dlm>
+				<dlm>${user6}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list3.id}</id>
+                <dlm>${user5}</dlm>
+				<dlm>${user6}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RemoveDistributionListMemberResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "RemoveDistributionListMemberRequest12" type = "functional">
+    <t:objective> Remove All the members from the Distribution List </t:objective>
+	<t:steps>
+			1. Add 3 members to the DL.
+			2. Remove 2 members from DL.
+	</t:steps>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list3.id}</id>
+                <dlm>${user7}</dlm>
+				<dlm>${user8}</dlm>
+				<dlm>${user9}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list3.id}</id>
+                <dlm>${user7}</dlm>
+				<dlm>${user9}</dlm>
+            </RemoveDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RemoveDistributionListMemberResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

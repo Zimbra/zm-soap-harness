@@ -1,0 +1,564 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="op.tag" value="tag"/>
+<t:property name="tag.color.orange" value="9"/>
+<t:property name="tag.color.default" value="0"/>
+<t:property name="tag.name.default" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag1.name.default" value="tag${TIME}${COUNTER}"/>
+
+
+<t:property name="tag.spaces" value="       "/>
+<t:property name="tag.blank" value=""/>
+<t:property name="tag.spchar" value="~!@#%"/>
+<t:property name="tag.sometext" value="some text"/>
+
+<t:property name="tag.negative" value="-1"/>
+<t:property name="tag.zero" value="0"/>
+<t:property name="tag.largenumber" value="1234567890"/>
+<t:property name="tag.decimal" value="12.34"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_tag_contacts" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="contacts_TagActionRequest1" type="smoke" bugids="2532">
+    <t:objective>search for a tagged contact</t:objective>    <t:steps> 1. Add a contact. 
+              2. Create a new tag.
+              3. Tag the contact.
+              4. Search for the tag
+              5. Verify that the correct contact was returned
+    </t:steps>
+
+    <t:test id="contacts_TagActionRequest1a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact1.id"/>           
+            </t:select>    
+        </t:response>
+    </t:test>
+    <t:test id="contacts_TagActionRequest1b">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag.name.default}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            	<t:select attr="id" set="tag.id"/>
+            	<t:select attr="color" match="${tag.color.default}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test depends="contacts_TagActionRequest1a,contacts_TagActionRequest1b">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact1.id}" op="${op.tag}" tag="${tag.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>tag:"${tag.name.default}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn">
+            <t:select attr="id" match="${contact1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="contacts_TagActionRequest2" type="negative">
+    <t:objective>Tag a deleted contact</t:objective>
+    <t:steps> 1. Create a contact.
+              2. Delete that contact. 
+              3. Create a tag.
+              4. Tag that contact.
+    </t:steps>
+
+    <t:test id="contactaction2a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact3.id"/>           
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test id="contactaction2b" depends="contactaction2a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+            <action id="${contact3.id}" op="delete"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag3.id"/>
+            <t:select attr="color" match="${tag.color.default}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test depends="contactaction2b" >
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact3.id}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_CONTACT"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="contacts_TagActionRequest3" type="negative">
+    <t:objective>Tag a contact with invalid(spaces/blank/spchar/sometext/negative/zero/largenumber/decimal) values of tag.</t:objective>
+    <t:steps> 1. Create a contact.
+              2. Tag that contact with invalid values of tag id.
+    </t:steps>
+
+    <t:test id="contactaction3a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact4.id"/>           
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test depends="contactaction3a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact4.id}" op="${op.tag}" tag="${tag.spaces}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="contactaction3a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact4.id}" op="${op.tag}" tag="${tag.blank}"/>
+            </ContactActionRequest>        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="contactaction3a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact4.id}" op="${op.tag}" tag="${tag.spchar}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="contactaction3a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact4.id}" op="${op.tag}" tag="${tag.sometext}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+  
+    <t:test depends="contactaction3a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact4.id}" op="${op.tag}" tag="${tag.negative}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code | //mail:ContactActionResponse/mail:action" />
+        </t:response>
+    </t:test>
+
+    <t:test depends="contactaction3a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact4.id}" op="${op.tag}" tag="${tag.zero}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="contactaction3a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact4.id}" op="${op.tag}" tag="${tag.largenumber}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_TAG"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="contactaction3a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact4.id}" op="${op.tag}" tag="${tag.decimal}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="contacts_TagActionRequest4" type="functional">
+    <t:objective>Tag more than one contact at a time.</t:objective>
+    <t:steps> 1. Create two contacts.
+              2. Tag those contact at a time.
+    </t:steps>
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact5.id"/>           
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact6.id"/>           
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag3.id"/>
+            <t:select attr="color" match="${tag.color.default}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact5.id},${contact6.id}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="id" match=".*${contact5.id}.*"/>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="id" match=".*${contact6.id}.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="contacts_TagActionRequest5" type="negative" bugids="9885">
+    <t:objective>Tag invalid (spaces/blank/spchar/sometext/negative/zero/largenumber/decimal) values of contact .</t:objective>
+
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${tag.spaces}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${tag.blank}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${tag.spchar}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${tag.sometext}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+  
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${tag.negative}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code | //mail:ContactActionResponse/mail:action" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${tag.zero}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_CONTACT"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${tag.largenumber}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.NO_SUCH_CONTACT"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${tag.decimal}" op="${op.tag}" tag="${tag3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="contacts_TagActionRequest6" type="negative">
+    <t:objective>Tag a contact with more than one tag at the same time.</t:objective>
+    <t:steps> 1. Create a contacts.
+              2. Create two tags.
+              3. Tag a contact with more than one tag at the same time.
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@${defaultdomain.name}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact7.id"/>  
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag7.id"/>
+            <t:select attr="color" match="${tag.color.default}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag8.id"/>
+            <t:select attr="color" match="${tag.color.default}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact7.id}" op="${op.tag}" tag="${tag7.id},${tag8.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+
+
+</t:tests>

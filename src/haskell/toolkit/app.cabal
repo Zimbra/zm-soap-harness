@@ -1,0 +1,53 @@
+Name:                ztoolkit
+Version:             1.0
+Description:         Zimbra Tool Kit
+License:             AllRightsReserved
+License-file:        LICENSE
+Author:              Bill Hwang
+Maintainer:          bhwang@vmware.com
+Category:	     Utility
+Build-Type:          Simple
+Cabal-Version:       >=1.2
+
+Executable zversion
+  Main-is:           zversion.hs
+  -- Package dependency
+  Build-Depends:     base, HSH, network, QuickCheck >=2.0 
+  hs-source-dirs:
+     src
+  ghc-options:
+     -O
+
+Executable zlog
+  Main-is:           zlog.hs
+  -- Package dependency
+  Build-Depends:     base, process, network, QuickCheck >=2.0 
+  hs-source-dirs:
+     src
+  ghc-options:
+     -O
+
+Executable zmcontrol
+  Main-is:           zmcontrol.hs
+  -- Package dependency
+  Build-Depends:     base, process, network, QuickCheck >=2.0 
+  hs-source-dirs:
+     src
+  ghc-options:
+     -O
+
+Executable zmprov
+  Main-is:           zmprov.hs
+  -- Package dependency
+  Build-Depends:     base, process, network, QuickCheck >=2.0 
+  hs-source-dirs:
+     src
+  ghc-options:
+     -O
+
+Test-Suite test-ztoolkit
+  type:	   exitcode-stdio-1.0
+  Main-is: test-toolkit.hs
+  hs-source-dirs:
+     testsuite, src
+  Build-Depends:   base, HSH, network, QuickCheck >=2.0 

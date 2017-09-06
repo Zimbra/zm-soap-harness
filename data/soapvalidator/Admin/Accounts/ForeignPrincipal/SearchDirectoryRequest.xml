@@ -1,0 +1,127 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="foreignPrincipal.Attr.name" value="zimbraForeignPrincipal"/>
+
+
+<t:property name="domain1.name" value="domain.${TIME}.${COUNTER}.com"/>
+
+<t:property name="account1.name" value="fp.${TIME}.${COUNTER}@${domain1.name}"/>
+<t:property name="account1.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+    
+<t:property name="account2.name" value="fp.${TIME}.${COUNTER}@${domain1.name}"/>
+<t:property name="account2.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
+<t:property name="account2.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
+    
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ForeignPrincipal_SearchDirectoryRequest_01" type="smoke" >
+    <t:objective>Search for an account with a foreign principal attribute</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account1.foreignPrincipal}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+			<SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domain1.name}" attrs="zimbraForeignPrincipal">
+			  <query>(cn=*)</query>
+			</SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:account[@id='${account1.id}']">
+            	<t:select path="admin:a[@n='zimbraForeignPrincipal']" match="${account1.foreignPrincipal}"/>
+            </t:select>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ForeignPrincipal_SearchDirectoryRequest_02" type="smoke" >
+    <t:objective>Search for an account with two foreign principal attributes</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account2.foreignPrincipal1}</a>
+				<a n="zimbraForeignPrincipal">${account2.foreignPrincipal2}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+			<SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domain1.name}" attrs="zimbraForeignPrincipal">
+			  <query>(cn=*)</query>
+			</SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:account[@id='${account2.id}']">
+            	<t:select path="admin:a[@n='zimbraForeignPrincipal']" match="${account2.foreignPrincipal1}"/>
+            	<t:select path="admin:a[@n='zimbraForeignPrincipal']" match="${account2.foreignPrincipal2}"/>
+            </t:select>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+
+</t:tests>
+

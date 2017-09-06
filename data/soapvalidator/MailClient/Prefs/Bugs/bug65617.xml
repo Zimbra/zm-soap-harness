@@ -1,0 +1,58 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+ 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+ 
+<t:property name="testdomain1.name" value="${TIME}.domain${COUNTER}.com"/>    
+<t:property name="testdomain1_new.name" value="new${TIME}.domain${COUNTER}.com"/>    
+    
+<t:property name="account1.name" value="amavis${COUNTER}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug65617" type="smoke">
+    <t:objective>GetShareInfo NPE</t:objective>
+    <t:steps>
+
+    </t:steps>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${admin.user}</account>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+       <t:request>
+            <GetShareInfoRequest xmlns="urn:zimbraAccount">
+            </GetShareInfoRequest>            
+        </t:request>
+        <t:response>
+              <t:select path="//acct:GetShareInfoResponse">              		
+	          </t:select>          	
+        </t:response>
+    </t:test>
+    
+	</t:test_case>	
+
+</t:tests>
+
+

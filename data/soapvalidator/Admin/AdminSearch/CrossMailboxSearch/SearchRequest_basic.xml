@@ -1,0 +1,395 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="crossmailbox.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="crossmailbox.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="email01.dir" value="${testMailRaw.root}/email01"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_conv_backup" type="always">
+    <t:objective>create test account</t:objective>
+    
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+			<foldername>${email01.dir}</foldername>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+	<t:test required="true">
+		<t:request>
+			<GetMailboxRequest xmlns="urn:zimbraAdmin">
+				<mbox id="${account1.id}"/>
+			</GetMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="account1.mbxid"/>
+		</t:response>
+	</t:test>
+
+	<!-- 
+		Make sure both accounts are on the same host, since
+		the cross mailbox search does not work cross-server
+	-->
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+        		<a n="zimbraMailHost">${account1.server}</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+			<foldername>${email01.dir}</foldername>
+			<to>${account2.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account2.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+	<t:test required="true">
+		<t:request>
+			<GetMailboxRequest xmlns="urn:zimbraAdmin">
+				<mbox id="${account2.id}"/>
+			</GetMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="account2.mbxid"/>
+		</t:response>
+	</t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(email01A)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account1.email01A.id"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(email01A)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account2.email01A.id"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:lifetime"  match="^\d+$"/>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+        
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest_CrossMailboxSearch_Basic_01" type="smoke" areas="crossMailboxSearch">
+	<t:objective>Verify Admin can search a single account's mailbox</t:objective>
+	<t:steps>
+		1. Login to admin
+		2. Using admin authToken, run a SearchMultiMailboxRequest against account1
+		3. The response should contain the correct email
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<SearchMultiMailboxRequest xmlns="urn:zimbraAdmin" types="message">
+				<mbx id="${account1.id}" />
+				<query>subject:(email01A)</query>
+			</SearchMultiMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:SearchMultiMailboxResponse/admin:m" attr="id" match="${account1.id}:${account1.email01A.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>  
+
+
+<t:test_case testcaseid="SearchRequest_CrossMailboxSearch_Basic_02" type="smoke" areas="crossMailboxSearch">
+	<t:objective>Verify Admin can search two accounts' mailbox</t:objective>
+	<t:steps>
+		1. Login to admin
+		2. Using admin authToken, run a SearchMultiMailboxRequest against account1 and account2
+		3. The response should contain the correct emails
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<SearchMultiMailboxRequest xmlns="urn:zimbraAdmin" types="message">
+				<mbx id="${account1.id}" />
+				<mbx id="${account2.id}" />
+				<query>subject:(email01A)</query>
+			</SearchMultiMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:SearchMultiMailboxResponse/admin:m" attr="id" match="${account1.id}:${account1.email01A.id}"/>
+			<t:select path="//admin:SearchMultiMailboxResponse/admin:m" attr="id" match="${account2.id}:${account2.email01A.id}"/>
+		</t:response>
+	</t:test>
+ 
+</t:test_case>  
+
+<t:test_case testcaseid="SearchRequest_CrossMailboxSearch_Basic_03" type="smoke" areas="crossMailboxSearch">
+	<t:objective>Verify Admin can search two accounts' mailbox</t:objective>
+	<t:steps>
+		1. Login to admin
+		2. Using admin authToken, run a SearchMultiMailboxRequest against account1 and account2
+		3. The response should contain the correct emails
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<SearchMultiMailboxRequest xmlns="urn:zimbraAdmin" types="message">
+				<mbx id="${account1.id}" />
+				<mbx id="${account2.id}" />
+				<query>subject:(email01A)</query>
+			</SearchMultiMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:SearchMultiMailboxResponse/admin:m" attr="id" match="${account1.id}:${account1.email01A.id}"/>
+			<t:select path="//admin:SearchMultiMailboxResponse/admin:m" attr="id" match="${account2.id}:${account2.email01A.id}"/>
+		</t:response>
+	</t:test>
+ 
+</t:test_case>  
+
+
+
+
+<t:test_case testcaseid="SearchRequest_CrossMailboxSearch_Basic_11" type="smoke" areas="crossMailboxSearch">
+	<t:objective>Verify Admin can search two accounts' mailbox using the user id</t:objective>
+	<t:steps>
+		1. Login to admin
+		2. Run a SearchMultiMailboxRequest against account1 and account2, using the user ID
+		3. The response should contain the correct email
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<SearchMultiMailboxRequest xmlns="urn:zimbraAdmin" types="message">
+				<mbx id="${account1.id}" />
+				<mbx id="${account2.id}" />
+				<query>subject:(email01A)</query>
+			</SearchMultiMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:SearchMultiMailboxResponse/admin:m" attr="id" match="${account1.id}:${account1.email01A.id}"/>
+			<t:select path="//admin:SearchMultiMailboxResponse/admin:m" attr="id" match="${account2.id}:${account2.email01A.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>  
+
+
+<t:test_case testcaseid="SearchRequest_CrossMailboxSearch_Basic_12" type="smoke" areas="crossMailboxSearch">
+	<t:objective>Verify Admin can search two accounts' mailbox using the mailbox id</t:objective>
+	<t:steps>
+		1. Login to admin
+		2. Run a SearchMultiMailboxRequest against account1 and account2, using the mailbox ID
+		3. The response should contain the correct email
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<SearchMultiMailboxRequest xmlns="urn:zimbraAdmin" types="message">
+				<mbx id="${account1.mbxid}" />
+				<mbx id="${account2.mbxid}" />
+				<query>subject:(email01A)</query>
+			</SearchMultiMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:SearchMultiMailboxResponse/admin:m" attr="id" match="${account1.id}:${account1.email01A.id}"/>
+			<t:select path="//admin:SearchMultiMailboxResponse/admin:m" attr="id" match="${account2.id}:${account2.email01A.id}"/>
+		</t:response>
+	</t:test>
+ 
+</t:test_case>  
+
+
+
+<t:test_case testcaseid="SearchRequest_CrossMailboxSearch_Auth_01" type="smoke" areas="crossMailboxSearch">
+	<t:objective>Verify non-Admin cannot search cross-mailbox</t:objective>
+	<t:steps>
+		1. Login to account1
+		2. Using account1 authToken, run a SearchMultiMailboxRequest against account1 - PERM_DENIED
+		3. Using account1 authToken, run a SearchMultiMailboxRequest against account2 - PERM_DENIED
+		3. Using account1 authToken, run a SearchMultiMailboxRequest against account1 and account2 - PERM_DENIED
+		3. The response should contain the correct emails
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchMultiMailboxRequest xmlns="urn:zimbraAdmin" types="message">
+				<mbx id="${account1.id}"/>
+				<query>subject:(email01A)</query>
+			</SearchMultiMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchMultiMailboxRequest xmlns="urn:zimbraAdmin" types="message">
+				<mbx id="${account2.id}"/>
+				<query>subject:(email01A)</query>
+			</SearchMultiMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchMultiMailboxRequest xmlns="urn:zimbraAdmin" types="message">
+				<mbx id="${account1.id}"/>
+				<mbx id="${account2.id}"/>
+				<query>subject:(email01A)</query>
+			</SearchMultiMailboxRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${zimbraServer.name}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${admin.user}</account>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+ 
+</t:test_case>  
+
+</t:tests>
+

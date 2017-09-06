@@ -1,0 +1,380 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>Create some text accounts </t:objective>
+    <t:steps>1. Login to admin console
+             2. create text accounts
+    </t:steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken.admin"/>
+        </t:response>
+    </t:test>
+
+    <t:test id = "create_test_account1" depends = "admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id = "create_test_account2" depends = "admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test>
+        <t:requestContext>
+             <session/>
+        </t:requestContext>
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>                
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken1"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <t:test>
+        <t:requestContext>
+             <session/>
+        </t:requestContext>
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account2.name}</account>
+                <password>${test_account1.password}</password>                
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken2"/>
+
+        </t:response>
+    </t:test>
+
+    
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="RequestContext1" type="smoke" >
+    <t:objective> GetFolderRequest with authtoken and name of first account (using context specified by name) </t:objective>
+
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken1}</authToken>
+
+            <account by="name">${test_account1.name}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="1"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="RequestContext2" type="smoke" >
+    <t:objective> GetFolderRequest with authtoken and name of first account (using context specified by ID) </t:objective>    
+
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken1}</authToken>
+
+            <account by="id">${test_account1.id}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="1"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="RequestContext3" type="smoke" >
+    <t:objective> Login to test_account2 with admin's authtoken (using context specified by name)</t:objective>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken.admin}</authToken>
+            <account by="name">${test_account2.name}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="${test_account2.id}:1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RequestContext4" type="smoke" >
+    <t:objective> Login to test_account2 with admin's authtoken (using context specified by id)</t:objective>
+
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken.admin}</authToken>
+            <account by="id">${test_account2.id}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="${test_account2.id}:1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="RequestContext5" type="negative" >
+    <t:objective> Login to test_account2 with test_account1's auth token (using context specified by name) </t:objective>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken1}</authToken>
+            <account by="name">${test_account2.name}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RequestContext6" type="negative" >
+    <t:objective> Login to test_account2 with test_account1's auth token (using context specified by id) </t:objective>
+
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken1}</authToken>
+            <account by="id">${test_account2.id}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!-- Poonam: Commenting out this tc as we cant set sessionId due to change in the harness
+<t:test_case testcaseid="RequestContext7" type="negative" >
+    <t:objective> Login to test_account2 with its different session-id and without authtoken (using context specified by name/id) </t:objective>
+
+    <t:test>
+        <t:requestContext>
+            <session>${session1}</session>
+            <account by="name">${test_account2.name}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.AUTH_REQUIRED$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:requestContext>
+            <session>${session1}</session>
+            <account by="id">${test_account2.id}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.AUTH_REQUIRED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RequestContext8" type="negative" >
+    <t:objective> Login to test_account2 with its own session-id and without authtoken (using context specified by id/name) </t:objective>
+
+    <t:test>
+        <t:requestContext>
+            <session>${session2}</session>
+            <account by="id">${test_account2.id}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.AUTH_REQUIRED$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:requestContext>
+            <session>${session2}</session>
+            <account by="name">${test_account2.name}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.AUTH_REQUIRED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+-->
+
+<!-- Commenting these test cases as we are confused with zimbra user and admin user -->
+<!--
+<t:test_case testcaseid="RequestContext9" type="smoke" >
+    <t:objective> Login to admin.mailaccount with adminlogin authtoken (requestContext specified by name)</t:objective>
+
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <account by="name">${admin.mailaccount}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder"/>
+        </t:response>
+    </t:test>
+     
+</t:test_case>
+
+
+<t:test_case testcaseid="RequestContext10" type="feature" >
+    <t:objective> Login to admin.mailaccount with test_account1's auth token (requestContext specified by name)</t:objective>
+    
+    <t:test>
+        <t:requestContext>
+            <authToken>${authToken1}</authToken>
+            <account by="name">${admin.mailaccount}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match = "^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RequestContext11" type="feature" >
+    <t:objective> Login to test_account1 with admin.mailaccount's authtoken (requestContext specified by name\id)</t:objective>
+     <t:steps>1. Get the admin.mailaccount authToken
+              2. Login to test_account1 with admin.mailaccount's authtoken.
+    </t:steps>
+    
+     <t:test id="requestcontext11a">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${admin.mailaccount}</account>
+                <password>${admin.mailaccount.password}</password>                
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken.admin"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="requestcontext11a">
+        <t:requestContext>
+            <authToken>${authToken.admin}</authToken>
+            <account by="name">${test_account1.name}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="${test_account1.id}:1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="requestcontext11a">
+        <t:requestContext>
+            <authToken>${authToken.admin}</authToken>
+            <account by="id">${test_account1.id}</account>
+        </t:requestContext>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="${test_account1.id}:1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+-->
+
+</t:tests>

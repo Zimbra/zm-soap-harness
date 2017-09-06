@@ -1,0 +1,51 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:test_case testcaseid="DelegateAuth_01" type="sanity" >
+    <t:objective>Sanity test for DelegateAuthRequest </t:objective>
+   
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+   </t:test>        
+        
+   <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>                
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${account1.name}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+</t:tests>
+

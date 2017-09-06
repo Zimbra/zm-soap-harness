@@ -1,0 +1,949 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="mail1.subject" value="email15A subject"/>
+<t:property name="mail2.subject" value="email15B Complete subject"/>
+<t:property name="mail3.subject" value="email15C subject"/>
+<t:property name="mail4.subject" value="email15D Complete subject"/>
+<t:property name="mail5.subject" value="email15E Complete subject"/>
+
+<t:property name="tag.name" value="tagtext15.01"/>
+
+<t:property name="op.tag" value="tag"/>
+
+<t:property name="account15.user" value="account15.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account15.password" value="${defaultpassword.value}"/>
+<t:property name="account15.dir" value="${testMailRaw.root}/email15"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>account setup</t:objective>
+    <t:steps> 
+                1.Admin login
+                2.Create test account
+                3.Use lmtp inject to inject the message
+    </t:steps> 
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account15.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account15.user}"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+		    <foldername>${account15.dir}</foldername>
+		    <to>${account15.user}</to>
+		    <from>${nonZimbraUser.name}</from>
+		    <server>${test_acct.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
+    <t:objective> Create setup for the Search </t:objective>
+    <t:steps>1. Login to the account.
+             2. Cerate Tag 
+             3. Search a mail to get the message-id 
+    </t:steps>
+
+    <t:test id="login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account15.user}</account>
+                <password>${account15.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test id = "createTagRequest">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag.name}" color="2"/>
+            </CreateTagRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="name" match="${tag.name}"/>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id1"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchRequest1">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail1.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail1.subject}$"/>
+            <t:select attr="id" set="message.id1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchRequest2">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail2.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail2.subject}$"/>
+            <t:select attr="id" set="message.id2"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchRequest3">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail3.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail3.subject}$"/>
+            <t:select attr="id" set="message.id3"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchRequest4">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail4.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail4.subject}$"/>
+            <t:select attr="id" set="message.id4"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test id="searchRequest5">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail5.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail5.subject}$"/>
+            <t:select attr="id" set="message.id5"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!--
+    <t:test id = "createTagRequest">
+        <t:request>
+               <GetTagRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetTagResponse/mail:tag[@name='${tag.name}']" attr="id" set="tag.id1"/>
+        </t:response>
+    </t:test>
+    -->
+     
+    <t:test id="msgActionRequest1" depends="searchRequest1,createTagRequest">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op="${op.tag}" tag="${tag.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test> 
+    
+     <t:test id="msgActionRequest2" depends="searchRequest2,createTagRequest">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id2}" op="${op.tag}" tag="${tag.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id2}"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="msgActionRequest3" depends="searchRequest3,createTagRequest">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id3}" op="${op.tag}" tag="${tag.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="msgActionRequest4" depends="searchRequest4,createTagRequest">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id4}" op="${op.tag}" tag="${tag.id1}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id4}"/>
+        </t:response>
+    </t:test> 
+      
+</t:test_case>
+ 
+ 
+<t:test_case testcaseid="combo_tag_from_SearchRequest1" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and from: </t:objective> 
+                   
+    <!-- tag: with from: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>from:(origination_address) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>from:(origination_address@origination_domain.com) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>from:(origination_domain) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>from:(origination_domain.com) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>from:(@origination_domain.com) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>    
+
+
+<t:test_case testcaseid="combo_tag_to_SearchRequest1" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and to: </t:objective> 
+                   
+    <!-- tag: with to: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(to:(origination_address)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(to:(origination_address@origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(to:(origination_domain)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(to:(origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(to:(@origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+
+</t:test_case>
+
+
+<t:test_case testcaseid="combo_tag_cc_SearchRequest1" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and cc: </t:objective>
+                    
+    <!-- tag: with cc: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(cc:(origination_address)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(cc:(origination_address@origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(cc:(origination_domain)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(cc:(origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>(cc:(@origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="combo_tag_subject_SearchRequest1" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and subject: </t:objective> 
+                   
+    <!-- tag: with subject: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(subject) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(Complete subject) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(Comple) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="combo_tag_content_SearchRequest1" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and content: </t:objective> 
+                   
+    <!-- tag: with content: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>content:(simple text) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>content:(attachment) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>content:(attach) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="combo_tag_from_SearchRequest2" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and from: (for conversation)  </t:objective> 
+                   
+    <!-- tag: with from: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>from:(origination_address) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>from:(origination_address@origination_domain.com) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>from:(origination_domain) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>from:(origination_domain.com) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>from:(@origination_domain.com) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>    
+
+
+<t:test_case testcaseid="combo_tag_to_SearchRequest2" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and to: (for conversation)  </t:objective> 
+                   
+    <!-- tag: with to: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(to:(origination_address)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(to:(origination_address@origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(to:(origination_domain)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(to:(origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(to:(@origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+
+</t:test_case>
+
+
+<t:test_case testcaseid="combo_tag_cc_SearchRequest2" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and cc: </t:objective>
+                    
+    <!-- tag: with cc: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(cc:(origination_address)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(cc:(origination_address@origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(cc:(origination_domain)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(cc:(origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" />
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>(cc:(@origination_domain.com)) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="combo_tag_subject_SearchRequest2" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and subject: (for conversation)  </t:objective> 
+                   
+    <!-- tag: with subject: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>subject:(subject) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>subject:(Complete subject) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>subject:(Comple) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="combo_tag_content_SearchRequest2" type="functional">
+    <t:objective> Verify the results are correct for query using tag: and content: (for conversation)  </t:objective> 
+                   
+    <!-- tag: with content: -->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>content:(simple text) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>content:(attachment) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>content:(attach) tag:${tag.name}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id1}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id2}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id3}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id4}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:c/mail:m[@id='${message.id5}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+       
+   
+</t:tests>
+
+
+
+

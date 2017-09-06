@@ -1,0 +1,181 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct1_setup_AccountBy" type="always" >
+ <t:objective>create test accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account0.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account3.server"/>
+        </t:response>
+    </t:test>  
+
+	<!-- Determine the account1 Calendar folder id -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="appointment1.start" value="1162468800000"/>
+	<t:property name="appointment1.subject" value="1162468800000"/>
+
+	<t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail" >
+                <m >
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
+                        <at role="OPT" ptst="NE" rsvp="1" a="${account3.name}"/>
+                        <s d="${ICALTIME[${appointment1.start}]}"/>  
+                        <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <e a="${account3.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>Appointment Content ${TIME} ${COUNTER}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
+        </t:response>
+	</t:test>
+
+	<!-- Determine the account0 authToken and session -->
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account0.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken.account0" />
+			<!--t:select path="//acct:AuthResponse/acct:session" set="session.account0" /-->
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthToken_User_GetAppointmentRequest_Basic01" type="smoke" >
+    <t:objective>Use a user token to GetAppointmentRequest</t:objective>
+    <t:steps>
+    1. Login as user0
+	2. Use user0 authtoken to GetAppointmentRequest - PERM_DENIED
+	</t:steps>
+
+	<t:property name="authToken" value="${authToken.account0}"/>
+
+	
+	<t:property name="server.zimbraMail" value="${account0.server}"/>
+
+	<t:test>
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${account1.id}:${appointment1.id}" />
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+</t:tests>

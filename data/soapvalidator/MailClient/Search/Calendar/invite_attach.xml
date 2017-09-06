@@ -1,0 +1,247 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="bug10227.user" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="bug10227.destination.user" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="appt10227.A.subject" value="bug10227subjectA"/>
+<t:property name="appt10227.B.subject" value="bug10227subjectB"/>
+<t:property name="appt10227.folder" value="${testMailRaw.root}/Bugs/10227"/>
+<t:property name="appt10227.attach.filename" value="${appt10227.folder}/bug10227attachment.doc"/>
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${bug10227.user}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="bug10227.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="bug10227.server"/>                    
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${bug10227.destination.user}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account"/>                    
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchCalendar_Attachements_Bug10227_00" type="always" bugids="10227">
+	<t:objective>Setup account for bug 10227 verification</t:objective>
+
+
+	<t:property name="server.zimbraAccount" value="${bug10227.server}"/>
+	
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${bug10227.user}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="uploadServletServer" value="${bug10227.server}"/>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${appt10227.attach.filename}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="appt10227.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<!-- An appointment with an attachment -->
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv 
+							method="REQUEST" 
+							type="event" 
+							fb="B" 
+							transp="O" 
+							status="CONF" 
+							allDay="0" 
+							name="${appt10227.A.subject}">
+						<at a="${bug10227.destination.user}" role="REQ" ptst="NE" rsvp="1" />
+						<s d="${ICALTIME}" tz="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+						<e d="${ICALTIME(+1h)}" tz="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+						<or a="${bug10227.user}"/>
+					</inv>
+					<e a="${bug10227.destination.user}" t="t"/>
+					<mp ct="text/plain">
+						<content>Simple string in the body</content>
+					</mp>
+					<su>${appt10227.A.subject}</su>
+					<attach aid="${appt10227.aid}"/>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt10227.A.apptId"/>
+			<t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appt10227.A.invId"/>
+			<!-- <m id=""> is obsolete -->
+			<!--  <t:select path="//mail:CreateAppointmentResponse/mail:m" attr="id" set="appt10227.A.id"/>-->
+		</t:response>
+	</t:test>
+
+	<!-- An appointment without an attachment -->
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv 
+							method="REQUEST" 
+							type="event" 
+							fb="B" 
+							transp="O" 
+							status="CONF" 
+							allDay="0" 
+							name="${appt10227.B.subject}">
+						<at a="${bug10227.destination.user}" role="REQ" ptst="NE" rsvp="1" />
+                        <at role="OPT" ptst="NE" rsvp="1" a="${bug10227.destination.user}"/>
+						<s d="${ICALTIME}" tz="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+						<e d="${ICALTIME(+1h)}" tz="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+						<or a="${bug10227.user}"/>
+					</inv>
+					<e a="${bug10227.destination.user}" t="t"/>
+					<mp ct="text/plain">
+						<content>Simple string in the body</content>
+					</mp>
+					<su>${appt10227.B.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt10227.B.apptId"/>
+			<t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appt10227.B.invId"/>
+			<!-- <m id=""> is obsolete -->
+			<!--  <t:select path="//mail:CreateAppointmentResponse/mail:m" attr="id" set="appt10227.B.id"/>-->
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchCalendar_Attachements_Bug10227_01" type="functional" bugids="10227">
+	<t:objective>Verify that "attachment:any" returns invitations that have attachments</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${bug10227.server}"/>
+	
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${bug10227.user}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>attachment:any</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${appt10227.A.id}"/>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${appt10227.B.id}" emptyset="1"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchCalendar_Attachements_Bug10227_02" type="functional" bugids="10227">
+	<t:objective>Verify that "attachment:none" does not return invitations that have attachments</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${bug10227.server}"/>
+	
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${bug10227.user}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>attachment:none</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${appt10227.A.id}" emptyset="1"/>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${appt10227.B.id}"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+</t:tests>

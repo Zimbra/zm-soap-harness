@@ -1,0 +1,165 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="junkmail.from" value="ibrahimmustapher@yahoo.com"/>
+<t:property name="junkmail.subject1" value="Test junk"/>
+
+<t:property name="junkuser" value="junkuser.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="junkuser.password" value="${defaultpassword.value}"/>
+<t:property name="junkuser.dir" value="${testMailRaw.root}/bug62687"/>
+<t:property name = "folder.inbox" value = "2"/>
+<t:property name = "op.move" value = "move"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>account setup</t:objective>
+    <t:steps> 
+            1.Admin login
+            2.Create test account               
+    </t:steps> 
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${junkuser}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraJunkMessagesIndexingEnabled">FALSE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server1"/>
+        </t:response>
+    </t:test>  
+    
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${acct.id}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraJunkMessagesIndexingEnabled']" match="FALSE"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
+
+<t:test_case testcaseid="SearchMovedJunkmail_01" type="smoke" bugids="62687">
+    <t:objective>Verify that moved junk mail to inbox is search-able when zimbraJunkMessagesIndexingEnabled is set to FALSE </t:objective>
+    
+    <t:steps>1. Login to the account.
+             2. Inject a junk mail
+             3. Search the email in Inbox- expect empty search result.
+             4. Search the email in Junk- Successful result.
+             5. Move that junk mail to the Inbox.
+             6. Search the email in Inbox- Successful result.
+    </t:steps>
+
+    <t:test id="login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${junkuser}</account>
+                <password>${junkuser.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>    
+	
+	<t:mailinjecttest>
+        <t:lmtpInjectRequest>
+		    <foldername>${junkuser.dir}</foldername>
+		    <to>${junkuser}</to>
+		    <from>${nonZimbraUser.name}</from>
+		    <server>${test_acct.server1}</server>
+		    <modify>				
+                <header a="Subject">${junkmail.subject1}</header>
+            </modify>	
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:test id="searchRequest2">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${junkmail.subject1})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" emptyset="1">				
+			</t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchRequest1">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>in:junk</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+				<t:select attr="su" match="^${junkmail.subject1}$"/>
+				<t:select attr="id" set="message.id" />
+			</t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id}" op = "${op.move}" l = "${folder.inbox}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="searchRequest2">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${junkmail.subject1})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+				<t:select attr="su" match="^${junkmail.subject1}$" />
+			</t:select>
+        </t:response>
+    </t:test>
+	
+</t:test_case> 
+
+</t:tests>
+

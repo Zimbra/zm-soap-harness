@@ -1,0 +1,245 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="folder1.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="pop3.true" value="true"/>
+<t:property name="pop3.false" value="false"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup_DataSource_test" type="always" >
+    <t:objective>Do account setup</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="parentfolder.id"/>
+		</t:response>
+	</t:test>
+	<t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="TestDataSourcePopa01" type="smoke" >
+    <t:objective>Test a pop3 account with all valid values by non-admin user credentials.</t:objective>
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder1.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:pop3" attr="success" match="1"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="TestDataSourcePop01b" type="smoke" >
+    <t:objective>Test a pop3 data source with out host name by non-admin user credential.</t:objective>
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}"  port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder1.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:pop3" attr="success" match="0"/>
+			 <t:select path="//mail:TestDataSourceResponse/mail:pop3" attr="error" match=".*host not set"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="TestDataSourcePop01c" type="negative" >
+    <t:objective>Test a pop3 data source invalid port by non-admin user credentials.</t:objective>
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}"  host="${POP3.gmail.host}" port="2344" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder1.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:pop3" attr="success" match="0"/>
+			 <t:select path="//mail:TestDataSourceResponse/mail:pop3" attr="error" match="connect timed out"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="TestDataSourcePop01d" type="smoke" >
+    <t:objective>Test a pop3 account invalid password by non-admin user credentials.</t:objective>
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}invalid" l="${folder1.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:pop3" attr="success" match="0"/>
+			 <t:select path="//mail:TestDataSourceResponse/mail:pop3" attr="error" match=".*Username and password not accepted."/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="TestDataSourceImap02a" type="smoke" >
+    <t:objective>Test an Imap account with all valid values by non-admin user credentials.</t:objective>
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<imap host="${IMAP.Gmail.hostname}" port="${IMAP.Gmail.port}" username="${IMAP.Gmail.username}" password="${IMAP.Gmail.password}" l="${folder1.id}" connectionType="ssl" />
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:imap" attr="success" match="1"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+<t:test_case testcaseid="TestDataSourceImap02b" type="smoke" >
+    <t:objective>Test an imap data source with-out host name by non-admin user credential.</t:objective>
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<imap port="${IMAP.Gmail.port}" username="${IMAP.Gmail.username}" password="${IMAP.Gmail.password}" l="${folder1.id}" connectionType="ssl" />
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:imap" attr="success" match="0"/>
+			 <t:select path="//mail:TestDataSourceResponse/mail:imap" attr="error" match=".*host not set"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="TestDataSourceImap02c" type="negative" >
+    <t:objective>Test an Imap data source invalid port by non-admin user credentials.</t:objective>
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<imap host="${IMAP.Gmail.hostname}" port="3743" username="${IMAP.Gmail.username}" password="${IMAP.Gmail.password}" l="${folder1.id}" connectionType="ssl" />
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:imap" attr="success" match="0"/>
+			 <t:select path="//mail:TestDataSourceResponse/mail:imap" attr="error" match="connect timed out"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="TestDataSourceImap02d" type="smoke" >
+    <t:objective>Test an Imap account invalid password by non-admin user credentials.</t:objective>
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<imap host="${IMAP.Gmail.hostname}" port="${IMAP.Gmail.port}" username="${IMAP.Gmail.username}" password="${IMAP.Gmail.password}invalid" l="${folder1.id}" connectionType="ssl" />
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:imap" attr="success" match="0"/>
+			 <t:select path="//mail:TestDataSourceResponse/mail:imap" attr="error" match=".*Invalid credentials.*"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="TestDataSourceImap03" type="smoke" >
+    <t:objective>Test an Imap and pop account with all valid values by admin user credentials.</t:objective>
+    <steps> 
+        	1. Login to admin account
+        	2. Test pop datasource.
+        	3. Test Imap datasource
+    </steps>
+        <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>	
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder1.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:pop3" attr="success" match="1"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+		<t:request>
+			<TestDataSourceRequest xmlns="urn:zimbraMail">
+				<imap host="${IMAP.Gmail.hostname}" port="${IMAP.Gmail.port}" username="${IMAP.Gmail.username}" password="${IMAP.Gmail.password}" l="${folder1.id}" connectionType="ssl" />
+			</TestDataSourceRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:TestDataSourceResponse/mail:imap" attr="success" match="1"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+</t:tests>

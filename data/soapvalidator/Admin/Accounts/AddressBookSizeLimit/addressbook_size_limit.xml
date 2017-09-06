@@ -1,0 +1,627 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>
+
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>    
+<t:property name="account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>        
+   
+<t:property name="contact1.fname" value="First${TIME}${COUNTER}"/>    
+<t:property name="contact1.lname" value="Last${TIME}${COUNTER}"/>    
+<t:property name="contact1.email" value="email${TIME}${COUNTER}@foo.com"/>
+<t:property name="contact2.fname" value="First${TIME}${COUNTER}"/>
+<t:property name="contact2.lname" value="Last${TIME}${COUNTER}"/>
+<t:property name="contact2.email" value="email${TIME}${COUNTER}@foo.com"/>
+<t:property name="contact3.fname" value="First${TIME}${COUNTER}"/>
+<t:property name="contact3.lname" value="Last${TIME}${COUNTER}"/>
+<t:property name="contact3.email" value="email${TIME}${COUNTER}@foo.com"/>
+<t:property name="message1.subject" value="subject1.${TIME}.${COUNTER}"/>
+<t:property name="message1.content" value="content1.${TIME}.${COUNTER}"/>
+    
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<!-- authentication -->
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_AddressBookSizeLimit" type="always">
+    <t:objective>Create the accounts for testing</t:objective>
+    <t:steps>1. Login to admin.
+             2. Create test accounts             
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+    
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+    
+<t:test_case testcaseid="AddressBookSizeLimit01" type="smoke">
+    <t:objective>Verify setting the valid value for "zimbraContactMaxNumEntries" is reflected properly </t:objective>    
+    <t:steps>        
+        1. Modify an account to set the value for zimbraContactMaxNumEntries to 3
+        2. Login to that account
+        3. Add 3 contacts to account
+        4. Verify that the addition of 4th contact gives error
+    </t:steps>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+    
+    <t:test id="addressBookSizeLimit01a">
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n="zimbraContactMaxNumEntries">3</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+       
+    <t:test id="addressBookSizeLimit01b">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>   
+    
+    <t:test id="addressBookSizeLimit01c">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact1.fname}</a>
+                    <a n = "lastName">${contact1.lname}</a>
+                    <a n = "email">${contact1.email}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addressBookSizeLimit01d">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact2.fname}</a>
+                    <a n = "lastName">${contact2.lname}</a>
+                    <a n = "email">${contact2.email}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addressBookSizeLimit01e">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact3.fname}</a>
+                    <a n = "lastName">${contact3.lname}</a>
+                    <a n = "email">${contact3.email}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>
+        </t:response>
+    </t:test>    
+
+    <t:test depends="addressBookSizeLimit01a,addressBookSizeLimit01b">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">First${TIME}${COUNTER}</a>
+                    <a n = "lastName">Last${TIME}${COUNTER}</a>
+                    <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match="mail.TOO_MANY_CONTACTS"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+
+<t:test_case testcaseid="AddressBookSizeLimit02" type="functional">
+    <t:objective>Verify setting "zimbraContactMaxNumEntries" less than the number of contacts existing in an account </t:objective>    
+    <t:steps>        
+        1. Modify an account to set the value for zimbraContactMaxNumEntries to 2
+        2. Login to that account
+        3. Verify that it does not delete the existing contact.
+        4. Verify that the addition of more contacts still gives error
+    </t:steps>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>    
+    
+    <t:test id="addressBookSizeLimit02a">
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n="zimbraContactMaxNumEntries">2</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>       
+    <t:test id="addressBookSizeLimit02b">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test depends="addressBookSizeLimit01a,addressBookSizeLimit01b,addressBookSizeLimit01c">
+        <t:request>
+            <GetContactsRequest xmlns = "urn:zimbraMail">
+                <cn id="${contact1.id}"/>
+                <cn id="${contact2.id}"/>
+                <cn id="${contact3.id}"/>
+            </GetContactsRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetContactsResponse/mail:cn"/>                            
+        </t:response>
+    </t:test>
+
+    <t:test depends="addressBookSizeLimit02a">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">First${TIME}${COUNTER}</a>
+                    <a n = "lastName">Last${TIME}${COUNTER}</a>
+                    <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match="mail.TOO_MANY_CONTACTS"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>    
+    
+
+<t:test_case testcaseid="AddressBookSizeLimit03" type="smoke">
+    <t:objective>Verify setting the valid value for "zimbraContactMaxNumEntries" to some large value </t:objective>    
+    <t:steps>        
+        1. Modify an account to set the value for zimbraContactMaxNumEntries to 100
+        2. Login to that account
+        3. Add 100 contacts to account
+        4. Verify that the addition of 101th contact gives error
+    </t:steps>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+    
+    <t:test id="addressBookSizeLimit03a">
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <a n="zimbraContactMaxNumEntries">100</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>       
+    <t:test id="addressBookSizeLimit03b">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test_loop count="100">
+        
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns = "urn:zimbraMail">
+                    <cn>
+                        <a n = "firstName">First${TIME}${COUNTER}</a>
+                        <a n = "lastName">Last${TIME}${COUNTER}</a>
+                        <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path = "//mail:CreateContactResponse/mail:cn" attr="id"/>
+            </t:response>
+        </t:test>
+
+    </t:test_loop>        
+        
+    <t:test depends="addressBookSizeLimit03a,addressBookSizeLimit03b">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">First${TIME}${COUNTER}</a>
+                    <a n = "lastName">Last${TIME}${COUNTER}</a>
+                    <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match="mail.TOO_MANY_CONTACTS"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>  
+    
+
+<t:test_case testcaseid="AddressBookSizeLimit04" type="functional">
+    <t:objective>Verify that contacts are not added if AutoAddAddress is enabled and it contains the max nunber of contacts </t:objective>    
+    <t:steps>                
+        1. Login to that account which already contains maximum number of contacts 
+        2. Verify that it already contains max number of contacts
+        3. Send a mail with add=1
+        4. Verify that the it does not at the contact
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <t:test id="addressBookSizeLimit04b">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="addressBookSizeLimit04b">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">First${TIME}${COUNTER}</a>
+                    <a n = "lastName">Last${TIME}${COUNTER}</a>
+                    <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match="mail.TOO_MANY_CONTACTS"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addressBookSizeLimit04c">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a="${account1.name}" add="1"/>
+                    <su> ${message1.subject} </su>
+                    <mp ct="text/plain">
+                        <content>${message1.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="addressBookSizeLimit04c">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${account1.name} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+    
+<t:test_case testcaseid="AddressBookSizeLimit05" type="smoke">
+    <t:objective>Verify setting zimbraContactMaxNumEntries = 0  allows to add infinite contacts </t:objective>    
+    <t:steps>        
+        1. Modify an account to set the value for zimbraContactMaxNumEntries to 0
+        2. Login to that account
+        3. Verify for 100 contacts to account for now
+    </t:steps>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+    
+    <t:test id="addressBookSizeLimit05a">
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <a n="zimbraContactMaxNumEntries">0</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>       
+    <t:test id="addressBookSizeLimit05b">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test_loop count="100">
+        
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns = "urn:zimbraMail">
+                    <cn>
+                        <a n = "firstName">First${TIME}${COUNTER}</a>
+                        <a n = "lastName">Last${TIME}${COUNTER}</a>
+                        <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path = "//mail:CreateContactResponse/mail:cn" attr="id"/>
+            </t:response>
+        </t:test>
+
+    </t:test_loop>        
+    
+</t:test_case>
+    
+ 
+<t:test_case testcaseid="AddressBookSizeLimit06" type="functional">
+    <t:objective>Verify that a contact can be deleted and added if account has the maximum number of contacts</t:objective>    
+    <t:steps>        
+        1. Modify an account to set the value for zimbraContactMaxNumEntries to 11
+        2. Login to that account
+        3. Add 10 contacts 
+        4. Add 11th contact to reach the max limit
+        5. Delete the 11th contact
+        6. Add a new contact again        
+    </t:steps>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="authToken" value="${admin.authToken}"/>
+    
+    <t:test id="addressBookSizeLimit06a">
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <a n="zimbraContactMaxNumEntries">11</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>       
+    <t:test id="addressBookSizeLimit06b">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test_loop count="10">
+        
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns = "urn:zimbraMail">
+                    <cn>
+                        <a n = "firstName">First${TIME}${COUNTER}</a>
+                        <a n = "lastName">Last${TIME}${COUNTER}</a>
+                        <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path = "//mail:CreateContactResponse/mail:cn" attr="id"/>
+            </t:response>
+        </t:test>
+
+    </t:test_loop>
+
+    <t:test id="addressBookSizeLimit06c">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">First${TIME}${COUNTER}</a>
+                    <a n = "lastName">Last${TIME}${COUNTER}</a>
+                    <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn" attr="id" set="contact11.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addressBookSizeLimit06d">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact11.id}" op="delete"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="addressBookSizeLimit06e" depends="addressBookSizeLimit06d">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">First${TIME}${COUNTER}</a>
+                    <a n = "lastName">Last${TIME}${COUNTER}</a>
+                    <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn" attr="id" set="contact11.id"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>  
+    
+ 
+<t:test_case testcaseid="AddressBookSizeLimit07" type="functional">
+    <t:objective>Verify that a contact can be modified if account has the maximum number of contacts</t:objective>    
+    <t:steps>        
+        1. Check that account already has max number of contact
+        2. Verify modification of contact        
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+    <t:test id="addressBookSizeLimit07a" depends="addressBookSizeLimit06e">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">First${TIME}${COUNTER}</a>
+                    <a n = "lastName">Last${TIME}${COUNTER}</a>
+                    <a n = "email">email${TIME}${COUNTER}@foo.com</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//zimbra:Code" match="mail.TOO_MANY_CONTACTS"/>
+        </t:response>
+    </t:test>
+       
+    <t:test id="addressBookSizeLimit07b" depends="addressBookSizeLimit06d,addressBookSizeLimit07a">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
+                <cn id = "${contact11.id}">
+                    <a n = "firstName">NewFirst${TIME}${COUNTER}</a>
+                    <a n = "lastName">NewLast${TIME}${COUNTER}</a>
+                    <a n = "email">Newemail${TIME}${COUNTER}@foo.com</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+</t:tests>

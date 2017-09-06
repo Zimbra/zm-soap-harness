@@ -1,0 +1,444 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="admin_password" value="${defaultpassword.value}" />
+<t:property name="admin_delegate.name" value="testAdmin.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+
+<t:property name="test_account1.name" value="testAccount1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="test_account2.name" value="testAccount2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+<t:property name="domain1.name" value="domain1.${TIME}.com"/>
+<t:property name="admin_delegate1.name" value="testAdmin1@${domain1.name}" />
+<t:property name="admin_delegate2.name" value="testAdmin2@${domain1.name}" />
+
+<t:property name="test_account3.name" value="testAccount3.${TIME}.${COUNTER}@${domain1.name}" />
+<t:property name="test_account4.name" value="testAccount4.${TIME}.${COUNTER}@${domain1.name}" />
+
+<t:property name="admin_delegate3.name" value="testAcc3.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="admin_delegate4.name" value="testAcc4.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+<t:property name="list1" value="List1.${TIME}.@${defaultdomain.name}"/>
+
+<t:property name="list2" value="List2.${TIME}.@${domain1.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="bug49084_account_setup" type="always">
+    <t:objective>Account set up</t:objective>
+	<t:steps> 1. Login as an admin
+              2. Create a delegated admin account
+              3. Create test account
+              4. Create CreateDistribution List > add members to DL
+              6. give modifyAccount right to delegated admin on DL 
+    </t:steps>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${admin_delegate.name}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id" />		
+          	<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="admin_domain.server"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${admin_delegate3.name}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id" />		
+          	<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="admin_delegate3.server"/>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${admin_delegate4.name}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id" />		
+          	<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="admin_delegate4.server"/>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <dynamic>true</dynamic>
+                <name>${list1}</name>
+                <a n="description">A test distribution list</a>
+                <a n="zimbraIsAdminGroup">TRUE</a>   
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+        </t:response>
+    </t:test>	
+    
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${admin_delegate3.name}</dlm>
+                <dlm>${admin_delegate4.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+        
+</t:test_case>
+
+<t:test_case testcaseid = "GrantRightRequest_test1" type = "smoke">
+   <t:objective>Verify that Delegated Admin modify the account </t:objective>
+   <t:steps> Modify an account with zimbraFeatureCalendarEnabled TRUE/FALSE </t:steps>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+	        	<target by="name" type="group">${list1}</target>
+	       		 <grantee by="name" type="usr">${admin_delegate.name}</grantee>
+	       		 <right>modifyAccount</right>
+	       </GrantRightRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+    
+	<t:test >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${admin_delegate.name}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken1"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test id = "modifyaccountrequest1a">
+  
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <a n = "zimbraFeatureCalendarEnabled">TRUE</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+    <t:test id = "modifyaccountrequest1b">
+   
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <a n = "zimbraFeatureCalendarEnabled">FALSE</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="RevokeRightRequest_test1" type="smoke" >
+    <t:objective>Delegated Admin should not modify account after revoke CreateAccount grants </t:objective>
+    <t:steps> 
+            1. Login as Admin 
+            2. Revoke CreateAccount grants
+            3. Login as Delegated admin
+            4. Try to modify account
+            5. Verify exception-service.PERM_DENIED         
+    </t:steps>
+
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+		<t:request>
+			<RevokeRightRequest xmlns="urn:zimbraAdmin">
+	        <target by="name" type="group">${list1}</target>
+	       		 <grantee by="name" type="usr">${admin_delegate.name}</grantee>
+	       		 <right>modifyAccount</right>
+	       </RevokeRightRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//admin:RevokeRightResponse"/>
+		</t:response>
+	</t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${admin_delegate.name}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+    	<t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <a n = "zimbraFeatureCalendarEnabled">FALSE</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="GrantRightRequest_test2" type="smoke" >
+    <t:objective>Delegated Admin create the account by dl member </t:objective>
+    <t:steps> 
+            1. Create a new Domain 
+            2. Create DL
+            3. Add member to DL
+            4. Login as DL member
+            5. Create account           
+    </t:steps>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${admin_delegate1.name}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="daccount1.id" />		
+          	<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="admin_delegate1.server"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${admin_delegate2.name}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="daccount2.id" />		
+          	<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="admin_delegate2.server"/>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <dynamic>true</dynamic>
+                <name>${list2}</name>
+                <a n="description">A test distribution list</a>
+                <a n="zimbraIsAdminGroup">TRUE</a>            
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
+        </t:response>
+    </t:test>	
+    
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${admin_delegate1.name}</dlm>
+                <dlm>${admin_delegate2.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+	        	<target by="name" type="domain">${domain1.name}</target>
+      			<grantee by="name" type="grp">${list2}</grantee>
+     			 <right>createAccount</right>
+	       </GrantRightRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+    
+    <t:test >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${admin_delegate1.name}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+    
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${defaultpassword.value}</password>
+             </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+        </t:response>
+    </t:test>
+  
+ </t:test_case>
+ 
+   <t:test_case testcaseid="RevokeRightRequest_test2" type="smoke" >
+    <t:objective>Delegated Admin should not able to create account after revoke CreateAccount grants </t:objective>
+    <t:steps> 
+            1. Login as Admin 
+            2. Revoke CreateAccount grants
+            3. Login as DL member
+            4. Try to create account
+            5. Verify exception-service.PERM_DENIED         
+    </t:steps>
+
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+		<t:request>
+			<RevokeRightRequest xmlns="urn:zimbraAdmin">
+	        	<target by="name" type="domain">${domain1.name}</target>
+      			<grantee by="name" type="grp">${list2}</grantee>
+     			 <right>createAccount</right>
+	       </RevokeRightRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//admin:RevokeRightResponse"/>
+		</t:response>
+	</t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <DelegateAuthRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${admin_delegate1.name}</account>
+            </DelegateAuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DelegateAuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+    	<t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${defaultpassword.value}</password>
+             </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+</t:tests>

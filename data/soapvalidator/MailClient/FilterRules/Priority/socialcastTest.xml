@@ -1,0 +1,270 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="AcctSetup_socialcastTest" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefTimeZoneId">UTC</a>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+
+<t:test_case testcaseid="socialcastTest_01" type="smoke" bugids="42185" >
+
+    <t:objective>Verify that socialcast message sent to the user is filtered for socialcastTest filter</t:objective>
+    
+    <t:steps> 1. Create filter for socialcastTest to flag for account1
+			  2. Inject a direct message from support@socialcast.com to the user.
+			  3. Verify that the message gets flagged.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter_soacialcast.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_soacialcast1.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_soacialcast.name}" active="1">
+						<filterTests condition="anyof">
+							<socialcastTest/>
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="socialcast_msg01.file" value="${testMailRaw.root}/bug42185/socialcast_direct_msg.txt" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${socialcast_msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_soacialcast1.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+	
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_soacialcast1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_soacialcast1.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case> 
+
+
+
+<t:test_case testcaseid="socialcastTest_02" type="smoke" bugids="42185" >
+
+    <t:objective>Verify that socialcast message to 'do-not-reply@socialcast.com' is filtered for socialcastTest filter</t:objective>
+    
+    <t:steps> 1. Create filter for socialcastTest to flag for account1
+			  2. Inject a message from support@socialcast.com  to 'do-not-reply@socialcast.com' with reply header to the user.
+			  3. Verify that the message gets flagged.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter_soacialcast.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_soacialcast2.subject" value="filter${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_soacialcast.name}" active="1">
+						<filterTests condition="anyof">
+							<socialcastTest/>
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="socialcast_msg02.file" value="${testMailRaw.root}/bug42185/socialcast_Broadcast_Message.txt" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${socialcast_msg02.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_soacialcast2.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>		
+	
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_soacialcast2.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_soacialcast2.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>    
+   
+
+</t:test_case> 
+
+
+<t:test_case testcaseid="socialcastTest_03" type="smoke" bugids="42185" >
+
+    <t:objective>Verify that socialcast general update message is not filtered for socialcastTest filter</t:objective>
+    
+    <t:steps> 1. Create filter for socialcastTest
+			  2. Inject a message from support@socialcast.com with no reply header to the user.
+			  3. Verify that the message does not get flagged.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter_soacialcast.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter_soacialcast3.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_soacialcast.name}" active="1">
+						<filterTests condition="anyof">
+							<socialcastTest/>
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="socialcast_msg03.file" value="${testMailRaw.root}/bug42185/socialcast_updates.txt" />
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${socialcast_msg03.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter_soacialcast3.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+	
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_soacialcast3.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_soacialcast3.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*" emptyset="1"/>
+        </t:response>
+    </t:test>    
+   
+</t:test_case> 
+
+</t:tests>

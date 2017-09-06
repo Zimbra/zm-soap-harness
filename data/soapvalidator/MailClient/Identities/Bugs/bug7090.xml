@@ -1,0 +1,162 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="prefix" value="prefix"/>
+
+<t:test_case testcaseid="acctSetup_Bug7090" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+ </t:test_case>
+
+
+<t:test_case testcaseid="Bug7090" type="smoke" bugids="7090" areas="backup">
+    <t:objective> Verify Zmrestore zimbraPrefReplyToAddress does not point to old email after -pre -ca restore </t:objective>
+    <t:steps>   1. Set reply-to-address to self
+    			2. Do backup
+    			3. Restore with some prefix  
+    			4. Verify reply-to-address is proper   
+    </t:steps>     
+    
+<t:property name="server.zimbraAccount" value="${account1.server}"/>   
+      
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse/acct:identity" attr="name" match="DEFAULT"/>
+		</t:response>
+	</t:test>
+    
+    <t:test>
+        <t:request>
+			<ModifyIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="DEFAULT">
+					<a name="zimbraPrefReplyToEnabled">${globals.true}</a>				
+					<a name="zimbraPrefReplyToDisplay">ReplyTo</a>
+					<a name="zimbraPrefReplyToAddress">${account1.name}</a>					
+				</identity>
+			</ModifyIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:ModifyIdentityResponse"/>
+        </t:response>
+    </t:test>
+ 
+	<t:test>
+	    <t:request>
+	        <AuthRequest xmlns="urn:zimbraAdmin">
+	            <name>${admin.user}</name>
+	            <password>${admin.password}</password>
+	        </AuthRequest>
+	    </t:request>
+	    <t:response>
+	        <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	    </t:response>
+	</t:test>
+   
+	<t:test>
+	    <t:request>
+	        <BackupRequest xmlns="urn:zimbraAdmin">
+	            <backup zip="0" method="full" sync="1" >
+	                <account name="${account1.name}"/>
+	            </backup>
+	        </BackupRequest>
+	    </t:request>
+	    <t:response>
+	        <t:select path="//admin:BackupResponse/admin:backup" attr="label" set="backup.label"/>
+	    </t:response>
+	</t:test>
+	
+	<t:property name="restore.label" value="${backup.label}"/>
+
+	<t:test>
+	    <t:request>
+	        <RestoreRequest xmlns="urn:zimbraAdmin">
+	            <restore method="ca" label="${restore.label}" prefix="${prefix}">
+	                <account name="${account1.name}"/>                    
+	            </restore>
+	        </RestoreRequest>
+	    </t:request>
+	    <t:response>
+			<t:select path="//admin:RestoreResponse"/>
+	    </t:response>
+	</t:test> 
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>   
+      
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${prefix}${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    	
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse">
+				<t:select path ="//acct:identity" attr="name" match="DEFAULT"/>
+			<t:select path="//acct:a[@name='zimbraPrefFromAddress']" match="${prefix}${account1.name}"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+  
+</t:tests>

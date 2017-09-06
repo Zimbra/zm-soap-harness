@@ -1,0 +1,299 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="folder1.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder2.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder3.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder4.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="pop3account1.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account2.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account3.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account4.name" value="pop3name${TIME}${COUNTER}"/>
+<t:property name="pop3account1.modifiedname" value="pop3modifiedname${TIME}${COUNTER}"/>
+<t:property name="pop3.blank" value=""/>
+<t:property name="pop3.space" value="             "/>
+<t:property name="pop3.negative" value="-1"/>
+<t:property name="pop3.zero" value="0"/>
+<t:property name="pop3.invalid" value="invalid"/>
+<t:property name="pop3.spchar" value=":''&lt;//\\"/>
+<t:property name="pop3.largenumber" value="12345678901234567890"/>
+<t:property name="pop3.true" value="true"/>
+<t:property name="pop3.false" value="false"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_modify1" type="smoke" >
+    <t:objective>Modify name of a pop3 account to a valid value</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="parentfolder.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="${pop3account1.name}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder1.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDataSourceRequest xmlns="urn:zimbraMail" id="0">
+				<pop3 id="${pop3_account1.id}" name="${pop3account1.modifiedname}"/>
+			</ModifyDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:ModifyDataSourceResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DataSource_modify2" type="negative">
+	<t:objective>Modify name of  a pop3 account to invalid values(blank/space/negative/largenumber/spchar/zero)</t:objective>
+	
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder2.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="${pop3account2.name}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder2.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account2.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDataSourceRequest xmlns="urn:zimbraMail" id="0">
+				<pop3 id="${pop3_account2.id}" name="${pop3.blank}"/>
+			</ModifyDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^service.FAILURE"/>
+		</t:response>
+	</t:test>
+
+		<t:test>
+		<t:request>
+			<ModifyDataSourceRequest xmlns="urn:zimbraMail" id="0">
+				<pop3 id="${pop3_account2.id}" name="${pop3.space}"/>
+			</ModifyDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:ModifyDataSourceResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDataSourceRequest xmlns="urn:zimbraMail" id="0">
+				<pop3 id="${pop3_account2.id}" name="${pop3.negative}"/>
+			</ModifyDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:ModifyDataSourceResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDataSourceRequest xmlns="urn:zimbraMail" id="0">
+				<pop3 id="${pop3_account2.id}" name="${pop3.largenumber}"/>
+			</ModifyDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:ModifyDataSourceResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDataSourceRequest xmlns="urn:zimbraMail" id="0">
+				<pop3 id="${pop3_account2.id}" name="${pop3.spchar}"/>
+			</ModifyDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:ModifyDataSourceResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDataSourceRequest xmlns="urn:zimbraMail" id="0">
+				<pop3 id="${pop3_account2.id}" name="${pop3.zero}"/>
+			</ModifyDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:ModifyDataSourceResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_modify3" type="functional">
+	<t:objective>Modify a pop3 account such that the mails are removed from the server.</t:objective>
+	
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="${pop3account3.name}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder3.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account3.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDataSourceRequest xmlns="urn:zimbraMail" id="0">
+				<pop3 id="${pop3_account3.id}" leaveOnServer="${pop3.false}"/>
+			</ModifyDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:ModifyDataSourceResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DataSource_modify4" type="functional">
+	<t:objective>Modify the folder of a pop3 account</t:objective>
+	
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder4.name}" l="${parentfolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<pop3 name="${pop3account4.name}" isEnabled="${pop3.true}" host="${POP3.gmail.host}" port="${POP3.gmail.port}" username="${POP3.gmail.username}" password="${POP3.gmail.password}" l="${folder4.id}" connectionType="${POP3.gmail.connectionType}" leaveOnServer="${pop3.true}"/>
+			</CreateDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:CreateDataSourceResponse/mail:pop3" attr="id" set="pop3_account4.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDataSourceRequest xmlns="urn:zimbraMail" id="0">
+				<pop3 id="${pop3_account4.id}" l="${parentfolder.id}"/>
+			</ModifyDataSourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:ModifyDataSourceResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,176 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2925D8FE-1A66-4E02-8B80-EA5CFA10A112}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SyncHarness</RootNamespace>
+    <AssemblyName>SyncHarness</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DLL\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="nunit.framework, Version=2.4.7.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SOAP\Admin\AddAccountAliasRequest.cs" />
+    <Compile Include="SOAP\Admin\AddDistListMemberRequest.cs" />
+    <Compile Include="SOAP\Admin\AuthRequest.cs" />
+    <Compile Include="SOAP\Admin\BackupRequest.cs" />
+    <Compile Include="SOAP\Admin\CreateAccountRequest.cs" />
+    <Compile Include="SOAP\Admin\CreateCalendarResourceRequest.cs" />
+    <Compile Include="SOAP\Admin\CreateCosRequest.cs" />
+    <Compile Include="SOAP\Admin\CreateDistributionListRequest.cs" />
+    <Compile Include="SOAP\Admin\CreateDomainRequest.cs" />
+    <Compile Include="SOAP\Admin\DeleteAccountRequest.cs" />
+    <Compile Include="SOAP\Admin\GetAccountRequest.cs" />
+    <Compile Include="SOAP\Admin\GetConfigRequest.cs" />
+    <Compile Include="SOAP\Admin\GetMailQueueInfoRequest.cs" />
+    <Compile Include="SOAP\Admin\GetMailQueueRequest.cs" />
+    <Compile Include="SOAP\Admin\MailQueueActionRequest.cs" />
+    <Compile Include="SOAP\Admin\MailQueueFlushRequest.cs" />
+    <Compile Include="SOAP\Admin\ModifyAccountRequest.cs" />
+    <Compile Include="SOAP\Admin\ModifyConfigRequest.cs" />
+    <Compile Include="SOAP\Admin\PingRequest.cs" />
+    <Compile Include="SOAP\Admin\RenameAccountRequest.cs" />
+    <Compile Include="SOAP\Admin\RestoreRequest.cs" />
+    <Compile Include="SOAP\Client\AddMsgRequest.cs" />
+    <Compile Include="SOAP\Client\AppointmentActionRequest.cs" />
+    <Compile Include="SOAP\Client\AuthRequest.cs" />
+    <Compile Include="SOAP\Client\ContactActionRequest.cs" />
+    <Compile Include="SOAP\Client\ConvActionRequest.cs" />
+    <Compile Include="SOAP\Client\CreateAppointmentExceptionRequest.cs" />
+    <Compile Include="SOAP\Client\CreateAppointmentRequest.cs" />
+    <Compile Include="SOAP\Client\CreateContactRequest.cs" />
+    <Compile Include="SOAP\Client\CreateFolderRequest.cs" />
+    <Compile Include="SOAP\Client\CreateTagRequest.cs" />
+    <Compile Include="SOAP\Client\CreateTaskRequest.cs" />
+    <Compile Include="SOAP\Client\FolderActionRequest.cs" />
+    <Compile Include="SOAP\Client\GetAppointmentRequest.cs" />
+    <Compile Include="SOAP\Client\GetContactRequest.cs" />
+    <Compile Include="SOAP\Client\GetFolderRequest.cs" />
+    <Compile Include="SOAP\Client\GetFreeBusyRequest.cs" />
+    <Compile Include="SOAP\Client\GetMsgRequest.cs" />
+    <Compile Include="SOAP\Client\GetTagRequest.cs" />
+    <Compile Include="SOAP\Client\IMAuthorizeSubscribeRequest.cs" />
+    <Compile Include="SOAP\Client\IMGatewayListRequest.cs" />
+    <Compile Include="SOAP\Client\IMGetChatRequest.cs" />
+    <Compile Include="SOAP\Client\IMGetRosterRequest.cs" />
+    <Compile Include="SOAP\Client\IMModifyChatRequest.cs" />
+    <Compile Include="SOAP\Client\ImportContactsRequest.cs" />
+    <Compile Include="SOAP\Client\IMSendMessageRequest.cs" />
+    <Compile Include="SOAP\Client\IMSubscribeRequest.cs" />
+    <Compile Include="SOAP\Client\ItemActionRequest.cs" />
+    <Compile Include="SOAP\Client\ModifyAppointmentRequest.cs" />
+    <Compile Include="SOAP\Client\ModifyContactRequest.cs" />
+    <Compile Include="SOAP\Client\MsgActionRequest.cs" />
+    <Compile Include="SOAP\Client\NoOpRequest.cs" />
+    <Compile Include="SOAP\Client\SaveDraftRequest.cs" />
+    <Compile Include="SOAP\Client\SearchRequest.cs" />
+    <Compile Include="SOAP\Client\SendMsgRequest.cs" />
+    <Compile Include="SOAP\Client\SyncGalRequest.cs" />
+    <Compile Include="SOAP\Client\SyncRequest.cs" />
+    <Compile Include="SOAP\RequestBody.cs" />
+    <Compile Include="SOAP\RequestContext.cs" />
+    <Compile Include="SOAP\SoapTest.cs" />
+    <Compile Include="SyncHarness\Attributes\BugAttribute.cs" />
+    <Compile Include="SyncHarness\Attributes\NotesAttribute.cs" />
+    <Compile Include="SyncHarness\Attributes\SyncDirectionAttribute.cs" />
+    <Compile Include="SyncHarness\Attributes\TestStepsAttribute.cs" />
+    <Compile Include="SyncHarness\MonitorCPU.cs" />
+    <Compile Include="SyncHarness\GlobalProperties.cs" />
+    <Compile Include="SyncHarness\HarnessException.cs" />
+    <Compile Include="SyncHarness\MailInject.cs" />
+    <Compile Include="SyncHarness\MonitorPopups.cs" />
+    <Compile Include="SyncHarness\NativeHelper.cs" />
+    <Compile Include="SyncHarness\OutlookCommands.cs" />
+    <Compile Include="SyncHarness\OutlookConnection.cs" />
+    <Compile Include="SyncHarness\OutlookInstaller.cs" />
+    <Compile Include="SyncHarness\OutlookMailbox.cs" />
+    <Compile Include="SyncHarness\OutlookProcess.cs" />
+    <Compile Include="SyncHarness\OutlookProfile.cs" />
+    <Compile Include="SyncHarness\OutlookRedemption.cs" />
+    <Compile Include="SyncHarness\RestServlet.cs" />
+    <Compile Include="SyncHarness\Screenshot.cs" />
+    <Compile Include="SyncHarness\StafProcess.cs" />
+    <Compile Include="SyncHarness\TestCaseLog.cs" />
+    <Compile Include="SyncHarness\UploadServlet.cs" />
+    <Compile Include="SyncHarness\UtilFunctions.cs" />
+    <Compile Include="SyncHarness\zAccount.cs" />
+    <Compile Include="SyncHarness\zAssert.cs" />
+    <Compile Include="SyncHarness\zTimeZoneInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="Outlook">
+      <Guid>{00062FFF-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>9</VersionMajor>
+      <VersionMinor>2</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="Redemption">
+      <Guid>{2D5E2D34-BED5-4B9F-9793-A31E26E6806E}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

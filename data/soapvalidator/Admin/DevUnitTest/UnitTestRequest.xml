@@ -1,0 +1,340 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="user1.user" value="user1@${defaultdomain.name}"/>
+<t:property name="user2.user" value="user2@${defaultdomain.name}"/>
+<t:property name="user3.user" value="user3@${defaultdomain.name}"/>
+<t:property name="user4.user" value="user4@${defaultdomain.name}"/>
+<t:property name="zimbra.home.dir" value="/opt/zimbra"/>
+
+<t:test_case testcaseid="UnitTest_Setup" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test  >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user1.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>       
+    </t:test>  
+    
+     <t:test id="getAccountInfoRequest1a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+              <account by="name">${user1.user}</account>
+       		</GetAccountInfoRequest>
+	    </t:request>
+	    <t:response>             
+	          <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']"  set="user1.id" />
+	    </t:response>
+     </t:test>
+        
+     <t:test>
+        <t:request id="deleteAccountRequest1a">
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${user1.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user1.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+   </t:test>
+   
+   <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user2.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>       
+    </t:test>  
+   
+    <t:test id="getAccountInfoRequest2a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+              <account by="name">${user2.user}</account>
+       		</GetAccountInfoRequest>
+	    </t:request>
+	    <t:response>             
+	          <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']"  set="user2.id" />
+	    </t:response>
+     </t:test>
+     
+     <t:test  id="deleteAccountRequest2a">
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${user2.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user2.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user3.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>       
+    </t:test>   
+
+ 	<t:test id="getAccountInfoRequest3a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+              <account by="name">${user3.user}</account>
+       		</GetAccountInfoRequest>
+	    </t:request>
+	    <t:response>             
+	          <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']"  set="user3.id" />
+	    </t:response>
+    </t:test>
+     
+    <t:test id="deleteAccountRequest3a">
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${user3.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user3.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user4.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>       
+    </t:test>  
+    
+    <t:test id="getAccountInfoRequest4a">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+              <account by="name">${user4.user}</account>
+       		</GetAccountInfoRequest>
+	    </t:request>
+	    <t:response>             
+	          <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']"  set="user4.id" />
+	    </t:response>
+     </t:test>
+     
+     <t:test id="deleteAccountRequest4a">
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${user4.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+   
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${user4.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+
+<!-- Make sure non-admin auth is not allowed to run tests -->
+
+<t:property name="uri" value="${mailclient.uri}"/>
+
+<t:property name="uri" value="${admin.uri}"/>
+
+<t:test_case testcaseid="RunUnitTestsRequest1" type="smoke">
+  <t:objective>Make sure user is not allowed to run unit tests</t:objective>
+  
+  <!-- Login to user account -->
+   <t:test id="user_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${user1.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+   </t:test>
+    
+   <t:test id="runUnitTests">
+	    <t:request>
+	      	<RunUnitTestsRequest xmlns="urn:zimbraAdmin"/>
+	    </t:request>
+	    <t:response>
+	      	<t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.PERM_DENIED"/>
+	    </t:response>
+  </t:test>
+  
+</t:test_case>
+
+<!-- Do admin auth and run tests -->
+<t:property name="Testdata.folder" value="${testMailRaw.root}/DevUnitTestData"/>
+
+<t:test_case testcaseid="Copy_Unittest_Rawdata" type="always">
+    <t:objective>Copy the required unittest raw data </t:objective>
+
+    <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+   <t:staftask >
+		<t:request>
+			<server>${account1.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "cp -r /opt/qa/soapvalidator/data/TestMailRaw/unittest  ${zimbra.home.dir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${account1.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "cp -r /opt/qa/soapvalidator/data/TestMailRaw/Junit/*  /opt/zimbra/jetty/common/lib " RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+   
+   <t:staftask >
+		<t:request>
+			<server>${account1.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "chmod 777 -R ${zimbra.home.dir}/unittest/" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+   </t:staftask>
+
+  <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${Testdata.folder}</foldername>
+			<to>${user1.user}</to>
+			<from>"ho@example.zimbra.com"</from>
+			<server>${account1.server}</server>
+            <modify>
+                <header a="To">${user1.user}</header>
+                <header a="From">"ho@example.zimbra.com"</header>                
+            </modify>
+        </t:lmtpInjectRequest>
+   </t:mailinjecttest>
+   
+   <t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
+		</t:request>
+	</t:staftask>
+
+</t:test_case>
+
+<t:test_case testcaseid="RunUnitTestsRequest2" type="smoke" bugids="54812">   
+    <t:objective>Execute the internal Unit Tests </t:objective>
+
+	<t:test id="runUnitTests">
+		 <t:request>
+		  	<RunUnitTestsRequest xmlns="urn:zimbraAdmin"/>
+		 </t:request>
+		 <t:response>
+			<t:select path="//admin:RunUnitTestsResponse" attr="numFailed" match="^0$"/>
+		 </t:response>
+	</t:test>
+	
+	<t:staftask >
+		<t:request>
+			<server>${account1.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "rm /opt/zimbra/jetty-6.1.22.z6/common/lib/junit*.* " RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
+		</t:request>
+	</t:staftask>
+
+</t:test_case>
+
+</t:tests>

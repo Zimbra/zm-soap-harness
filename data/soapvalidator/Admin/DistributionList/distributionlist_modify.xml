@@ -1,0 +1,460 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="domain" value="dl.example.com${COUNTER}${TIME}"/>
+<t:property name="list1" value="test@${domain}"/>
+<t:property name="list2" value="humor@${domain}"/>
+<t:property name="list3" value="list@${domain}"/>
+<t:property name="list4" value="DistributionList@${domain}"/>
+
+<t:property name="alias.name" value="Alias.${TIME}.${COUNTER}@${domain}"/>
+
+<t:property name="spchar" value="!^*()_+"/>
+<t:property name="sometext" value="abcd"/>
+<t:property name="number" value="1234"/>
+<t:property name="zero" value="0"/>
+<t:property name="negative" value="-2"/>
+<t:property name="decimal" value="2.4"/>
+<t:property name="blank" value=""/>
+
+<t:test_case testcaseid = "Ping" type = "always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+ 
+
+<t:test_case testcaseid = "acctSetup1_distributionlist_modify" type = "always">
+    <t:objective>Create a distribution list </t:objective>
+    <t:steps> 1. Login to admin
+              2. Create a test domain
+              3. Create a DL
+    </t:steps>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain}</name>
+                <a n="zimbraNotes">Domain for distribution list testing</a>
+            </CreateDomainRequest>
+        </t:request>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list1}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest1" type = "smoke">
+    <t:objective> ModifyDistributionListRequest with valid description </t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="description">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDistributionListResponse"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest2" type = "smoke">
+    <t:objective> ModifyDistributionListRequest with valid zimbraNotes </t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDistributionListResponse"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest3" type = "negative">
+    <t:objective> Try to modify deleted Distribution List </t:objective>
+    <t:steps> 1. Create a DL
+              2. Delete the Distribution List
+              3. Try to modify the deleted Distribution List, it should give error message
+    </t:steps>
+
+    <t:test id="ModifyDistributionListRequest3a">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list2}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="ModifyDistributionListRequest3b" depends="ModifyDistributionListRequest3a">
+        <t:request>
+            <DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+            </DeleteDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDistributionListResponse"/>
+        </t:response>
+    </t:test>
+ 
+   <t:test depends="ModifyDistributionListRequest3b">
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest4" type = "negative">
+    <t:objective> ModifyDistributionListRequest with invalid id (sometext/spchar/number/negative/decimal/blank/zero) </t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${sometext}</id>
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${spchar}</id>
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${number}</id>
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${negative}</id>
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${decimal}</id>
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${blank}</id>
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${zero}</id>
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest5" type = "negative">
+    <t:objective> ModifyDistributionListRequest without specifying attribute id </t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraNotes">A test distribution list</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest6" type = "negative">
+    <t:objective> ModifyDistributionListRequest for modifying attribute "objectClass"  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="objectClass">zimbraMailRecipientlist</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST|^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest7" type = "negative">
+    <t:objective> ModifyDistributionListRequest for modifying attribute uid  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="uid">${sometext}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest8" type = "negative">
+    <t:objective> ModifyDistributionListRequest for modifying attribute "zimbraId"</t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraId">${number}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest9" type = "functional">
+    <t:objective> ModifyDistributionListRequest for modifying attribute zimbraMailStatus to enabled/disabled</t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraMailStatus">enabled</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDistributionListResponse"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraMailStatus">disabled</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDistributionListResponse"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest10" type = "negative">
+    <t:objective> ModifyDistributionListRequest for modifying attribute mail</t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="mail">${alias.name}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyDistributionListRequest11" type = "negative">
+    <t:objective> ModifyDistributionListRequest for modifying attribute zimbraMailStatus to (sometext/spchar/number/negative/decimal/blank/zero)</t:objective>
+    
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraMailStatus">${sometext}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraMailStatus">${spchar}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraMailStatus">${number}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraMailStatus">${negative}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraMailStatus">${decimal}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraMailStatus">${blank}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDistributionListResponse"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <a n="zimbraMailStatus">${zero}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

@@ -1,0 +1,446 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="lastname" value="last${TIME}${COUNTER}"/>
+
+<!-- GalXXX are sample GAL acccounts -->
+<t:property name="gal1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="gal2.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<!-- ContactXXX are destinations on the server (used for local contacts) -->
+<t:property name="contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${gal1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${firstname} ${lastname}</a>
+				<a n="givenName">${firstname}</a>
+				<a n="sn">${lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="gal1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="gal1.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${gal2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${firstname} ${lastname}</a>
+				<a n="givenName">${firstname}</a>
+				<a n="sn">${lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="gal2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="gal2.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${contact1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${firstname} ${lastname}</a>
+				<a n="givenName">${firstname}</a>
+				<a n="sn">${lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="contact1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="contact1.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefGalAutoCompleteEnabled">${globals.true}</a>
+                <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefGalAutoCompleteEnabled">${globals.true}</a>
+                <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefGalAutoCompleteEnabled">${globals.true}</a>
+                <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+		</t:response>
+    </t:test>  
+
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="AutoCompleteRequest_GAL_Ranking_01" type="smoke" >
+    <t:objective>Verify ranking in AutoCompleteResponse based on email frequency</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Send 1 mail to gal1
+	3. Send 2 mails to gal2
+	6. Send AutoCompleteRequest, verify gal2 has higher ranking than gal1
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${gal1.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${gal2.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${gal2.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[1]" attr="email" match=".*${gal2.name}.*"/>
+ 				<t:select path="//mail:match[2]" attr="email" match=".*${gal1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_GAL_Ranking_02" type="smoke" bugids="46476" >
+    <t:objective>Verify contact appears higher than local contacts if more messages sent to contact</t:objective>
+	<t:steps>
+	1. Login as account2
+	2. Send 1 mails to gal1
+	3. Send 2 mails to contact1
+	4. Send AutoCompleteRequest, verify contact1 has higher ranking than gal1
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${firstname}</a>
+                    <a n="lastName">${lastname}</a>
+                    <a n="email">${contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${gal1.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${contact1.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${contact1.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[1]" attr="email" match=".*${contact1.name}.*"/>
+ 				<t:select path="//mail:match[2]" attr="email" match=".*${gal1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_GAL_Ranking_03" type="smoke" bugids="46476">
+    <t:objective>Verify GAL appears higher than local contacts if more messages sent to GAL</t:objective>
+	<t:steps>
+	1. Login as account3
+	3. Send 1 mails to contact1
+	2. Send 2 mails to gal1
+	6. Send AutoCompleteRequest, verify gla1 has higher ranking than contact1
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${firstname}</a>
+                    <a n="lastName">${lastname}</a>
+                    <a n="email">${contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${contact1.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${gal1.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${gal1.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[1]" attr="email" match=".*${gal1.name}.*"/>
+ 				<t:select path="//mail:match[2]" attr="email" match=".*${contact1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+</t:tests>

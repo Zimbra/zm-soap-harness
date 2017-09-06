@@ -1,0 +1,536 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Login to admin </t:objective>
+    <steps> 1. Login to admin account 
+            2. Create a test account
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="account2.authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+
+
+	<t:property name="account2.folder.name" value="folder${TIME}${COUNTER}"/>
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="1" name="${account2.folder.name}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account2.folder1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account2.folder1.id}" op="grant">
+                    <grant d="${account1.name}" gt="usr" perm="rwidax"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="account1.authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="1" name="${account2.name}.${account2.folder.name}" view="message" rid="${account2.folder1.id}" zid="${account2.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account1.mount1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+<t:test_case testcaseid="NoOpRequest_delegate_01" type="functional" bugids="22369">
+    <t:objective>Send NoOpRequest with delegate=0, no delegate changes should be returned </t:objective>
+    <t:steps>
+    1. Login as account1, send NoOp to clear out pending notifications
+    2. Login as account2, send NoOp to clear out pending notifications
+    3. Login as account1, send hanging NoOp with delegate=0
+    4. Login as account2, modify a message in the shared folder 
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+    <t:test >
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+
+    <t:test >
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+    <t:test >
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail" wait="1" delegate="0" timeout="35000"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+
+    <t:test concurrent="true" timeframeMax="40000" timeframeMin="30000">
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail" wait="1" delegate="0" timeout="35000"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<!-- 
+		authToken/session are not thread safe.  
+		Wait 2 seconds to make sure the NoOpRequest was sent first.
+	-->
+	<t:delay msec="2000"/> 
+	
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account2.folder1.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+
+
+	<!-- 
+		Wait here for the NoOpRequest to return for account1
+		It should take 35 seconds
+	-->	
+
+</t:test_case>
+
+
+<t:test_case testcaseid="NoOpRequest_delegate_02" type="functional">
+    <t:objective>Send NoOpRequest with delegate=1, delegate changes should be returned immediately</t:objective>
+    <t:steps>
+    1. Login as account1, send NoOp to clear out pending notifications
+    2. Login as account2, send NoOp to clear out pending notifications
+    3. Login as account1, send hanging NoOp with delegate=1
+    4. Login as account2, modify a message in the shared folder.  Verify account1 receives the notification immediately
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+    <t:test >
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+
+    <t:test >
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+    <t:test concurrent="true" timeframeMax="10000">
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail" wait="1" delegate="1" timeout="35000"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<!-- 
+		authToken/session are not thread safe.  
+		Wait 2 seconds to make sure the NoOpRequest was sent first.
+	-->
+	<t:delay msec="2000"/> 
+	
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account2.folder1.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+
+
+	<!-- 
+		Wait here for the NoOpRequest to return for account1
+		It should take 2 seconds
+	-->	
+
+</t:test_case>
+
+<t:test_case testcaseid="NoOpRequest_delegate_02" type="functional">
+    <t:objective>Send NoOpRequest with delegate=1, delegate changes should be returned immediately</t:objective>
+    <t:steps>
+    1. Login as account1, send NoOp to clear out pending notifications
+    2. Login as account2, send NoOp to clear out pending notifications
+    3. Login as account1, send hanging NoOp with delegate=1
+    4. Login as account2, modify a message in the shared folder.  Verify account1 receives the notification immediately
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+    <t:test >
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+
+    <t:test >
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+    <t:test concurrent="true" timeframeMax="10000">
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail" wait="1" delegate="1" timeout="35000"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<!-- 
+		authToken/session are not thread safe.  
+		Wait 2 seconds to make sure the NoOpRequest was sent first.
+	-->
+	<t:delay msec="2000"/> 
+	
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account2.folder1.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+
+
+	<!-- 
+		Wait here for the NoOpRequest to return for account1
+		It should take 2 seconds
+	-->	
+
+</t:test_case>
+
+<t:test_case testcaseid="NoOpRequest_delegate_03" type="functional">
+    <t:objective>Send NoOpRequest without delegate (default: delegate=1), delegate changes should be returned immediately</t:objective>
+    <t:steps>
+    1. Login as account1, send NoOp to clear out pending notifications
+    2. Login as account2, send NoOp to clear out pending notifications
+    3. Login as account1, send hanging NoOp without delegate
+    4. Login as account2, modify a message in the shared folder.  Verify account1 receives the notification immediately
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+    <t:test >
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+
+    <t:test >
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+    <t:test concurrent="true" timeframeMax="10000">
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail" wait="1" timeout="35000"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<!-- 
+		authToken/session are not thread safe.  
+		Wait 2 seconds to make sure the NoOpRequest was sent first.
+	-->
+	<t:delay msec="2000"/> 
+	
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account2.folder1.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+
+
+	<!-- 
+		Wait here for the NoOpRequest to return for account1
+		It should take 2 seconds
+	-->	
+
+</t:test_case>
+
+</t:tests>
+
+

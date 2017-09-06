@@ -1,0 +1,451 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="contact.blank" value=""/>
+<t:property name="contact.firstname" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact.lastname" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact.mailid" value="email.${TIME}.${COUNTER}"/>
+
+<t:property name="contact1.firstname" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact1.lastname" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact1.mailid" value="email.${TIME}.${COUNTER}@domain.com"/>
+
+<t:property name="contact2.firstname1" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact2.lastname1" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact2.firstname2" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact2.lastname2" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact2.mailid" value="email.${TIME}.${COUNTER}@domain.com"/>
+
+<t:property name="contact2.email" value="email.${TIME}.${COUNTER}@domain.com"/>
+<t:property name="contact3.email" value="email.${TIME}.${COUNTER}@domain.com"/>
+<t:property name="folder.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder.pname" value="1"/> <!-- Folder's parent ID -->
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+<t:test id="ping" required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+ <t:objective>create test account</t:objective>
+
+<t:test id="admin_login" required="true" >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAdmin">
+    <name>${admin.user}</name>
+    <password>${admin.password}</password>
+  </AuthRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+ </t:response>
+</t:test>
+
+<t:test required="true" >
+ <t:request>
+  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+    <name>${test_account1.name}</name>
+    <password>${test_account1.password}</password>
+  </CreateAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+       <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+ <t:objective>login as the test account</t:objective>
+
+<t:test required="true">
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${test_account1.name}</account>
+    <password>${test_account1.password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+ </t:response>
+</t:test>
+</t:test_case>
+<t:test_case testcaseid="GetContactsRequest1" bugids="2532" type="smoke" >
+ <t:objective>get contact with specific id </t:objective>
+
+<t:test id="getcontacts1a">
+ <t:request>
+   <CreateContactRequest xmlns="urn:zimbraMail">
+     <cn>
+     	<a n="firstName">First.${TIME}.${COUNTER}</a>
+     	<a n="lastName">Last.${TIME}.${COUNTER}</a>
+     	<a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+     </cn>     
+   </CreateContactRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateContactResponse/mail:cn">
+	  <t:select attr="id" set="contact.id"/>
+	</t:select>	
+ </t:response>
+</t:test>
+
+<t:test depends="getcontacts1a">
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+        <cn id="${contact.id}"/>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetContactsResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetContactsRequest2" bugids="2532" type="functional" >
+ <t:objective>get contact with non existing id </t:objective>
+ <t:steps>create the contact, delete the contact, GetContactsRequest with the id</t:steps>
+
+<t:test id="getcontacts2a">
+ <t:request>
+   <CreateContactRequest xmlns="urn:zimbraMail">
+     <cn>
+     	<a n="firstName">First.${TIME}.${COUNTER}</a>
+     	<a n="lastName">Last.${TIME}.${COUNTER}</a>
+     	<a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+     </cn>     
+   </CreateContactRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateContactResponse/mail:cn">
+	  <t:select attr="id" set="contact.id"/>
+	</t:select>	
+ </t:response>
+</t:test>
+
+<t:test id="getcontacts2b" depends="getcontacts2a" >
+ 	<t:request>
+		<ContactActionRequest xmlns="urn:zimbraMail">
+		<action id="${contact.id}" op="delete"/>
+		</ContactActionRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//mail:ContactActionResponse/mail:action"/>
+ 	</t:response>
+</t:test>
+
+<t:test depends="getcontacts2b">
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+        <cn id="${contact.id}"/>
+   </GetContactsRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//zimbra:Code"  match="^mail.NO_SUCH_CONTACT"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetContactsRequest3" type="functional" bugids="1687, 1744, 2532" >
+ <t:objective>get contact with specific id leading space </t:objective>
+ <t:steps>create the contact, then get the contact with leading spaces </t:steps>
+
+<t:test id="getcontacts3a">
+ <t:request>
+   <CreateContactRequest xmlns="urn:zimbraMail">
+     <cn>
+     	<a n="firstName">First.${TIME}.${COUNTER}</a>
+     	<a n="lastName">Last.${TIME}.${COUNTER}</a>
+     	<a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+     </cn>     
+   </CreateContactRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateContactResponse/mail:cn">
+	  <t:select attr="id" set="contact.id"/>
+	</t:select>	
+ </t:response>
+</t:test>
+
+<t:test depends="getcontacts3a">
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+        <cn id="   ${contact.id}"/>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetContactsRequest4" type="functional" bugids="1687, 1744, 2532" >
+ <t:objective>get contact with specific id trailing space </t:objective>
+ <t:steps>create the contact, then get the contact with trailing spaces </t:steps>
+
+<t:test id="getcontacts4a">
+ <t:request>
+   <CreateContactRequest xmlns="urn:zimbraMail">
+     <cn>
+     	<a n="firstName">First.${TIME}.${COUNTER}</a>
+     	<a n="lastName">Last.${TIME}.${COUNTER}</a>
+     	<a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+     </cn>     
+   </CreateContactRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateContactResponse/mail:cn">
+	  <t:select attr="id" set="contact.id"/>
+	</t:select>	
+ </t:response>
+</t:test>
+
+<t:test depends="getcontacts4a">
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+        <cn id="${contact.id}   "/>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetContactsRequest5" type="negative" bugids="1687, 1744, 2532" >
+ <t:objective>get contact with blank id </t:objective>
+
+<t:test >
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+        <cn id="${contact.blank}"/>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetContactsRequest6" bugids="2532" type="smoke" >
+ <t:objective>GetContactsRequest with  n="..." usage  </t:objective>
+ <t:steps> </t:steps>
+
+	<t:test id="getcontactsrequest1a">
+	 <t:request>
+	   <CreateContactRequest xmlns="urn:zimbraMail">
+	     <cn>
+		<a n="email">${contact2.email}</a>
+	     </cn>     
+	   </CreateContactRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateContactResponse/mail:cn"/>
+	 </t:response>
+	</t:test>
+
+	<t:test id="getcontactsrequest1b">
+	 <t:request>
+	   <CreateContactRequest xmlns="urn:zimbraMail">
+	     <cn>
+		<a n="email">${contact3.email}</a>
+	     </cn>     
+	   </CreateContactRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateContactResponse/mail:cn"/>
+	 </t:response>
+	</t:test>
+
+	<t:test depends="getcontactsrequest1a,getcontactsrequest1b">
+	 <t:request>
+	   <GetContactsRequest xmlns="urn:zimbraMail">
+	     <a n="email"/>
+	   </GetContactsRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetContactsResponse/mail:cn">
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetContactsRequest7" bugids="2532" type="smoke" >
+ <t:objective>get contact with specific id and sync="1"</t:objective>
+
+<t:test id="getcontacts7a">
+ <t:request>
+   <CreateContactRequest xmlns="urn:zimbraMail">
+     <cn>
+     	<a n="firstName">First.${TIME}.${COUNTER}</a>
+     	<a n="lastName">Last.${TIME}.${COUNTER}</a>
+     	<a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+     </cn>     
+   </CreateContactRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateContactResponse/mail:cn">
+	  <t:select attr="id" set="contact7.id"/>
+	</t:select>	
+ </t:response>
+</t:test>
+
+<t:test depends="getcontacts7a">
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail">
+        <cn id="${contact7.id}"/>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetContactsResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetContactsRequest8" type="smoke" bugid="7344" >
+ <t:objective>get contact with specific folder id </t:objective>
+
+<t:test id="GetContactsRequest8a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
+        </t:response>
+</t:test>
+
+<t:test id="GetContactsRequest8b">
+ <t:request>
+   <CreateContactRequest xmlns="urn:zimbraMail">
+     <cn l="${folder.id}">
+     	<a n="firstName">First.${TIME}.${COUNTER}</a>
+     	<a n="lastName">Last.${TIME}.${COUNTER}</a>
+     	<a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+     </cn>     
+   </CreateContactRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:CreateContactResponse/mail:cn">
+	  <t:select attr="id" set="contact8.id"/>
+	</t:select>	
+ </t:response>
+</t:test>
+
+<t:test depends="GetContactsRequest8b">
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail" l="${folder.id}">
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+	<t:select path="//mail:GetContactsResponse"/>
+ </t:response>
+</t:test>
+
+<t:test id="GetContactsRequest8c">
+ <t:request>
+   <CreateContactRequest xmlns="urn:zimbraMail">
+     <cn l="${folder.id}">
+        <a n="firstName">First.${TIME}.${COUNTER}</a>
+        <a n="lastName">Last.${TIME}.${COUNTER}</a>
+        <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+        <a n="homeUrl">javascript:alert(document.domain)//</a>
+        <a n="otherUrl">javascript:alert(document.domain)//</a>
+        <a n="workUrl">javascript:alert(document.domain)//</a>
+     </cn>
+   </CreateContactRequest>
+ </t:request>
+  <t:response>
+    <t:select path="//mail:CreateContactResponse/mail:cn">
+      <t:select attr="id" set="contact8.id"/>
+    </t:select>
+ </t:response>
+</t:test>
+
+<t:test depends="GetContactsRequest8c">
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail" l="${folder.id}">
+   <cn id="${contact8.id}"></cn>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+    <t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='homeUrl']"  match="^JAVASCRIPT-BLOCKED.*"/>
+    <t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='otherUrl']"  match="^JAVASCRIPT-BLOCKED.*"/>
+    <t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='workUrl']"  match="^JAVASCRIPT-BLOCKED.*"/>
+ </t:response>
+</t:test>
+
+<t:test id="GetContactsRequest8c">
+ <t:request>
+   <CreateContactRequest xmlns="urn:zimbraMail">
+     <cn l="${folder.id}">
+        <a n="firstName">First.${TIME}.${COUNTER}</a>
+        <a n="lastName">Last.${TIME}.${COUNTER}</a>
+        <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+        <a n="homeUrl">vbscript:alert(document.domain)//</a>
+        <a n="otherUrl">vbscript:alert(document.domain)//</a>
+        <a n="workUrl">vbscript:alert(document.domain)//</a>
+     </cn>
+   </CreateContactRequest>
+ </t:request>
+  <t:response>
+    <t:select path="//mail:CreateContactResponse/mail:cn">
+      <t:select attr="id" set="contact8.id"/>
+    </t:select>
+ </t:response>
+</t:test>
+
+<t:test depends="GetContactsRequest8c">
+ <t:request>
+   <GetContactsRequest xmlns="urn:zimbraMail" l="${folder.id}">
+   <cn id="${contact8.id}"></cn>
+   </GetContactsRequest>
+ </t:request>
+  <t:response>
+    <t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='homeUrl']"  match="^VBSCRIPT-BLOCKED.*"/>
+    <t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='otherUrl']"  match="^VBSCRIPT-BLOCKED.*"/>
+    <t:select path="//mail:GetContactsResponse/mail:cn/mail:a[@n='workUrl']"  match="^VBSCRIPT-BLOCKED.*"/>
+ </t:response>
+</t:test>
+</t:test_case>
+</t:tests>

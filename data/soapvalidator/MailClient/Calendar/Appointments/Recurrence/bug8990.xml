@@ -1,0 +1,443 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="TZ" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateRecurrApptRequest_bug8990_01" type="smoke" areas="Calendar" bugids="8990">
+    <t:objective>Verify recurring with BYMONTHDAY=31 happens on all months</t:objective>
+	<t:steps>
+	1. Create an appointment
+		A. bymonthday modaylist=31
+		B. 9 occurrences
+	2. Check each month (aug 2006 to apr 2007) - there should be instances
+	3. Check the 10th month (may 2007) - no instance	
+	</t:steps>
+	<!--
+	http://bugzilla.zimbra.com/show_bug.cgi?id=8990#c16
+	
+	11/4/2007 - Per comment #16, now appointments appear on the 
+	last day of the month if bymonthday modaylist="31" is used
+	
+	-->
+
+    
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="appointment.start" value="1157025600000"/>		<!-- 8/31/2006 12:00:00 -->
+	<t:property name="appointment.subject" value="bymonthday modaylist=31 ${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="bymonthday modaylist=31 ${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+		<CreateAppointmentRequest xmlns="urn:zimbraMail">
+			<m d="1153482055895">
+				<inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}" >
+					<s d="${ICALTIME[${appointment.start}]}" tz="${TZ}"/>
+					<e d="${ICALTIME(+1h)[${appointment.start}]}"  tz="${TZ}"/>
+					<or a="${account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="MON">
+								<interval ival="1"/>
+								<count num="9"/>
+								<bymonthday modaylist="31"/>
+								<x-name name="repeatCustomType" value="S"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<mp ct="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment.subject}</su>
+			</m>
+		</CreateAppointmentRequest>
+    </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <!-- Check 8/31/2006: inst -->
+    <!-- Check 9/30/2006: inst-->
+    <!-- Check 10/31/2006: inst -->
+    <!-- Check 11/30/2006: inst-->
+    <!-- Check 12/31/2006: inst -->
+    <!-- Check 1/31/2007: inst -->
+    <!-- Check 2/28/2007: inst -->
+    <!-- Check 3/31/2007: inst -->
+    <!-- Check 4/30/2007: inst -->
+    <!-- Check 5/31/2007: none --> <!-- only 9 instances -->
+	<t:property name="appointment.august.start" value="1157025600000"/>		<!-- 8/31/2006 12:00:00 -->
+	<t:property name="appointment.august.start.gmt" value="${TIME(+8h)(-1h)[${appointment.august.start}]}"/>
+	<t:property name="appointment.september.start" value="1159617600000"/>		
+	<t:property name="appointment.october.start" value="1162296000000"/>		
+	<t:property name="appointment.october.start.gmt" value="${TIME(+8h)(-1h)[${appointment.october.start}]}"/>
+	<t:property name="appointment.november.start" value="1164888000000"/>		
+	<t:property name="appointment.december.start" value="1167566400000"/>		
+	<t:property name="appointment.december.start.gmt" value="${TIME(+8h)[${appointment.december.start}]}"/>
+	<t:property name="appointment.january.start" value="1170244800000"/>		
+	<t:property name="appointment.january.start.gmt" value="${TIME(+8h)[${appointment.january.start}]}"/>
+	<t:property name="appointment.february.start" value="1172664000000"/>		
+	<t:property name="appointment.march.start" value="1175342400000"/>		
+	<t:property name="appointment.march.start.gmt" value="${TIME(+8h)(-1h)[${appointment.march.start}]}"/>
+	<t:property name="appointment.april.start" value="1177934400000"/>		
+	<t:property name="appointment.may.start" value="1180612800000"/>		
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.august.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.august.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.august.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.september.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.september.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.october.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.october.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.october.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.november.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.november.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.december.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.december.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.december.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.january.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.january.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.january.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.february.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.february.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.march.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.march.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.march.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.april.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.april.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.may.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.may.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateRecurrApptRequest_bug8990_02" type="smoke" areas="Calendar">
+    <t:objective>Verify recurring with BYMONTHDAY=-1 should happen on last day of every month.</t:objective>
+	<t:steps>
+	1. Create an appointment
+		A. bymonthday modaylist=-1
+		B. 5 occurrences
+	2. Check each month (aug 2006 to dec 2006) - there should be instances
+	3. Check the 6th month (jan 2007) - no instance	
+	</t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.start" value="1157025600000"/>		<!-- 8/31/2006 12:00:00 -->
+	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+		<CreateAppointmentRequest xmlns="urn:zimbraMail">
+			<m d="1153482055895">
+				<inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+					<s d="${ICALTIME[${appointment.start}]}" tz="${TZ}"/>
+					<e d="${ICALTIME(+1h)[${appointment.start}]}"  tz="${TZ}"/>
+					<or a="${account2.name}"/>
+					<recur>
+						<add>
+							<rule freq="MON">
+								<interval ival="1"/>
+								<count num="5"/>
+								<bymonthday modaylist="-1"/>
+								<x-name name="repeatCustomType" value="S"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<mp ct="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment.subject}</su>
+			</m>
+		</CreateAppointmentRequest>
+    </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <!-- Check 8/31/2006: inst -->
+    <!-- Check 9/30/2006: inst-->
+    <!-- Check 10/31/2006: inst -->
+    <!-- Check 11/30/2006: inst-->
+    <!-- Check 12/31/2006: inst -->
+    <!-- Check 1/31/2007: none -->
+	<t:property name="appointment.august.start" value="1157025600000"/>		<!-- 8/31/2006 12:00:00 -->
+	<t:property name="appointment.august.start.gmt" value="${TIME(+8h)(-1h)[${appointment.august.start}]}"/>
+	<t:property name="appointment.september.start" value="1159617600000"/>	<!-- 9/30/2006 12:00:00 -->
+	<t:property name="appointment.september.start.gmt" value="${TIME(+8h)(-1h)[${appointment.september.start}]}"/>
+	<t:property name="appointment.october.start" value="1162296000000"/>	<!-- 10/31/2006 12:00:00 -->
+	<t:property name="appointment.october.start.gmt" value="${TIME(+8h)(-1h)[${appointment.october.start}]}"/>
+	<t:property name="appointment.november.start" value="1164888000000"/>	<!-- 11/30/2006 12:00:00 -->
+	<t:property name="appointment.november.start.gmt" value="${TIME(+8h)[${appointment.november.start}]}"/>
+	<t:property name="appointment.december.start" value="1167566400000"/>	<!-- 12/31/2006 12:00:00 -->
+	<t:property name="appointment.december.start.gmt" value="${TIME(+8h)[${appointment.december.start}]}"/>
+	<t:property name="appointment.january.start" value="1170244800000"/>	<!-- 1/31/2006 12:00:00 -->
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.august.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.august.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.august.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.september.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.september.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.september.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.october.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.october.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.october.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.november.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.november.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.november.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.december.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.december.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" attr="s" match="${appointment.december.start.gmt}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-5d)[${appointment.january.start}]}" calExpandInstEnd="${TIME(+5d)[${appointment.january.start}]}">
+				<query>${appointment.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt/mail:inst" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+</t:tests>

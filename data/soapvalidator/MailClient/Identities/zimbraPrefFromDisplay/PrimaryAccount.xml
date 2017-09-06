@@ -1,0 +1,303 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+
+
+<t:property name="account1.name" value="account1${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="account2.first" value="First${TIME}"/>
+<t:property name="account2.last" value="Last${COUNTER}"/>
+<t:property name="account2.zimbraPrefFromDisplay" value="${account2.first} ${account2.last}"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="account_setup_conversation" type="always" >
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a mail account 
+    </steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">first${TIME} last${TIME}</a>
+				<a n="givenName">first${TIME}</a>
+				<a n="sn">last${TIME}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="displayName"]' set="account1.fromdisplay"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account2"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${account2.zimbraPrefFromDisplay}</a>
+				<a n="givenName">${account2.first}</a>
+				<a n="sn">${account2.last}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Prefs_Accounts_PrimaryAccount01" type="functional" bugids="36970,31284" >
+	<t:objective>Verify zimbraPrefFromDisplay - not set on identity</t:objective>
+	<t:steps>
+		1. Create account with displayName
+		2. Modify preference - zimbraPrefFromDisplay is not set
+		3. Verify that GetIdentiesRequest does not include zimbraPrefFromDisplay
+	</t:steps>
+
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse">
+				<t:select path="//acct:identity[@name='DEFAULT']" attr="id" set="account1.identity.default.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+			<ModifyIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="DEFAULT">
+					<a name="zimbraPrefFromDisplay"></a>
+				</identity>
+			</ModifyIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:ModifyIdentityResponse"/>
+        </t:response>
+    </t:test>
+		
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="id">${account1.identity.default.id}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse">
+				<t:select path="//acct:a[@name='zimbraPrefFromDisplay']" match="${account1.fromdisplay}"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="Prefs_Accounts_PrimaryAccount02" type="functional" bugids="36970,31284" >
+	<t:objective>Verify zimbraPrefFromDisplay - set</t:objective>
+	<t:steps>
+		1. Create account with displayName
+		2. Modify preference - zimbraPrefFromDisplay is set to value that does not match displayName
+		3. Verify that GetIdentiesRequest includes zimbraPrefFromDisplay set by account, it does not match displayName
+	</t:steps>
+
+	<t:property name="account1.zimbraPrefFromDisplay" value="First${TIME} Last${COUNTER}"/>
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse">
+				<t:select path="//acct:identity[@name='DEFAULT']" attr="id" set="account1.identity.default.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+			<ModifyIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="DEFAULT">
+					<a name="zimbraPrefFromDisplay">${account1.zimbraPrefFromDisplay}</a>
+				</identity>
+			</ModifyIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:ModifyIdentityResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="id">${account1.identity.default.id}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse">
+				<t:select path="//acct:a[@name='zimbraPrefFromDisplay']" match="${account1.zimbraPrefFromDisplay}"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="Prefs_Accounts_PrimaryAccount03" type="functional" bugids="47817">
+	<t:objective>Verify zimbraPrefFromDisplay for persona can be set to blank</t:objective>
+	<t:steps>
+		1. Create account with displayName
+		2. Add persona
+		2. Modify preference - zimbraPrefFromDisplay is set to value to blank
+		3. Verify that GetIdentiesRequest includes zimbraPrefFromDisplay set by account
+	</t:steps>
+
+	<t:property name="account2.zimbraPrefFromDisplay" value="First${TIME} Last${COUNTER}"/>
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="Identity1.name" value="Identity${TIME}${COUNTER}"/>
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	 <t:test required="true">
+        <t:request>
+			<CreateIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${Identity1.name}">
+					<a name="zimbraPrefIdentityName">${Identity1.name}</a>
+					<a name="zimbraPrefFromDisplay">${account2.zimbraPrefFromDisplay}</a>
+					<a name="zimbraPrefFromAddress">${account2.name}</a>
+				</identity>
+			</CreateIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="name" match="${Identity1.name}"/>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity/acct:a[@ name='zimbraPrefFromAddress']" match="${account2.name}"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse">
+				<t:select path="//acct:identity[@name='${Identity1.name}']" attr="id" set="account2.identity.new.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+			<ModifyIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${Identity1.name}">
+					<a name="zimbraPrefFromDisplay"></a>
+				</identity>
+			</ModifyIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:ModifyIdentityResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="id">${account1.identity.default.id}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse">
+				<t:select path="//acct:a[@name='zimbraPrefFromDisplay']" match="${account2.zimbraPrefFromDisplay}" emptyset="1"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+
+
+
+</t:tests>

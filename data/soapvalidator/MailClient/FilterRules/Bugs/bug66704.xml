@@ -1,0 +1,281 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug66704_1" type="smoke" bugids="66704">
+    <t:objective>Creating a rule without action. --> service.INVALID_REQUEST</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
+
+	<t:test id="ModifyFilterRulesRequest_1">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>    
+                    <filterRule name="${filter1.name}" active="0">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${filter1.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions>                 
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="bug72845" type="smoke" bugids="72845">
+    <t:objective>Creating a rule with blank attribute value for any action. --> service.INVALID_REQUEST</t:objective>
+    <t:steps>
+    	1. actionRedirect without email address  
+		2. actionTag without tag name  
+		3. actionNotify without email address
+		4. actionReply without content
+		5. actionNotify without email address
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
+
+	<!-- actionFileInto without folderPath  -->
+	<t:test id="ModifyFilterRulesRequest_1">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>    
+                    <filterRule name="${filter1.name}" active="0">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${filter1.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions>   
+                        	<actionFileInto folderPath=""></actionFileInto>              
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+    <!-- actionRedirect without email address  -->
+    <t:test id="ModifyFilterRulesRequest_2">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>    
+                    <filterRule name="${filter1.name}" active="0">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${filter1.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions>   
+                        	<actionRedirect a="" />          
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+    <!-- actionTag without tag name  -->
+    <t:test id="ModifyFilterRulesRequest_4">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>    
+                    <filterRule name="${filter1.name}" active="0">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${filter1.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions>   
+                        	<actionTag tagName="" />          
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+    <!-- actionNotify without email address  -->     
+    <t:test id="ModifyFilterRulesRequest_5">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>    
+                    <filterRule name="${filter1.name}" active="0">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${filter1.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions>   
+                        	<actionNotify a=""/>     
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+    <!-- actionReply without content  -->     
+    <t:test id="ModifyFilterRulesRequest_5">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>    
+                    <filterRule name="${filter1.name}" active="0">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${filter1.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions>   
+                        	<actionReply>
+    							
+  							</actionReply>
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="bug66704_3" type="smoke" bugids="66704">
+    <t:objective>Creating a rule with blank value for any action. --> service.INVALID_REQUEST</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
+
+	<t:test id="ModifyFilterRulesRequest_1">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>    
+                    <filterRule name="${filter1.name}" active="0">
+                         <filterTests condition="anyof">
+                         <headerTest header="subject" stringComparison="is" value="${filter1.subject}"/>                    	     
+                        </filterTests>
+                        <filterActions>   
+                        	<actionKeep_invalid/>              
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+      
+</t:test_case>
+
+
+</t:tests>
+

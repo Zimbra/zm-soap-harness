@@ -1,0 +1,91 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="COS.name" value="cos${TIME}${COUNTER}"/>
+<t:property name="zimlet.name" value="com_zimbra_test"/>
+<t:property name="message.aid" value="UNDEFINED"/>
+<t:property name="uploadFile.name" value="${testMailRaw.root}/Zimlets/zimlet01/com_zimbra_test.zip"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="usURL" value="${uploadservlet.url}"/>
+
+<t:test_case testcaseid="Setup" type="always" >
+    <t:objective>Setup server connection </t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test id = "deployZimlets_CreateCos" required="true" depends="admin_login">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="Cos.id"/>
+        </t:response>
+    </t:test>
+    <!--t:test id="Setup" required="true" depends="admin_login">
+        <t:request>
+            <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response> 
+            <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="${zimlet.name}"]' attr="priority" set="zimlet.priority"/>
+        </t:response>
+    </t:test-->
+</t:test_case>
+
+<t:test_case testcaseid="deployZimlets" type="smoke" areas="dev_sanity" bugids="33695">
+    <t:objective> Deploy Zimlet </t:objective>
+    
+    <t:uploadservlettest id="Upload" depends="deployZimlets_CreateCos" >
+	<t:uploadServletRequest>
+	    <filename>${uploadFile.name}</filename>
+	</t:uploadServletRequest>
+	<t:uploadServletResponse>
+	    <t:select attr="id" set="message.aid"/>
+	</t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:test id="Deploy" depends="Upload">
+        <t:request>
+            <DeployZimletRequest xmlns="urn:zimbraAdmin" action="deployAll">
+                <content aid="${message.aid}"/>
+            </DeployZimletRequest>
+        </t:request>
+        <t:response> 
+            <t:select path='//admin:DeployZimletResponse' match=""/>
+        </t:response>
+    </t:test>
+
+    <t:test delay="10000" depends="Deploy">
+        <t:request>
+            <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response> 
+            <t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@name="${zimlet.name}"]' attr="status" match="enabled"/>
+            <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="${zimlet.name}"]' attr="priority" match="\d+"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+</t:tests>

@@ -1,0 +1,67 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="FlushCacheRequest_01" type="sanity" >
+	<t:objective>create test accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+  
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account0.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDomainAdminAccount">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <FlushCacheRequest  xmlns="urn:zimbraAdmin">
+				<cache type="account">
+					<entry by="id">${account0.id}</entry>
+				</cache>
+            </FlushCacheRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:FlushCacheResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

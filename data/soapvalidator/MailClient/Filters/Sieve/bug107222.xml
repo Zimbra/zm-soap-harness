@@ -1,0 +1,392 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <!-- Test accounts declaration -->
+    <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+    <!-- Variables declaration -->
+    <t:property name="folder_inbox" value="Inbox" />
+    <t:property name="message_subject" value="test message"/>
+    <t:property name="encodedstring1" value="=\\?utf-8\\?B\\?44OG44K544OI\\?=" />
+    <t:property name="encodedstring4" value="=\\?utf-8\\?Q\\?\\[=E8=BF=BD=E5=8A=A0\\]:_test_message\\?=" />
+    <t:property name="msg4_subject" value="\\[追加\\]: test message" />
+    <t:property name="dollar1" value="$\{1}"/>
+
+    <!-- Sieve rules declaration -->
+    <t:property name="sieve_rule1" value='require ["editheader"];
+addheader "X-Test-Header" "テスト";'/>
+    <t:property name="sieve_rule2" value='require ["editheader"];
+deleteheader :comparator "i;ascii-casemap" :is "Subject" "日本語の件名";'/>
+    <t:property name="sieve_rule3" value='require ["editheader"];
+replaceheader :newvalue "Replaced" :comparator "i;ascii-casemap" :is "Subject" "日本語の件名";'/>
+    <t:property name="sieve_rule4" value='require ["editheader", "variables"];
+replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :matches "Subject" "*";'/>
+
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
+    <t:test_case testcaseid="AcctSetup1_create_account" type="deprecated">
+        <t:objective>create test accounts</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account3.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account4.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account4.id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107222_rule1" type="deprecated" bugids="107222">
+        <t:objective>addheader: set non-ascii header value</t:objective>
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>${message_subject}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg1.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="X-Test-Header" match="${encodedstring1}" />
+            </t:restServletResponse>
+        </t:resttest>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107222_rule2" type="deprecated" bugids="107222">
+        <t:objective>deleteheader: set non-ascii characters in value-patterns</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest2">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account2.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account2.name}" />
+                        <su>日本語の件名</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg2.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id" />
+                <t:select path="//mail:SearchResponse/mail:m" attr="su" match="" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg2.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="Subject" emptyset="1" />
+            </t:restServletResponse>
+        </t:resttest>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107222_rule3" type="deprecated" bugids="107222">
+        <t:objective>replaceheader: set non-ascii characters in value-patterns</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest3">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account3.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account3.name}" />
+                        <su>日本語の件名</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg3.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account3.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="su" match="Replaced" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="bug107222_rule4" type="deprecated" bugids="107222">
+        <t:objective>replaceheader: set non-ascii characters in new-value</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest4">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account4.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account4.name}" />
+                        <su>${message_subject}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg4.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account4.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg4.id" />
+                <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${msg4_subject}" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg4.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="Subject" match="${encodedstring4}" />
+            </t:restServletResponse>
+        </t:resttest>
+    </t:test_case>
+
+</t:tests>

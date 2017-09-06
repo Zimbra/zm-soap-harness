@@ -1,0 +1,877 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="routing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="routing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="routing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="routing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="routing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.name" value="routing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account7.name" value="routing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+    
+<t:property name="network.valid.name" value="matt@zimbra.com"/>
+<t:property name="network.invalid.name" value="junkzimbraaddress@zimbra.com"/>
+<t:property name="network.invalid.domain" value="asdfqwerzxcvasdfqwerzxcv.com"/>
+
+<t:property name="bounce.subject" value="Undelivered Mail Returned to Sender"/>
+
+<t:property name="message.subject" value="subject.${TIME}.${COUNTER}"/>
+<t:property name="message.content" value="content.${TIME}.${COUNTER}"/>
+
+
+<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+<t:property name="msg01.subject" value="email01A"/>
+
+<t:property name="msg02.file" value="${testMailRaw.root}/email01/msg02.txt"/>
+<t:property name="msg02.subject" value="email01B"/>
+
+<t:property name="op.delete" value="delete"/>
+    
+<!--  Updated test cases as per bug 78481. --> 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+	<t:objective>Basic system check</t:objective>
+	
+	<t:test id="ping">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="MessageRouting_AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>1. Login to admin
+             2. Create a test accounts
+    </t:steps>
+    
+	<t:test id="admin_login" required="true" depends="ping">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraMessageIdDedupeCacheSize"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse">
+            	<t:select path="//admin:a[@n='zimbraMessageIdDedupeCacheSize']" match="${zimbraMessageIdDedupeCacheSize.default}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test id="create_test_account1" required="true" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${account1.server}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	           <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account1.mta.server"/>
+		</t:response>
+    </t:test>
+    
+	<t:test id="create_test_account2" required="true" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="create_test_account4" required="true" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account4.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account4.server"/>
+		</t:response>
+	</t:test>
+
+    <t:test depends="create_test_account4">
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account4.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="create_test_account5" required="true" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account5.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account5.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${account5.id}</id>
+				<a n="zimbraAccountStatus">maintenance</a>
+			</ModifyAccountRequest>
+		</t:request>
+        <t:response>
+			<t:select path="//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="create_test_account6" required="true" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account6.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account6.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account6.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${account6.id}</id>
+				<a n="zimbraAccountStatus">locked</a>
+			</ModifyAccountRequest>
+		</t:request>
+        <t:response>
+			<t:select path="//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="create_test_account7" required="true" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account7.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account7.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account7.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+				<id>${account7.id}</id>
+				<a n="zimbraAccountStatus">closed</a>
+			</ModifyAccountRequest>
+		</t:request>
+        <t:response>
+			<t:select path="//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MessageRouting_ZimbraToZimbra_01" type="smoke">
+    <t:objective>Send a message from one zimbra account to another zimbra</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+   <t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:inbox subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageRouting_ZimbraToZimbra_02" type="smoke">
+    <t:objective>Send a message from one zimbra account to itself</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:inbox subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageRouting_ZimbraToZimbra_03" type="smoke" bugids="7792">
+    <t:objective>Send a message from one zimbra account to a non existant zimbra account</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account3.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:for start="1" end="60" break="message.id">
+	
+		<t:delay msec="1000"/>
+	
+	    <t:test >
+	        <t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:(${bounce.subject})</query>
+				</SearchRequest>
+	        </t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m"/>
+			</t:response>
+	    </t:test >  
+
+	</t:for>
+
+    <!-- <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test> -->
+
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageRouting_ZimbraToZimbra_04" type="smoke" bugids="7792">
+    <t:objective>Send a message from one zimbra account to a deleted zimbra account</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account4.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:inbox subject:(${bounce.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+		</t:response>
+	</t:test>
+
+    <!-- <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test> -->
+
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageRouting_ZimbraToZimbra_05" type="smoke">
+    <t:objective>Send a message from one zimbra account to a maintenance zimbra account</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account5.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageRouting_ZimbraToZimbra_06" type="smoke">
+    <t:objective>Send a message from one zimbra account to a locked zimbra account</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account6.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageRouting_ZimbraToZimbra_07" type="smoke">
+    <t:objective>Send a message from one zimbra account to a closed zimbra account</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account7.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MessageRouting_ZimbraToNetwork_01" type="smoke" bugids="7792">
+    <t:objective>Send a message from one zimbra account to a valid email address in the public network</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${network.valid.name}"/>
+					<su>Test Message Filter Screen</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageRouting_ZimbraToNetwork_02" type="smoke" bugids="7792">
+    <t:objective>Send a message from one zimbra account to an invalid email address in the public network</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${network.invalid.name}"/>
+					<su>Test Message Filter Screen</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:inbox subject:(${bounce.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageRouting_ZimbraToNetwork_03" type="smoke" bugids="7792">
+    <t:objective>Send a message from one zimbra account to an invalid email domain</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="name@${network.invalid.domain}"/>
+					<su>Test Message Filter Screen</su>
+					<mp ct="text/plain">
+						<content>${message.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	
+	<t:for start="1" end="60" break="message.id">
+	
+		<t:delay msec="1000"/>
+	
+	    <t:test >
+	        <t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:(${bounce.subject})</query>
+				</SearchRequest>
+	        </t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m" attr="id" set="message.id"/>	
+				</t:select>
+			</t:response>
+	    </t:test >  
+
+	</t:for>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MessageRouting_LmtpToZimbra_01" type="smoke">
+    <t:objective>Send a message using LMTP to a zimbra account</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${msg01.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MessageRouting_SmtpToZimbra_01" type="smoke" areas="smtp" >
+    <t:objective>Send a message using SMTP to a zimbra account</t:objective>
+    
+   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	
+	
+    <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${account1.mta.server}</address>
+            <filename>${msg02.file}</filename>
+            <recipient>${account1.name}</recipient>
+        </t:smtpInjectRequest>
+    </t:smtpinjecttest>
+    
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${msg02.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.id}" op="${op.delete}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

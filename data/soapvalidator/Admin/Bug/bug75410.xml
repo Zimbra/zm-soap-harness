@@ -1,0 +1,160 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="account1${TIME}${COUNTER}"/>
+<t:property name="account2.name" value="account2${TIME}${COUNTER}"/>
+<t:property name="account2.new.name" value="new_name_account2${TIME}${COUNTER}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="displayName"></a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+     
+</t:test_case>
+
+<t:test_case testcaseid="bug75410_1" type="smoke" bugids="75410">
+    <t:objective>cn is not changed despite changes of "Account name"</t:objective>
+    <t:steps>
+     1. Create an account.
+     2. Confirm "DisplayName:" is empty and "auto" is unchecked.
+     3. Change "Account name" of the account you created in step1.
+     4. Check cn of the account. 
+    </t:steps>
+   
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+   <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account1.id}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse">
+				<t:select path="//admin:account">
+					<t:select path="//admin:a[@n='cn']" match="${account1.name}"/>
+				</t:select>
+			</t:select>
+		</t:response>
+	</t:test>
+   	
+	 <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n="displayName"></a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse/admin:account/admin:a[@n='cn']"  match="${account1.name}"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+
+<t:test_case testcaseid="bug75410_2" type="smoke" bugids="75410">
+    <t:objective>cn is not changed despite changes of "Account name"</t:objective>
+    <t:steps>
+     1. Create an account 
+     2. Confirm "DisplayName:" is empty and "auto" is unchecked.
+     3. Change "Account name" of the account you created in step1.
+     4. Check cn of the account 
+    </t:steps>
+   
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+   <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+   <t:test depends="renameAccountRequest1a">
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <newName>${account2.new.name}@${defaultdomain.name}</newName>
+            </RenameAccountRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RenameAccountResponse/admin:account/admin:a[@n='cn']"  match="${account2.new.name}"/>
+        </t:response>
+    </t:test>
+     
+</t:test_case>
+
+</t:tests>

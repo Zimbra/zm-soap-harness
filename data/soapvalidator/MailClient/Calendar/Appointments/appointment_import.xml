@@ -1,0 +1,361 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="uploadFile.name" value="${soapxml.root}/RestServlet/Calendar/Post/basic.ics"/>
+<t:property name="Resource.name1" value="testresource1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource.name2" value="testresource2.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="displayName1" value="TestName.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource.location" value="Location"/>
+<t:property name="Resource.equipment" value="Equipment"/>
+<t:property name="active" value="active"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="CS_Account_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ImportAppointmentsRequest01" type="smoke">
+	<t:objective> Import an appointment using uploadservlet	</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="uploadServletServer" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+     <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+		<t:request>
+			<ImportAppointmentsRequest xmlns="urn:zimbraMail" ct="ics" l="${folder.calendar}">
+			<content aid="${message1.aid}"/>
+			</ImportAppointmentsRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportAppointmentsResponse" />
+		</t:response>
+	</t:test>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="ImportAppointmentsRequest02" type="smoke" bugids="21288">
+	<t:objective> Import an appointment using uploadservlet to a resouce account </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="uploadServletServer" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.name1}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.location}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="name" match="${Resource.name1}"/>
+			<t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="test_resource.server1"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_resource.server1}"/>
+    
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${Resource.name1}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+     <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_resource.server1}"/>
+	<t:property name="uploadServletServer" value="${test_resource.server1}"/>
+	<t:property name="server.restServlet" value="${test_resource.server1}"/>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test required="true">
+		<t:request>
+			<ImportAppointmentsRequest xmlns="urn:zimbraMail" ct="ics" l="${folder.calendar}">
+			<content aid="${message2.aid}"/>
+			</ImportAppointmentsRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportAppointmentsResponse" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ImportAppointmentsRequest03" type="smoke">
+	<t:objective> Import an appointment using uploadservlet to a equipment </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="uploadServletServer" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.name2}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="name" match="${Resource.name2}"/>
+			<t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="test_resource.server2"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_resource.server2}"/>
+    
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${Resource.name2}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+     <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar2"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_resource.server2}"/>
+	<t:property name="uploadServletServer" value="${test_resource.server2}"/>
+	<t:property name="server.restServlet" value="${test_resource.server2}"/>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message3.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test required="true">
+		<t:request>
+			<ImportAppointmentsRequest xmlns="urn:zimbraMail" ct="ics" l="${folder.calendar2}">
+			<content aid="${message3.aid}"/>
+			</ImportAppointmentsRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportAppointmentsResponse" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ImportAppointmentsRequest04" type="deprecated">
+	<t:objective> Import an appointment using uploadservlet with changed organizer </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="uploadServletServer" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+    
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+     <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="uploadServletServer" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+			<modify>
+				<ical a="ORGANIZER">${account1.name}</ical>
+				<ical a="SUMMARY">iCalSummary</ical>
+			</modify>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message3.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+		<t:request>
+			<ImportAppointmentsRequest xmlns="urn:zimbraMail" ct="ics" l="${folder.calendar}">
+				<content aid="${message3.aid}"/>
+			</ImportAppointmentsRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportAppointmentsResponse">
+				<t:select path="//mail:appt" attr="ids" set="message3.ids"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${message3.ids}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse">
+            	<t:select path="//mail:or" attr="url" match="${account1.name}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,902 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+<t:test required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account03.user" value="account03.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account03.password" value="${defaultpassword.value}"/>
+<t:property name="account03.dir" value="${testMailRaw.root}/email03"/>
+
+
+<t:test_case testcaseid="account03 setup" type="always" >
+        <t:objective> setup account03 </t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account03.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account03.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+			<foldername>${account03.dir}</foldername>
+			<to>${account03.user}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${test_acct.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+<t:test_case testcaseid="SearchAuthRequest" type="functional" >
+	<t:objective> Login as the appropriate test account
+	</t:objective>
+
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account03.user}</account>
+	    <password>${account03.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="to.user" value="soap03@testsearch.com"/>
+
+
+<t:test_case testcaseid="combo_to_date_SearchRequest1" type="functional" bugids="2344" >
+ <t:objective>
+	Verify the results are correct for query using to: and date:/before:/after:
+ </t:objective>
+
+	<!-- TO: with BEFORE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>to:(${to.user}) before:5/5/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03A$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>to:(${to.user}) before:5/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>to:(${to.user}) before:4/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+	<!-- TO: with DATE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>to:(${to.user}) date:5/15/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03B$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>to:(${to.user}) date:5/14/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>to:(${to.user}) before:5/16/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03A"/>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03B"/>
+	 </t:response>
+	</t:test>
+
+
+	<!-- TO: with AFTER: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>to:(${to.user}) after:5/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03C$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>to:(${to.user}) after:5/31/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>to:(${to.user}) after:6/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="origination.user" value="origination_address@origination_domain.com"/>
+
+<t:test_case testcaseid="combo_from_date_SearchRequest1" type="functional" bugids="2344" >
+ <t:objective>
+	Verify the results are correct for query using from: and date:/before:/after:
+ </t:objective>
+
+	<!-- FROM: with BEFORE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>from:(${origination.user}) before:5/5/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03D$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>from:(${origination.user}) before:5/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>from:(${origination.user}) before:4/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+	<!-- FROM: with DATE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>from:(${origination.user}) date:5/15/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03E$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>from:(${origination.user}) date:5/14/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>from:(${origination.user}) before:5/16/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03E"/>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03D"/>
+	 </t:response>
+	</t:test>
+
+
+	<!-- FROM: with AFTER: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>from:(${origination.user}) after:5/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03F$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>from:(${origination.user}) after:5/31/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>from:(${origination.user}) after:6/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="copy.user" value="copy_address@copy_domain.com"/>
+
+<t:test_case testcaseid="combo_cc_date_SearchRequest1" type="functional" bugids="2344" >
+ <t:objective>
+	Verify the results are correct for query using from: and date:/before:/after:
+ </t:objective>
+
+	<!-- CC: with BEFORE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>cc:(${copy.user}) before:5/5/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03P$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>cc:(${copy.user}) before:5/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>cc:(${copy.user}) before:4/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+	<!-- CC: with DATE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		  <tz id="${defaultlocale.timezone}"/>
+		   <query>cc:(${copy.user}) date:5/15/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03Q$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>cc:(${copy.user}) date:5/14/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>cc:(${copy.user}) before:5/16/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03Q"/>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03P"/>
+	 </t:response>
+	</t:test>
+
+
+	<!-- CC: with AFTER: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>cc:(${copy.user}) after:5/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03R$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>cc:(${copy.user}) after:5/31/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>cc:(${copy.user}) after:6/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:property name="subject.text" value="subject line text"/>
+
+<t:test_case testcaseid="combo_subj_date_SearchRequest1" type="functional" bugids="2344" >
+ <t:objective>
+	Verify the results are correct for query using subject: and date:/before:/after:
+ </t:objective>
+
+	<!-- SUBJECT: with BEFORE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>subject:(${subject.text}) before:5/5/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match=".*email03G.*"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>subject:(${subject.text}) before:5/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>subject:(${subject.text}) before:4/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+	<!-- SUBJECT: with DATE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>subject:(${subject.text}) date:5/15/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match=".*email03H.*"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>subject:(${subject.text}) date:5/14/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>subject:(${subject.text}) before:5/16/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su" match=".*email03G.*"/>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su" match=".*email03H.*"/>
+	 </t:response>
+	</t:test>
+
+
+	<!-- SUBJECT: with AFTER: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>subject:(${subject.text}) after:5/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match=".*email03I.*"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>subject:(${subject.text}) after:5/31/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>subject:(${subject.text}) after:6/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:property name="content.text" value="simple text in body"/>
+
+<t:test_case testcaseid="combo_content_date_SearchRequest1" type="functional" bugids="2344" >
+ <t:objective>
+	Verify the results are correct for query using content: and date:/before:/after:
+ </t:objective>
+
+	<!-- CONTENT: with BEFORE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) before:5/5/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03J$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) before:5/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) before:4/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+	<!-- CONTENT: with DATE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) date:5/15/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03K$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) date:5/14/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) before:5/16/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03J"/>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03K"/>
+	 </t:response>
+	</t:test>
+
+
+	<!-- CONTENT: with AFTER: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) after:5/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03L$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) after:5/31/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) after:6/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="content.text" value="simple text in attachment"/>
+
+<t:test_case testcaseid="combo_content_date_SearchRequest2" type="functional" bugids="2344" >
+ <t:objective>
+	Verify the results are correct for query using content:, in the attachment, and date:/before:/after:
+ </t:objective>
+
+	<!-- CONTENT: with BEFORE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) before:5/5/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03M$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) before:5/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) before:4/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+	<!-- CONTENT: with DATE: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) date:5/15/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03N$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) date:5/14/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) before:5/16/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03N"/>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su"  match="email03M"/>
+	 </t:response>
+	</t:test>
+
+
+	<!-- CONTENT: with AFTER: -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) after:5/30/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^email03O$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) after:5/31/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <tz id="${defaultlocale.timezone}"/>
+		   <query>content:(${content.text}) after:6/1/2005</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

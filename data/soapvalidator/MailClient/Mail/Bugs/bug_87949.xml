@@ -1,0 +1,190 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:property name="test_account.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:property name="test_account.password" value="test123"/>
+
+
+<t:property name="message.subject" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="message.content" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create a test account</t:objective>
+    <steps> 
+        1. Login to admin account
+        2. Create a test_account 
+      </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test id="create_test_account" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    
+</t:test_case>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="bug87949" type="smoke" bugids="87949">
+    <t:objective>login as the test account</t:objective>
+    <t:steps> 
+        1. Login to test_account 
+        2. Send a 5 mails to test_account  
+        3. Fire a search conversation request with  'in:sent -to:"account name"' 
+        4. No mails should be seen 
+    </t:steps>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account.name}</account>
+            <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    <t:test id="sendmail1">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account.name}'/>
+                    <su> ${message.subject}</su>
+                    <mp ct="text/plain">
+                        <content> ${message.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+        </t:response>
+    </t:test>
+
+ 	<t:test id="sendmail2" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message.id1}" rt="w">
+                    <e t="t" a='${test_account.name}'/>
+                    <su> Fwd: ${message.subject}</su>
+                    <mp ct="text/plain">
+                        <content> $ Forwarded content : {message.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+        </t:response>
+    </t:test>
+
+<t:test id="sendmail3" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message.id1}" rt="w">
+                    <e t="t" a='${test_account.name}'/>
+                    <su> Fwd: ${message.subject}</su>
+                    <mp ct="text/plain">
+                        <content> $ Forwarded content : {message.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="sendmail4" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message.id1}" rt="w">
+                    <e t="t" a='${test_account.name}'/>
+                    <su> Fwd: ${message.subject}</su>
+                    <mp ct="text/plain">
+                        <content> $ Forwarded content : {message.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="sendmail5" required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message.id1}" rt="w">
+                    <e t="t" a='${test_account.name}'/>
+                    <su> Fwd: ${message.subject}</su>
+                    <mp ct="text/plain">
+                        <content> $ Forwarded content : {message.content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+        </t:response>
+    </t:test>
+
+   
+
+
+	<t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:sent -to:${test_account.name})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${regex.id}" emptyset="1"/>
+		</t:response>
+	</t:test>    
+</t:test_case>
+	
+  
+</t:tests>

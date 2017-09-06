@@ -1,0 +1,95 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+<t:property name="account.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="adminServer" value="NOT_DEFINED"/>
+<t:property name="acctServer" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="ootbZimletsNet" type="smoke" areas="network" bugids="6551,8400">
+    <t:objective>Check Default Zimlets</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response> 
+            <!-- check default on zimlets are enabled -->
+            <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="false" and @name="com_zimbra_phone"]' match=".*"/>
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="false" and @name="com_zimbra_tracking"]' match=".*"/-->
+            <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="false" and @name="com_zimbra_url"]' match=".*"/>
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="false" and @name="com_zimbra_ymaps"]' match=".*"/-->
+            <!-- Removed test for wikipedia as it is not in mainline-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="false" and @name="com_zimbra_wikipedia"]' match=".*"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="false" and @name="com_zimbra_amzn"]' match=".*"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="false" and @name="com_zimbra_search"]' match=".*"/-->
+
+            <!-- check system extensions -->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="true" name="com_zimbra_domainadmin"]' match=".*"/-->
+            <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="true" and @name="com_zimbra_hsm"]' match=".*"/>
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="true" and @name="com_zimbra_cluster"]' match=".*"/-->
+            <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="true" and @name="com_zimbra_convertd"]' match=".*"/>
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@status="enabled" and @extension="true" and @name="hotbackup"]' match=".*"/-->
+
+            <!-- check default off zimlets are not enabled -->
+            <t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet' attr="name" match="com_zimbra_amzn"/>
+            <t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet' attr="name" match="com_zimbra_bugz"/>
+            <t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet' attr="name" match="com_zimbra_po"/>
+            <t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet' attr="name" match="com_zimbra_sforce"/>
+            <t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet' attr="name" match="com_zimbra_sms"/>
+
+            <!-- check that priorities are set -->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_domainadmin"]' attr="priority" match="\d+"/-->
+            <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_phone"]' attr="priority" match="\d+"/>
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_tracking"]' attr="priority" match="\d+"/-->
+            <t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_url"]' attr="priority" match="\d+"/>
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_ymaps"]' attr="priority" match="\d+"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_wikipedia"]' attr="priority" match="\d+"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_search"]' attr="priority" match="\d+"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_amzn"]' attr="priority" match="\d+"/-->
+            <!--t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_bugz"]' attr="priority" match="-.*"/-->
+            <!--t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_po"]' attr="priority" match="-.*"/-->
+            <!--t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:zimlets/admin:zimlet[@name="com_zimbra_sforce"]' attr="priority" match="-.*"/-->
+
+            <!-- check default COS -->
+            <t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_domainadmin"]' match=".*"/>
+            <t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_phone"]' match=".*"/>
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_tracking"]' match=".*"/-->
+            <t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_url"]' match=".*"/>
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_ymaps"]' match=".*"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_wikipedia"]' match=".*"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_search"]' match=".*"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_amzn"]' match=".*"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_bugz"]' match=".*"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_po"]' match=".*"/-->
+            <!--t:select path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[@status="enabled" and @name="com_zimbra_sforce"]' match=".*"/-->
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+</t:tests>

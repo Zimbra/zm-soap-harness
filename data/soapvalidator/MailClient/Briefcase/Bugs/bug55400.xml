@@ -1,0 +1,182 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="domain2.name" value="domain2.${TIME}.${COUNTER}.${defaultdomain.name}"/>
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${domain2.name}"/>
+<t:property name="account1.document.docfile" value="${testMailRaw.root}/Bugs/55400/国务院办公厅关于2011年部分节假日安排的通知.doc"/>
+<t:property name="message1.file" value="${testMailRaw.root}/bug55400/bug55400.txt"/>
+<t:property name="subject1.msg" value="[Bj-eng-all] 2011 China RnD Public Holiday + Force Leave Arrangement"/>
+<t:property name="subject2.msg" value="ECommerce Product Level Profitability Model"/>
+<t:property name="attachment1.part.id" value="2.2.4"/>
+<t:property name="attachment2.part.id" value="2.2.2"/>
+
+<t:test_case testcaseid="account_Setup" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test  >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="bug55400_1" type="smoke" bugids="55400" >
+    <t:objective>Mail attachment types shows file type "unknown binary type" for known file type like doc when copied from mail attachement</t:objective>
+    
+    <t:steps>
+ 	1. Inject mime having attachments one .doc and other .xlsx
+	2. Login to ZWC
+	3. select injected messages.
+	5. Move attachments in briefcase using SaveDocumentRequest.
+	6. Send restServletRequest to verify document type. 
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message1.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+      <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${subject1.msg})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id" />
+        </t:response>
+    </t:test> 
+    
+       <t:test>
+    	<t:request>
+    	 	<GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id}"/>
+            </GetMsgRequest>
+    	</t:request>
+    	<t:response>
+    		<t:select path="//mail:GetMsgResponse">
+    		</t:select>
+    	</t:response>    
+    </t:test> 
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+	
+	 <t:property name="account1.document.name" value="国务院办公厅关于2011年部分节假日安排的通知.doc"/>
+	
+    <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}">
+			    <m id="${account1.id}:${message.id}" part="${attachment1.part.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="name" match="${account1.document.name}"/>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document.id"/>
+        </t:response>
+    </t:test>  
+    	
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account1.document.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="X-Zimbra-ItemId" match="${account1.document.id}"/>
+			<t:select attr="X-Zimbra-ItemType" match="document"/>
+			<t:select attr="X-Zimbra-Version" match="1"/>	
+		</t:restServletResponse>
+	</t:resttest>
+	
+	<t:property name="account2.document.name" value="2011 Holiday Schedule_China (Confirmed).xlsx"/>
+	
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}">
+			    <m id="${account1.id}:${message.id}" part="${attachment2.part.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="name" match="2011 Holiday.*"/>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document2.id"/>
+        </t:response>
+    </t:test>  
+    	
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account1.document2.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="X-Zimbra-ItemId" match="${account1.document2.id}"/>
+			<t:select attr="X-Zimbra-ItemType" match="document"/>
+			<t:select attr="Content-Type" match="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+			<t:select attr="X-Zimbra-Version" match="1"/>	
+		</t:restServletResponse>
+	</t:resttest>
+	
+</t:test_case>
+
+</t:tests>
+

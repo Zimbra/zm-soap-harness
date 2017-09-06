@@ -1,0 +1,345 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_filters_save" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="ApplyFilterRulesRequest_01" type="smoke" bugids="42051" >
+    <t:objective>Apply filter rule to same folder as "file into".  Verify no duplicates.</t:objective>
+    <t:steps>
+    1. Login as user1
+    2. Create a subfolder
+    3. add a message to the subfolder
+    4. create a filter that matches the message (by subject) and filters in to the subfolder
+    5. Run the filter
+    6. Verify only one copy of the message exists
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="folder.name" value="folder${TIME}${COUNTER}"/>
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
+
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${account1.folder.inbox.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse">
+            	<t:select path="//mail:folder" attr="id" set="folder.id"/>
+            </t:select>
+        </t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: ${filter1.subject}
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+					
+					</content>
+                </m>
+            </AddMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:AddMsgResponse" />
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter1.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" value="${filter1.subject}" />
+						</filterTests>
+						<filterActions>
+							<actionFileInto folderPath="${globals.inbox}/${folder.name}" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter1.name}"/>                                  
+				</filterRules>
+				<query>in:${globals.inbox}/${folder.name}</query>
+            </ApplyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ApplyFilterRulesResponse">
+            	<t:select path="//mail:m" attr="ids" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${filter1.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m[1]" attr="l" match="${folder.id}"/>
+				<t:select path="//mail:m[2]" emptyset="1"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ApplyFilterRulesRequest_02" type="smoke" bugids="42142" >
+    <t:objective>Apply filter rule should execute move rather than copy</t:objective>
+    <t:steps>
+    1. Login as user1
+    2. Create a subfolder
+    3. add a message to the inbox
+    4. create a filter that matches the message (by subject) and filters in to the subfolder
+    5. Run the filter
+    6. Verify the message exists in the subfolder.  Verify the message does not exist in the inbox.  (i.e. the message was moved)
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="folder.name" value="folder${TIME}${COUNTER}"/>
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>
+
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${account2.folder.inbox.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse">
+            	<t:select path="//mail:folder" attr="id" set="folder.id"/>
+            </t:select>
+        </t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account2.folder.inbox.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: ${filter1.subject}
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+					
+					</content>
+                </m>
+            </AddMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:AddMsgResponse" />
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter1.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" value="${filter1.subject}" />
+						</filterTests>
+						<filterActions>
+							<actionFileInto folderPath="${globals.inbox}/${folder.name}" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ApplyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter1.name}"/>                                  
+				</filterRules>
+				<query>in:${globals.inbox}</query>
+            </ApplyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ApplyFilterRulesResponse">
+            	<t:select path="//mail:m" attr="ids" />
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${filter1.subject}) in:${globals.inbox}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" emptyset="1"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${filter1.subject}) in:${globals.inbox}/${folder.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" />
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+
+</t:tests>
+

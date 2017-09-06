@@ -1,0 +1,72 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+ 
+<t:test_case testcaseid="ReloadMemcachedClientConfigRequest_01" type="sanity" >
+    <t:objective>Test ReloadMemcachedClientConfigRequest</t:objective>		
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <ReloadMemcachedClientConfigRequest xmlns="urn:zimbraAdmin" />          
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReloadMemcachedClientConfigResponse" />
+		</t:response>
+    </t:test>  
+  
+</t:test_case>
+
+<t:test_case testcaseid="GetMemcachedClientConfigRequest_01" type="sanity" >
+    <t:objective>Test GetMemcachedClientConfigRequest</t:objective>		
+	
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <GetMemcachedClientConfigRequest xmlns="urn:zimbraAdmin" />          
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMemcachedClientConfigResponse" />
+		</t:response>
+    </t:test>  
+  
+</t:test_case>
+
+</t:tests>

@@ -1,0 +1,354 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="${TIME}${COUNTER}"/>
+<t:property name="domain2.name" value="${TIME}${COUNTER}"/>
+
+<t:property name="test_list1.name" value="testdl.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_list2.name" value="testdl.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_list3.name" value="testdl.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_list4.name" value="testdl.${TIME}.${COUNTER}@domain${domain1.name}"/>
+<t:property name="test_list5.name" value="testdl.${TIME}.${COUNTER}@domain${domain1.name}"/>
+
+<t:property name="alias.name" value="Alias.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="alias1.name" value="Alias.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="alias.withoutDomain" value="AliasWithoutDomain"/>
+<t:property name="alias.nonexistingDomain" value="Alias@non.existing.domain${TIME}.${COUNTER}"/>
+<t:property name="alias.blank" value=""/>
+<t:property name="alias.spchar" value=":''&lt;//\\@${defaultdomain.name}"/>
+<t:property name="alias.number" value="1234${TIME}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="accSetup1_dl_alias_add" type="always" >
+    <t:objective>create test DLs</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${test_list1.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="test_list1.id"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${test_list2.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="test_list2.id"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${test_list3.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="test_list3.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+    
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${test_list4.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="test_list4.id"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest1" type="smoke" >
+    <t:objective> Add an Alias to a list </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list1.id}</id>
+                <alias>${alias.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest2" type="functional" >
+    <t:objective> Add an invalid Alias (without domain name) to a list </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list1.id}</id>
+                <alias>${alias.withoutDomain}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest3" type="feature" >
+    <t:objective> Add an Alias with non-existing domain name  </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list1.id}</id>
+                <alias>${alias.nonexistingDomain}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_DOMAIN"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest4" type="feature" >
+    <t:objective> Add an Alias with names as spchar/numbers/spaces </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list1.id}</id>
+                <alias>${alias.spchar}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list1.id}</id>
+                <alias>${alias.number}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//admin:AddDistributionListAliasResponse"/>
+        </t:response>
+    </t:test>  
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest5" type="negative" >
+    <t:objective> Add an Alias with blank name </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list1.id}</id>
+                <alias>${alias.blank}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+                <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest6" type="feature" >
+    <t:objective> Create duplicate alias for the same list </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list1.id}</id>
+                <alias>${alias.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^account.ACCOUNT_EXISTS"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest7" type="negative" >
+    <t:objective> Add an alias with deleted domain </t:objective>
+    <t:steps> 1. Create a domain
+              2. Delete it.
+              3. Add an alias with deleted domain name.
+    </t:steps>
+
+    <t:test id="AddDistributionListAliasRequest7a">
+        <t:request> 
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${domain2.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="AddDistributionListAliasRequest7b" depends="AddDistributionListAliasRequest7a">
+        <t:request>
+            <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain.id1}</id>
+            </DeleteDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDomainResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="AddDistributionListAliasRequest7c" depends="AddDistributionListAliasRequest7b">
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list1.id}</id>
+                <alias>alias01.${TIME}${COUNTER}@${domain2.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^account.NO_SUCH_DOMAIN"/>
+        </t:response>
+    </t:test>
+  
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest8" type="negative">
+    <t:objective> Add an Alias to a non existing list </t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <name>${test_list5.name}</name>
+                <alias>${alias.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest9" type="negative">
+    <t:objective> Add an Alias with name same as list name.</t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list3.id}</id>
+                <alias>${test_list3.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^account.ACCOUNT_EXISTS"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest10" type="functional">
+    <t:objective> Add an Alias with name same as any other list name.</t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list3.id}</id>
+                <alias>${test_list1.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^account.ACCOUNT_EXISTS"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AddDistributionListAliasRequest11" type="functional">
+    <t:objective> Add an Alias to an list with name same as list name same as any other list name in other domain.</t:objective>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list3.id}</id>
+                <alias>${test_list4.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match ="^account.ACCOUNT_EXISTS"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+
+</t:tests>

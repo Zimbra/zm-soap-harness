@@ -1,0 +1,448 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="acct1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct.password" value="${defaultpassword.value}"/>
+
+<t:property name="acct2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="appointment1.subject" value="Subj1${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Cont${TIME}.${COUNTER}"/>
+<t:property name="resource1.name" value="resource1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource1.displayname" value="resource1.${TIME}"/>
+<t:property name="Resource.location" value="Location"/>
+
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="Time3" value="${ICALTIME(+1h)}"/>
+<t:property name="Time4" value="${ICALTIME(+2h)}"/>
+<t:property name="Time5" value="${ICALTIME(+1h)}"/>
+<t:property name="Time6" value="${ICALTIME(+2h)}"/>
+<t:property name="Time7" value="${ICALTIME(+5d)}"/>
+
+<t:property name="Time5a" value="${ICALTIME(+1d)(+1h)}"/>
+<t:property name="Time5b" value="${ICALTIME(+2d)(+1h)}"/>
+
+
+<t:property name="TimeRangeStart" value="${TIME}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+1d)}"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always">
+    <t:objective>Create test accounts</t:objective>
+    <t:steps> 1.Login to admin
+              2.Create test accounts
+    </t:steps>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+
+    <!-- Create test accounts -->
+    <t:test id="create_acct1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct1.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+    
+        <!-- Create resource -->
+    <t:test id="CreateCalendarResourceRequest1">
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.location}</a>
+				<a n="displayName">${resource1.displayname}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>	
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource1.id"/>
+            <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="bug41754_1" type="smoke" bugids="41754">
+    <t:objective>Attachments are lost from recurring appointment when an instance is canceled</t:objective>
+    <t:steps>
+    1. Login to ZWC.
+	2. Create a recurring appointment with an attachment.  No attendee is needed.
+	3. Open the series and instance to verify the appointment exists in the created appointment.
+	4. Delete an instance.
+	5. Open series/instance again. > verify attachment is present.
+    </t:steps>
+
+    <!-- login as the test account -->
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct1.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+    <t:property name="uploadServletServer" value="${test_acct1.server}"/>
+	<t:property name="server.restServlet" value="${test_acct1.server}"/>
+	<t:property name="uploadFile.basic" value="${testMailRaw.root}/attachments1/pdfaccess.pdf"/>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.basic}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="attach.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+    
+    <!--Create Appointments-->
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI" ival="1">
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                    <attach aid="${attach.aid}"/>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CancelAppointmentExceptionRequest1a">
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
+                <inst d="${Time1}"/>
+                <m>
+                    <e a="${acct2.name}" t="t"/>
+                    <su>Cancelled${appointment1.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct2.name} Subject:"Cancelled:${appointment1.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+        
+    <t:property name="TimeRangeStart" value="${TIME}"/>
+	<t:property name="TimeRangeFinish" value="${TIME(+10d)}"/>
+	<t:property name="attachement.name" value="pdfaccess.pdf"/>
+	
+  <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${attachement.name}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment1.subject}"/>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="${appointment1.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug41754_2" type="smoke" bugids="41754">
+    <t:objective>Attachments are lost from recurring appointment when an instance is created</t:objective>
+    <t:steps>
+    1. Login to ZWC.
+	2. Create a recurring appointment with an attachment.  No attendee is needed.
+	3. Open the series and instance to verify the appointment exists in the created appointment.
+	4. create an instance.
+	5. Open series/instance again. > verify attachment is present.
+	</t:steps>
+	
+    <!-- login as the test account -->
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct1.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="uploadServletServer" value="${test_acct1.server}"/>
+	<t:property name="server.restServlet" value="${test_acct1.server}"/>
+	<t:property name="uploadFile.basic" value="${testMailRaw.root}/attachments1/pdfaccess.pdf"/>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.basic}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="attach.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+    
+    <t:property name="Time1" value="${ICALTIME(+2h)}"/>
+	<t:property name="Time2" value="${ICALTIME(+3h)}"/>
+	<t:property name="appointment2.subject" value="Subj2${TIME}.${COUNTER}"/>
+	
+    
+    <!--Create Appointments-->
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI" ival="1">
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment2.subject}</su>
+                    <attach aid="${attach.aid}"/>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment2.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="appointment.content" value="newcont${TIME}.${COUNTER}"/>
+	
+	    <!--Modify an instance of appointment with valid values.-->
+    <t:test>
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment2.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment2.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+            
+    <t:property name="TimeRangeStart" value="${TIME}"/>
+	<t:property name="TimeRangeFinish" value="${TIME(+10d)}"/>
+	
+  	<t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${attachement.name}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment2.subject}"/>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="${appointment1.id}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="bug61323" type="smoke" bugids="61323">
+    <t:objective>Cancelling a meeting in a Series does not free resource</t:objective>
+    <t:steps>
+    1. Login to ZWC.
+	2. Create a recurring appointment.
+	3. Open the series and instance to verify the appointment exists in the created appointment.
+	4. create an instance.
+	5. Open series/instance again. > verify attachment is present.
+	</t:steps>
+	
+    <!-- login as the test account -->
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct1.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+
+    <!--Create Appointments-->
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}">
+                    <at role="REQ" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI" ival="1">
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>           
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CancelAppointmentExceptionRequest1a">
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
+           		 <at role="REQ" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
+                <inst d="${Time1}"/>
+                <m>
+                    <e a="${acct2.name}" t="t"/>
+                    <su>Cancelled${appointment1.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled a single instance Organizer Email:${acct2.name} Subject:"Cancelled:${appointment1.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+        
+    <t:property name="TimeRangeStart" value="${TIME}"/>
+	<t:property name="TimeRangeFinish" value="${TIME(+1d)}"/>
+
+	   <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"  uid="${resource1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${resource1.id}']">
+            	<t:select path="//mail:f" attr="s" match="${TimeRangeStart}"/>
+            	<t:select path="//mail:f" attr="e" match="${TimeRangeFinish}"/>
+         </t:select>      
+        </t:response>
+    </t:test>
+        
+</t:test_case>
+  
+  
+</t:tests>

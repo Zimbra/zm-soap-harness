@@ -1,0 +1,251 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="today" value="${CURRDATE}"/>
+<t:property name="meeting.subject1" value="Test Meeting 1"/>
+<t:property name="meeting.subject2" value="Test Meeting 2"/>
+<t:property name="meeting.subject3" value="Test Meeting 3"/>
+
+<t:property name="user1.name" value="user1@${defaultdomain.name}"/>
+<t:property name="user1.password" value="test123"/>
+<t:property name="user2.name" value="user2@${defaultdomain.name}"/>
+<t:property name="user2.password" value="test123"/>
+<t:property name="user3.name" value="user3@${defaultdomain.name}"/>
+<t:property name="user3.password" value="test123"/>
+<t:property name="user4.name" value="user4@${defaultdomain.name}"/>
+<t:property name="user4.password" value="test123"/>
+
+<t:property name="uid1" value="1-${TIME}-${COUNTER}"/>
+<t:property name="uid2" value="2-${TIME}-${COUNTER}"/>
+<t:property name="uid3" value="3-${TIME}-${COUNTER}"/>
+<t:property name="uid4" value="4-${TIME}-${COUNTER}"/>
+
+<t:test_case testcaseid="CalendarRecur" type="smoke" areas="dev_internal">
+    <t:objective>Calendar Move Tests</t:objective>
+
+    <t:property name="uri" value="${admin.uri}"/>
+
+    <t:test id="ping">
+      <t:request>
+        <PingRequest xmlns="urn:zimbraAdmin"/>
+      </t:request>
+      <t:response>
+        <t:select path="//admin:PingResponse"/>
+      </t:response>
+    </t:test>
+
+    <t:property name="uri" value="${mailclient.uri}"/>
+
+    <!-- Clear on-behalf-of -->
+    <t:property name="target" value=""/>
+
+    <!-- Login as user2 -->
+    <t:test id="login user2">
+      <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+          <account by="name">${user2.name}</account>
+          <password>${user2.password}</password>
+        </AuthRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+        <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+      </t:response>
+    </t:test>
+
+    <t:test id="test 1">
+      <t:request>
+        <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000">
+          <tz dayoff="-420" stdoff="-480" id="America/Los_Angeles">
+            <standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
+            <daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
+          </tz>
+          <comp>
+            <s tz="America/Los_Angeles" d="20090105T120000"/>
+            <e tz="America/Los_Angeles" d="20090105T130000"/>
+            <recur>
+              <add>
+                <rule freq="WEE">
+                  <count num="52"></count>
+                  <interval ival="1"></interval>
+                </rule>
+              </add>
+            </recur>
+          </comp>
+          <except>
+            <exceptId tz="America/Los_Angeles" d="20090112T120000"/>
+            <s tz="America/Los_Angeles" d="20090112T130000"/>
+            <e tz="America/Los_Angeles" d="20090112T150000"/>
+          </except>
+          <cancel>
+            <exceptId tz="America/Los_Angeles" d="20090119T120000"/>
+          </cancel>
+          <usr name="user2@wii.zimbra.com"/>
+          <usr name="user1@wii.zimbra.com"/>
+        </CheckRecurConflictsRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CheckRecurConflictsResponse"/>
+      </t:response>
+    </t:test>
+
+    <t:test id="test 2">
+      <t:request>
+        <ExpandRecurRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000">
+          <tz dayoff="-420" stdoff="-480" id="America/Los_Angeles">
+            <standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
+            <daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
+          </tz>
+          <comp>
+            <s d="20090309T120000" tz="America/Los_Angeles"/>
+            <e tz="America/Los_Angeles" d="20090309T130000"/>
+            <recur>
+              <add>
+                <rule freq="DAI">
+                  <count num="5"></count>
+                  <interval ival="1"></interval>
+                </rule>
+              </add>
+            </recur>
+          </comp>
+          <except>
+            <exceptId d="20090310T120000" tz="America/Los_Angeles"/>
+            <s tz="America/Los_Angeles" d="20090310T130000"/>
+            <e tz="America/Los_Angeles" d="20090310T140000"/>
+          </except>
+          <cancel>
+            <exceptId d="20090312T120000" tz="America/Los_Angeles"/>
+          </cancel>
+        </ExpandRecurRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:ExpandRecurResponse"/>
+      </t:response>
+    </t:test>
+
+    <t:test id="test 3">
+      <t:request>
+        <ExpandRecurRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000">
+          <tz dayoff="-420" stdoff="-480" id="America/Los_Angeles">
+            <standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
+            <daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
+          </tz>
+          <except>
+            <exceptId d="20090310T170000" tz="America/Los_Angeles"/>
+            <s tz="America/Los_Angeles" d="20090310T170000"/>
+            <e tz="America/Los_Angeles" d="20090310T180000"/>
+          </except>
+        <except>
+        <exceptId tz="America/Los_Angeles" d="20090312T170000"/>
+          <s tz="America/Los_Angeles" d="20090312T170000"/>
+          <e d="20090312T180000" tz="America/Los_Angeles"/>
+          </except>
+        </ExpandRecurRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:ExpandRecurResponse"/>
+      </t:response>
+    </t:test>
+
+    <t:test id="test 4">
+      <t:request>
+        <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000" all="1">
+          <tz dayoff="-420" stdoff="-480" id="America/Los_Angeles">
+            <standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
+            <daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
+          </tz>
+          <comp>
+            <s tz="America/Los_Angeles" d="20090105"/>
+            <e tz="America/Los_Angeles" d="20090106"/>
+            <recur>
+              <add>
+                <rule freq="WEE">
+                  <count num="52"></count>
+                  <interval ival="1"></interval>
+                </rule>
+              </add>
+            </recur>
+          </comp>
+          <except>
+            <exceptId d="20090112"/>
+            <s d="20090113"/>
+            <e d="20090115"/>
+          </except>
+          <cancel>
+            <exceptId tz="America/Los_Angeles" d="20090119"/>
+          </cancel>
+          <usr name="user2@wii.zimbra.com"/>
+          <usr name="user1@wii.zimbra.com"/>
+        </CheckRecurConflictsRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CheckRecurConflictsResponse"/>
+      </t:response>
+    </t:test>
+
+    <t:test id="test 5">
+      <t:request>
+        <CheckRecurConflictsRequest xmlns="urn:zimbraMail" all="1">
+          <comp>
+            <s tz="Asia/Colombo" d="20090105T120000"/>
+            <e tz="Asia/Colombo" d="20090105T130000"/>
+            <recur>
+              <add>
+                <rule freq="WEE">
+                  <interval ival="1"></interval>
+                </rule>
+              </add>
+            </recur>
+          </comp>
+          <except>
+            <exceptId tz="Asia/Colombo" d="20090112T120000"/>
+            <s tz="Asia/Colombo" d="20090112T130000"/>
+            <e tz="Asia/Colombo" d="20090112T150000"/>
+          </except>
+          <cancel>
+            <exceptId tz="Asia/Colombo" d="20090119T120000"/>
+          </cancel>
+          <usr name="user2@wii.zimbra.com"/>
+          <usr name="user1@wii.zimbra.com"/>
+        </CheckRecurConflictsRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CheckRecurConflictsResponse"/>
+      </t:response>
+    </t:test>
+
+
+    <t:test id="test 6">
+      <t:request>
+        <CheckRecurConflictsRequest xmlns="urn:zimbraMail" s="1230768000000" e="1262304000000" all="1">
+          <comp>
+            <s tz="Asia/Colombo" d="20090105"/>
+            <e tz="Asia/Colombo" d="20090106"/>
+            <recur>
+              <add>
+                <rule freq="WEE">
+                  <count num="52"></count>
+                  <interval ival="1"></interval>
+                </rule>
+              </add>
+            </recur>
+          </comp>
+          <except>
+            <exceptId d="20090112"/>
+            <s d="20090113"/>
+            <e d="20090115"/>
+          </except>
+          <cancel>
+            <exceptId tz="Asia/Colombo" d="20090119"/>
+          </cancel>
+          <usr name="user2@wii.zimbra.com"/>
+          <usr name="user1@wii.zimbra.com"/>
+        </CheckRecurConflictsRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CheckRecurConflictsResponse"/>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

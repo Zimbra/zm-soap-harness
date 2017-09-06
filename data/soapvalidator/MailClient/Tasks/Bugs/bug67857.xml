@@ -1,0 +1,186 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="appointment.subject" value="WSDL Calendar 1"/>
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+	
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin"/>
+	        </t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse"/>
+			</t:response>
+		</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="setup_bug67857" type="always">
+	<t:objective>Create test accounts</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server1"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server2"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug67857_01" type="smoke">
+	<t:objective>Verify no NPE in CreateTaskResponse for SOAP CreateTaskRequest with no recipients</t:objective>
+	<t:steps>1. Go to Task
+             2. Create an Task with no attendees
+             3. Save it
+             
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.tasks}']" attr="id" set="account1.folder.task.id"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest echo="true" xmlns="urn:zimbraMail">
+     		 <m su="WSDL Task 1" l="${account1.folder.task.id}">
+        		<mp ct="multipart/alternative">
+        	    	<mp content="Body of the Task" ct="text/plain"/>
+        	    	<mp content="&lt;html>&lt;body>&lt;b>Body&lt;/b> of the Task&lt;/body>&lt;/html>" ct="text/html"/>
+       		    </mp>
+        		<inv rsvp="false" method="" compNum="0">
+              	 <comp percentComplete="0" status="NEED" allDay="true" priority="5" name="WSDL Task 1" rsvp="false" loc="Mars" method="" compNum="0">
+              	 	<or d="wsdl1" a="${test_account1.name}"/>
+          		</comp>
+        	  </inv>
+            </m>
+            </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug67857_02" type="smoke">
+	<t:objective>Verify no NPE in CreateAppointmentResponse for SOAP CreateAppointmentRequest with no recipients</t:objective>
+	<t:steps>1. Go to Calendar
+             2. Create an Calendar with no attendees
+             3. Save it
+             
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account1.folder.calendar.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="time.1893499200000.gmt" value="1893499200000"/> <!--  01 Jan 2030 12:00:00 GMT  -->
+	
+	<t:test>
+		<t:request>
+	        <CreateAppointmentRequest echo="true" xmlns="urn:zimbraMail">
+     		 <m l="${account1.folder.calendar.id}">
+        		<inv rsvp="false" method="" compNum="0">
+              	 <comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="WSDL Task 1" >
+              	 		<s d="${ICALTIME[${time.1893499200000.gmt}]}"/>  
+	                    <e d="${ICALTIME(+1h)[${time.1893499200000.gmt}]}"/> 
+              	 	<or d="wsdl1" a="${test_account1.name}"/>
+          		</comp>
+          		</inv>
+          		<mp ct="multipart/alternative">
+        	    	<mp content="Body of the appointment" ct="text/plain"/>
+        	    	<mp content="&lt;html>&lt;body>&lt;b>Body&lt;/b> of the Calendar&lt;/body>&lt;/html>" ct="text/html"/>
+       		    </mp>
+        	  <su>${appointment.subject}</su>
+            </m>
+            </CreateAppointmentRequest> 
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateAppointmentResponse"/>
+		</t:response>
+   </t:test>
+
+</t:test_case>
+
+
+</t:tests>

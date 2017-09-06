@@ -1,0 +1,1185 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="msg.foldername" value="${testMailRaw.root}/bug375a"/>
+<t:property name="msg1.foldername" value="${testMailRaw.root}/bug375b"/>
+
+<t:property name="message1.file" value="${testMailRaw.root}/bug375a/message1.txt"/>
+<t:property name="message2.file" value="${testMailRaw.root}/bug375a/message2.txt"/>
+<t:property name="message3.file" value="${testMailRaw.root}/bug375a/message3.txt"/>
+<t:property name="message4.file" value="${testMailRaw.root}/bug375a/message4.txt"/>
+<t:property name="message5.file" value="${testMailRaw.root}/bug375a/message5.txt"/>
+<t:property name="message1b.file" value="${testMailRaw.root}/bug375b/message1.txt"/>
+<t:property name="message2b.file" value="${testMailRaw.root}/bug375b/message2.txt"/>
+<t:property name="message3b.file" value="${testMailRaw.root}/bug375b/message3.txt"/>
+
+<t:property name="test_account1.name" value="test1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.name" value="test2${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+<t:property name="test_account3.name" value="test3${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.password" value="test123"/>
+<t:property name="test_account4.name" value="test4${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.password" value="test123"/>
+<t:property name="test_account5.name" value="test5${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account5.password" value="test123"/>
+<t:property name="test_account6.name" value="test6${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account7.name" value="test7${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account8.name" value="test8${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account9.name" value="test9${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account10.name" value="test10${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1a.name" value="test1a${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1b.name" value="test1b${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1c.name" value="test1b${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="test_account6.password" value="test123"/>
+
+<t:property name="conv.spchar" value="//\\'^%"/>
+<t:property name="conv.space" value="           "/>
+<t:property name="conv.blank" value=""/>
+<t:property name="conv.sometext" value="some text"/>
+
+<t:property name="folder.inbox" value="2"/>
+<t:property name="op.read" value="read"/>
+<t:property name="op.unread" value="!read"/>
+<t:property name="op.flag" value="flag"/>
+<t:property name="op.unflag" value="!flag"/>
+<t:property name="op.tag" value="tag"/>
+<t:property name="op.untag" value="!tag"/>
+<t:property name="op.move" value="move"/>
+<t:property name="op.delete" value="delete"/>
+<t:property name="op.spam" value="spam"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
+
+<t:property name="message.subject1" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="message.content1" value="content of the message${TIME}.${COUNTER}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create two test account</t:objective>
+    <steps> 1. Login to admin account, 2. Create a test_account1 3. Create test_account2 </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account2.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account3" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${test_account3.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account4" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${test_account4.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account7" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account7.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account7.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account8" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account8.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account8.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct8.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account9" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account9.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account9.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct9.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account10" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account10.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account10.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct10.server"/>
+        </t:response>
+    </t:test>
+        
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_1" type="smoke" >
+    <t:objective>verify zimbraMailThreadingAlgorithm attribute available on COS </t:objective>
+    <steps> check zimbraMailThreadingAlgorithm attribute available on COS </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!--  Create COS -->
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos${TIME}${COUNTER}</name>
+                <a n="zimbraMailThreadingAlgorithm">subject</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id"/>   
+            <t:select path='//admin:CreateCosResponse/admin:cos/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="subject"/>
+             
+        </t:response>
+    </t:test>
+    
+    <!--  Modify COS -->
+    <t:test>
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${cos1.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">none</a>
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" set="cos1.id"/>   
+            <t:select path='//admin:ModifyCosResponse/admin:cos/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="none"/>
+             
+        </t:response>
+    </t:test>
+    
+    <!--  Modify COS -->
+    <t:test>
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${cos1.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">strict</a>
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" set="cos1.id"/>   
+            <t:select path='//admin:ModifyCosResponse/admin:cos/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="strict"/>
+             
+        </t:response>
+    </t:test>
+    
+    <!--  Modify COS -->
+    <t:test>
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${cos1.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">references</a>
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" set="cos1.id"/>   
+            <t:select path='//admin:ModifyCosResponse/admin:cos/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="references"/>
+             
+        </t:response>
+    </t:test>
+    
+    <!--  Modify COS -->
+    <t:test>
+        <t:request>
+            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+                <id>${cos1.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">subjrefs</a>
+            </ModifyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCosResponse/admin:cos" attr="id" set="cos1.id"/>   
+            <t:select path='//admin:ModifyCosResponse/admin:cos/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="subjrefs"/>
+             
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_2" type="smoke" >
+    <t:objective>verify zimbraMailThreadingAlgorithm attribute available on account</t:objective>
+    <steps> check zimbraMailThreadingAlgorithm attribute available on account </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account5" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account5.name}</name>
+                <password>${test_account5.password}</password>
+                <a n="zimbraMailThreadingAlgorithm">subject</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' set="subject"/>
+        </t:response>
+    </t:test>
+    
+   <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account5.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">none</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' set="none"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account5.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">strict</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' set="strict"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account5.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">references</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' set="references"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account5.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">subjrefs</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' set="subjrefs"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_3" type="smoke" >
+    <t:objective>Verify zimbraMailThreadingAlgorithm attribute inherited from COS to Account.</t:objective>
+    <steps> Check zimbraMailThreadingAlgorithm attribute inherited from COS to Account. </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos1${TIME}${COUNTER}</name>
+                <a n="zimbraMailThreadingAlgorithm">subject</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos2.id"/>   
+            <t:select path='//admin:CreateCosResponse/admin:cos/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="subject"/>
+             
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_accoun6" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account6.name}</name>
+                <password>${test_account6.password}</password>
+                <a n="zimbraCOSId">${cos2.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="subject"/>
+        </t:response>
+    </t:test>
+     
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_4" type="smoke" >
+    <t:objective>Verify the original and the replied message are not the part of same conversation.</t:objective>
+    <steps> 1. set zimbraMailThreadingAlgorithm none for user1.
+			2. login to user1 send message to user2.
+			3. login to user2 reply to user1 message without modifying the subject.
+			4. login to user1 and send SearchConvRequest. </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account1.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">none</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="none"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${msg.foldername}</foldername>
+                        <to>${test_account1.name}</to>
+                        <from>${nonZimbraUser.name}</from>
+                        <server>${test_acct1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test id="SearchConvRequesta">
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account1.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation" >
+                <query>subject:(message1)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c" attr="n" match="1"/>
+	 </t:response>
+	</t:test>
+	
+    
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_5" type="smoke" >
+    <t:objective>Verify the original and the replied message are the part of same conversation when zimbraMailThreadingAlgorithm = strict</t:objective>
+    <steps> 1. set zimbraMailThreadingAlgorithm strict for user1.
+			2. login to user1 send message to user2.
+			3. login to user2 reply to user1 message without modifying the subject.
+			4. login to user1 and send SearchConvRequest. </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account2.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">strict</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="strict"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${msg.foldername}</foldername>
+                        <to>${test_account2.name}</to>
+                        <from>${nonZimbraUser.name}</from>
+                        <server>${test_acct2.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test id="SearchConvRequesta">
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account2.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation" >
+                <query>subject:(message1)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c" attr="n" match="4"/>
+	 </t:response>
+	</t:test>
+	
+    
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_6" type="smoke" >
+    <t:objective>Verify the original and the replied message are the part of same conversation when zimbraMailThreadingAlgorithm = subject</t:objective>
+    <steps> 1. set zimbraMailThreadingAlgorithm subject for user1.
+			2. login to user1 send message to user2.
+			3. login to user2 reply to user1 message without modifying the subject.
+			4. login to user1 and send SearchConvRequest. </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account3.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">subject</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="subject"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${msg.foldername}</foldername>
+                        <to>${test_account3.name}</to>
+                        <from>${nonZimbraUser.name}</from>
+                        <server>${test_acct1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+    <t:test id="SearchConvRequesta">
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account3.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation" >
+                <query>subject:(message1)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c" attr="n" match="4"/>
+	 </t:response>
+	</t:test>
+	
+    
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_7" type="smoke" >
+    <t:objective>verify mime has unique headers Thread-Topic and Thread-Index.</t:objective>
+    <steps>1. user1 Compose and send a new mail to user2.
+		   2. Login to user2
+           3. select the received mail from user1. </steps>
+           
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>        
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account4.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">subject</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="subject"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${msg.foldername}</foldername>
+                        <to>${test_account4.name}</to>
+                        <from>${nonZimbraUser.name}</from>
+                        <server>${test_acct4.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+
+    <t:test>
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account4.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation" >
+                <query>subject:(message1)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv.id}" fetch="all">
+				<header n="Thread-Topic" />
+				<header n="Thread-Index" />
+				<query>in:inbox</query>
+			</SearchConvRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//mail:SearchConvResponse/mail:m/mail:header[@n="Thread-Topic"]'/>
+            <t:select path='//mail:SearchConvResponse/mail:m/mail:header[@n="Thread-Index"]'/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_8" type="smoke" >
+    <t:objective>Conversation threading using zimbraMailThreadingAlgorithm = subject with Re: or Fw:</t:objective>
+    <steps>Conversation threading using zimbraMailThreadingAlgorithm = subject with Re: or Fw:
+		1. set zimbraMailThreadingAlgorithm subject for user1.
+		2. login to user1 send message to user2.
+		3. login to user2 reply to user1 message subject preceded by Re: or  Fw: or Fwd:   
+		4. login to user1 and send SearchConvRequest. </steps>
+           
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>        
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account5.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">subject</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="subject"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message1.file}</filename>
+                        <to>${test_account5.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct5.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+   <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message2.file}</filename>
+                        <to>${test_account5.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct5.server}</server>
+            <modify>
+                <header a="Subject">Re: message1</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message3.file}</filename>
+                        <to>${test_account5.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct5.server}</server>
+            <modify>
+                <header a="Subject">Fw: message1</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    
+    <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+
+    <t:test>
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account5.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation" >
+                <query>subject:(message1)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c" attr="n" match="3"/>
+	 </t:response>
+	</t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_9" type="smoke" >
+    <t:objective>Conversation threading using zimbraMailThreadingAlgorithm = none with Re: or Fw:</t:objective>
+    <steps>Conversation threading using zimbraMailThreadingAlgorithm = none with Re: or Fw:
+		1. set zimbraMailThreadingAlgorithm subject for user1.
+		2. login to user1 send message to user2.
+		3. login to user2 reply to user1 message subject preceded by Re: or  Fw: or Fwd:   
+		4. login to user1 and send SearchConvRequest. </steps>
+           
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>        
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account9.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">none</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="none"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message1.file}</filename>
+                        <to>${test_account9.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct9.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+   <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message2.file}</filename>
+                        <to>${test_account9.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct9.server}</server>
+            <modify>
+                <header a="Subject">Re: message1</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message3.file}</filename>
+                        <to>${test_account9.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct9.server}</server>
+            <modify>
+                <header a="Subject">Fw: message1</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    
+    <t:property name="server.zimbraAccount" value="${test_acct9.server}"/>
+
+    <t:test>
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account9.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation" >
+                <query>subject:(message1)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c" attr="n" match="1"/>
+	 </t:response>
+	</t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_10" type="smoke" >
+    <t:objective>Conversation threading using zimbraMailThreadingAlgorithm = references with Re: or Fw:</t:objective>
+    <steps>Conversation threading using zimbraMailThreadingAlgorithm = references with Re: or Fw:
+		1. set zimbraMailThreadingAlgorithm subject for user1.
+		2. login to user1 send message to user2.
+		3. login to user2 reply to user1 message subject preceded by Re: or  Fw: or Fwd:   
+		4. login to user1 and send SearchConvRequest. </steps>
+           
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>        
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account7.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">references</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="references"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message1.file}</filename>
+                        <to>${test_account7.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct7.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+   <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message2.file}</filename>
+                        <to>${test_account7.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct7.server}</server>
+            <modify>
+                <header a="Subject">Re: message1</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message3.file}</filename>
+                        <to>${test_account7.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct7.server}</server>
+            <modify>
+                <header a="Subject">Fw: message1</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    
+    <t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
+
+    <t:test>
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account7.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation" >
+                <query>subject:(message1)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c" attr="n" match="3"/>
+	 </t:response>
+	</t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="conversation_threading_11" type="smoke" >
+    <t:objective>Conversation threading using zimbraMailThreadingAlgorithm = strict with Re: or Fw:</t:objective>
+    <steps>Conversation threading using zimbraMailThreadingAlgorithm = strict with Re: or Fw:
+		1. set zimbraMailThreadingAlgorithm subject for user1.
+		2. login to user1 send message to user2.
+		3. login to user2 reply to user1 message subject preceded by Re: or  Fw: or Fwd:   
+		4. login to user1 and send SearchConvRequest. </steps>
+           
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>        
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account8.id}</id>
+                <a n="zimbraMailThreadingAlgorithm">strict</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = '//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraMailThreadingAlgorithm"]' match="strict"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message1.file}</filename>
+                        <to>${test_account8.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct8.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+   <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message2.file}</filename>
+                        <to>${test_account8.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct8.server}</server>
+            <modify>
+                <header a="Subject">Re: message1</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message3.file}</filename>
+                        <to>${test_account8.name}</to>
+                        <from>${test_acct1.server}</from>
+                        <server>${test_acct8.server}</server>
+            <modify>
+                <header a="Subject">Fw: message1</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+    
+    <t:property name="server.zimbraAccount" value="${test_acct8.server}"/>
+
+    <t:test>
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account8.name}</account>
+            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation" >
+                <query>subject:(message1)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c" attr="n" match="3"/>
+	 </t:response>
+	</t:test>
+    
+</t:test_case>
+
+</t:tests>
+
+

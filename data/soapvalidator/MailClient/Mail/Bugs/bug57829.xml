@@ -1,0 +1,192 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+		<t:test id="ping" required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="acctSetup" type="always">
+		<t:objective>Create test accounts</t:objective>
+		<t:steps>	1. Login to admin account
+					2. Create accounts        
+	    </t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'	set="account1.server" />
+			</t:response>
+		</t:test>
+		<t:test>
+	        <t:request>
+	            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+	                <mbox id="${account1.id}"/>
+	            </GetMailboxRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetMailboxResponse">
+		            <t:select path="//admin:mbox" attr="mbxid" set="account1.mailbox.id"/>
+	            </t:select>
+	        </t:response>
+	    </t:test>
+	    
+	    <t:test>
+			<t:request>
+				<GetServerRequest xmlns="urn:zimbraAdmin">
+					<server by="name">${zimbraServer.name}</server>
+				</GetServerRequest>
+			</t:request>
+			<t:response>
+		            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
+			</t:response>
+   		</t:test>
+		
+	</t:test_case>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}" />
+	<t:property name="authToken" value="" />
+
+	<t:test_case testcaseid="bug57829" type="smoke" bugids="57829">
+		<t:objective>verify user's default charset is used when re-indexing </t:objective>
+
+
+		<t:property name="msg01.file" value="${testMailRaw.root}/Bugs/57829/57829.mime" />
+		 <t:smtpinjecttest>
+    	    <t:smtpInjectRequest>
+        	    <address>${mta.server}</address>
+            	<filename>${msg01.file}</filename>
+            	<recipient>${account1.name}</recipient>
+        	</t:smtpInjectRequest>
+    	</t:smtpinjecttest>
+ 
+		 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>To: test@test.com</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="日本語メ" />
+			</t:response>
+		</t:test> 
+		
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>		
+		
+   <t:test  id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+ 		  <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+      		<id>${account1.id}</id>
+      		<a n="zimbraPrefMailDefaultCharset">ISO-2022-JP</a>
+    	 </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse" />
+        </t:response>
+    </t:test>
+
+
+	<t:test>
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="start">
+               <mbox id="${account1.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse" attr="status" match="started"/>
+        </t:response>
+    </t:test>
+ 
+    <t:for start="1" end="5" break="response1">
+		<t:delay msec="2000"/>
+		<t:test>
+	        <t:request>
+	            <ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
+	               <mbox id="${account1.id}"/>   
+	            </ReIndexRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ReIndexResponse[@status='idle']" query="response1"/>
+	        </t:response>
+	    </t:test>
+	</t:for>
+	 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>To: test@test.com</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="日本語メ"/>
+				<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="日本語メールを送ります"/>
+			</t:response>
+		</t:test> 
+
+ 	</t:test_case>
+</t:tests>
