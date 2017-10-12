@@ -24,8 +24,11 @@ This harness enables you to execute soap automation for supported functionality 
 
 5. To execute any individual testcase or a test suite, update "Run SoapTestCore"" target and execute it:
 - Running individual testcase, update the "value" parameter as:
+
 	`value="data/soapvalidator/MailClient/Auth/auth_basic.xml"`
 - Running who suite, update the "value" parameter as:
+
 	`value="data/soapvalidator/MailClient/Auth/"`
 - To execute the target, run following command:
+
 	`ant "Run SoapTestCore"`
