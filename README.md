@@ -5,7 +5,7 @@ This harness enables you to execute soap automation for supported functionality 
 
 ## Steps
 1. Clone following git repos:
-	git clone https://github.com/Zimbra/zimbra-package-stub.git 
+- `git clone https://github.com/Zimbra/zimbra-package-stub.git`
 	git clone https://github.com/Zimbra/zm-zcs.git
 	git clone https://github.com/Zimbra/zm-mailbox.git
 	git clone https://github.com/Zimbra/zm-soap-harness.git
