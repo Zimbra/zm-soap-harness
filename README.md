@@ -11,6 +11,7 @@ This harness enables you to execute soap automation for supported functionality 
 - git clone https://github.com/Zimbra/zm-soap-harness.git
 
 2. Go to zm-mailbox directory and execute following command to generate necessary zimbra dependencies:
+
    `ant clean-ant publish-local-all -Dzimbra.buildinfo.version=8.8.3_GA`
 
 3. Go to zm-soap-harness directory and run jar target to get zm-qa jar:
