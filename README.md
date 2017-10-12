@@ -5,10 +5,10 @@ This harness enables you to execute soap automation for supported functionality 
 
 ## Steps
 1. Clone following git repos:
-- git clone https://github.com/Zimbra/zimbra-package-stub.git 
-- git clone https://github.com/Zimbra/zm-zcs.git
-- git clone https://github.com/Zimbra/zm-mailbox.git
-- git clone https://github.com/Zimbra/zm-soap-harness.git
+	git clone https://github.com/Zimbra/zimbra-package-stub.git 
+	git clone https://github.com/Zimbra/zm-zcs.git
+	git clone https://github.com/Zimbra/zm-mailbox.git
+	git clone https://github.com/Zimbra/zm-soap-harness.git
 
 2. Enter into zm-mailbox directory and execute following command to generate necessary zimbra dependencies:
    ant clean-ant publish-local-all -Dzimbra.buildinfo.version=8.8.3_GA
