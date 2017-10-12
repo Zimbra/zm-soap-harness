@@ -1,3 +1,8 @@
+# Zimbra SOAP-Harness
+
+## Introduction
+This harness enables you to execute soap automation for supported functionality in FOSS
+
 1. Clone following git repos:
 git clone https://github.com/Zimbra/zimbra-package-stub.git 
 git clone https://github.com/Zimbra/zm-zcs.git
