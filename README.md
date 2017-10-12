@@ -15,9 +15,11 @@ This harness enables you to execute soap automation for supported functionality 
    `ant clean-ant publish-local-all -Dzimbra.buildinfo.version=8.8.3_GA`
 
 3. Go to zm-soap-harness directory and run jar target to get zm-qa jar:
+
    `ant jar`
 
 4. To build soapdata directory, run build-soap-data-file target:
+
    `ant build-soap-data-file`
 
 5. To execute any individual testcase or a test suite, update "Run SoapTestCore"" target and execute it:
