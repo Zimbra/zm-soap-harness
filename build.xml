@@ -91,6 +91,7 @@
 				<include name="**/dom4j-1.5.2.jar-1.5.jar"/>
 				<include name="**/log4j-1.2.16.jar"/>
 				<include name="**/javamail-1.4.5.jar"/>
+				<include name="**/mail-1.4.5.jar"/>
 			</tarfileset>
 		</tar>
 	</target>
@@ -432,6 +433,7 @@
 			<fileset dir="${common.jars.dir}">
 				<include name="log4j-1.2.16.jar"/>
 				<include name="javamail-1.4.5.jar"/>
+				<include name="mail-1.4.5.jar"/>
 			</fileset>
 		</copy>
 		<jar destfile="${dist.lib.dir}/zimbrainject.jar" basedir="${build.staf.dir}/inject">
@@ -439,7 +441,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.inject.Driver"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.inject.INJECTStaf"/>
-					<attribute name="Packaged-Jars" value="zimbrainject javamail-1.4.5 activation log4j-1.2.16"/>
+					<attribute name="Packaged-Jars" value="zimbrainject mail-1.4.5 javamail-1.4.5 activation log4j-1.2.16"/>
 				</section>
 			</manifest>
 		</jar> 
@@ -471,6 +473,7 @@
 				<include name="commons-codec-1.6.jar"/>
 				<include name="json.jar"/>
 				<include name="javamail-1.4.5.jar"/>
+				<include name="mail-1.4.5.jar"/>
 				<include name="libidn-1.24.jar"/>
 			</fileset>
 		</copy>
@@ -479,7 +482,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.importer.Driver"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.importer.StafIntegration"/>
-					<attribute name="Packaged-Jars" value="commons-cli-1.2 log4j-1.2.16 commons-httpclient-3.1 dom4j-1.5.2 commons-logging commons-codec-1.6 json javamail-1.4.5 libidn-1.24 ${zimbraJarPath}"/>
+					<attribute name="Packaged-Jars" value="commons-cli-1.2 log4j-1.2.16 commons-httpclient-3.1 dom4j-1.5.2 commons-logging commons-codec-1.6 json mail-1.4.5 javamail-1.4.5 libidn-1.24 ${zimbraJarPath}"/>
 				</section>
 			</manifest>
 		</jar> 
@@ -550,7 +553,7 @@
 
 			<fileset dir="${common.jars.dir}">
 				<include name="json.jar"/>
-				<include name="ant-contrib-1.0b1.jar"/>
+				<include name="ant-contrib-*.jar"/>
 				<include name="bouncycastle.jar"/>
 				<include name="commons-cli-1.2.jar"/>
 				<include name="commons-codec-1.7.jar"/>
@@ -568,9 +571,10 @@
 				<include name="jaxen-1.1.3.jar"/>
 				<include name="log4j-1.2.16.jar"/>
 				<include name="lucene-*.jar"/>
-				<include name="unboundid-ldapsdk-2.3.5-se.jar"/>
+				<include name="unboundid-ldapsdk-2.3.5*.jar"/>
 				<include name="mariadb-java-client-*.jar"/>
 				<include name="javamail-1.4.5.jar"/>
+				<include name="mail-1.4.5.jar"/>
 				<include name="nekohtml-1.9.13.1z.jar"/>
 				<include name="whack.jar"/>
 				<include name="xercesImpl.jar"/>
@@ -594,7 +598,7 @@
 			<attribute name="Main-Class" value="com.zimbra.qa.soap.SoapTestMain"/>
 			<section name="staf/service/info">
 				<attribute name="Service-Class" value="com.zimbra.qa.soap.StafIntegration"/>
-				<attribute name="Packaged-Jars" value="webservices-api webservices-rt metro-zcs-soapservice testng-6.8 guava-13.0.1 json commons-codec-1.7 zimbrastore activation ical4j-0.9.16-patched javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 unboundid-ldapsdk-2.3.5-se log4j-1.2.16 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
+				<attribute name="Packaged-Jars" value="webservices-api webservices-rt metro-zcs-soapservice testng-6.8 guava-13.0.1 json commons-codec-1.7 zimbrastore activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 unboundid-ldapsdk-2.3.5* log4j-1.2.16 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
 			</section>
 			</manifest>
 		</jar>
@@ -603,7 +607,7 @@
 			<attribute name="Main-Class" value="com.zimbra.qa.smtp.StafTestSMTP"/>
 			<section name="staf/service/info">
 				<attribute name="Service-Class" value="com.zimbra.qa.smtp.StafTestSMTP"/>
-				<attribute name="Packaged-Jars" value="json commons-codec-1.6.jar activation ical4j-0.9.16-patched javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
+				<attribute name="Packaged-Jars" value="json commons-codec-1.6.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
 			</section>
 			</manifest>
 		</jar>
@@ -612,7 +616,7 @@
 			<attribute name="Main-Class" value="com.zimbra.qa.sample.StafCore"/>
 			<section name="staf/service/info">
 				<attribute name="Service-Class" value="com.zimbra.qa.sample.StafMain"/>
-				<attribute name="Packaged-Jars" value="json commons-codec-1.6.jar activation ical4j-0.9.16-patched javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
+				<attribute name="Packaged-Jars" value="json commons-codec-1.6.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
 			</section>
 			</manifest>
 		</jar>
@@ -621,7 +625,7 @@
 			<attribute name="Main-Class" value="com.zimbra.qa.email.INJECTCore"/>
 			<section name="staf/service/info">
 			<attribute name="Service-Class" value="com.zimbra.qa.email.INJECTStaf"/>
-			<attribute name="Packaged-Jars" value="json commons-codec-1.6.jar activation ical4j-0.9.16-patched javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.15 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
+			<attribute name="Packaged-Jars" value="json commons-codec-1.6.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.15 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
 			</section>
 			</manifest>
 		</jar>
