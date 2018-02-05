@@ -181,8 +181,22 @@
         </t:response>
     </t:test>
     
-    <t:property name="uploadServletServer" value="${test_acct.server}"/>
-	
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+	<t:property name="uploadServletServer" value="${test_acct.server}"/>
+
+        <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
 	  <t:uploadservlettest id="SaveDraftRequest11a">
         <t:uploadServletRequest>
             <filename>${message11.file}</filename>

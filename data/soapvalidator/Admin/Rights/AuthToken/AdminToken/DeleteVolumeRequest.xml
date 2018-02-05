@@ -111,14 +111,14 @@
 	<t:property name="tempdir" value="/tmp/volumes"/>
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account0.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
 	</t:staftask>
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account0.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -126,14 +126,14 @@
 	<t:property name="basedir" value="${tempdir}/volumeRoot${COUNTER}${TIME}"/>
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account0.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${basedir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
 	</t:staftask>
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account0.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${basedir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -143,14 +143,14 @@
 	<t:property name="volume1.path" value="${basedir}/rootpath${COUNTER}${TIME}"/>
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account0.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${volume1.path}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
 	</t:staftask>
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account0.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${volume1.path}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>

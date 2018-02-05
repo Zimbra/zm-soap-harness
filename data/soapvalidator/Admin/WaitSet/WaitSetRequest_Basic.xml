@@ -41,8 +41,6 @@
     4. Send the WaitSetRequest to pick up the changes
     </t:steps>
     
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	<t:property name="server.zimbraMail" value="${zimbraServer.name}"/>
 	<!--
 		Should the admin be able to send the waitset requests to the 'main' server?
 		Or, does he need to send it to the account server?
@@ -72,6 +70,8 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     
     <t:test >
         <t:request>

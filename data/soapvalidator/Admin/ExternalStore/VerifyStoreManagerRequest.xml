@@ -132,6 +132,8 @@
 
 <t:test_case testcaseid="VerifyStoreManagerRequest_01" type="smoke">
   <t:objective>Make sure user is not allowed to make VerifyStoreManagerRequest</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
   
   <!-- Login to user account -->
    <t:test id="user_login" required="true" >
@@ -174,6 +176,19 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
+
+	        <t:test>
+                <t:request>
+                        <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                <account by="name">${admin.user}</account>
+                        </GetAccountRequest>
+                </t:request>
+                <t:response>
+                   <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+                </t:response>
+        </t:test>
+
+        <t:property name="server.zimbraAccount" value="${account1.server}"/>
     
  	<t:test>
 		<t:request>

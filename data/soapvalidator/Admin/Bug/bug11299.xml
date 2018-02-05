@@ -63,7 +63,8 @@
             </CreateAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+		<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>	
         </t:response>
     </t:test>  
 
@@ -77,6 +78,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>	
         </t:response>
     </t:test>  
 
@@ -89,6 +91,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>	
         </t:response>
     </t:test>  
 
@@ -101,6 +104,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>	
         </t:response>
     </t:test>  
 
@@ -113,6 +117,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>	
         </t:response>
     </t:test>  
 
@@ -130,6 +135,7 @@
         </t:response>
     </t:test>
     
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <!-- Login to account1 -->
 	<t:test required="true">
         <t:request>
@@ -156,7 +162,9 @@
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
     </t:test>
-       
+
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>       
    <!-- Login to admin to check how many forwarding has been set -->
    <t:test required="true" >
         <t:request>
@@ -193,7 +201,7 @@
 
 	 <t:smtpinjecttest>
         <t:smtpInjectRequest>
-            <address>${test_acct1.mta.server}</address>
+            <address>zmc-mta</address>
             <filename>${msg01.file}</filename>
             <recipient>${account1.name}</recipient>
         </t:smtpInjectRequest>
@@ -203,6 +211,7 @@
 	<!-- Wait for the message to be forwarded  -->
 	<t:delay sec="5"/>
 
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<!-- Login to account1 -->
     <t:test required="true">
         <t:request>
