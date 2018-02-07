@@ -1,4 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -155,6 +157,17 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin.user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+		</t:response>
+	</t:test>
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -164,6 +177,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
             </t:response>
         </t:test>
 
@@ -176,6 +190,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
             </t:response>
         </t:test>
 
@@ -188,12 +203,15 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
             </t:response>
         </t:test>
     </t:test_case>
 
     <t:test_case testcaseid="bug107562_rule1" type="smoke" bugids="107562">
         <t:objective>A word "require" in other commands should not picked up. (pattern 1: single line and single require command in each attribute)</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -219,6 +237,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -236,6 +255,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -264,6 +284,8 @@ if  header :contains ["Subject"] "require abc def" {&#010;
 
     <t:test_case testcaseid="bug107562_rule2" type="smoke" bugids="107562">
         <t:objective>A word "require" in other commands should not picked up. (pattern 2: single line and multiple require commands in each attribute)</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -289,6 +311,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -306,6 +329,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -358,6 +382,8 @@ if  header :contains ["Subject"] "require abc def" {&#010;
 
     <t:test_case testcaseid="bug107562_rule3" type="smoke" bugids="107562">
         <t:objective>A word "require" in other commands should not picked up. (pattern 3: multiple lines and multiple require commands in each attribute)</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -383,6 +409,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -400,6 +427,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">

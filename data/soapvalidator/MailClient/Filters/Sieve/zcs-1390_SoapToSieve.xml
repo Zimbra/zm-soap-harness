@@ -1,4 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<!-- Following bug is included as part of this testcase -->
 	<!-- zcs-1390 Variables should be supported in nested if in soap api -->
@@ -53,6 +54,17 @@
 			</t:response>
 		</t:test>
 
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin.user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+		</t:response>
+	</t:test>
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -70,6 +82,8 @@
 					set="account1.server" />
 			</t:response>
 		</t:test>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -125,6 +139,7 @@
 			folder created from action Fileinto.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -187,6 +202,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -217,6 +233,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -256,6 +273,7 @@
 			should contain error.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -315,6 +333,7 @@
 			'admin@' folder created from action Fileinto.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -377,6 +396,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -407,6 +427,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -451,6 +472,7 @@
 			created from action Fileinto.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -502,6 +524,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<GetFilterRulesRequest xmlns="urn:zimbraMail">
@@ -527,6 +550,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -557,6 +581,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -612,6 +637,7 @@
 			Verify mail is received in inbox.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -680,6 +706,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -710,6 +737,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -754,6 +782,7 @@
 			Verify mail is received in new1 and 'test check' folder.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -830,6 +859,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -860,6 +890,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -916,6 +947,7 @@
 			'new1Outgoing' and 'test checkOutgoing' folder.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -993,6 +1025,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1068,6 +1101,7 @@
 			and 'admin2' folder.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1120,6 +1154,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<GetFilterRulesRequest xmlns="urn:zimbraAdmin"
@@ -1140,6 +1175,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1170,6 +1206,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

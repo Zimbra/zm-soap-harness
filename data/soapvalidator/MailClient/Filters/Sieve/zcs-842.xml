@@ -1,4 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:property name="sender_account.name"
 		value="sender${TIME}${COUNTER}@${defaultdomain.name}" />
@@ -144,7 +145,7 @@ tag "${1}";
 					attr="name" set="sender_account.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="sender.server" />
 			</t:response>
 		</t:test>
 
@@ -162,7 +163,7 @@ tag "${1}";
 					attr="name" set="reciever_account1.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account1.server" />
 			</t:response>
 		</t:test>
 
@@ -180,7 +181,7 @@ tag "${1}";
 					attr="name" set="reciever_account2.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account2.server" />
 			</t:response>
 		</t:test>
 
@@ -198,7 +199,7 @@ tag "${1}";
 					attr="name" set="reciever_account3.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account3.server" />
 			</t:response>
 		</t:test>
 
@@ -216,7 +217,7 @@ tag "${1}";
 					attr="name" set="reciever_account4.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account4.server" />
 			</t:response>
 		</t:test>
 
@@ -234,7 +235,7 @@ tag "${1}";
 					attr="name" set="reciever_account5.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account5.server" />
 			</t:response>
 		</t:test>
 
@@ -252,7 +253,7 @@ tag "${1}";
 					attr="name" set="reciever_account6.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account6.server" />
 			</t:response>
 		</t:test>
 
@@ -270,7 +271,7 @@ tag "${1}";
 					attr="name" set="reciever_account7.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account7.server" />
 			</t:response>
 		</t:test>
 
@@ -288,7 +289,7 @@ tag "${1}";
 					attr="name" set="reciever_account8.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account8.server" />
 			</t:response>
 		</t:test>
 
@@ -306,7 +307,7 @@ tag "${1}";
 					attr="name" set="reciever_account9.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account9.server" />
 			</t:response>
 		</t:test>
 
@@ -324,7 +325,7 @@ tag "${1}";
 					attr="name" set="reciever_account10.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account.server" />
+					set="account10.server" />
 			</t:response>
 		</t:test>
 	</t:test_case>
@@ -340,6 +341,8 @@ tag "${1}";
 			    tag "${1}";
 			}
 		</t:objective>
+
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -363,6 +366,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -394,6 +398,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -433,6 +438,8 @@ tag "${1}";
 			    tag "${1}";
 			}
 		</t:objective>
+
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -456,6 +463,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -487,6 +495,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -528,6 +537,7 @@ tag "${1}";
 			    tag "${1}-${2}";
 			}
 		</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -551,6 +561,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -582,6 +593,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account3.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -622,6 +634,7 @@ tag "${1}";
 			    tag "${0}";
 			}
 		</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -645,6 +658,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -676,6 +690,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account4.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -716,6 +731,7 @@ tag "${1}";
 			    tag "${1}";
 			}
 		</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -739,6 +755,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -770,6 +787,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account5.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -810,6 +828,7 @@ tag "${1}";
 			    tag "space.${1}.tag.${2}";
 			}
 		</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -833,6 +852,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -864,6 +884,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account6.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -903,6 +924,7 @@ tag "${1}";
 			    tag "${000}-${0001}@${defaultdomain.name}";
 			}
 		</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -926,6 +948,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -957,6 +980,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account7.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -996,6 +1020,7 @@ tag "${1}";
 			replaceheader :newvalue "[Spam] ${1},${2}" :comparator "i;ascii-casemap" :matches
 			"subject" "sample*test*";
 		</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1019,6 +1044,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1050,6 +1076,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account8.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1101,6 +1128,7 @@ tag "${1}";
 			    deleteheader :comparator "i;ascii-casemap" :matches "X-New-Header1" "${0}";
 			}
 		</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1124,6 +1152,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1155,6 +1184,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account9.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1206,6 +1236,7 @@ tag "${1}";
 			    tag "${1}";
 			}
 		</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1229,6 +1260,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1260,6 +1292,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account10.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

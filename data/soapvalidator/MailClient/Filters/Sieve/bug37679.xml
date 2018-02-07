@@ -1,4 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:property name="account1.name"
 		value="sieve1.${TIME}${COUNTER}@${defaultdomain.name}" />
@@ -67,6 +68,17 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
+	
+		<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin.user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+		</t:response>
+		</t:test>
 
 		<t:test required="true">
 			<t:request>
@@ -122,6 +134,8 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -166,6 +180,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -194,6 +209,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 		<!-- Send a mail with admin as sender. Should go in Junk of account 1 user 
 			and in inbox too -->
 			
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -212,6 +228,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -255,6 +272,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 		type="smoke" bugids="37679">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -284,6 +302,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 		<!-- Send a mail with admin as sender. Should go in Inbox of account 1 
 			user and redirect to inbox of account 2 -->
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -302,6 +321,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -327,6 +347,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -359,6 +380,8 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -387,6 +410,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 		<!-- Send a mail with admin as sender and subject containing 'fail'. Should only remain in folder 1 on 
 			account 1 user -->
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -405,6 +429,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -475,6 +500,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -519,6 +545,8 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -548,6 +576,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			user and redirect to inbox of account 3. Should not go in Inbox of account 
 			1 user -->
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -566,6 +595,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -603,6 +633,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account3.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -663,6 +694,7 @@ if address :is :all "From" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

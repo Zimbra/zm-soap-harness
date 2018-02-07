@@ -5,6 +5,7 @@
 
 <t:property name="mail_subject" value="Test Mail" />
 <t:property name="dollar" value="$"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
 <t:property name="sieve_rule1" value='require  ["tag","variables"];
@@ -128,6 +129,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test> 
 
@@ -140,6 +142,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
 </t:test_case>
@@ -151,6 +154,8 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         2. Send email to that user. 
         3. Verify header is added and value is appended even though the case of variable name does not match.
     </steps>    
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true">
         <t:request>
@@ -176,6 +181,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         </t:response>
     </t:test> 
 
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -207,6 +213,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         </t:test>
         <t:delay sec="5"/>
 
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">

@@ -16,6 +16,7 @@
     <t:property name="mail_content" value="Hi,\\rYou have got a mail!\\r."></t:property>
     <t:property name="dollar" value="$"></t:property>
     <t:property name="notifybody" value="Notification body"></t:property>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <!-- Sieve rules declaration -->
 
@@ -99,6 +100,17 @@
             </t:response>
         </t:test>
 
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin.user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+		</t:response>
+	</t:test>
+
 	    <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
@@ -133,6 +145,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
             </t:response>
         </t:test>
 
@@ -145,6 +158,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account1.server"/>
             </t:response>
         </t:test>
 
@@ -157,6 +171,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account2.server"/>
             </t:response>
         </t:test> 
 
@@ -169,6 +184,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account3.server"/>
             </t:response>
         </t:test> 
 
@@ -181,6 +197,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account4.server"/>
             </t:response>
         </t:test>
 
@@ -193,6 +210,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account5.server"/>
             </t:response>
         </t:test>
 
@@ -205,6 +223,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account6.server"/>
             </t:response>
         </t:test>
 
@@ -217,6 +236,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account7.server"/>
             </t:response>
         </t:test>
 
@@ -229,6 +249,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account8.server"/>
             </t:response>
         </t:test>
 
@@ -241,6 +262,7 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account9.server"/>
             </t:response>
         </t:test>
     </t:test_case>
@@ -251,6 +273,8 @@
                2. send mail to the user from admin
                3. verify the Return Path in notification sent to the other user.
         </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -280,6 +304,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${notify_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -323,6 +348,8 @@
                2. send mail to the user from admin
                3. verify the Return Path in notification sent to the other user.
         </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -347,6 +374,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -364,6 +392,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${notify_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -407,6 +436,8 @@
                2. send mail to the user from admin
                3. verify the Return Path in notification sent to the other user.
         </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -431,6 +462,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -448,6 +480,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${notify_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -491,6 +524,8 @@
                2. send mail to the user from admin
                3. verify the Return Path in notification sent to the other user.
         </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -515,6 +550,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -532,6 +568,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${notify_account4.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -574,6 +611,8 @@
                2. send mail to the user from admin
                3. verify the Return Path in notification sent to the other user.
         </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -598,6 +637,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -615,6 +655,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${notify_account5.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -657,6 +698,8 @@
                2. send mail to the user from admin
                3. verify the Return Path in notification sent to the other user.
         </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -681,6 +724,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -698,6 +742,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${notify_account6.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -741,6 +786,8 @@
                2. send mail to the user from admin
                3. verify the Return Path in notification sent to the other user.
         </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -765,6 +812,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -782,6 +830,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${notify_account7.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -826,6 +875,8 @@
                2. send mail to the user from admin
                3. verify the Return Path in notification sent to the other user.
         </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -850,6 +901,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -867,6 +919,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${notify_account8.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -910,6 +963,8 @@
                2. send mail to the user from admin
                3. verify the Return Path in notification sent to the other user.
         </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -934,6 +989,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -951,6 +1007,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${notify_account9.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">

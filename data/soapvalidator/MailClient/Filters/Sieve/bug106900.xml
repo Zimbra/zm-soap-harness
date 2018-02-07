@@ -1,4 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_notify_account1.name" value="notify1.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -59,6 +61,17 @@ notify :message "notification_msg4"
             </t:response>
         </t:test>
 
+                <t:test>
+                        <t:request>
+                                <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                        <account by="name">${admin.user}</account>
+                                </GetAccountRequest>
+                        </t:request>
+                        <t:response>
+                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+                        </t:response>
+               </t:test>
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -68,6 +81,7 @@ notify :message "notification_msg4"
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account1.server"/>
             </t:response>
         </t:test>
 
@@ -104,6 +118,7 @@ notify :message "notification_msg4"
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account1.server" />
             </t:response>
         </t:test>
 
@@ -129,6 +144,7 @@ notify :message "notification_msg4"
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account2.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account2.server" />
             </t:response>
         </t:test>
 
@@ -154,6 +170,7 @@ notify :message "notification_msg4"
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account3.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account3.server" />
             </t:response>
         </t:test>
 
@@ -179,12 +196,16 @@ notify :message "notification_msg4"
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account4.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account4.server" />
             </t:response>
         </t:test>
     </t:test_case>
 
     <t:test_case testcaseid="bug106900_rule1" type="smoke" bugids="106900">
         <t:objective>notify action - if :from is a valid email address, From header of the notification message should be set to the address</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -196,6 +217,7 @@ notify :message "notification_msg4"
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
+
         <t:test id="modifyaccountrequest1">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -207,6 +229,8 @@ notify :message "notification_msg4"
                 <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test>
             <t:request>
@@ -224,6 +248,8 @@ notify :message "notification_msg4"
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg1.id" />
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${notify_account1.server}"/>
 
         <t:test>
             <t:request>
@@ -253,6 +279,9 @@ notify :message "notification_msg4"
 
     <t:test_case testcaseid="bug106900_rule2" type="smoke" bugids="106900">
         <t:objective>notify action - if :from is an invalid email address, From header of the notification message should be set to envelope "To" of the triggered message</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -276,6 +305,8 @@ notify :message "notification_msg4"
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
+
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg01.file}</filename>
@@ -284,6 +315,8 @@ notify :message "notification_msg4"
                 <server>${test_account2.server}</server>
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${notify_account2.server}"/>
 
         <t:test>
             <t:request>
@@ -312,6 +345,9 @@ notify :message "notification_msg4"
 
     <t:test_case testcaseid="bug106900_rule3" type="smoke" bugids="106900">
         <t:objective>notify action - if :from is an empty string, From header of the notification message should be set to envelope "To" of the triggered message</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -335,6 +371,8 @@ notify :message "notification_msg4"
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
+
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg01.file}</filename>
@@ -343,6 +381,8 @@ notify :message "notification_msg4"
                 <server>${test_account3.server}</server>
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${notify_account3.server}"/>
 
         <t:test>
             <t:request>
@@ -371,6 +411,9 @@ notify :message "notification_msg4"
 
     <t:test_case testcaseid="bug106900_rule4" type="smoke" bugids="106900">
         <t:objective>notify action - if :from does not exist, From header of the notification message should be set to envelope "To" of the triggered message</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -394,6 +437,8 @@ notify :message "notification_msg4"
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
+
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg01.file}</filename>
@@ -402,6 +447,8 @@ notify :message "notification_msg4"
                 <server>${test_account4.server}</server>
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${notify_account4.server}"/>
 
         <t:test>
             <t:request>
@@ -430,6 +477,8 @@ notify :message "notification_msg4"
 
     <t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         
         <t:test required="true">
             <t:request>

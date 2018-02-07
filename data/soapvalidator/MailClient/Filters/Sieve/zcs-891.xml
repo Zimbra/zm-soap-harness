@@ -1,4 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -59,6 +60,17 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin.user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+		</t:response>
+	</t:test>
 
 
         <t:test required="true">
@@ -130,6 +142,8 @@
 
     <t:test_case testcaseid="zcs-891_rule1" type="smoke" bugids="zcs-891">
         <t:objective>Verify no errors are seen in :comparator is specified before :matches</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -154,6 +168,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -170,6 +185,8 @@
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
 
         <t:test>
             <t:request>
@@ -200,6 +217,8 @@
     
     <t:test_case testcaseid="zcs-891_rule2" type="smoke" bugids="zcs-891">
         <t:objective>Verify no errors are seen in :comparator is specified after :matches</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -224,6 +243,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -241,6 +261,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${test_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -270,6 +291,8 @@
     
     <t:test_case testcaseid="zcs-891_rule3" type="smoke" bugids="zcs-891">
         <t:objective>Verify no errors are seen in :count is specified before :matches</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -294,6 +317,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -311,6 +335,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${test_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -340,6 +365,8 @@
     
     <t:test_case testcaseid="zcs-891_rule4" type="smoke" bugids="zcs-891">
         <t:objective>Verify no errors are seen in :count is specified before :matches</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -364,6 +391,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -381,6 +409,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${test_account4.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -410,6 +439,8 @@
     
     <t:test_case testcaseid="zcs-891_rule5" type="smoke" bugids="zcs-891">
         <t:objective>Negative test: Verify syntax error is seen in :count if parameters are not specified correctly</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -434,6 +465,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -451,6 +483,7 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${test_account5.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">

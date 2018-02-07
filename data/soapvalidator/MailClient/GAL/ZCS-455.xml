@@ -101,6 +101,8 @@
         <t:objective>
             1. Do SearchGalRequest without galsync account
         </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -140,6 +142,8 @@
         <t:objective>
             1. Do SearchGalRequest with galsync account
         </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -177,6 +181,7 @@
 
     <!-- clean up -->
     <t:finally>
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test id="admin_login" required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">

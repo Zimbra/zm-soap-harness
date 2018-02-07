@@ -1,4 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -518,6 +520,17 @@ keep;
             </t:response>
         </t:test>
 
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin.user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+		</t:response>
+	</t:test>
+
 	    <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
@@ -691,6 +704,7 @@ keep;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account1.server" />
             </t:response>
         </t:test>
 
@@ -703,6 +717,7 @@ keep;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_redirect_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account1.server" />
             </t:response>
         </t:test>
 
@@ -729,6 +744,7 @@ keep;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account2.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account2.server" />
             </t:response>
         </t:test>
 
@@ -741,6 +757,7 @@ keep;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_redirect_account2.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account2.server" />
             </t:response>
         </t:test>
 
@@ -767,6 +784,7 @@ keep;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account3.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account3.server" />
             </t:response>
         </t:test>
 
@@ -779,12 +797,15 @@ keep;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_redirect_account3.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account3.server" />
             </t:response>
         </t:test>
     </t:test_case>
 
     <t:test_case testcaseid="bug107381_rule1" type="smoke" bugids="107381">
         <t:objective>* and ? should be treated as wildcard if Match-type is :matches</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -806,6 +827,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -866,6 +888,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -926,6 +949,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -988,6 +1012,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account4.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1048,6 +1073,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account5.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1108,6 +1134,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account6.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1176,6 +1203,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account7.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1236,6 +1264,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account8.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1296,6 +1325,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account9.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1364,6 +1394,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account10.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1403,6 +1434,7 @@ keep;
             </t:restServletResponse>
         </t:resttest> -->
 
+	<t:property name="server.zimbraAccount" value="${notify_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1438,6 +1470,7 @@ keep;
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${redirect_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1486,6 +1519,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account11.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1524,6 +1558,7 @@ keep;
                 <t:select attr="X-New-Header-3-test*abc?123" match="REPLACED" />
             </t:restServletResponse>
         </t:resttest> -->
+	<t:property name="server.zimbraAccount" value="${notify_account2.server}"/>
 
         <t:test>
             <t:request>
@@ -1560,6 +1595,7 @@ keep;
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${redirect_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1608,6 +1644,7 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account12.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1646,6 +1683,7 @@ keep;
             </t:restServletResponse>
         </t:resttest> -->
 
+	<t:property name="server.zimbraAccount" value="${notify_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1681,6 +1719,7 @@ keep;
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${redirect_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1708,6 +1747,8 @@ keep;
 
     <t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         
         <t:test required="true">
             <t:request>

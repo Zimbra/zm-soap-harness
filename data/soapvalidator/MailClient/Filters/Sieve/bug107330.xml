@@ -1,4 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -202,6 +204,17 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:response>
         </t:test>
 
+                <t:test>
+                        <t:request>
+                                <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                        <account by="name">${admin.user}</account>
+                                </GetAccountRequest>
+                        </t:request>
+                        <t:response>
+                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+                        </t:response>
+               </t:test>
+
 	    <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
@@ -235,6 +248,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
             </t:response>
         </t:test>
 
@@ -247,6 +261,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
             </t:response>
         </t:test>
 
@@ -259,6 +274,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
             </t:response>
         </t:test>
 
@@ -271,6 +287,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account4.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
             </t:response>
         </t:test>
 
@@ -283,6 +300,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account4.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account4.server"/>
             </t:response>
         </t:test>
 
@@ -295,6 +313,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account5_1.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5_1.server"/>
             </t:response>
         </t:test>
 
@@ -307,6 +326,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account5_2.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5_2.server"/>
             </t:response>
         </t:test>
 
@@ -319,6 +339,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account6.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
             </t:response>
         </t:test>
 
@@ -331,12 +352,28 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_redirect_account6.id" />
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account6.server"/>
             </t:response>
         </t:test>
     </t:test_case>
 
     <t:test_case testcaseid="bug107330_rule1" type="deprecated" bugids="107330">
         <t:objective>Test header - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+
+        <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
         <t:test id="modifyaccountrequest1">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -348,6 +385,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test>
             <t:request>
@@ -365,6 +404,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg1.id" />
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
         <t:test>
             <t:request>
@@ -405,6 +446,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
 
     <t:test_case testcaseid="bug107330_rule2" type="deprecated" bugids="107330">
         <t:objective>Test string - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -427,6 +470,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test>
             <t:request>
@@ -444,6 +488,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg2.id" />
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
         <t:test>
             <t:request>
@@ -484,6 +530,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
 
     <t:test_case testcaseid="bug107330_rule3" type="deprecated" bugids="107330">
         <t:objective>editheader - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -507,6 +555,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -530,6 +579,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg3.id" />
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
         <t:test>
             <t:request>
@@ -575,6 +626,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
 
     <t:test_case testcaseid="bug107330_rule4" type="smoke" bugids="107330">
         <t:objective>notify - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -598,6 +651,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -614,6 +668,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg4.id" />
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${notify_account4.server}"/>
 
         <t:test>
             <t:request>
@@ -664,6 +720,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
 
     <t:test_case testcaseid="bug107330_rule5" type="smoke" bugids="107330">
         <t:objective>reject - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -686,6 +744,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account5_1.server}"/>
 
         <t:test>
             <t:request>
@@ -740,6 +800,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
 
     <t:test_case testcaseid="bug107330_rule6" type="deprecated" bugids="107330">
         <t:objective>Test header/envelope, tag, fileinto and redirect - dollar mark set in a variable should work as described in RFC 5229 section 3.1</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -763,6 +825,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -779,6 +842,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg6.id" />
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 
         <t:test>
             <t:request>
@@ -832,6 +897,8 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:restServletResponse>
         </t:resttest>
 
+	<t:property name="server.zimbraAccount" value="${redirect_account6.server}"/>
+
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -860,6 +927,9 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
     <t:finally type="always">
         <t:objective>reset cosconfig</t:objective>
         <t:test required="true">
+
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
                     <name>${admin.user}</name>

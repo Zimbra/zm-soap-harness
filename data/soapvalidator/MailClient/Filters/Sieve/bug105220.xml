@@ -1,4 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:property name="account1.name"
 		value="sieve1.${TIME}${COUNTER}@${defaultdomain.name}" />
@@ -134,8 +135,6 @@ if header :value "eq" :comparator "i;octet"
  }
 ' />
 
-
-
 	<t:test_case testcaseid="AcctSetup1_filters_actions_discard_basic"
 		type="smoke">
 		<t:objective> Create test account and login to first account
@@ -152,6 +151,17 @@ if header :value "eq" :comparator "i;octet"
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
+
+                <t:test>
+                        <t:request>
+                                <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                        <account by="name">${admin.user}</account>
+                                </GetAccountRequest>
+                        </t:request>
+                        <t:response>
+                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+                        </t:response>
+               </t:test>
 
 		<t:test required="true">
 			<t:request>
@@ -225,6 +235,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -272,6 +284,8 @@ if header :value "eq" :comparator "i;octet"
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
+
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -317,6 +331,7 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -353,6 +368,7 @@ if header :value "eq" :comparator "i;octet"
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -400,7 +416,7 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
-
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -436,6 +452,8 @@ if header :value "eq" :comparator "i;octet"
 		type="smoke">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -484,6 +502,7 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -515,6 +534,7 @@ if header :value "eq" :comparator "i;octet"
 
 		<!-- Discard the mail as attendees is less than 2 -->
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -545,6 +565,8 @@ if header :value "eq" :comparator "i;octet"
 					set="Sent_message1.id" />
 			</t:response>
 		</t:test>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -579,6 +601,8 @@ if header :value "eq" :comparator "i;octet"
 		type="smoke">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -627,6 +651,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -653,6 +679,8 @@ if header :value "eq" :comparator "i;octet"
 		</t:test>
 
 		<!-- Send a message with to,cc equal to account 1 user -->
+
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -685,6 +713,7 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
 		<t:test>
 			<t:request>
@@ -717,6 +746,8 @@ if header :value "eq" :comparator "i;octet"
 		type="smoke">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 
 		<t:test required="true">
@@ -766,6 +797,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -801,7 +834,7 @@ if header :value "eq" :comparator "i;octet"
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
 
-
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -850,6 +883,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -875,6 +910,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -899,6 +936,8 @@ if header :value "eq" :comparator "i;octet"
 					match="${subject8}" />
 			</t:response>
 		</t:test>
+
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -932,6 +971,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -964,6 +1005,8 @@ if header :value "eq" :comparator "i;octet"
 		type="smoke">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 
 		<t:test required="true">
@@ -1015,6 +1058,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1041,7 +1086,7 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
-
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -1079,6 +1124,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1112,6 +1159,8 @@ if header :value "eq" :comparator "i;octet"
 		type="smoke">
 		<t:objective> Set sieve script and verify by sending mail
 		</t:objective>
+
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		
 		<t:test required="true">
 			<t:request>
@@ -1159,6 +1208,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1185,6 +1236,7 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		
 		
 		<t:test>
@@ -1220,6 +1272,8 @@ if header :value "eq" :comparator "i;octet"
 			</t:response>
 		</t:test>
 		
+		<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

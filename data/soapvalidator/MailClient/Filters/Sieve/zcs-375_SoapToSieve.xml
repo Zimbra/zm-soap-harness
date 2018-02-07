@@ -33,6 +33,7 @@
 	<t:property name="folder2.name" value="folder2.${TIME}${COUNTER}" />
 
 	<t:property name="dollar" value="$" />
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test_case testcaseid="Ping" type="always">
 		<t:objective>basic system check</t:objective>
@@ -63,6 +64,17 @@
 			</t:response>
 		</t:test>
 
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin.user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+		</t:response>
+	</t:test>
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -80,6 +92,8 @@
 					set="account1.server" />
 			</t:response>
 		</t:test>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -132,6 +146,7 @@
 		4. Verify mail is received in folder 1.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -185,6 +200,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -215,6 +231,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -254,6 +271,7 @@
 		4. Verify mail is received in folder 2.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -308,6 +326,7 @@
 		</t:test>
 
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -338,6 +357,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -378,6 +398,7 @@
 		5. Reset value of zimbraAdminSieveScriptBefore to null.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -438,6 +459,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -468,6 +490,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -494,6 +517,7 @@
 		</t:test>
 		
 		<!-- Reset value of zimbraAdminSieveScriptBefore to empty-->
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -533,6 +557,7 @@
 		4. Verify mail is received in folder 2.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -570,6 +595,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<GetFilterRulesRequest xmlns="urn:zimbraMail">
@@ -592,6 +618,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -622,6 +649,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -661,6 +689,7 @@
 		4. Verify mail is received in folder 2.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -717,6 +746,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -747,6 +777,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -786,6 +817,7 @@
 		4. Verify mail is received in folder 1.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -842,6 +874,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -873,6 +906,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -912,6 +946,7 @@
 		4. Verify mail is received in folder 1.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -970,6 +1005,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1001,6 +1037,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1039,6 +1076,7 @@
 		3. Send a mail to user 1 with all sieve conditions getting satisfied.
 		4. Verify mail is received in folder 1.
 		</t:steps>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1102,6 +1140,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1132,6 +1171,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1171,6 +1211,7 @@
 		4. Verify mail is received in folder 1.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1234,6 +1275,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1264,6 +1306,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1303,6 +1346,7 @@
 		4. Verify mail is received in 'admin@' folder created from match variable.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1360,6 +1404,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1390,6 +1435,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1429,6 +1475,7 @@
 		4. Verify mail is received in folder1.
 		</t:steps>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1487,6 +1534,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -1517,6 +1565,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

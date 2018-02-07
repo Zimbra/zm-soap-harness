@@ -1,5 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="account1.name"
         value="user.${TIME}${COUNTER}@${defaultdomain.name}" />
@@ -48,6 +49,17 @@ if anyof (body :contains "シフトJIS") {
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
+
+                <t:test>
+                        <t:request>
+                                <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                        <account by="name">${admin.user}</account>
+                                </GetAccountRequest>
+                        </t:request>
+                        <t:response>
+                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+                        </t:response>
+               </t:test>	
 
         <t:test required="true">
             <t:request>
@@ -121,6 +133,8 @@ if anyof (body :contains "シフトJIS") {
         <t:objective> With unidentified charset
         </t:objective>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -158,6 +172,8 @@ if anyof (body :contains "シフトJIS") {
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -187,6 +203,8 @@ if anyof (body :contains "シフトJIS") {
         type="smoke">
         <t:objective> UTF8 charset
         </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test required="true">
             <t:request>
@@ -225,6 +243,8 @@ if anyof (body :contains "シフトJIS") {
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -255,6 +275,8 @@ if anyof (body :contains "シフトJIS") {
         <t:objective> Japanese charset
         </t:objective>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
+	
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -291,6 +313,8 @@ if anyof (body :contains "シフトJIS") {
                 </modify>
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
 
         <t:test>
             <t:request>

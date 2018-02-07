@@ -1,5 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:property name="account.name" value="sieve1.user@${defaultdomain.name}" />
 	<t:property name="subject1" value="sub1.test" />
 	<t:property name="subject2" value="sub2.test" />
@@ -62,6 +63,7 @@
 		<t:objective> Accounts setup
 		</t:objective>
 
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -102,6 +104,7 @@
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account"
 					attr="id" set="account1.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 			</t:response>
 		</t:test>
 
@@ -115,7 +118,7 @@
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account"
 					attr="id" set="account2.id" />
-
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 			</t:response>
 		</t:test>
 
@@ -129,7 +132,7 @@
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account"
 					attr="id" set="account3.id" />
-
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 			</t:response>
 		</t:test>
 
@@ -143,6 +146,7 @@
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account"
 					attr="id" set="account4.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
 			</t:response>
 		</t:test>
 	</t:test_case>
@@ -152,6 +156,8 @@
 		<t:objective> Address test with single quote, question mark and comma
 			in local part
 		</t:objective>
+
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -176,6 +182,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -198,6 +205,7 @@
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
 
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -231,6 +239,7 @@
 			in local part
 		</t:objective>
 
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -254,6 +263,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -276,6 +286,7 @@
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
 
+		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -309,6 +320,7 @@
 			local part
 		</t:objective>
 
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -332,6 +344,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -354,6 +367,7 @@
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
 
+		<t:property name="server.zimbraAccount" value="${account3.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -387,6 +401,7 @@
 			local part
 		</t:objective>
 
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -410,6 +425,7 @@
 			</t:response>
 		</t:test>
 
+		<t:property name="server.zimbraAccount" value="${account.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -432,6 +448,7 @@
 			</t:lmtpInjectRequest>
 		</t:mailinjecttest>
 
+		<t:property name="server.zimbraAccount" value="${account4.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

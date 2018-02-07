@@ -1,4 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -74,6 +76,17 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:response>
         </t:test>
 
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin.user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+		</t:response>
+	</t:test>
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -103,6 +116,8 @@ deleteheader :matches "X-Test-Header-2" "value2";
 
     <t:test_case testcaseid="bug107610_rule1" type="smoke" bugids="107610">
         <t:objective>Test header/address and editheader should ignore message/rfc822 part - text format</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -127,6 +142,7 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg01.file}</filename>
@@ -136,6 +152,7 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -177,6 +194,8 @@ deleteheader :matches "X-Test-Header-2" "value2";
 
     <t:test_case testcaseid="bug107610_rule2" type="smoke" bugids="107610">
         <t:objective>Test header/address and editheader should ignore message/rfc822 part - html format</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -201,6 +220,7 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg02.file}</filename>
@@ -210,6 +230,7 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">

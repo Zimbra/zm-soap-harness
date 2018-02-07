@@ -1,4 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="account1.name" value="temp1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="account2.name" value="temp2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -159,6 +160,8 @@ if header :contains "To" "${defaultdomain.name}" {
             6. find mail and
             verify tag
         </t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -182,6 +185,8 @@ if header :contains "To" "${defaultdomain.name}" {
                 <t:select path="//admin:ModifyAccountResponse/admin:account" />
             </t:response>
         </t:test>
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
         <t:test required="true">
             <t:request>
@@ -214,6 +219,7 @@ if header :contains "To" "${defaultdomain.name}" {
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -251,6 +257,7 @@ if header :contains "To" "${defaultdomain.name}" {
             4. send mail from account2 to account3
             5. find mail and verify tag is not present
         </t:steps>
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -274,6 +281,7 @@ if header :contains "To" "${defaultdomain.name}" {
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -304,6 +312,7 @@ if header :contains "To" "${defaultdomain.name}" {
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -340,6 +349,7 @@ if header :contains "To" "${defaultdomain.name}" {
             4. send mail from account2 to account4
             5. find mail and verify tag is not present
         </t:steps>
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -363,6 +373,7 @@ if header :contains "To" "${defaultdomain.name}" {
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -393,6 +404,7 @@ if header :contains "To" "${defaultdomain.name}" {
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">

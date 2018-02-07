@@ -8,6 +8,7 @@
 <t:property name="msg01.file" value="${testMailRaw.root}/zcs-861/msg01.txt" />
 <t:property name="dollar" value="$"/>
 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
 <t:property name="sieve_rule1" value='require ["tag", "editheader"];
 	replaceheader :newname "X-New-Header" :newvalue "new value" "X-Test-Header-1" "Val1";
@@ -50,6 +51,17 @@
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
+        </t:test>
+
+        <t:test>
+		<t:request>
+                        <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                <account by="name">${admin.user}</account>
+                        </GetAccountRequest>
+                </t:request>
+                <t:response>
+                   <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+                </t:response>
         </t:test>
 
         <t:test required="true">
@@ -95,6 +107,9 @@
 <!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed --> 
      <t:test_case testcaseid="zcs-861_rule1" type="deprecated" bugids="zcs-861">
         <t:objective>Verify replace and deleteheader works without specifying :is</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -116,6 +131,8 @@
                 <server>${test_account1.server}</server>
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
         <t:test>
             <t:request>
@@ -158,6 +175,9 @@
 
      <t:test_case testcaseid="zcs-861_rule2" type="smoke" bugids="zcs-861">
         <t:objective>Verify string works without specifying :is</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -188,6 +208,8 @@
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${test_account2.server}"/>
+
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -217,6 +239,9 @@
     
   	 <t:test_case testcaseid="zcs-861_rule3" type="smoke" bugids="zcs-861">
         <t:objective>Verify envelop works without specifying :is</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -245,6 +270,8 @@
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
             </t:response>
         </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_account3.server}"/>
 
         <t:test>
             <t:request>

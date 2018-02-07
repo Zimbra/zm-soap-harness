@@ -1,4 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account1.alias" value="test1_alias.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -48,6 +50,17 @@ tag "${v_rcptto}";
             </t:response>
         </t:test>
 
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin.user}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+		</t:response>
+	</t:test>
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -90,6 +103,20 @@ tag "${v_rcptto}";
 
     <t:test_case testcaseid="bug107658_rule1" type="smoke" bugids="107658">
         <t:objective>Test envelope should be able to test the alias address</t:objective>
+
+        <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
         <t:test id="addAccountAliasRequest1">
             <t:request>
                 <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -114,6 +141,7 @@ tag "${v_rcptto}";
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg01.file}</filename>
@@ -123,6 +151,7 @@ tag "${v_rcptto}";
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -151,6 +180,8 @@ tag "${v_rcptto}";
 
     <t:test_case testcaseid="bug107658_rule2" type="smoke" bugids="107658">
         <t:objective>Test envelope should be able to test the primary address</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -187,6 +218,7 @@ tag "${v_rcptto}";
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg01.file}</filename>
@@ -196,6 +228,7 @@ tag "${v_rcptto}";
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -224,6 +257,8 @@ tag "${v_rcptto}";
 
     <t:test_case testcaseid="bug107658_rule3" type="smoke" bugids="107658">
         <t:objective>Test envelope should be able to test the primary address. (No alias address is set)</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -248,6 +283,7 @@ tag "${v_rcptto}";
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${admin.server}"/>	
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg01.file}</filename>
@@ -257,6 +293,7 @@ tag "${v_rcptto}";
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
+	<t:property name="server.zimbraAccount" value="${test_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
