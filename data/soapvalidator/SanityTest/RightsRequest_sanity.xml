@@ -130,7 +130,6 @@
 		</t:response>
 	</t:test>
 	
-	<t:property name="server.zimbraAdmin" value="${admin2.server}"/>
 	<t:test>
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -457,36 +456,6 @@
 		</t:request>
 		<t:response>
 			<t:select path="//admin:GetAllRightsResponse/admin:right"/>
-		</t:response>
-	</t:test>
-
-</t:test_case>
-
-<t:test_case testcaseid="GetGrantsRequest_01" type="sanity" >
-<t:objective>Sanity test for GetGrantsRequest </t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
-	<t:test required="true" >
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAdmin">
-				<name>${admin.user}</name>
-				<password>${admin.password}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-		</t:response>
-	</t:test>
-	
-	<t:test>
-		<t:request>
-			<GetGrantsRequest xmlns="urn:zimbraAdmin">
-				<target type="domain" by="name">${defaultdomain.name}</target>
-			</GetGrantsRequest>    
-		</t:request>
-		<t:response>
-            <t:select path="//admin:GetGrantsResponse/admin:grant"/>
 		</t:response>
 	</t:test>
 

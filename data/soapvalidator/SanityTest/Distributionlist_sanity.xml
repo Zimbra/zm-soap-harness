@@ -691,6 +691,7 @@
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account8.id"/>           
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="server.zimbraAccount"/>
         </t:response>
     </t:test>
     
@@ -706,6 +707,8 @@
         </t:response>
     </t:test>
     
+	<t:property name="server.zimbraAccount" value="${server.zimbraAccount}"/>
+
     <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">

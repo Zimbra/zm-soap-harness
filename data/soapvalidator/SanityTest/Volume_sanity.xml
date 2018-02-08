@@ -1,5 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:property name="volume.name1" value="Volume${TIME}${COUNTER}"/>
 <t:property name="volume.name2" value="Volume${TIME}${COUNTER}"/>
@@ -13,16 +12,41 @@
 <t:property name="type.index" value="10"/>
 <t:property name="tempdir" value="/tmp/volumes"/>
 
+<t:test required="true">
+<t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+        <t:test>
+                <t:request>
+                        <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                <account by="name">${admin.user}</account>
+                        </GetAccountRequest>
+                </t:request>
+                <t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+                </t:response>
+        </t:test>
+
+        <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 <t:staftask >
 	<t:request>
-		<server>${zimbraServer.name}</server>
+		<server>${account1.server}</server>
 		<service>PROCESS</service>
 		<params>START SHELL COMMAND "mkdir -p ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 	</t:request>
 </t:staftask>
 <t:staftask >
 	<t:request>
-		<server>${zimbraServer.name}</server>
+		<server>${account1.server}</server>
 		<service>PROCESS</service>
 		<params>START SHELL COMMAND "chmod 777 ${tempdir}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 	</t:request>
@@ -59,7 +83,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -67,7 +91,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -105,7 +129,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -113,7 +137,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -162,7 +186,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -170,7 +194,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -220,7 +244,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -228,7 +252,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -279,7 +303,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -287,7 +311,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -363,7 +387,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -371,7 +395,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -419,7 +443,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "mkdir -p ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>
@@ -427,7 +451,7 @@
 	
 	<t:staftask >
 		<t:request>
-			<server>${zimbraServer.name}</server>
+			<server>${account1.server}</server>
 			<service>PROCESS</service>
 			<params>START SHELL COMMAND "chmod 777 ${rootpath}" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
 		</t:request>

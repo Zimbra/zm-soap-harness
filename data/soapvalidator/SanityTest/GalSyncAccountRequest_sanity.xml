@@ -10,7 +10,7 @@
 <t:property name="domain3.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain3.name}"/>
 
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account1.server" value="${zimbraServer.name}"/>
 
 
 <t:test_case testcaseid="CreateGalSyncAccountRequest_01" type="sanity">
@@ -28,6 +28,20 @@
         </t:response>
     </t:test>
 
+        <t:test>
+                <t:request>
+                        <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                <account by="name">${admin.user}</account>
+                        </GetAccountRequest>
+                </t:request>
+                <t:response>
+                   <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+                </t:response>
+        </t:test>
+
+        <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+
     <t:test >
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -43,7 +57,7 @@
 
 	<t:test >
         <t:request>
-            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain1.name}" server="${server.zimbraAdmin}">
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain1.name}" server="${account1.server}">
         		<account by="name">${domain1.galaccount.name}</account>
     		</CreateGalSyncAccountRequest>
         </t:request>
@@ -85,7 +99,7 @@
 
 	<t:test >
         <t:request>
-            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain2.name}" server="${server.zimbraAdmin}">
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain2.name}" server="${account1.server}">
         		<account by="name">${domain2.galaccount.name}</account>
     		</CreateGalSyncAccountRequest>
         </t:request>
@@ -139,7 +153,7 @@
 
 	<t:test >
         <t:request>
-            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain3.name}" server="${server.zimbraAdmin}">
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain3.name}" server="${account1.server}">
         		<account by="name">${domain3.galaccount.name}</account>
     		</CreateGalSyncAccountRequest>
         </t:request>

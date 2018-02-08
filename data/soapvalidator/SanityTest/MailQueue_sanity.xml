@@ -2,10 +2,9 @@
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-
-
 <t:test_case testcaseid="GetMailQueueInfoRequest_01" type="sanity" >
     <t:objective>Sanity test for GetMailQueueInfoReques</t:objective>
+
 
     <t:test required="true" >
         <t:request>
@@ -50,7 +49,7 @@
 		<t:response>
 			<t:select path="//admin:GetMailQueueInfoResponse/admin:server" attr="name"  match="${mta.server}"/>
 		</t:response>
-    </t:test >  
+    </t:test>  
 
 </t:test_case>
 
@@ -90,7 +89,9 @@
 	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
 		</t:response>
     </t:test>
-    
+   
+<t:property name="server.zimbraAccount" value="${admin.server}"/> 
+
     <t:test >
         <t:request>
             <GetMailQueueRequest xmlns="urn:zimbraAdmin">

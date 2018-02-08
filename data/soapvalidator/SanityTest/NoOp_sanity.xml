@@ -1,7 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 
 <t:test_case testcaseid="NoOpRequest_01" type="sanity" >
    <t:objective>Sanity test for NoOpRequest </t:objective>
@@ -18,6 +16,31 @@
         </t:response>
     </t:test>
  
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+        <t:test>
+                <t:request>
+                        <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                <account by="name">${admin.user}</account>
+                        </GetAccountRequest>
+                </t:request>
+                <t:response>
+                   <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+                </t:response>
+        </t:test>
+
+        <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 	<t:test>
         <t:request>
             <NoOpRequest xmlns="urn:zimbraMail"/>
