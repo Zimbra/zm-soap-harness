@@ -33,7 +33,7 @@
     <t:property name="msg_subject2" value="Test message"/>
 
     <!-- Sieve rules declaration -->
-    <t:property name="sieve_rule1" value='require ["editheader", "variables"];
+    <t:property name="sieve_rule1" value='require ["editheader", "variables", "relational"];
 set "dollar" "$";
 set "sample" "test text";
 if header :matches :comparator "i;ascii-casemap" "Subject" "*${dollar_variable}{sample}*" {
@@ -63,7 +63,7 @@ if string :is :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{sample}
     addheader :last "X-New-Header-4" "is";
 }'/>
 -->
-    <t:property name="sieve_rule2" value='require ["editheader", "variables"];
+    <t:property name="sieve_rule2" value='require ["editheader", "variables", "relational"];
 set "dollar" "$";
 set "sample" "test text";
 if string :matches :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{sample}${suffix}" "*${sample_variable}*" {
@@ -76,7 +76,7 @@ if string :contains :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{s
 if string :is :comparator "i;ascii-casemap" "${prefix}${dollar_variable}{sample}${suffix}" "${prefix}${sample_variable}${suffix}" {
     addheader :last "X-New-Header-4" "is";
 }'/>
-    <t:property name="sieve_rule3" value='require ["editheader", "variables"];
+    <t:property name="sieve_rule3" value='require ["editheader", "variables", "relational"];
 set "dollar" "$";
 set "sample" "test text";
 set "string" "${prefix}${dollar_variable}{sample}${suffix}";
@@ -90,7 +90,7 @@ deleteheader :is :comparator "i;ascii-casemap" "X-Test-Header-7" "${prefix}${dol
 addheader :last "X-New-Header-8" "[NEW]${dollar_variable}{sample}[END]";
 addheader :last "X-New-Header-9" "${string_variable}";
 '/>
-    <t:property name="sieve_rule4" value='require ["notify", "variables"];
+    <t:property name="sieve_rule4" value='require ["enotify", "variables", "relational"];
 set "dollar" "$";
 set "sample" "test text";
 notify :from "notification_test@${defaultdomain.name}" :message "${prefix}${dollar_variable}{sample}${suffix}"
@@ -105,7 +105,7 @@ set "dollar" "$";
 set "sample" "test text";
 reject "${prefix}${dollar_variable}{sample}${suffix}";
 '/>
-    <t:property name="sieve_rule6" value='require ["editheader", "variables", "tag", "fileinto"];
+    <t:property name="sieve_rule6" value='require ["editheader", "variables", "tag", "fileinto", "relational", "envelope"];
 set "dollar" "$";
 set "sample" "test_text";
 if address :matches :comparator "i;ascii-casemap" "To" "test6_*${dollar_variable}{sample}*${account_partial}@${defaultdomain.name}" {
@@ -142,7 +142,6 @@ set "sample" "test text";
 ereject "${prefix}${dollar_variable}{sample}${suffix}";
 '/>
 -->
-
 
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>

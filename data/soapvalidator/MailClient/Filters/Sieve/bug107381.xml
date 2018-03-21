@@ -34,23 +34,7 @@
 <!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
     <!-- Sieve rules declaration -->
     <!-- Match-type :matches - * and ? sholud be treated as wildcard -->
-    <t:property name="sieve_rule1" value='require ["tag"];
-if address :matches "From" "test*1?3@zimbra.com" {
-    tag "test_address";
-}
-if header :matches "From" "test*1?3@zimbra.com" {
-    tag "test_header";
-}
-if envelope :matches "From" "test*1?3@zimbra.com" {
-    tag "test_envelope";
-}
-if string :matches "test*abc?123" "test*1?3" {
-    tag "test_string";
-}
-'/>
-
-<!-- 
-    <t:property name="sieve_rule1" value='require ["tag", "editheader"];
+    <t:property name="sieve_rule1" value='require ["tag", "editheader", "envelope", "variables"];
 if address :matches "From" "test*1?3@zimbra.com" {
     tag "test_address";
 }
@@ -65,25 +49,10 @@ deleteheader :matches "X-Test-Header-2" "test*1?3";
 if string :matches "test*abc?123" "test*1?3" {
     tag "test_string";
 }
-'/> -->
-
-    <!-- Match-type :matches - \* and \? should be treated as wildcard * and ?-->
-    <t:property name="sieve_rule2" value='require ["tag"];
-if address :matches "From" "test${backslash}*1${backslash}?3@zimbra.com" {
-    tag "test_address";
-}
-if header :matches "From" "test${backslash}*1${backslash}?3@zimbra.com" {
-    tag "test_header";
-}
-if envelope :matches "From" "test${backslash}*1${backslash}?3@zimbra.com" {
-    tag "test_envelope";
-}
-if string :matches "test*abc?123" "test${backslash}*1${backslash}?3" {
-    tag "test_string";
-}
 '/>
 
-<!--     <t:property name="sieve_rule2" value='require ["tag", "editheader"];
+    <!-- Match-type :matches - \* and \? should be treated as wildcard * and ?-->
+    <t:property name="sieve_rule2" value='require ["tag", "editheader", "envelope", "variables"];
 if address :matches "From" "test${backslash}*1${backslash}?3@zimbra.com" {
     tag "test_address";
 }
@@ -98,36 +67,10 @@ deleteheader :matches "X-Test-Header-2" "test${backslash}*1${backslash}?3";
 if string :matches "test*abc?123" "test${backslash}*1${backslash}?3" {
     tag "test_string";
 }
-'/> -->
+'/>
 
     <!-- Match-type :matches - \\* and \\? should be treated as a character '*' and '?' -->
-    <t:property name="sieve_rule3" value='require ["tag"];
-if address :matches "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
-    tag "test_address";
-}
-if address :matches "From" "test${backslash}${backslash}*1${backslash}${backslash}?3@zimbra.com" {
-    tag "test_address-should-not-be-added";
-}
-if header :matches "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
-    tag "test_header";
-}
-if header :matches "From" "test${backslash}${backslash}*1${backslash}${backslash}?3@zimbra.com" {
-    tag "test_header-should-not-be-added";
-}
-if envelope :matches "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
-    tag "test_envelope";
-}
-if envelope :matches "From" "test${backslash}${backslash}*1${backslash}${backslash}?3@zimbra.com" {
-    tag "test_envelope-should-not-be-added";
-}
-if string :matches "test*abc?123" "test${backslash}${backslash}*abc${backslash}${backslash}?123" {
-    tag "test_string";
-}
-if string :matches "test*abc?123" "test${backslash}${backslash}*1${backslash}${backslash}?3" {
-    tag "test_string-should-not-be-added";
-}
-'/>
-<!--     <t:property name="sieve_rule3" value='require ["tag", "editheader"];
+    <t:property name="sieve_rule3" value='require ["tag", "editheader", "envelope", "variables"];
 if address :matches "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
     tag "test_address";
 }
@@ -156,25 +99,10 @@ if string :matches "test*abc?123" "test${backslash}${backslash}*abc${backslash}$
 if string :matches "test*abc?123" "test${backslash}${backslash}*1${backslash}${backslash}?3" {
     tag "test_string-should-not-be-added";
 }
-'/> -->
-
-    <!-- Match-type :is - * and ? should be matched with a character '*' and '?' without being escaped-->
-    <t:property name="sieve_rule4" value='require ["tag"];
-if address :is "From" "test*abc?123@zimbra.com" {
-    tag "test_address";
-}
-if header :is "From" "test*abc?123@zimbra.com" {
-    tag "test_header";
-}
-if envelope :is "From" "test*abc?123@zimbra.com" {
-    tag "test_envelope";
-}
-if string :is "test*abc?123" "test*abc?123" {
-    tag "test_string";
-}
 '/>
 
-<!--     <t:property name="sieve_rule4" value='require ["tag", "editheader"];
+    <!-- Match-type :is - * and ? should be matched with a character '*' and '?' without being escaped-->
+    <t:property name="sieve_rule4" value='require ["tag", "editheader", "envelope", "variables"];
 if address :is "From" "test*abc?123@zimbra.com" {
     tag "test_address";
 }
@@ -189,23 +117,9 @@ deleteheader :is "X-Test-Header-2" "test*abc?123";
 if string :is "test*abc?123" "test*abc?123" {
     tag "test_string";
 }
-'/> -->
-    <!-- Match-type :is - "\*" and "\?" should be matched with a character '*' and '?'-->
-    <t:property name="sieve_rule5" value='require ["tag"];
-if address :is "From" "test${backslash}*abc${backslash}?123@zimbra.com" {
-    tag "test_address";
-}
-if header :is "From" "test${backslash}*abc${backslash}?123@zimbra.com" {
-    tag "test_header";
-}
-if envelope :is "From" "test${backslash}*abc${backslash}?123@zimbra.com" {
-    tag "test_envelope";
-}
-if string :is "test*abc?123" "test${backslash}*abc${backslash}?123" {
-    tag "test_string";
-}
 '/>
-<!--     <t:property name="sieve_rule5" value='require ["tag", "editheader"];
+    <!-- Match-type :is - "\*" and "\?" should be matched with a character '*' and '?'-->
+    <t:property name="sieve_rule5" value='require ["tag", "editheader", "envelope", "variables"];
 if address :is "From" "test${backslash}*abc${backslash}?123@zimbra.com" {
     tag "test_address";
 }
@@ -220,39 +134,13 @@ if string :is "test*abc?123" "test${backslash}*abc${backslash}?123" {
 }
 replaceheader :newvalue "REPLACED" :is "X-Test-Header-1" "test${backslash}*abc${backslash}?123";
 deleteheader :is "X-Test-Header-2" "test${backslash}*abc${backslash}?123";
-'/> -->
+'/>
 
     <!-- Match-type :is - \\* and \\? should be treated as a string "\*" and "\?".
          A double-quotation in Envelope From is removed during lmtpinject (bug107618).
          Test Address cannot match a double quotation (bug107617)
     -->
-    <t:property name="sieve_rule6" value='require ["tag"];
-if address :is "Cc" "${backslash}"test${backslash}${backslash}*abc${backslash}${backslash}?123${backslash}"@zimbra.com" {
-    tag "test_address";
-}
-if address :is "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
-    tag "test_address-should-not-be-added";
-}
-if header :is "Cc" "${backslash}"test${backslash}${backslash}*abc${backslash}${backslash}?123${backslash}"@zimbra.com" {
-    tag "test_header";
-}
-if header :is "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
-    tag "test_header-should-not-be-added";
-}
-if envelope :is "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
-    tag "test_envelope";
-}
-if string :is "test${backslash}${backslash}*abc${backslash}${backslash}?123" "test${backslash}${backslash}*abc${backslash}${backslash}?123" {
-    tag "test_string";
-}
-if string :is "test${backslash}*abc${backslash}?123" "test${backslash}${backslash}*abc${backslash}${backslash}?123" {
-    tag "test_string-should-not-be-added";
-}
-if string :is "test*abc?123" "test${backslash}${backslash}*abc${backslash}${backslash}?123" {
-    tag "test_string-should-not-be-added";
-}
-'/>
-<!--     <t:property name="sieve_rule6" value='require ["tag", "editheader"];
+    <t:property name="sieve_rule6" value='require ["tag", "editheader", "envelope", "variables"];
 if address :is "Cc" "${backslash}"test${backslash}${backslash}*abc${backslash}${backslash}?123${backslash}"@zimbra.com" {
     tag "test_address";
 }
@@ -281,24 +169,10 @@ if string :is "test${backslash}*abc${backslash}?123" "test${backslash}${backslas
 if string :is "test*abc?123" "test${backslash}${backslash}*abc${backslash}${backslash}?123" {
     tag "test_string-should-not-be-added";
 }
-'/> -->
+'/>
 
     <!-- Match-type :contains - * and ? should be matched with a character '*' and '?' without being escaped-->
-    <t:property name="sieve_rule7" value='require ["tag"];
-if address :contains "From" "test*abc?123@zimbra.com" {
-    tag "test_address";
-}
-if header :contains "From" "test*abc?123@zimbra.com" {
-    tag "test_header";
-}
-if envelope :contains "From" "test*abc?123@zimbra.com" {
-    tag "test_envelope";
-}
-if string :contains "test*abc?123" "test*abc?123" {
-    tag "test_string";
-}
-'/>
-<!--     <t:property name="sieve_rule7" value='require ["tag", "editheader"];
+    <t:property name="sieve_rule7" value='require ["tag", "editheader", "envelope", "variables"];
 if address :contains "From" "test*abc?123@zimbra.com" {
     tag "test_address";
 }
@@ -313,24 +187,10 @@ deleteheader :contains "X-Test-Header-2" "test*abc?123";
 if string :contains "test*abc?123" "test*abc?123" {
     tag "test_string";
 }
-'/> -->
+'/>
 
     <!-- Match-type :contains - "\*" and "\?" should be matched with a character '*' and '?'-->
-    <t:property name="sieve_rule8" value='require ["tag"];
-if address :contains "From" "test${backslash}*abc${backslash}?123@zimbra.com" {
-    tag "test_address";
-}
-if header :contains "From" "test${backslash}*abc${backslash}?123@zimbra.com" {
-    tag "test_header";
-}
-if envelope :contains "From" "test${backslash}*abc${backslash}?123@zimbra.com" {
-    tag "test_envelope";
-}
-if string :contains "test*abc?123" "test${backslash}*abc${backslash}?123" {
-    tag "test_string";
-}
-'/>
-<!--     <t:property name="sieve_rule8" value='require ["tag", "editheader"];
+    <t:property name="sieve_rule8" value='require ["tag", "editheader", "envelope", "variables"];
 if address :contains "From" "test${backslash}*abc${backslash}?123@zimbra.com" {
     tag "test_address";
 }
@@ -345,39 +205,13 @@ if string :contains "test*abc?123" "test${backslash}*abc${backslash}?123" {
 }
 replaceheader :newvalue "REPLACED" :contains "X-Test-Header-1" "test${backslash}*abc${backslash}?123";
 deleteheader :contains "X-Test-Header-2" "test${backslash}*abc${backslash}?123";
-'/> -->
+'/>
 
     <!-- Match-type :contains - \\* and \\? should be treated as a string "\*" and "\?".
          A double-quotation in Envelope From is removed during lmtpinject (bug107618).
          Test Address cannot match a double quotation (bug107617)
     -->
-    <t:property name="sieve_rule9" value='require ["tag"];
-if address :contains "Cc" "${backslash}"test${backslash}${backslash}*abc${backslash}${backslash}?123${backslash}"@zimbra.com" {
-    tag "test_address";
-}
-if address :contains "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
-    tag "test_address-should-not-be-added";
-}
-if header :is "Cc" "${backslash}"test${backslash}${backslash}*abc${backslash}${backslash}?123${backslash}"@zimbra.com" {
-    tag "test_header";
-}
-if header :contains "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
-    tag "test_header-should-not-be-added";
-}
-if envelope :contains "From" "test${backslash}${backslash}*abc${backslash}${backslash}?123@zimbra.com" {
-    tag "test_envelope";
-}
-if string :contains "test${backslash}${backslash}*abc${backslash}${backslash}?123" "test${backslash}${backslash}*abc${backslash}${backslash}?123" {
-    tag "test_string";
-}
-if string :contains "test${backslash}*abc${backslash}?123" "test${backslash}${backslash}*abc${backslash}${backslash}?123" {
-    tag "test_string-should-not-be-added";
-}
-if string :contains "test*abc?123" "test${backslash}${backslash}*abc${backslash}${backslash}?123" {
-    tag "test_string-should-not-be-added";
-}
-'/>
-<!--     <t:property name="sieve_rule9" value='require ["tag", "editheader"];
+    <t:property name="sieve_rule9" value='require ["tag", "editheader", "envelope", "variables"];
 if address :contains "Cc" "${backslash}"test${backslash}${backslash}*abc${backslash}${backslash}?123${backslash}"@zimbra.com" {
     tag "test_address";
 }
@@ -406,21 +240,10 @@ if string :contains "test${backslash}*abc${backslash}?123" "test${backslash}${ba
 if string :contains "test*abc?123" "test${backslash}${backslash}*abc${backslash}${backslash}?123" {
     tag "test_string-should-not-be-added";
 }
-'/> -->
+'/>
 
     <!-- Other fields - '*' and '?' should be treated as a character -->
-    <t:property name="sieve_rule10" value='require ["fileinto", "tag", "notify"];
-tag "test*a1?b1";
-fileinto "test*a1?b1";
-notify :from "notification_test@${defaultdomain.name}" :message "test*abc?123"
-"mailto:${test_notify_account1.name}?body=NotificationMessage1";
-set :encodeurl "notify_body" "test*abc?123";
-notify :from "notification_test@${defaultdomain.name}" :message "NotificationMessage2"
-"mailto:${test_notify_account1.name}?body=${notify_body_variable}";
-redirect "${test_redirect_account1.name}";
-keep;
-' />
-<!--    <t:property name="sieve_rule10" value='require ["fileinto", "tag", "notify", "editheader"];
+    <t:property name="sieve_rule10" value='require ["fileinto", "tag", "enotify", "editheader", "variables"];
 addheader :last "X-New-Header-1" "test*abc?123";
 addheader :last "X-New-Header-2-test*abc?123" "ADDED";
 replaceheader :newvalue "test*abc?123" :matches "X-Test-Header-7" "*";
@@ -434,21 +257,10 @@ notify :from "notification_test@${defaultdomain.name}" :message "NotificationMes
 "mailto:${test_notify_account1.name}?body=${notify_body_variable}";
 redirect "${test_redirect_account1.name}";
 keep;
-' /> -->
+' />
 
     <!-- Other fields - '\*' and '\?' should be treated as a character '*' and '?'-->
-    <t:property name="sieve_rule11" value='require ["fileinto", "tag", "notify"];
-tag "test${backslash}*a1${backslash}?b1";
-fileinto "test${backslash}*a1${backslash}?b1";
-notify :from "notification_test@${defaultdomain.name}" :message "test${backslash}*abc${backslash}?123"
-"mailto:notify2${backslash}*abc${backslash}?123${account_partial_1}?body=NotificationMessage1";
-set :encodeurl "notify_body" "test${backslash}*abc${backslash}?123";
-notify :from "notification_test@${defaultdomain.name}" :message "NotificationMessage2"
-"mailto:notify2${backslash}*abc${backslash}?123${account_partial_1}?body=${notify_body_variable}";
-redirect "redirect2${backslash}*abc${backslash}?123${account_partial_2}";
-keep;
-' />
-<!--     <t:property name="sieve_rule11" value='require ["fileinto", "tag", "notify", "editheader"];
+    <t:property name="sieve_rule11" value='require ["fileinto", "tag", "enotify", "editheader", "variables"];
 addheader :last "X-New-Header-1" "test${backslash}*abc${backslash}?123";
 addheader :last "X-New-Header-2-test${backslash}*abc${backslash}?123" "ADDED";
 replaceheader :newvalue "test${backslash}*abc${backslash}?123" :matches "X-Test-Header-7" "*";
@@ -462,24 +274,14 @@ notify :from "notification_test@${defaultdomain.name}" :message "NotificationMes
 "mailto:notify2${backslash}*abc${backslash}?123${account_partial_1}?body=${notify_body_variable}";
 redirect "redirect2${backslash}*abc${backslash}?123${account_partial_2}";
 keep;
-' /> -->
+' />
 
     <!-- Other fields - '\\*' and '\\?' should be treated as a string "\*" and "\?"-->
     <!-- tag: Exception is thrown if a tag name has "\".
               com.zimbra.cs.mailbox.MailServiceException: invalid name: test\*a1\?b1
          notify: 2nd notify action fails due to bug107621
      -->
-    <t:property name="sieve_rule12" value='require ["fileinto", "tag", "notify"];
-fileinto "test${backslash}${backslash}*a1${backslash}${backslash}?b1";
-notify :from "notification_test@${defaultdomain.name}" :message "test${backslash}${backslash}*abc${backslash}${backslash}?123"
-"mailto:notify3${backslash}${backslash}*abc${backslash}${backslash}?123${account_partial_3}?body=NotificationMessage1";
-set :encodeurl "notify_body" "test${backslash}${backslash}*abc${backslash}${backslash}?123";
-notify :from "notification_test@${defaultdomain.name}" :message "NotificationMessage2"
-"mailto:notify3${backslash}${backslash}*abc${backslash}${backslash}?123${account_partial_3}?body=${notify_body_variable}";
-redirect "redirect3${backslash}${backslash}*abc${backslash}${backslash}?123${account_partial_4}";
-keep;
-' />
-<!--     <t:property name="sieve_rule12" value='require ["fileinto", "tag", "notify", "editheader"];
+    <t:property name="sieve_rule12" value='require ["fileinto", "tag", "enotify", "editheader", "variables"];
 addheader :last "X-New-Header-1" "test${backslash}${backslash}*abc${backslash}${backslash}?123";
 addheader :last "X-New-Header-2-test${backslash}${backslash}*abc${backslash}${backslash}?123" "ADDED";
 replaceheader :newvalue "test${backslash}${backslash}*abc${backslash}${backslash}?123" :matches "X-Test-Header-7" "*";
@@ -492,7 +294,8 @@ notify :from "notification_test@${defaultdomain.name}" :message "NotificationMes
 "mailto:notify3${backslash}${backslash}*abc${backslash}${backslash}?123${account_partial_3}?body=${notify_body_variable}";
 redirect "redirect3${backslash}${backslash}*abc${backslash}${backslash}?123${account_partial_4}";
 keep;
-' /> -->
+' />
+
 
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>

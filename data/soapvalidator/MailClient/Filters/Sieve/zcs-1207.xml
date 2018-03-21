@@ -11,19 +11,19 @@
     <t:property name="server.name" value="testserver${TIME}${COUNTER}" />
 
     <t:property name="sieve_test_1"
-        value='require ["fileinto", "log"];
+        value='require ["fileinto", "log", "envelope"];
 if envelope :matches "From" "admin@*" {
   fileinto "Junk"; 
 }' />
 
     <t:property name="sieve_test_2"
-        value='require ["fileinto", "log"];
+        value='require ["fileinto", "log", "envelope"];
 if envelope :matches "From123" "admin@*" {
   fileinto "Junk"; 
 }' />
 
     <t:property name="sieve_test_3"
-        value='require ["fileinto", "log"];
+        value='require ["fileinto", "log", "envelope"];
 if envelope :matches "to123" "admin@*" {
   fileinto "Junk"; 
 }' />

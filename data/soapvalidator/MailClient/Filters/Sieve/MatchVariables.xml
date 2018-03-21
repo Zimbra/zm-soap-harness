@@ -34,7 +34,7 @@
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	
 	<t:property name="sieve_test1"
-		value='require ["log","fileinto","relational"];	
+		value='require ["log","fileinto","relational","variables"];	
 		if header :matches :comparator "i;ascii-casemap" "Subject" "*Test"
 		{
 			log "Log 1 as : ${01}"; 
@@ -44,7 +44,7 @@
 ' />
 	
 	<t:property name="sieve_test2"
-		value='require ["log","fileinto","relational"];	
+		value='require ["log","fileinto","relational","variables"];	
 		if header :matches :comparator "i;ascii-casemap" "Subject" "*T*st"
 		{
 			log "Log 2 as : ${000000002}";
@@ -54,7 +54,7 @@
 ' />
 
 <t:property name="sieve_test3"
-		value='require ["log","fileinto","relational"];	
+		value='require ["log","fileinto","relational","variables"];	
 		if header :matches :comparator "i;ascii-casemap" "Subject" "*Test*D*M*T*B*E*c*t*d"
 		{
 			log "Log 3 as : ${9}";
@@ -94,7 +94,7 @@
 ' />
 
 <t:property name="sieve_test7"
-		value='require ["log","fileinto","tag"];	
+		value='require ["log","fileinto","tag","relational"];	
 		if header :matches :comparator "i;ascii-casemap" "Subject" "*Test*D*M*T*B*E*c*t*d*"
 		{ 
 			log "Log 7 as : ${-0001}";
@@ -104,7 +104,7 @@
 ' />
 
 <t:property name="sieve_test8"
-		value='require ["log","fileinto","tag"];	
+		value='require ["log","fileinto","tag","variables","relational"];	
 		if header :matches :comparator "i;ascii-casemap" "Subject" "*Test*D*M*T*B*E*c*t*d*"
 		{ 
 			log "Log 8 as : ${0}";
@@ -113,7 +113,6 @@
 		}   
 ' />
  
-
 	<t:test_case testcaseid="AcctSetup1_zcs876"
 		type="smoke" bugids="zcs876">
 		<t:objective> Create test account and login to first account
@@ -894,23 +893,23 @@
 	if header :contains "subject" "sieve\\\\\\\\test\\\\abc\\\\xyz" {tag "containstag";}'
 />
 
-<t:property name="sieve_rule5" value='require ["tag"];
+<t:property name="sieve_rule5" value='require ["tag", "relational"];
 	if header :matches :comparator "i;ascii-casemap" "subject" "sieve\\\\\\\\\\\\test" {tag "matchestag";}
 	if header :is :comparator "i;ascii-casemap" "subject" "sieve\\\\\\\\\\\\test" {tag "istag";}
 	if header :contains :comparator "i;ascii-casemap" "subject" "sieve\\\\\\\\\\\\test" {tag "containstag";}'
 /> 
 
-<t:property name="sieve_rule6" value='require ["tag"];
+<t:property name="sieve_rule6" value='require ["tag", "relational"];
 	if header :matches :comparator "i;ascii-casemap" "subject" "sieve\\\\\\\\\\\\test" {tag "matchestag";}
 	if header :is :comparator "i;ascii-casemap" "subject" "sieve\\\\\\\\\\\\test" {tag "istag";}
 	if header :contains :comparator "i;ascii-casemap" "subject" "sieve\\\\\\\\\\\\test" {tag "containstag";}'
 />
 
-<t:property name="sieve_rule7" value='require ["tag"];
+<t:property name="sieve_rule7" value='require ["tag", "relational"];
 	if header :value "eq" :comparator "i;octet" "subject" "sieve\\\\\\\\\\\\\\\\test" {tag "matchestag";}'
 /> 
 
-<t:property name="sieve_rule8" value='require ["tag"];
+<t:property name="sieve_rule8" value='require ["tag", "relational"];
 	if header :value "eq" :comparator "i;octet" "subject" "sieve\\\\\\\\\\\\\\\\test" {tag "matchestag";}'
 />
 
@@ -1986,7 +1985,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 	<t:property name="0000005" value="$\{0000005}" />
 
 	<t:property name="sieve_test14"
-		value='
+		value='require ["editheader", "variables"];
 		if header :matches :comparator "i;ascii-casemap" "Subject" "t*t*"
 		{
 		    addheader :last "X-New-Header1" "${00009}";
@@ -1995,7 +1994,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 ' />
 
 	<t:property name="sieve_test15"
-		value='
+		value='require ["editheader", "variables"];
 		if header :matches :comparator "i;ascii-casemap" "Subject" "t??t1??"
 		{
 		    addheader :last "X-New-Header1" "${0000005}";

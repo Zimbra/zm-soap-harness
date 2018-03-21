@@ -13,19 +13,19 @@
 
 <t:property name="server.name" value="testserver${TIME}${COUNTER}"/>
 
-<t:property name="sieve_test_1" value='require ["tag", "log"];
+<t:property name="sieve_test_1" value='require ["tag", "log", "variables", "envelope"];
 if envelope :matches "From" "admin@*" {
   tag "${variable_name_dollar_one}"; 
   log "Setting ${variable_name_dollar_one} as tag name for rule 1";
 }'/>
 
-<t:property name="sieve_test_2" value='require ["tag", "log"];
+<t:property name="sieve_test_2" value='require ["tag", "log", "variables", "envelope"];
 if envelope :matches ["To","Cc"] "*" {
   tag "${variable_name_dollar_one}"; 
   log "Setting ${variable_name_dollar_one} as tag name for rule 2";
 }'/>
 
-<t:property name="sieve_test_3" value='require ["tag", "log","variables"];
+<t:property name="sieve_test_3" value='require ["tag", "log","variables", "envelope"];
 set "fr" "admin";
 if envelope :contains "From" "admin@${defaultdomain.name}" {
   tag "${variable_name_dollar_fr}"; 

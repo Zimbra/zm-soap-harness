@@ -5,47 +5,8 @@
 
 <t:property name="mail_subject" value="Test Mail" />
 <t:property name="dollar" value="$"/>
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-<t:property name="sieve_rule1" value='require  ["tag","variables"];
-set "varTo" "To";
-set "varFrom" "From";
-if address :is "${dollar}{varFrom}" "${account1.name}" {
-    tag "addressTag1";
-}
-
-set "fromAddress" "${account1.name}";
-if address :is "${dollar}{varFrom}" "${dollar}{fromAddress}" {
-    tag "addressTag2";
-}
-
-set "toAddress" "${account2.name}";
-if anyof address :matches ["$\{dollar}{varFrom}", "$\{dollar}{varTo}"] ["test*"] {
-    tag "addressTag3";
-}
-
-if envelope :contains "${dollar}{varFrom}" "test" {
-    tag "envelopTag1";
-}
-
-if envelope :contains ["$\{dollar}{varFrom}", "$\{dollar}{varTo}"] "test" {
-    tag "envelopTag2";
-}
-
-set "headerName" "Subject";
-if header :is "${dollar}{headerName}" ["${mail_subject}"] {
-    tag "headerTag1";
-}
-
-set "str1" "test";
-set "str2" "${dollar}{str1}";
-if string :is "${dollar}{str1}" "${dollar}{str2}" {
-    tag "stringTag1";
-}
-'/>
-
-<!-- <t:property name="sieve_rule1" value='require  ["tag","variables", "editheader"];
+ <t:property name="sieve_rule1" value='require  ["tag","variables", "editheader", "envelope"];
 set "varTo" "To";
 set "varFrom" "From";
 if address :is "${dollar}{varFrom}" "${account1.name}" {
@@ -88,7 +49,7 @@ set "subject" "subject";
 deleteheader :is "${dollar}{subject}" "${mail_subject}";
 
 replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
-'/> -->
+'/> 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
     <t:test required="true">
@@ -119,7 +80,31 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
         </t:response>
     </t:test>
-    
+
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	        
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -129,7 +114,6 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
     </t:test> 
 
@@ -138,11 +122,11 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule1}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
     </t:test>
 </t:test_case>
@@ -155,33 +139,6 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         3. Verify header is added and value is appended even though the case of variable name does not match.
     </steps>    
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
-    <t:test required="true">
-        <t:request>
-            <AuthRequest xmlns="urn:zimbraAdmin">
-                <name>${admin.user}</name>
-                <password>${admin.password}</password>
-            </AuthRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-        </t:response>
-    </t:test>
-        
-    <t:test id = "modifyaccountrequest01">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${account2.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test> 
-
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -213,7 +170,6 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         </t:test>
         <t:delay sec="5"/>
 
-	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -238,8 +194,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
             </t:response>
     </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-<!-- <t:resttest>
+ <t:resttest>
         <t:restServletRequest>
             <id>${msg1.id}</id>
         </t:restServletRequest>
@@ -247,7 +202,35 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
             <t:select attr="Subject" emptyset="1"/>
             <t:select attr="X-Test-Header" match="Replaced" />
         </t:restServletResponse>
-    </t:resttest> -->
+    </t:resttest> 
 </t:test_case>
- 
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally> 
 </t:tests>

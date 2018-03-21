@@ -1,5 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:property name="sender_account.name"
 		value="sender${TIME}${COUNTER}@${defaultdomain.name}" />
@@ -96,7 +95,7 @@ replaceheader :newvalue "[Spam] ${1},${2}" :comparator "i;ascii-casemap" :matche
 ' />
 
 	<t:property name="sieve_test9"
-		value='require ["editheader"];
+		value='require ["editheader", "variables"];
 addheader "X-New-Header1" "This is a new header1";
 addheader "X-New-Header2" "This is a new header2";
 if header :matches "X-New-Header1" "This*"
@@ -131,6 +130,30 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -145,7 +168,7 @@ tag "${1}";
 					attr="name" set="sender_account.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="sender.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -154,6 +177,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account1.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_test1}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -163,7 +187,7 @@ tag "${1}";
 					attr="name" set="reciever_account1.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account1.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -172,6 +196,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account2.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_test2}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -181,7 +206,7 @@ tag "${1}";
 					attr="name" set="reciever_account2.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account2.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -190,6 +215,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account3.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_test3}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -199,7 +225,7 @@ tag "${1}";
 					attr="name" set="reciever_account3.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account3.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -208,6 +234,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account4.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_test4}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -217,7 +244,7 @@ tag "${1}";
 					attr="name" set="reciever_account4.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account4.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -226,6 +253,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account5.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_test5}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -235,7 +263,7 @@ tag "${1}";
 					attr="name" set="reciever_account5.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account5.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -244,6 +272,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account6.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_test6}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -253,7 +282,7 @@ tag "${1}";
 					attr="name" set="reciever_account6.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account6.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -262,6 +291,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account7.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_test7}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -271,7 +301,7 @@ tag "${1}";
 					attr="name" set="reciever_account7.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account7.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -280,6 +310,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account8.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test8}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -289,7 +320,7 @@ tag "${1}";
 					attr="name" set="reciever_account8.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account8.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -298,6 +329,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account9.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test9}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -307,7 +339,7 @@ tag "${1}";
 					attr="name" set="reciever_account9.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account9.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 
@@ -316,6 +348,7 @@ tag "${1}";
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${reciever_account10.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_test10}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -325,7 +358,7 @@ tag "${1}";
 					attr="name" set="reciever_account10.name" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="account10.server" />
+					set="account.server" />
 			</t:response>
 		</t:test>
 	</t:test_case>
@@ -342,31 +375,6 @@ tag "${1}";
 			}
 		</t:objective>
 
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
-
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test1}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -398,7 +406,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -439,31 +446,6 @@ tag "${1}";
 			}
 		</t:objective>
 
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
-
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account2.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test2}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -495,7 +477,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -537,31 +518,7 @@ tag "${1}";
 			    tag "${1}-${2}";
 			}
 		</t:objective>
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
 
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account3.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test3}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -593,7 +550,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account3.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -634,31 +590,7 @@ tag "${1}";
 			    tag "${0}";
 			}
 		</t:objective>
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
 
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account4.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test4}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -690,7 +622,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account4.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -731,31 +662,7 @@ tag "${1}";
 			    tag "${1}";
 			}
 		</t:objective>
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
 
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account5.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test5}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -787,7 +694,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account5.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -828,31 +734,7 @@ tag "${1}";
 			    tag "space.${1}.tag.${2}";
 			}
 		</t:objective>
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
 
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account6.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test6}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -884,7 +766,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account6.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -924,31 +805,7 @@ tag "${1}";
 			    tag "${000}-${0001}@${defaultdomain.name}";
 			}
 		</t:objective>
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
 
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account7.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test7}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -980,7 +837,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account7.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1009,8 +865,7 @@ tag "${1}";
 		</t:test>
 	</t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-	<t:test_case testcaseid="ZCS-842_Filter8" type="deprecated"
+	<t:test_case testcaseid="ZCS-842_Filter8" type="smoke"
 		bugids="ZCS-842">
 		<t:objective> replaceheader test - multiple wildcard example
 			Send a mail with subject as 'sample abc test 123 test ABC test' .
@@ -1020,31 +875,7 @@ tag "${1}";
 			replaceheader :newvalue "[Spam] ${1},${2}" :comparator "i;ascii-casemap" :matches
 			"subject" "sample*test*";
 		</t:objective>
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
 
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account8.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test8}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1076,7 +907,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account8.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1114,8 +944,7 @@ tag "${1}";
 		</t:resttest>
 	</t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-	<t:test_case testcaseid="ZCS-842_Filter9" type="deprecated"
+	<t:test_case testcaseid="ZCS-842_Filter9" type="smoke"
 		bugids="ZCS-842">
 		<t:objective> deleteheader test - wildcard greedy example
 			Delete header if the value matches with variable value of header test
@@ -1128,31 +957,7 @@ tag "${1}";
 			    deleteheader :comparator "i;ascii-casemap" :matches "X-New-Header1" "${0}";
 			}
 		</t:objective>
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
 
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account9.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test9}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1184,7 +989,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account9.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1236,31 +1040,7 @@ tag "${1}";
 			    tag "${1}";
 			}
 		</t:objective>
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
 
-		<t:test id="modifyAccountRequest_1">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${reciever_account10.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test10}</a>
-				</ModifyAccountRequest>
-			</t:request>
-			<t:response>
-			</t:response>
-		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${sender.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1292,7 +1072,6 @@ tag "${1}";
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account10.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -1320,4 +1099,33 @@ tag "${1}";
 			</t:response>
 		</t:test>
 	</t:test_case>
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>	
 </t:tests>

@@ -97,219 +97,6 @@
 	</target>
 
 
-
-
-	<target name="ruby-set-up">
-		<copy todir="src/ruby/data">
-			<fileset dir="data/genesis"/>
-		</copy>
-		<copy todir="src/ruby/conf">
-			<fileset dir="conf">
-			</fileset>
-		</copy>
-        <copy todir="src/ruby/data/TestMailRaw">
-            <fileset dir="data/TestMailRaw">
-            </fileset>
-        </copy>
-		<!-- copy todir="src/ruby/lib/">
-			<fileset dir="../ZimbraCommon/jars">
-			</fileset>
-			<fileset dir="${dist.lib.dir}">
-			</fileset>
-		</copy -->
-	</target>
-
-
-	<target name="ruby-clean">
-		<delete dir="src/ruby/data"/>
-		<delete dir="src/ruby/lib"/>
-		<delete dir="src/ruby/conf"/>
-	</target>
-
-	<target name="ruby-compile" depends="ruby-set-up">
-		<apply executable="ruby" failonerror="true">
-			<arg value="-c"/>
-		    <fileset dir="src/ruby" includes="**/*.rb"/>
-		</apply>
-	</target>
-
-
-	<target name="build-genesis" depends="build-init, ruby-clean,ruby-compile,ruby-set-up">
-		<tar longfile="gnu" destfile="${build.dir}/genesisdos.tar">
-			<tarfileset dir="src/ruby" prefix="genesis" mode="555">
-				<include name="**/*.rb"/>
-				<include name="**/cookie.tgz"/>
-				<include name="**/*.conf"/>
-				<include name="**/Gemfile"/>
-				<!-- supress large account test until test plan logic is implemented -->
-				<exclude name="**/largeaccountcreation.rb"/>
-				<!-- bug 5570 stall test -->
-				<exclude name="**/hsm/concurrent.rb"/>
-			</tarfileset>
-			<!-- tarfileset dir="src/ruby/lib" prefix="genesis/lib" mode = "555">
-				<include name = "**/*"/>
-			</tarfileset -->
-			<tarfileset dir="src/ruby/conf" prefix="genesis/conf" mode="555">
-				<include name = "**/*" />
-			</tarfileset>
-            <tarfileset dir="src/ruby/data/TestMailRaw" prefix="genesis/data/TestMailRaw" mode="555">
-                <include name = "**/*" />
-            </tarfileset>
-			<!-- tarfileset dir="build/generated/src/ruby"
-				prefix="genesis/docs">
-				<include name="**/*"/>
-			</tarfileset -->
-		</tar>
-		<untar src="${build.dir}/genesisdos.tar" dest="${build.dir}/unix"/>
-		<fixcrlf srcdir="${build.dir}/unix/genesis"
-			eol="lf"
-			eof="remove"
-			includes="**/*.rb" />
-		<fixcrlf srcdir="${build.dir}/unix/genesis"
-					eol="lf"
-					eof="remove"
-					includes="**/zimbra.conf" />
-		<tar longfile="gnu" destfile="${build.dir}/genesis.tar">
-			<tarfileset dir="${build.dir}/unix" mode="555">
-					<include name="**/*.rb"/>
-			</tarfileset>
-			<tarfileset dir="${build.dir}/unix">
-					<include name="**/*"/>
-					<exclude name="**/*.rb"/>
-			</tarfileset>
-		</tar>
-		<delete dir="${build.dir}/unix"/>
-	</target>
-
-
-
-
-	<target name="build-mapi-data-file" depends="staf-jar">
-		<copy todir="${build.dir}">
-			<fileset dir="src/bin">
-				<include name="runreports.sh"/>
-				<include name="runtmssoap.sh"/>
-				<include name="runreports_p.sh"/>
-			</fileset>
-		</copy>
-		<fixcrlf srcdir="${build.dir}"
-			eol="lf"
-			eof="remove"
-			includes="*.sh" />
-		<tar longfile="gnu" destfile="${build.dir}/mapidata.tar">
-			<tarfileset dir="data/mapiValidator" prefix="mapivalidator/data/mapivalidator" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
-			<tarfileset dir="${build.dir}" prefix="mapivalidator/bin" mode="555">
-				<include name="runreports.sh"/>
-				<include name="runtmssoap.sh"/>
-				<include name="runreports_p.sh"/>
-			</tarfileset>
-			<tarfileset dir="${mapi.dir}/src/UTIL" prefix="mapivalidator/data/mapiValidator/translations/ZCO" mode="555">
-			        <include name="**/*properties" />
-			</tarfileset>
-			<tarfileset dir="data/TestMailRaw" prefix="mapivalidator/data/TestMailRaw" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
-			<tarfileset dir="conf" prefix="mapivalidator/conf" mode="555">
-				<include name="**/*"/>
-				<exclude name="**/genesis/*"/>
-			</tarfileset>
-			<tarfileset dir="${dist.lib.dir}" prefix="mapivalidator/bin" mode="555">
-				<include name="**/zimbrastaf.jar"/>
-			</tarfileset>
-		</tar>
-	</target>
-	<target name="build-mapi-data-file-ext" depends="staf-jar">
-	   <exec executable="ant" failonerror="true">
-	    <arg value="-diagnostics"/>
-	  </exec>
-	  <exec executable="ant" failonerror="true">
-	    <arg value="-v"/>
-	    <arg value="build-mapi-data-file"/>
-	  </exec>
-	</target>
-         <target name="build-zdesktop-data-file" depends="staf-jar">
-		<copy todir="${build.dir}">
-			<fileset dir="src/bin">
-				<include name="runreports.sh"/>
-				<include name="runtmssoap.sh"/>
-				<include name="runreports_p.sh"/>
-			</fileset>
-		</copy>
-		<fixcrlf srcdir="${build.dir}"
-			eol="lf"
-			eof="remove"
-			includes="*.sh" />
-		<tar longfile="gnu" destfile="${build.dir}/zdesktop.tar">
-		  <tarfileset dir="data/zdesktopvalidator" prefix="zdesktopvalidator/data/zdesktopvalidator" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
-			<tarfileset dir="${build.dir}" prefix="zdesktopvalidator/bin" mode="555">
-				<include name="runreports.sh"/>
-				<include name="runtmssoap.sh"/>
-				<include name="runreports_p.sh"/>
-			</tarfileset>
-			<tarfileset dir="src/ruby" prefix="zdesktopvalidator/bin" mode="555">
-				<include name="reportResult.rb"/>
-			</tarfileset>
-			<tarfileset dir="data/TestMailRaw" prefix="zdesktopvalidator/data/TestMailRaw" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
-			<tarfileset dir="conf" prefix="zdesktopvalidator/conf" mode="555">
-				<include name="**/*"/>
-				<exclude name="**/genesis/*"/>
-			</tarfileset>
-			<tarfileset dir="${dist.lib.dir}" prefix="zdesktopvalidator/bin" mode="555">
-				<include name="**/zimbrastaf.jar"/>
-			</tarfileset>
-		</tar>
-	</target>
-	<target name="build-pst-data-file" depends="staf-jar">
-		<copy todir="${build.dir}">
-			<fileset dir="src/bin">
-				<include name="runreports.sh"/>
-				<include name="runtmssoap.sh"/>
-				<include name="runreports_p.sh"/>
-			</fileset>
-		</copy>
-		<fixcrlf srcdir="${build.dir}"
-			eol="lf"
-			eof="remove"
-			includes="*.sh" />
-		<tar longfile="gnu" destfile="${build.dir}/pstdata.tar">
-			<tarfileset dir="data/mapiValidator" prefix="pstvalidator/data/mapivalidator" mode="555">
-				<include name="pstImport/**/*"/>
-				<include name="perlHelpers/**/*"/>
-				<include name="translations/**/*"/>
-			</tarfileset>
-			<tarfileset dir="${build.dir}" prefix="pstvalidator/bin" mode="555">
-				<include name="runreports.sh"/>
-				<include name="runtmssoap.sh"/>
-				<include name="runreports_p.sh"/>
-			</tarfileset>
-			<tarfileset dir="data/migrationWizard/pst" prefix="pstvalidator/data/migrationWizard/pst" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
-			<tarfileset dir="conf" prefix="pstvalidator/conf" mode="555">
-				<include name="**/*"/>
-				<exclude name="**/genesis/*"/>
-			</tarfileset>
-			<tarfileset dir="${dist.lib.dir}" prefix="pstvalidator/bin" mode="555">
-				<include name="**/zimbrastaf.jar"/>
-			</tarfileset>
-		</tar>
-	</target>
-	<target name="build-upgrade-data-file" depends="staf-jar">
-		<tar longfile="gnu" destfile="${build.dir}/upgrade.tar">
-			<tarfileset dir="data/zimbraInstall" prefix="zimbraInstall/data/zimbraInstall" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
-		</tar>
-	</target>
-
-
-
 	<target name="ScalityHttpStore compile" description="Create a  store manager extension jar">
 		<mkdir dir="${build.scalityhttpstore.classes.dir}" />
 		<javac destdir="${build.scalityhttpstore.classes.dir}" srcdir="${src.java.dir}" debug="false" classpathref="class.path">
@@ -326,8 +113,6 @@
 	</target>
 
 
-
-
 	<target name="storemanager compile" description="Create a  store manager extension jar">
 		<mkdir dir="${build.storemanager.classes.dir}" />
 		<javac destdir="${build.storemanager.classes.dir}" srcdir="${src.java.dir}" debug="false" classpathref="class.path">
@@ -342,8 +127,6 @@
 	             />
 	</target>
 
-
-
 	<target name="AuthExtension jar" depends="AuthExtension compile" description="Create a custom auth extension jar">
 		<property name="manifest" value="conf/ZimbraExtensions/CustomAuthQA/MANIFEST.MF"/>
 		<property name="jar.file" value="ExtensionCustomAuthQA.jar"/>
@@ -357,8 +140,6 @@
 			<include name="**/*.java" />
 		</javac>
 	</target>
-
-
 
 	<target name="staf-bugreports" depends="compile" description="Creates the STAF jar file for the Bug Reports service">
 
@@ -391,8 +172,6 @@
 		</jar>
 	</target>
 
-
-
 	<target name="staf-results" depends="compile" description="Creates the result service jar file">
 		<property name="build.staf.result.classes.dir"  	location="${build.dir}/staf/result/STAF-INF/classes"/>
 		<property name="build.staf.result.jars.dir"  		location="${build.dir}/staf/result/STAF-INF/jars"/>
@@ -422,7 +201,6 @@
 		</jar>
 	</target>
 
-
 	<target name="staf-inject" depends="compile" description="Creates the inject service jar file">
 		<property name="build.staf.inject.classes.dir"  	location="${build.dir}/staf/inject/STAF-INF/classes"/>
 		<property name="build.staf.inject.jars.dir"  		location="${build.dir}/staf/inject/STAF-INF/jars"/>
@@ -446,10 +224,6 @@
 			</manifest>
 		</jar> 
 	</target>
-
-
-
-
 
 	<target name="staf-importer" depends="compile,getJarVersion" description="Creates the inject service jar file">
 		<property name="build.staf.importer.classes.dir"  	location="${build.dir}/staf/importer/STAF-INF/classes"/>
@@ -488,9 +262,6 @@
 		</jar> 
 	</target>
 
-
-
-
 	<target name="staf-nunit" depends="compile" description="Creates the nunit STAF jar file">
 		<property name="build.staf.nunit.classes.dir"  	location="${build.dir}/staf/nunit/STAF-INF/classes"/>
 		<property name="build.staf.nunit.jars.dir"  		location="${build.dir}/staf/nunit/STAF-INF/jars"/>
@@ -513,19 +284,17 @@
 		</jar>
 	</target>
 
-
-  <target name="gatherZimbraJars" depends="init-ivy">
-    <ivy:install organisation="zimbra" module="zm-native" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    <ivy:install organisation="zimbra" module="zm-common" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    <ivy:install organisation="zimbra" module="zm-soap" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    <ivy:install organisation="zimbra" module="zm-client" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    <ivy:install organisation="zimbra" module="zm-store" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    <ivy:install organisation="postgresql" module="postgresql" revision="9.1-901.jdbc4" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    <delete>
-      <fileset dir="${build.dir}/tmp" excludes="*.jar" />
-    </delete>
-  </target>
-
+	<target name="gatherZimbraJars" depends="init-ivy">
+    		<ivy:install organisation="zimbra" module="zm-native" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+    		<ivy:install organisation="zimbra" module="zm-common" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+    		<ivy:install organisation="zimbra" module="zm-soap" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+    		<ivy:install organisation="zimbra" module="zm-client" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+    		<ivy:install organisation="zimbra" module="zm-store" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+    		<ivy:install organisation="postgresql" module="postgresql" revision="9.1-901.jdbc4" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+    	<delete>
+      		<fileset dir="${build.dir}/tmp" excludes="*.jar" />
+    	</delete>
+  	</target>
 
         <target name="getJarVersion" depends="gatherZimbraJars">
         <echo>${build.dir}/tmp</echo>
@@ -534,8 +303,6 @@
         <propertyregex property="zimbraJarPath" input="${prop.dist.contents}" regexp=".jar;|.jar" replace=" "  global="true" />
         <echo>${zimbraJarPath}</echo>
         </target>
-
-
 
 	<target name="staf-jar" depends="getJarVersion,staf-nunit,staf-importer,staf-inject,staf-results,staf-bugreports,compile,AuthExtension jar,storemanager jar, ScalityHttpStore jar" description="Creates the jar file">
 		<copy todir="${build.staf.classes.dir}">
@@ -679,27 +446,25 @@
 
 	<target name="build-testware-one"
                 description="testware one"
-                depends="build-soap-data-file,build-upgrade-data-file,build-genesis">
+                depends="build-soap-data-file">
         </target>
-
 
     <target name="build-testware-two"
                 description="testware two"
-                depends="build-smtp-service-file,build-stax-file,build-pst-data-file">
+                depends="build-smtp-service-file,build-stax-file">
         </target>
-
 
         <target name="build-testware"
                 description="testware"
-                depends="clean,build-testware-one,build-testware-two,build-zdesktop-data-file,build-tenv-setup,build-tools-setup,compress-move">
+                depends="clean,build-testware-one,build-testware-two,build-tenv-setup,build-tools-setup,compress-move">
         </target>		
 
-		<target name="Run SoapTestCore" depends="compile" description="Run Staf Tests in non-STAF environment">
-				<property name="testRoot" value="data/soapvalidator/MailClient/Auth/auth_basic.xml"/>
-				<echo>STAF: Executing ${testRoot}</echo>
-				<java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
-					<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none"/>
-				</java>
-		</target>
+	<target name="Run SoapTestCore" depends="compile" description="Run Staf Tests in non-STAF environment">
+		<property name="testRoot" value="data/soapvalidator/MailClient/Auth/auth_basic.xml"/>
+		<echo>STAF: Executing ${testRoot}</echo>
+		<java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
+			<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none"/>
+		</java>
+	</target>
 	
 </project>

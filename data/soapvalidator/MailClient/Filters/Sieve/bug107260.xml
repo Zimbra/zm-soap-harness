@@ -15,43 +15,43 @@
     <t:property name="folder_inbox" value="Inbox" />
 
     <!-- Sieve rules declaration -->
-    <t:property name="sieve_rule1" value='require ["tag"];
+    <t:property name="sieve_rule1" value='require ["tag", "comparator-i;ascii-numeric", "relational"];
 if address :comparator "i;ascii-numeric" :contains "To" "123"{
     tag "tag-1-should-not-be-added";
 }
 tag "end-tag-should-not-be-added";
 '/>
-    <t:property name="sieve_rule2" value='require ["tag"];
+    <t:property name="sieve_rule2" value='require ["tag", "comparator-i;ascii-numeric", "relational"];
 if address :comparator "i;ascii-numeric" :matches "To" "123"{
     tag "tag-1-should-not-be-added";
 }
 tag "end-tag-should-not-be-added";
 '/>
-    <t:property name="sieve_rule3" value='require ["tag"];
+    <t:property name="sieve_rule3" value='require ["tag", "comparator-i;ascii-numeric", "relational"];
 if header :comparator "i;ascii-numeric" :contains "To" "123"{
     tag "tag-1-should-not-be-added";
 }
 tag "end-tag-should-not-be-added";
 '/>
-    <t:property name="sieve_rule4" value='require ["tag"];
+    <t:property name="sieve_rule4" value='require ["tag", "comparator-i;ascii-numeric", "relational"];
 if header :comparator "i;ascii-numeric" :matches "To" "123"{
     tag "tag-1-should-not-be-added";
 }
 tag "end-tag-should-not-be-added";
 '/>
-    <t:property name="sieve_rule5" value='require ["tag"];
+    <t:property name="sieve_rule5" value='require ["tag", "comparator-i;ascii-numeric", "relational"];
 if envelope :comparator "i;ascii-numeric" :contains "To" "123"{
     tag "tag-1-should-not-be-added";
 }
 tag "end-tag-should-not-be-added";
 '/>
-    <t:property name="sieve_rule6" value='require ["tag"];
+    <t:property name="sieve_rule6" value='require ["tag", "comparator-i;ascii-numeric", "relational"];
 if envelope :comparator "i;ascii-numeric" :matches "To" "123"{
     tag "tag-1-should-not-be-added";
 }
 tag "end-tag-should-not-be-added";
 '/>
-    <t:property name="sieve_rule7" value='require ["tag"];
+    <t:property name="sieve_rule7" value='require ["tag", "comparator-i;ascii-numeric", "relational", "envelope"];
 if address :comparator "i;ascii-numeric" :is "To" "NON-DIGIT"{
     tag "address-1";
 }
@@ -81,7 +81,7 @@ if envelope :comparator "i;ascii-numeric" :is "To" ""{
 }
 tag "end-tag";
 '/>
-    <t:property name="sieve_rule8" value='require ["tag"];
+    <t:property name="sieve_rule8" value='require ["tag", "comparator-i;ascii-numeric", "relational", "envelope"];
 if address :comparator "i;ascii-numeric" :is "To" "456123"{
     tag "address-1";
 }
@@ -127,9 +127,7 @@ if envelope :comparator "i;ascii-numeric" :is "To" "456"{
 if envelope :comparator "i;ascii-numeric" :is "To" "000456123"{
     tag "envelope-5";
 }
-tag "end-tag";
-'/>
-
+tag "end-tag";'/>
 
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>

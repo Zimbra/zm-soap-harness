@@ -141,7 +141,7 @@
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${account1.id}</id>
                     <a n="zimbraMailSieveScript">
-require ["log", "variables"];
+require ["log", "variables", "fileinto"];
 set "${variable_name_sub}" "test";
 if header :contains "subject" "${variable_name_dollar_sub}" {
     log "Subject has test";
@@ -311,7 +311,7 @@ if header :contains "subject" "${variable_name_dollar_sub}" {
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${account1.id}</id>
                     <a n="zimbraMailSieveScript">
-require["log", "variables"];
+require["log", "variables", "fileinto"];
 if header :matches "Subject" "${str_star}" {
     log "Tagging mail as spam";
     tag "${tag_spam}";

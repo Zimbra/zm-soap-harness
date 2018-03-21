@@ -63,37 +63,7 @@
           fileinto with match variables should be written at the bottom.
           fileinto, redirect and reject MUST NOT be written in the same sieve script in this testcase.
     -->
-    <t:property name="sieve_rule1" value='require ["tag", "notify", "fileinto", "variables"];
-set "var_adminbefore" "${test_account1.name}";
-if header :is "To" "${v_var_adminbefore}" {
-    tag "header";
-}
-if address :is "To" "${v_var_adminbefore}" {
-    tag "address";
-}
-if envelope :is "To" "${v_var_adminbefore}" {
-    tag "envelope";
-}
-if string :is "${v_var_adminbefore}" "${test_account1.name}" {
-    tag "string";
-}
-if header :matches "X-Test-Header-4" "*" {
-    notify :from "${dollar1}" :message "NotificationMessage1" "mailto:${notify_account1.name}?body=test";
-}
-if header :matches "X-Test-Header-5" "*" {
-    notify :from "${dummy_email}" :message "${dollar1}" "mailto:${notify_account1.name}?body=test";
-}
-if header :matches "X-Test-Header-6" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage3" "mailto:${notify_account1.name}?body=${dollar1}";
-}
-if header :matches "X-Test-Header-7" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage4" "mailto:${dollar1}?body=test";
-}
-if header :matches "Subject" "*" {
-    fileinto "${dollar1}";
-}
-'/>
-<!--     <t:property name="sieve_rule1" value='require ["tag", "notify", "fileinto", "editheader", "variables"];
+     <t:property name="sieve_rule1" value='require ["tag", "enotify", "fileinto", "editheader", "variables", "envelope"];
 set "var_adminbefore" "${test_account1.name}";
 if header :is "To" "${v_var_adminbefore}" {
     tag "header";
@@ -136,7 +106,7 @@ if header :matches "Subject" "*" {
 if header :matches "Subject" "*" {
     fileinto "${dollar1}";
 }
-'/> -->
+'/> 
 
     <t:property name="sieve_rule2" value='require ["variables"];
 if header :matches "X-Test-Header-3" "*" {
@@ -148,83 +118,9 @@ if header :matches "Subject" "*" {
     reject "${dollar1}";
 }
 '/>
-    <t:property name="sieve_rule4" value='require ["tag", "notify", "fileinto", "variables"];
-set "var_adminbefore" "${test_account4.name}";
-if header :is "To" "${v_var_adminbefore}" {
-    tag "header";
-}
-if address :is "To" "${v_var_adminbefore}" {
-    tag "address";
-}
-if envelope :is "To" "${v_var_adminbefore}" {
-    tag "envelope";
-}
-if string :is "${v_var_adminbefore}" "${test_account4.name}" {
-    tag "string";
-}
-if header :matches "X-Test-Header-4" "*" {
-    notify :from "${dollar1}" :message "NotificationMessage1" "mailto:${notify_account4.name}?body=test";
-}
-if header :matches "X-Test-Header-5" "*" {
-    notify :from "${dummy_email}" :message "${dollar1}" "mailto:${notify_account4.name}?body=test";
-}
-if header :matches "X-Test-Header-6" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage3" "mailto:${notify_account4.name}?body=${dollar1}";
-}
-if header :matches "X-Test-Header-7" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage4" "mailto:${dollar1}?body=test";
-}
-if header :matches "Subject" "*" {
-    fileinto "${dollar1}";
-}
-'/>
-<!--     <t:property name="sieve_rule4" value='require ["tag", "notify", "fileinto", "editheader", "variables"];
-set "var_adminbefore" "${test_account4.name}";
-if header :is "To" "${v_var_adminbefore}" {
-    tag "header";
-}
-if address :is "To" "${v_var_adminbefore}" {
-    tag "address";
-}
-if envelope :is "To" "${v_var_adminbefore}" {
-    tag "envelope";
-}
-if string :is "${v_var_adminbefore}" "${test_account4.name}" {
-    tag "string";
-}
-if header :matches "Subject" "*" {
-    tag "${dollar1}";
-    addheader :last "X-New-Header-1" "${dollar1}";
-    if string :matches "${dollar1}" "${msg_subject}" {
-        addheader :last "X-New-Header-2" "ADDED";
-    }
-}
-replaceheader :newvalue "[NEW]${dollar1}" :matches "X-Test-Header-2" "*";
-if header :matches "X-Test-Header-4" "*" {
-    notify :from "${dollar1}" :message "NotificationMessage1" "mailto:${notify_account4.name}?body=test";
-}
-if header :matches "X-Test-Header-5" "*" {
-    notify :from "${dummy_email}" :message "${dollar1}" "mailto:${notify_account4.name}?body=test";
-}
-if header :matches "X-Test-Header-6" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage3" "mailto:${notify_account4.name}?body=${dollar1}";
-}
-if header :matches "X-Test-Header-7" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage4" "mailto:${dollar1}?body=test";
-}
-if header :matches "X-Test-Header-8" "*" {
-    replaceheader :newvalue "REPLACED" :matches "X-Test-Header-8" "${dollar1}";
-}
-if header :matches "Subject" "*" {
-    deleteheader :matches "X-Test-Header-1" "${dollar1}";
-}
-if header :matches "Subject" "*" {
-    fileinto "${dollar1}";
-}
-'/> -->
 
-    <t:property name="sieve_rule7" value='require ["tag", "notify", "fileinto", "variables"];
-set "var_adminbefore" "${test_account7.name}";
+   <t:property name="sieve_rule4" value='require ["tag", "enotify", "fileinto", "editheader", "variables", "envelope"];
+set "var_adminbefore" "${test_account4.name}";
 if header :is "To" "${v_var_adminbefore}" {
     tag "header";
 }
@@ -234,26 +130,42 @@ if address :is "To" "${v_var_adminbefore}" {
 if envelope :is "To" "${v_var_adminbefore}" {
     tag "envelope";
 }
-if string :is "${v_var_adminbefore}" "${test_account7.name}" {
+if string :is "${v_var_adminbefore}" "${test_account4.name}" {
     tag "string";
 }
+if header :matches "Subject" "*" {
+    tag "${dollar1}";
+    addheader :last "X-New-Header-1" "${dollar1}";
+    if string :matches "${dollar1}" "${msg_subject}" {
+        addheader :last "X-New-Header-2" "ADDED";
+    }
+}
+replaceheader :newvalue "[NEW]${dollar1}" :matches "X-Test-Header-2" "*";
 if header :matches "X-Test-Header-4" "*" {
-    notify :from "${dollar1}" :message "NotificationMessage1" "mailto:${notify_account7.name}?body=test";
+    notify :from "${dollar1}" :message "NotificationMessage1" "mailto:${notify_account4.name}?body=test";
 }
 if header :matches "X-Test-Header-5" "*" {
-    notify :from "${dummy_email}" :message "${dollar1}" "mailto:${notify_account7.name}?body=test";
+    notify :from "${dummy_email}" :message "${dollar1}" "mailto:${notify_account4.name}?body=test";
 }
 if header :matches "X-Test-Header-6" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage3" "mailto:${notify_account7.name}?body=${dollar1}";
+    notify :from "${dummy_email}" :message "NotificationMessage3" "mailto:${notify_account4.name}?body=${dollar1}";
 }
 if header :matches "X-Test-Header-7" "*" {
     notify :from "${dummy_email}" :message "NotificationMessage4" "mailto:${dollar1}?body=test";
 }
+if header :matches "X-Test-Header-8" "*" {
+    replaceheader :newvalue "REPLACED" :matches "X-Test-Header-8" "${dollar1}";
+}
+if header :matches "Subject" "*" {
+    deleteheader :matches "X-Test-Header-1" "${dollar1}";
+}
 if header :matches "Subject" "*" {
     fileinto "${dollar1}";
 }
-'/>
-<!--     <t:property name="sieve_rule7" value='require ["tag", "notify", "fileinto", "editheader", "variables"];
+'/> 
+
+
+    <t:property name="sieve_rule7" value='require ["tag", "enotify", "fileinto", "editheader", "variables", "envelope"];
 set "var_adminbefore" "${test_account7.name}";
 if header :is "To" "${v_var_adminbefore}" {
     tag "header";
@@ -296,7 +208,7 @@ if header :matches "Subject" "*" {
 if header :matches "Subject" "*" {
     fileinto "${dollar1}";
 }
-'/> -->
+'/> 
 
     <t:property name="sieve_rule10-adminbefore" value='require ["tag", "variables"];
 set "var_adminbefore" "zimbraAdminSieveScriptBefore";
@@ -346,34 +258,8 @@ if header :matches "X-Test-Header-3" "*" {
 }
 tag "${v_var_adminafter}";
 '/>
-    <t:property name="sieve_rule11" value='require ["tag", "notify", "fileinto", "variables"];
-set "var_adminbefore" "${test_account11.name}";
-if header :is "To" "${v_var_adminbefore}" {
-    tag "SHOULD-NOT-BE-ADDED-header";
-}
-if address :is "To" "${v_var_adminbefore}" {
-    tag "SHOULD-NOT-BE-ADDED-address";
-}
-if envelope :is "To" "${v_var_adminbefore}" {
-    tag "SHOULD-NOT-BE-ADDED-envelope";
-}
-if string :is "${v_var_adminbefore}" "${test_account11.name}" {
-    tag "SHOULD-NOT-BE-ADDED-string";
-}
-if header :is "X-Test-Header-9" "${v_abc}" {
-    tag "text";
-}
-if header :matches "X-Test-Header-5" "*" {
-    notify :from "${dummy_email}" :message "${dollar1}" "mailto:${notify_account11.name}?body=test";
-}
-if header :matches "X-Test-Header-6" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage3" "mailto:${notify_account11.name}?body=${dollar1}";
-}
-if header :matches "Subject" "*" {
-    fileinto "${dollar1}";
-}
-'/>
-<!--     <t:property name="sieve_rule11" value='require ["tag", "notify", "fileinto", "editheader", "variables"];
+
+ <t:property name="sieve_rule11" value='require ["tag", "enotify", "fileinto", "editheader", "variables", "envelope"];
 set "var_adminbefore" "${test_account11.name}";
 if header :is "To" "${v_var_adminbefore}" {
     tag "SHOULD-NOT-BE-ADDED-header";
@@ -414,7 +300,7 @@ if header :matches "Subject" "*" {
 if header :matches "Subject" "*" {
     fileinto "${dollar1}";
 }
-'/> -->
+'/> 
 
     <t:property name="sieve_rule12-1" value='require ["variables"];
 if header :matches "X-Test-Header-3" "*" {
@@ -431,34 +317,8 @@ if header :matches "X-Test-Header-7" "*" {
     notify :from "${dummy_email}" :message "NotificationMessage4" "mailto:${dollar1}?body=test";
 }
 '/>
-    <t:property name="sieve_rule14" value='require ["tag", "notify", "fileinto", "variables"];
-set "var_adminbefore" "${test_account14.name}";
-if header :is "To" "${v_var_adminbefore}" {
-    tag "SHOULD-NOT-BE-ADDED-header";
-}
-if address :is "To" "${v_var_adminbefore}" {
-    tag "SHOULD-NOT-BE-ADDED-address";
-}
-if envelope :is "To" "${v_var_adminbefore}" {
-    tag "SHOULD-NOT-BE-ADDED-envelope";
-}
-if string :is "${v_var_adminbefore}" "${test_account14.name}" {
-    tag "SHOULD-NOT-BE-ADDED-string";
-}
-if header :is "X-Test-Header-9" "${v_abc}" {
-    tag "text";
-}
-if header :matches "X-Test-Header-5" "*" {
-    notify :from "${dummy_email}" :message "${dollar1}" "mailto:${notify_account14.name}?body=test";
-}
-if header :matches "X-Test-Header-6" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage3" "mailto:${notify_account14.name}?body=${dollar1}";
-}
-if header :matches "Subject" "*" {
-    fileinto "${dollar1}";
-}
-'/>
-<!--     <t:property name="sieve_rule14" value='require ["tag", "notify", "fileinto", "editheader", "variables"];
+
+    <t:property name="sieve_rule14" value='require ["tag", "enotify", "fileinto", "editheader", "variables", "envelope"];
 set "var_adminbefore" "${test_account14.name}";
 if header :is "To" "${v_var_adminbefore}" {
     tag "SHOULD-NOT-BE-ADDED-header";
@@ -499,41 +359,15 @@ if header :matches "Subject" "*" {
 if header :matches "Subject" "*" {
     fileinto "${dollar1}";
 }
-'/> -->
+'/> 
 
-    <t:property name="sieve_rule15-2" value='require ["variables"];
+    <t:property name="sieve_rule15-2" value='require ["variables", "enotify"];
 if header :matches "X-Test-Header-4" "*" {
     notify :from "${dollar1}" :message "NotificationMessage1" "mailto:${notify_account15.name}?body=test";
 }
 '/>
-    <t:property name="sieve_rule17" value='require ["tag", "notify", "fileinto", "variables"];
-set "var_adminbefore" "${test_account17.name}";
-if header :is "To" "${v_var_adminbefore}" {
-    tag "SHOULD-NOT-BE-ADDED-header";
-}
-if address :is "To" "${v_var_adminbefore}" {
-    tag "SHOULD-NOT-BE-ADDED-address";
-}
-if envelope :is "To" "${v_var_adminbefore}" {
-    tag "SHOULD-NOT-BE-ADDED-envelope";
-}
-if string :is "${v_var_adminbefore}" "${test_account17.name}" {
-    tag "SHOULD-NOT-BE-ADDED-string";
-}
-if header :is "X-Test-Header-9" "${v_abc}" {
-    tag "text";
-}
-if header :matches "X-Test-Header-5" "*" {
-    notify :from "${dummy_email}" :message "${dollar1}" "mailto:${notify_account17.name}?body=test";
-}
-if header :matches "X-Test-Header-6" "*" {
-    notify :from "${dummy_email}" :message "NotificationMessage3" "mailto:${notify_account17.name}?body=${dollar1}";
-}
-if header :matches "Subject" "*" {
-    fileinto "${dollar1}";
-}
-'/>
-<!--     <t:property name="sieve_rule17" value='require ["tag", "notify", "fileinto", "editheader", "variables"];
+
+    <t:property name="sieve_rule17" value='require ["tag", "enotify", "fileinto", "editheader", "variables"];
 set "var_adminbefore" "${test_account17.name}";
 if header :is "To" "${v_var_adminbefore}" {
     tag "SHOULD-NOT-BE-ADDED-header";
@@ -574,9 +408,9 @@ if header :matches "Subject" "*" {
 if header :matches "Subject" "*" {
     fileinto "${dollar1}";
 }
-'/> -->
+'/> 
 
-    <t:property name="sieve_rule18-2" value='require ["variables"];
+    <t:property name="sieve_rule18-2" value='require ["variables", "enotify"];
 if header :matches "X-Test-Header-4" "*" {
     notify :from "${dollar1}" :message "NotificationMessage1" "mailto:${notify_account18.name}?body=test";
 }

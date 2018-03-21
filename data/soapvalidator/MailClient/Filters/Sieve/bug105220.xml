@@ -41,7 +41,7 @@ if address :value "eq" :comparator "i;ascii-casemap"
 ' />
 
 	<t:property name="sieve_ComparatorTest_2"
-		value='require ["log","fileinto","relational"];
+		value='require ["log","fileinto","relational", "comparator-i;ascii-numeric"];
 if header :value "lt" :comparator "i;ascii-numeric"
 	              ["X-Priority"] ["3"]
 {
@@ -51,7 +51,7 @@ if header :value "lt" :comparator "i;ascii-numeric"
 ' />
 
 	<t:property name="sieve_ComparatorTest_3"
-		value='require ["log","fileinto","flag","relational"];
+		value='require ["log","fileinto","flag","relational", "comparator-i;ascii-numeric"];
   if address :count "ge" :comparator "i;ascii-numeric"
                  ["to"] ["2"]
       {
@@ -65,7 +65,7 @@ if header :value "lt" :comparator "i;ascii-numeric"
   ' />
 
 	<t:property name="sieve_ComparatorTest_4"
-		value='require ["log","fileinto","flag","relational"];
+		value='require ["log","fileinto","flag","relational", "comparator-i;ascii-numeric"];
 if anyof ( address :count "eq" :comparator "i;ascii-numeric"
                          ["to", "cc"] ["2"] ,
            address :value "eq" :comparator "i;ascii-casemap"
@@ -104,7 +104,7 @@ else
 
 
 <t:property name="sieve_ComparatorTest_7"
-		value='require ["log","fileinto","flag","relational"];
+		value='require ["log","fileinto","flag","relational", "comparator-i;ascii-numeric"];
 if address :count "le" :comparator "i;ascii-numeric"
     		["to","cc"]["3"]
 {     

@@ -1402,7 +1402,6 @@ public class SoapTestCore {
 			
 			try {
 
-				method.setRequestBody(getPayload());
 				method.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	        	
 	        	httpResponseCode = client.executeMethod(method);
@@ -1442,53 +1441,6 @@ public class SoapTestCore {
 	        }
 					
     	}
-		
-		protected String getPayload() throws HarnessException
-		{
-			StringBuilder sb = new StringBuilder("accountId=&verb=add");
-			
-			if ( getAccountFlavor().equalsIgnoreCase(zDesktopAcctTest.S_FLAVOR_ZIMBRA) )
-			{
-				sb.append("&accountFlavor=").append(getAccountFlavor());
-				sb.append("&email=").append(getEmail());
-				sb.append("&accountName=").append(getAccountName());
-				sb.append("&password=").append(getPassword());
-				sb.append("&host=").append(getHost());
-				sb.append("&port=").append(getPort());
-				sb.append("&syncFreqSecs=").append(getSyncFreqSecs());
-				sb.append("&debugTraceEnabled=").append(getDebugTraceEnabled());
-			}
-			else if ( getAccountFlavor().equalsIgnoreCase(zDesktopAcctTest.S_FLAVOR_YMP) )
-			{
-				sb.append("&accountFlavor=").append(getAccountFlavor());
-				sb.append("&domain=").append(getDomain());
-				sb.append("&accountName=").append(getAccountName());
-				sb.append("&fromDisplay=").append(getFromDisplay());
-				sb.append("&email=").append(getEmail());
-				sb.append("&password=").append(getPassword());
-				sb.append("&syncFreqSecs=").append(getSyncFreqSecs());
-				sb.append("&debugTraceEnabled=").append(getDebugTraceEnabled());
-			}
-			else if ( getAccountFlavor().equalsIgnoreCase(zDesktopAcctTest.S_FLAVOR_GMAIL) )
-			{
-				sb.append("&accountFlavor=").append(getAccountFlavor());
-				sb.append("&domain=").append(getDomain());
-				sb.append("&accountName=").append(getAccountName());
-				sb.append("&fromDisplay=").append(getFromDisplay());
-				sb.append("&email=").append(getEmail());
-				sb.append("&password=").append(getPassword());
-				sb.append("&syncFreqSecs=").append(getSyncFreqSecs());
-				sb.append("&debugTraceEnabled=").append(getDebugTraceEnabled());
-			}
-			else
-			{
-				throw new HarnessException("getPayload: Not supported yet: accountFlavor = " + getAccountFlavor());
-			}
-
-			
-			return (sb.toString());
-			
-		}
 		
 		protected URL getURL(String server, String password) throws HarnessException {
 			

@@ -11,30 +11,30 @@
 <t:property name="dollar" value="$"/>
 <t:property name="folder_inbox" value="Inbox" />
 <!-- Note : The :contains rule needs to be added back once ZCS-1018 is fixed  -->
-<t:property name="sieve_rule1" value='require ["tag", "variables"];
+     <t:property name="sieve_rule1" value='require ["tag", "variables", "relational"];
 	set "var_one" "text";
 	if string :comparator "i;ascii-casemap" :matches "${dollar}{var}" "*" {tag "mtag";}
 	if string :comparator "i;ascii-casemap" :is "${dollar}{var_one}" "text" {tag "istag";}'/>
 	<!-- if string :comparator "i;ascii-casemap" :contains "${dollar}{var_one}" "sievtextpwd" {tag "contag";} -->
 
-<t:property name="sieve_rule2" value='require ["tag", "variables"];
+<t:property name="sieve_rule2" value='require ["tag", "variables", "relational"];
 	set "var_one" "text";
 	if string :matches :comparator "i;ascii-casemap"  "${dollar}{var_one}" "*" {tag "mtag";}
 	if string :is :comparator "i;ascii-casemap"  "${dollar}{var_one}" "text" {tag "istag";}'/>
 <!-- if string :contains :comparator "i;ascii-casemap" "${dollar}{var_one}" "sievtextpwd" {tag "contag";} -->
 
-<t:property name="sieve_rule3" value='require ["tag", "variables"];
+<t:property name="sieve_rule3" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
   if address :comparator "i;ascii-numeric" :count "eq" ["to"] ["1"]  {tag "eqtag";}
   ' />
 
-<t:property name="sieve_rule4" value='require ["tag", "variables"];
+<t:property name="sieve_rule4" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
   if address :count "eq" :comparator "i;ascii-numeric" ["to"] ["1"]  {tag "eqtag";}
   ' />
 
-<t:property name="sieve_rule5" value='require ["tag", "variables"];
+<t:property name="sieve_rule5" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
   if address :count "eq" ["to"] ["1"] :comparator "i;ascii-numeric" {tag "eqtag";}
   ' />
-      
+ 
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
         <t:test required="true">

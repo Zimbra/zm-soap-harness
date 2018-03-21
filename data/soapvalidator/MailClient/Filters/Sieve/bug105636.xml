@@ -25,7 +25,7 @@
 <t:property name="server.notes" value="test of adding Server via SOAP"/>
 <t:property name="server.desc" value="test server description"/>
 
-<t:property name="sieve_contains" value='require ["fileinto", "reject", "log"];
+<t:property name="sieve_contains" value='require ["fileinto", "reject", "log", "envelope"];
 if envelope :contains "from" "test2."
 {
   log "black listed, reject.";
@@ -33,7 +33,7 @@ if envelope :contains "from" "test2."
   stop;
 }'/>
 
-<t:property name="sieve_all_is" value='require ["fileinto", "reject", "log"];
+<t:property name="sieve_all_is" value='require ["fileinto", "reject", "log", "envelope"];
 if envelope :all :is "to" "${test_account1.name}"
 {
   log "black listed, reject.";
@@ -41,7 +41,7 @@ if envelope :all :is "to" "${test_account1.name}"
   stop;
 }'/>
 
-<t:property name="sieve_localpart" value='require ["fileinto", "reject", "log"];
+<t:property name="sieve_localpart" value='require ["fileinto", "reject", "log", "envelope"];
 if envelope :localpart :contains "from" "test4."
 {
   log "black listed, reject.";
@@ -49,7 +49,7 @@ if envelope :localpart :contains "from" "test4."
   stop;
 }'/>
 
-<t:property name="sieve_domain" value='require ["fileinto", "reject", "log"];
+<t:property name="sieve_domain" value='require ["fileinto", "reject", "log", "envelope"];
 if envelope :domain :is "to" "${defaultdomain.name}"
 {
   log "black listed, reject.";

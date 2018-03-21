@@ -15,7 +15,7 @@
     <t:property name="msg01.file" value="${testMailRaw.root}/bug106900/mime.txt" />
 
     <!-- Sieve rules declaration -->
-    <t:property name="sieve_rule" value='require ["tag"];
+    <t:property name="sieve_rule" value='require ["tag", "variables", "envelope"];
 set "rcptto" "unknown";
 if envelope :matches ["To"] "*" {
     set "rcptto" "${dollar1}";
