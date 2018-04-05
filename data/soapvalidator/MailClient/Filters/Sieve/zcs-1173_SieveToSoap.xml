@@ -83,7 +83,6 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
  tag "rule9";
 }
     '/>
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
@@ -142,6 +141,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:steps>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -167,7 +167,6 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -216,6 +215,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:steps>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -241,6 +241,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -296,6 +297,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:steps>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -381,6 +383,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:steps>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -433,9 +436,6 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
                     path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterTests"
                     attr="condition" match="allof" emptyset="1" />
                 <t:select
-                    path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterTests/mail:trueTest"
-                    attr="index" match="0" />
-                <t:select
                     path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterActions/mail:actionFlag"
                     attr="flagName" match="priority" />
                 <t:select
@@ -457,6 +457,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:steps>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -509,9 +510,6 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
                     path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterTests"
                     attr="condition" match="allof" emptyset="1" />
                 <t:select
-                    path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterTests/mail:trueTest"
-                    attr="index" match="0" />
-                <t:select
                     path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterActions/mail:actionFileInto"
                     attr="folderPath" match="rule5" />
                 <t:select
@@ -542,6 +540,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:steps>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -606,9 +605,6 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
                     path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:nestedRule/mail:filterActions/mail:actionRedirect"
                     attr="a" match="${dummy.account.name}" />
                 <t:select
-                    path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterTests/mail:trueTest"
-                    attr="index" match="0" />
-                <t:select
                     path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterActions/mail:actionTag"
                     attr="tagName" match="rule6" />
             </t:response>
@@ -626,7 +622,8 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         2. Verify the response of the GetFilterRulesRequest.
         </t:steps>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -701,6 +698,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:steps>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -762,6 +760,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "*" {
         </t:steps>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">

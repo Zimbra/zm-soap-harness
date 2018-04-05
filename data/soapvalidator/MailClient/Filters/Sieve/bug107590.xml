@@ -1,6 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="notify_account1.name" value="notify1.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -57,12 +55,12 @@
     <t:property name="v_var_adminafter" value="$\{var_adminafter}"/>
     <t:property name="v_abc" value="$\{abc}"/>
 
-<!-- Disabling EditHeaders rule. They should be enabled once zcs-1254 is fixed -->
     <!-- Sieve rules declaration -->
     <!--  Need to consider bug 107695.
           fileinto with match variables should be written at the bottom.
           fileinto, redirect and reject MUST NOT be written in the same sieve script in this testcase.
     -->
+
      <t:property name="sieve_rule1" value='require ["tag", "enotify", "fileinto", "editheader", "variables", "envelope"];
 set "var_adminbefore" "${test_account1.name}";
 if header :is "To" "${v_var_adminbefore}" {
@@ -525,16 +523,17 @@ tag "${v_var_adminafter}";
             </t:response>
         </t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
+        <t:test>
+                <t:request>
+                        <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                <account by="name">${admin.user}</account>
+                        </GetAccountRequest>
+                </t:request>
+                <t:response>
+                        <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
+                </t:response>
+        </t:test>
+
 
 	    <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
@@ -553,6 +552,7 @@ tag "${v_var_adminafter}";
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cosid}</id>
 	                <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
@@ -582,7 +582,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="notify_account1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account1.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account1.server"/>
             </t:response>
         </t:test>
 
@@ -595,7 +595,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
             </t:response>
         </t:test>
 
@@ -608,7 +608,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="redirect_account2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account2.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account2.server"/>
             </t:response>
         </t:test>
 
@@ -621,7 +621,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3-1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3-1.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3-1.server"/>
             </t:response>
         </t:test>
 
@@ -634,7 +634,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3-2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3-2.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3-2.server"/>
             </t:response>
         </t:test>
 
@@ -647,7 +647,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account4.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
             </t:response>
         </t:test>
 
@@ -660,7 +660,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="notify_account4.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account4.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account4.server"/>
             </t:response>
         </t:test>
 
@@ -673,7 +673,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account5.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
             </t:response>
         </t:test>
 
@@ -686,7 +686,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="redirect_account5.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account5.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account5.server"/>
             </t:response>
         </t:test>
 
@@ -699,7 +699,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account6-1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6-1.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6-1.server"/>
             </t:response>
         </t:test>
 
@@ -712,7 +712,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account6-2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6-2.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6-2.server"/>
             </t:response>
         </t:test>
 
@@ -725,7 +725,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account7.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
             </t:response>
         </t:test>
 
@@ -738,7 +738,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="notify_account7.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account7.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account7.server"/>
             </t:response>
         </t:test>
 
@@ -751,7 +751,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account8.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account8.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account8.server"/>
             </t:response>
         </t:test>
 
@@ -764,7 +764,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="redirect_account8.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account8.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account8.server"/>
             </t:response>
         </t:test>
 
@@ -777,7 +777,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account9-1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account9-1.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account9-1.server"/>
             </t:response>
         </t:test>
 
@@ -790,7 +790,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account9-2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account9-2.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account9-2.server"/>
             </t:response>
         </t:test>
 
@@ -803,7 +803,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account10.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account10.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account10.server"/>
             </t:response>
         </t:test>
 
@@ -816,7 +816,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account11.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account11.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account11.server"/>
             </t:response>
         </t:test>
 
@@ -829,7 +829,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="notify_account11.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account11.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account11.server"/>
             </t:response>
         </t:test>
 
@@ -842,7 +842,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account12.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account12.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account12.server"/>
             </t:response>
         </t:test>
 
@@ -855,7 +855,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="redirect_account12.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account12.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account12.server"/>
             </t:response>
         </t:test>
 
@@ -868,7 +868,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="notify_account12.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account12.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account12.server"/>
             </t:response>
         </t:test>
 
@@ -881,7 +881,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account13-1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account13-1.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account13-1.server"/>
             </t:response>
         </t:test>
 
@@ -894,7 +894,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account13-2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account13-2.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account13-2.server"/>
             </t:response>
         </t:test>
 
@@ -907,7 +907,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account14.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account14.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account14.server"/>
             </t:response>
         </t:test>
 
@@ -920,7 +920,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="notify_account14.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account14.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account14.server"/>
             </t:response>
         </t:test>
 
@@ -933,7 +933,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account15.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account15.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account15.server"/>
             </t:response>
         </t:test>
 
@@ -946,7 +946,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="redirect_account15.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account15.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account15.server"/>
             </t:response>
         </t:test>
 
@@ -959,7 +959,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="notify_account15.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account15.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account15.server"/>
             </t:response>
         </t:test>
 
@@ -972,7 +972,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account16-1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account16-1.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account16-1.server"/>
             </t:response>
         </t:test>
 
@@ -985,7 +985,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account16-2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account16-2.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account16-2.server"/>
             </t:response>
         </t:test>
 
@@ -998,7 +998,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account17.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account17.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account17.server"/>
             </t:response>
         </t:test>
 
@@ -1011,7 +1011,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="notify_account17.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account17.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account17.server"/>
             </t:response>
         </t:test>
 
@@ -1024,7 +1024,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account18.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account18.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account18.server"/>
             </t:response>
         </t:test>
 
@@ -1037,7 +1037,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="redirect_account18.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account18.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account18.server"/>
             </t:response>
         </t:test>
 
@@ -1050,7 +1050,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="notify_account18.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account18.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account18.server"/>
             </t:response>
         </t:test>
 
@@ -1063,7 +1063,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account19-1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account19-1.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account19-1.server"/>
             </t:response>
         </t:test>
 
@@ -1076,7 +1076,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account19-2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account19-2.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account19-2.server"/>
             </t:response>
         </t:test>
 
@@ -1089,7 +1089,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account20.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account20.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account20.server"/>
             </t:response>
         </t:test>
 
@@ -1102,7 +1102,7 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account21.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account21.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account21.server"/>
             </t:response>
         </t:test>
 
@@ -1115,9 +1115,10 @@ tag "${v_var_adminafter}";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account22.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account22.server"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account22.server"/>
             </t:response>
         </t:test>
+
     </t:test_case>
 
     <t:test_case testcaseid="bug107590_rule1" type="smoke" bugids="107590">
@@ -1204,8 +1205,7 @@ tag "${v_var_adminafter}";
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-<!--         <t:resttest>
+         <t:resttest>
             <t:restServletRequest>
                 <id>${msg1.id}</id>
             </t:restServletRequest>
@@ -1216,7 +1216,7 @@ tag "${v_var_adminafter}";
                 <t:select attr="X-Test-Header-2" match="\[NEW\]value2" />
                 <t:select attr="X-Test-Header-8" match="REPLACED" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest>
 
 	<t:property name="server.zimbraAccount" value="${notify_account1.server}"/>
         <t:test>
@@ -1331,7 +1331,6 @@ tag "${v_var_adminafter}";
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1355,8 +1354,6 @@ tag "${v_var_adminafter}";
                 <t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="1" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${redirect_account2.server}"/>
 
         <t:test>
             <t:request>
@@ -1398,6 +1395,7 @@ tag "${v_var_adminafter}";
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
+        
         <t:test id="modifyaccountrequest3">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -1505,7 +1503,7 @@ tag "${v_var_adminafter}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account4.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule4}</a>
+                    <a n="zimbraAdminSieveScriptAfter">${sieve_rule4}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -1540,7 +1538,6 @@ tag "${v_var_adminafter}";
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1570,8 +1567,7 @@ tag "${v_var_adminafter}";
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-    <!--  <t:resttest>
+	  <t:resttest>
             <t:restServletRequest>
                 <id>${msg4.id}</id>
             </t:restServletRequest>
@@ -1582,10 +1578,9 @@ tag "${v_var_adminafter}";
                 <t:select attr="X-Test-Header-2" match="\[NEW\]value2" />
                 <t:select attr="X-Test-Header-8" match="REPLACED" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
 
 	<t:property name="server.zimbraAccount" value="${notify_account4.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1659,6 +1654,7 @@ tag "${v_var_adminafter}";
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
+        
         <t:test id="modifyaccountrequest5">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -1698,7 +1694,6 @@ tag "${v_var_adminafter}";
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account5.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1724,7 +1719,6 @@ tag "${v_var_adminafter}";
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${redirect_account5.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1778,7 +1772,6 @@ tag "${v_var_adminafter}";
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account6-1.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1829,7 +1822,6 @@ tag "${v_var_adminafter}";
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account6-2.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1883,7 +1875,6 @@ tag "${v_var_adminafter}";
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1939,8 +1930,7 @@ tag "${v_var_adminafter}";
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
- <!--    <t:resttest>
+	    <t:resttest>
             <t:restServletRequest>
                 <id>${msg7.id}</id>
             </t:restServletRequest>
@@ -1951,10 +1941,9 @@ tag "${v_var_adminafter}";
                 <t:select attr="X-Test-Header-2" match="\[NEW\]value2" />
                 <t:select attr="X-Test-Header-8" match="REPLACED" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest>
 
 	<t:property name="server.zimbraAccount" value="${notify_account7.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -2091,6 +2080,7 @@ tag "${v_var_adminafter}";
             </t:response>
         </t:test>
 
+	<t:property name="server.zimbraAccount" value="${redirect_account8.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -2144,7 +2134,6 @@ tag "${v_var_adminafter}";
         </t:test>
 
 	<t:property name="server.zimbraAccount" value="${account9-1.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -2306,8 +2295,6 @@ tag "${v_var_adminafter}";
 <!-- zimbraAdminSieveFeatureVariablesEnabled and zimbraSieveFeatureVariablesEnabled are removed from LDAP as part of zcs-806. They are now always set to TRUE. Disabling the FALSE testcases -->
     <t:test_case testcaseid="GlobalConfigSetup2" type="deprecated">
         <t:objective>set globalconfig and restart mailboxd</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -2343,8 +2330,6 @@ tag "${v_var_adminafter}";
 
     <t:test_case testcaseid="bug107590_rule11" type="deprecated" bugids="107590">
         <t:objective>Variables in zimbraAdminSieveScriptBefore should not work if zimbraAdminSieveFeatureVariablesEnabled is FALSE</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -2368,7 +2353,6 @@ tag "${v_var_adminafter}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -2481,8 +2465,6 @@ tag "${v_var_adminafter}";
     <!-- see also bug 107708 -->
     <t:test_case testcaseid="bug107590_rule12" type="deprecated" bugids="107590">
         <t:objective>Variables in zimbraAdminSieveScriptBefore should not work if zimbraAdminSieveFeatureVariablesEnabled is FALSE (redirect/notify should be failed)</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -2507,7 +2489,6 @@ tag "${v_var_adminafter}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -4083,8 +4064,6 @@ tag "${v_var_adminafter}";
 
     <t:finally type="always">
         <t:objective>reset cosconfig</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -4113,6 +4092,7 @@ tag "${v_var_adminafter}";
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cosid}</id>
 	                <a n="zimbraSieveNotifyActionRFCCompliant">FALSE</a>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>

@@ -141,8 +141,8 @@
             2. Get Root folder.
             3. Create a folder.
             4. Share with gt=guest and pw=""
-            5. Guest  send REST request without password  ( should get 404 Error PERM_DENIED)
-            6. Guest  send REST request with blank password ( should get 404 Error PERM_DENIED) 
+            5. Guest  send REST request without password  ( should get 401 Error PERM_DENIED)
+            6. Guest  send REST request with blank password ( should get 401 Error PERM_DENIED) 
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
@@ -201,7 +201,7 @@
 			<guest>${guest1.name}</guest>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="404"/>
+			<t:select attr="StatusCode" match="401"/>
 		</t:restServletResponse>
 	</t:resttest>
 
@@ -215,7 +215,7 @@
 			<password />
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="404"/>
+			<t:select attr="StatusCode" match="401"/>
 		</t:restServletResponse>
 	</t:resttest>
 	
@@ -227,7 +227,7 @@
 			<password>""</password>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="404"/>
+			<t:select attr="StatusCode" match="401"/>
 		</t:restServletResponse>
 	</t:resttest>
 
@@ -241,8 +241,8 @@
             2. Get Root folder.
             3. Create a folder.
             4. Share with gt=guest and without pw attribute. 
-            5. Guest  send REST request without password  ( should get 404 Error PERM_DENIED)
-            6. Guest  send REST request with blank password ( should get 404 Error PERM_DENIED) 
+            5. Guest  send REST request without password  ( should get 401 Error PERM_DENIED)
+            6. Guest  send REST request with blank password ( should get 401 Error PERM_DENIED) 
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account0.server}"/>
@@ -301,7 +301,7 @@
 			<guest>${guest1.name}</guest>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="404"/>
+			<t:select attr="StatusCode" match="401"/>
 		</t:restServletResponse>
 	</t:resttest>
 
@@ -315,7 +315,7 @@
 			<password />
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="404"/>
+			<t:select attr="StatusCode" match="401"/>
 		</t:restServletResponse>
 	</t:resttest>
 
@@ -327,7 +327,7 @@
 			<password>""</password>
 		</t:restServletRequest>
 		<t:restServletResponse>
-			<t:select attr="StatusCode" match="404"/>
+			<t:select attr="StatusCode" match="401"/>
 		</t:restServletResponse>
 	</t:resttest>
 	
