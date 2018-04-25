@@ -21,6 +21,8 @@ jobs:
       #MAVEN_OPTS: -Xmx3200m
     
     steps:
+      - git clone https://github.com/Zimbra/zm-zcs.git ~/repo/
+      - mkdir /home/circleci/repo/zm-qa
       - checkout
 
       # Download and cache dependencies
@@ -39,7 +41,6 @@ jobs:
         
       # run tests!
       #- run: mvn integration-test
-      - run : git clone https://github.com/Zimbra/zm-zcs.git ~/repo/
       - run : pwd
       - run : ls
       - run : cd /home/circleci/repo/zm-qa | ant jar | pwd
