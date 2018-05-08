@@ -1,41 +1,38 @@
-<project name="zm-qa" default="jar" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="zm-soap-harness" default="jar" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
   <import file="../zm-zcs/ant-global.xml"/>
 
-    <property name="build.staf.dir"  	location="${build.dir}/staf"/>
-    <property name="build.staf.jars.dir"  		location="${build.dir}/staf/STAF-INF/jars"/>
-    <property name="build.staf.classes.dir"  	location="${build.dir}/staf/STAF-INF/classes"/>
+    <property name="build.staf.dir" location="${build.dir}/staf"/>
+    <property name="build.staf.jars.dir" location="${build.dir}/staf/STAF-INF/jars"/>
+    <property name="build.staf.classes.dir" location="${build.dir}/staf/STAF-INF/classes"/>
     <property name="server.jars.dir" location="${server.dir}/jars"/>
-    <property name="deployDir"			location="${build.dir}/dist"/> <!-- pass in by Anthill -->
-    <property name="dist.dir.root"      location="${deployDir}"/>
-	
-    <property name="build.customauth.classes.dir"  		location="${build.dir}/customauth/classes"/>
-    <property name="build.storemanager.classes.dir"  		location="${build.dir}/storemanager/classes"/>
-    <property name="build.scalityhttpstore.classes.dir"         location="${build.dir}/scalityhttpstore/classes"/>
+    <property name="deployDir" location="${build.dir}/dist"/> <!-- pass in by Anthill -->
+    <property name="dist.dir.root" location="${deployDir}"/>
+    <property name="build.customauth.classes.dir" location="${build.dir}/customauth/classes"/>
+    <property name="build.storemanager.classes.dir" location="${build.dir}/storemanager/classes"/>
+    <property name="build.scalityhttpstore.classes.dir" location="${build.dir}/scalityhttpstore/classes"/>
+    <property name="zm-network-soap-harness.dir" location="../zm-network-soap-harness"/>
 
-  <target name="jar" depends="compile" description="Creates the jar file">
-    <antcall target="zimbra-jar">
-      <param name="implementation.title" value="Zimbra QA"/>
-    </antcall>
-  </target>
-
+  	<target name="jar" depends="compile" description="Creates the jar file">
+    	<antcall target="zimbra-jar">
+      		<param name="implementation.title" value="Zimbra QA"/>
+    	</antcall>
+  	</target>
 
 	<target name="compress-move">
-	  <apply executable="gzip" failonerror="true">
-	    <arg value="-v"/>
-	    <fileset dir="${build.dir}" includes="*.tar"/>
-	  </apply>
-	  <copy todir="${dist.dir.root}" verbose="true" overwrite="true">
-	    <fileset dir="${build.dir}" includes="*.tar.gz"/>
-	    <mapper type="glob" from="*.tar.gz" to="*.tgz"/>
-	  </copy>
-	  <checksum>
-	    <fileset dir="${dist.dir.root}">
-	      <include name="*.tgz"/>
-	    </fileset>
-	  </checksum>
+	  	<apply executable="gzip" failonerror="true">
+	    	<arg value="-v"/>
+	    	<fileset dir="${build.dir}" includes="*.tar"/>
+	  	</apply>
+	  	<copy todir="${dist.dir.root}" verbose="true" overwrite="true">
+	    	<fileset dir="${build.dir}" includes="*.tar.gz"/>
+	    	<mapper type="glob" from="*.tar.gz" to="*.tgz"/>
+	  	</copy>
+	  	<checksum>
+	    	<fileset dir="${dist.dir.root}">
+	      		<include name="*.tgz"/>
+	    	</fileset>
+	  	</checksum>
 	</target>
-
-
 
 	<target name="build-tools-setup">
 	  	<tar longfile="gnu" destfile="${build.dir}/tools.tar">
@@ -44,28 +41,6 @@
 			</tarfileset>
 		</tar>
 	</target>
-
-
-
-	<target name="build-tenv-setup">
-	  	<tar longfile="gnu" destfile="${build.dir}/tenvsetup.tar">
-			<tarfileset dir="src/setup"  prefix="setup" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
-		</tar>
-	</target>
-
-
-	<target name="build-stax-file" depends="build-init">
-		<tar longfile="gnu" destfile="${build.dir}/stafstax.tar">
-			<tarfileset dir="data/stax" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
-		</tar>
-	</target>
-
-
-
 
 	<target name="build-smtp-service-file" depends="staf-jar">
 		<copy todir="${build.dir}">
@@ -80,13 +55,12 @@
 		<tar longfile="gnu" destfile="${build.dir}/smtpservice.tar">
 			<tarfileset dir="${build.dir}" prefix="smtpservice/bin" mode="555">
 				<include name="smtp.pl"/>
-
 			</tarfileset>
 			<tarfileset dir="${build.staf.jars.dir}" prefix="smtpservice/bin" mode="555">
-				<include name="**/json.jar"/>
+				<include name="**/json-20160810.jar"/>
 				<include name="**/activation.jar"/>
 				<include name="**/commons-cli-1.2.jar"/>
-				<include name="**/commons-logging.jar"/>
+				<include name="**/commons-logging-1.0.3.jar"/>
 				<include name="**/commons-httpclient-3.1.jar"/>
 				<include name="**/dom4j-1.5.2.jar-1.5.jar"/>
 				<include name="**/log4j-1.2.16.jar"/>
@@ -96,7 +70,6 @@
 		</tar>
 	</target>
 
-
 	<target name="ScalityHttpStore compile" description="Create a  store manager extension jar">
 		<mkdir dir="${build.scalityhttpstore.classes.dir}" />
 		<javac destdir="${build.scalityhttpstore.classes.dir}" srcdir="${src.java.dir}" debug="false" classpathref="class.path">
@@ -104,12 +77,10 @@
 		</javac>
 	</target>
 
-
 	<target name="ScalityHttpStore jar" depends="ScalityHttpStore compile" description="Creates jar files">
-	        <jar manifest="conf/ZimbraExtensions/ScalityHttpStore/MANIFEST.MF"
-	             destfile="${build.dir}/ScalityHttpStore.jar"
-	             basedir="${build.scalityhttpstore.classes.dir}"
-	             />
+	    <jar manifest="conf/ZimbraExtensions/ScalityHttpStore/MANIFEST.MF"
+	        destfile="${build.dir}/ScalityHttpStore.jar"
+	            basedir="${build.scalityhttpstore.classes.dir}"/>
 	</target>
 
 
@@ -121,10 +92,9 @@
 	</target>
 
 	<target name="storemanager jar" depends="storemanager compile" description="Creates jar files">
-	        <jar manifest="conf/ZimbraExtensions/StoreManager/MANIFEST.MF"
-	             destfile="${build.dir}/zimbra-extns-storemanager.jar"
-	             basedir="${build.storemanager.classes.dir}"
-	             />
+	    <jar manifest="conf/ZimbraExtensions/StoreManager/MANIFEST.MF"
+	        destfile="${build.dir}/zimbra-extns-storemanager.jar"
+	            basedir="${build.storemanager.classes.dir}"/>
 	</target>
 
 	<target name="AuthExtension jar" depends="AuthExtension compile" description="Create a custom auth extension jar">
@@ -142,17 +112,19 @@
 	</target>
 
 	<target name="staf-bugreports" depends="compile" description="Creates the STAF jar file for the Bug Reports service">
-
-		<property name="build.staf.bugreports" 					location="${build.dir}/staf/bugreports" />
-		<property name="build.staf.bugreports.classes.dir"  	location="${build.staf.bugreports}/STAF-INF/classes"/>
-		<property name="build.staf.bugreports.jars.dir"  		location="${build.staf.bugreports}/STAF-INF/jars"/>
+		<property name="build.staf.bugreports" location="${build.dir}/staf/bugreports" />
+		<property name="build.staf.bugreports.classes.dir" location="${build.staf.bugreports}/STAF-INF/classes"/>
+		<property name="build.staf.bugreports.jars.dir" location="${build.staf.bugreports}/STAF-INF/jars"/>
 
 		<copy todir="${build.staf.bugreports.classes.dir}">
 			<fileset dir="${build.classes.dir}" />
 		</copy>
 
+		<ivy:install organisation="log4j" module="apache-log4j-extras" revision="1.0" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="jaxen" module="jaxen" revision="1.1.3" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+
 		<copy todir="${build.staf.bugreports.jars.dir}">
-			<fileset dir="${common.jars.dir}">
+			<fileset dir="${build.tmp.dir}">
 				<include name="apache-log4j-extras-1.0.jar" />
 				<include name="commons-cli-1.2.jar" />
 				<include name="dom4j-1.5.2.jar" />
@@ -170,50 +142,58 @@
 				</section>
 			</manifest>
 		</jar>
+
 	</target>
 
 	<target name="staf-results" depends="compile" description="Creates the result service jar file">
-		<property name="build.staf.result.classes.dir"  	location="${build.dir}/staf/result/STAF-INF/classes"/>
-		<property name="build.staf.result.jars.dir"  		location="${build.dir}/staf/result/STAF-INF/jars"/>
+		<property name="build.staf.result.classes.dir" location="${build.dir}/staf/result/STAF-INF/classes"/>
+		<property name="build.staf.result.jars.dir" location="${build.dir}/staf/result/STAF-INF/jars"/>
+
 		<copy todir="${build.staf.result.classes.dir}">
 			<fileset dir="${build.classes.dir}"/>
 		</copy>
-                <copy todir="${build.staf.result.jars.dir}">
-                        <fileset dir="${build.dir}/tmp">
-                                <include name="postgresql-9.1-901.jdbc4.jar"/>
-                        </fileset>
-                </copy> 
+
+    	<copy todir="${build.staf.result.jars.dir}">
+       		<fileset dir="${build.tmp.dir}">
+          		<include name="postgresql-9.1-901.jdbc4.jar"/>
+       		</fileset>
+    	</copy>
+
 		<copy todir="${build.staf.result.jars.dir}">
-			<fileset dir="${common.jars.dir}">
-				<include name="json.jar"/>
+			<fileset dir="${build.tmp.dir}">
+				<include name="json-20160810.jar"/>
 				<include name="log4j-1.2.16.jar"/>
-				<include name="commons-logging"/>
+				<include name="commons-logging-1.0.3"/>
 			</fileset>
 		</copy>
+
 		<jar destfile="${dist.lib.dir}/zimbraresults.jar" basedir="${build.staf.dir}/result">
 			<manifest>
 				<attribute name="Main-Class" value="com.zimbra.qa.results.ResultsCore"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.results.ResultsStaf"/>
-					<attribute name="Packaged-Jars" value="json postgresql-9.1-901.jdbc4 log4j-1.2.16 commons-logging"/>
+					<attribute name="Packaged-Jars" value="json-20160810 postgresql-9.1-901.jdbc4 log4j-1.2.16 commons-logging-1.0.3"/>
 				</section>
 			</manifest>
 		</jar>
+
 	</target>
 
 	<target name="staf-inject" depends="compile" description="Creates the inject service jar file">
-		<property name="build.staf.inject.classes.dir"  	location="${build.dir}/staf/inject/STAF-INF/classes"/>
-		<property name="build.staf.inject.jars.dir"  		location="${build.dir}/staf/inject/STAF-INF/jars"/>
+		<property name="build.staf.inject.classes.dir" location="${build.dir}/staf/inject/STAF-INF/classes"/>
+		<property name="build.staf.inject.jars.dir" location="${build.dir}/staf/inject/STAF-INF/jars"/>
 		<copy todir="${build.staf.inject.classes.dir}">
 			<fileset dir="${build.classes.dir}"/>
 		</copy>
+
 		<copy todir="${build.staf.inject.jars.dir}">
-			<fileset dir="${common.jars.dir}">
+			<fileset dir="${build.tmp.dir}">
 				<include name="log4j-1.2.16.jar"/>
 				<include name="javamail-1.4.5.jar"/>
 				<include name="mail-1.4.5.jar"/>
 			</fileset>
 		</copy>
+
 		<jar destfile="${dist.lib.dir}/zimbrainject.jar" basedir="${build.staf.dir}/inject">
 			<manifest>
 				<attribute name="Main-Class" value="com.zimbra.qa.inject.Driver"/>
@@ -223,56 +203,76 @@
 				</section>
 			</manifest>
 		</jar> 
+
 	</target>
 
 	<target name="staf-importer" depends="compile,getJarVersion" description="Creates the inject service jar file">
-		<property name="build.staf.importer.classes.dir"  	location="${build.dir}/staf/importer/STAF-INF/classes"/>
-		<property name="build.staf.importer.jars.dir"  		location="${build.dir}/staf/importer/STAF-INF/jars"/>
+		<property name="build.staf.importer.classes.dir" location="${build.dir}/staf/importer/STAF-INF/classes"/>
+		<property name="build.staf.importer.jars.dir" location="${build.dir}/staf/importer/STAF-INF/jars"/>
+
 		<copy todir="${build.staf.importer.classes.dir}">
 			<fileset dir="${build.classes.dir}"/>
 		</copy>
+
+		<ivy:install organisation="commons-cli" module="commons-cli" revision="1.2" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="log4j" module="log4j" revision="1.2.16" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="commons-httpclient" module="commons-httpclient" revision="3.1" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="dom4j" module="dom4j" revision="1.5.2" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="commons-logging" module="commons-logging" revision="1.0.3" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="commons-codec" module="commons-codec" revision="1.7" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="org.json" module="json" revision="20160810" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="javax.mail" module="mail" revision="1.4.5" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="libidn" module="libidn" revision="1.24" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+
 		<copy todir="${build.staf.importer.jars.dir}">
-			<fileset dir="${build.dir}/tmp">
+			<fileset dir="${build.tmp.dir}">
 				<include name="*.jar"/>
 			</fileset>
 		</copy>
 
 		<copy todir="${build.staf.importer.jars.dir}">
-			<fileset dir="${common.jars.dir}">
+			<fileset dir="${build.tmp.dir}">
 				<include name="commons-cli-1.2.jar"/>
 				<include name="log4j-1.2.16.jar"/>
 				<include name="commons-httpclient-3.1.jar"/>
 				<include name="dom4j-1.5.2.jar"/>
-				<include name="commons-logging.jar"/>
+				<include name="commons-logging-1.0.3.jar"/>
 				<include name="commons-codec-1.6.jar"/>
-				<include name="json.jar"/>
+				<include name="json-20160810.jar"/>
 				<include name="javamail-1.4.5.jar"/>
 				<include name="mail-1.4.5.jar"/>
 				<include name="libidn-1.24.jar"/>
 			</fileset>
 		</copy>
+
 		<jar destfile="${dist.lib.dir}/zimbraimporter.jar" basedir="${build.staf.dir}/importer">
 			<manifest>
 				<attribute name="Main-Class" value="com.zimbra.qa.importer.Driver"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.importer.StafIntegration"/>
-					<attribute name="Packaged-Jars" value="commons-cli-1.2 log4j-1.2.16 commons-httpclient-3.1 dom4j-1.5.2 commons-logging commons-codec-1.6 json mail-1.4.5 javamail-1.4.5 libidn-1.24 ${zimbraJarPath}"/>
+					<attribute name="Packaged-Jars" value="commons-cli-1.2 log4j-1.2.16 commons-httpclient-3.1 dom4j-1.5.2 commons-logging-1.0.3 commons-codec-1.6 json-20160810 mail-1.4.5 javamail-1.4.5 libidn-1.24 ${zimbraJarPath}"/>
 				</section>
 			</manifest>
 		</jar> 
+
 	</target>
 
 	<target name="staf-nunit" depends="compile" description="Creates the nunit STAF jar file">
-		<property name="build.staf.nunit.classes.dir"  	location="${build.dir}/staf/nunit/STAF-INF/classes"/>
-		<property name="build.staf.nunit.jars.dir"  		location="${build.dir}/staf/nunit/STAF-INF/jars"/>
+		<property name="build.staf.nunit.classes.dir" location="${build.dir}/staf/nunit/STAF-INF/classes"/>
+		<property name="build.staf.nunit.jars.dir" location="${build.dir}/staf/nunit/STAF-INF/jars"/>
+
 		<copy todir="${build.staf.nunit.classes.dir}">
 			<fileset dir="${build.classes.dir}"/>
 		</copy>
+
+		<ivy:install organisation="log4j" module="log4j" revision="1.2.16" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+
 		<copy todir="${build.staf.nunit.jars.dir}">
-			<fileset dir="${common.jars.dir}">
-				<include name="log4j-1.2.16.jar"/>
-			</fileset>
+				<fileset dir="${build.tmp.dir}">
+					<include name="log4j-1.2.16.jar"/>
+				</fileset>
 		</copy> 
+
 		<jar destfile="${dist.lib.dir}/zimbranunit.jar" basedir="${build.staf.dir}/nunit">
 			<manifest>
 				<attribute name="Main-Class" value="com.zimbra.qa.nunit.Driver"/>
@@ -282,123 +282,129 @@
 				</section>
 			</manifest>
 		</jar>
+
 	</target>
 
 	<target name="gatherZimbraJars" depends="init-ivy">
-    		<ivy:install organisation="zimbra" module="zm-native" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    		<ivy:install organisation="zimbra" module="zm-common" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    		<ivy:install organisation="zimbra" module="zm-soap" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    		<ivy:install organisation="zimbra" module="zm-client" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    		<ivy:install organisation="zimbra" module="zm-store" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    		<ivy:install organisation="postgresql" module="postgresql" revision="9.1-901.jdbc4" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
-    	<delete>
-      		<fileset dir="${build.dir}/tmp" excludes="*.jar" />
-    	</delete>
+    	<ivy:install organisation="zimbra" module="zm-native" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+    	<ivy:install organisation="zimbra" module="zm-common" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+   		<ivy:install organisation="zimbra" module="zm-soap" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+   		<ivy:install organisation="zimbra" module="zm-client" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+   		<ivy:install organisation="zimbra" module="zm-store" revision="latest.integration" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
+   		<ivy:install organisation="postgresql" module="postgresql" revision="9.1-901.jdbc4" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar" />
   	</target>
 
-        <target name="getJarVersion" depends="gatherZimbraJars">
-        <echo>${build.dir}/tmp</echo>
-<fileset id="dist.contents" dir="${build.dir}/tmp" includes="*.jar"/>
-        <property name="prop.dist.contents" refid="dist.contents"/>
-        <propertyregex property="zimbraJarPath" input="${prop.dist.contents}" regexp=".jar;|.jar" replace=" "  global="true" />
-        <echo>${zimbraJarPath}</echo>
-        </target>
+   	<target name="getJarVersion" depends="gatherZimbraJars">
+    	<echo>${build.dir}/tmp</echo>
+		<fileset id="dist.contents" dir="${build.dir}/tmp" includes="*.jar"/>
+      	<property name="prop.dist.contents" refid="dist.contents"/>
+      	<propertyregex property="zimbraJarPath" input="${prop.dist.contents}" regexp=".jar;|.jar" replace=" "  global="true" />
+      	<echo>${zimbraJarPath}</echo>
+   	</target>
 
 	<target name="staf-jar" depends="getJarVersion,staf-nunit,staf-importer,staf-inject,staf-results,staf-bugreports,compile,AuthExtension jar,storemanager jar, ScalityHttpStore jar" description="Creates the jar file">
 		<copy todir="${build.staf.classes.dir}">
 			<fileset dir="${build.classes.dir}"/>
 		</copy>
+
+		<ivy:install organisation="ant-contrib" module="ant-contrib" revision="1.0b3" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="org.bouncycastle" module="bcprov-jdk15" revision="1.46" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="commons-dbcp" module="commons-dbcp" revision="1.1" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="commons-fileupload" module="commons-fileupload" revision="1.2.2" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="commons-pool" module="commons-pool" revision="1.1" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="ch.ethz.ganymed" module="ganymed-ssh2" revision="build210" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="com.google.guava" module="guava" revision="13.0.1" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="ical4j" module="ical4j" revision="0.9.16-patched" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="org.apache.james" module="apache-jsieve-core" revision="0.5" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="com.jcraft" module="jzlib" revision="1.0.7" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="jaxen" module="jaxen" revision="1.1.3" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="org.apache.lucene" module="lucene-core" revision="3.5.0" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="com.unboundid" module="unboundid-ldapsdk" revision="2.3.5" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="org.mariadb.jdbc" module="mariadb-java-client" revision="1.1.8" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="net.sourceforge.nekohtml" module="nekohtml" revision="1.9.13.1z" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="org.igniterealtime.whack" module="core" revision="2.0.0" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="xerces" module="xercesImpl" revision="2.10.0" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="xpp3" module="xpp3" revision="1.1.3.4.O" settingsRef="dev.settings" from="chain-resolver" to="build-tmp" overwrite="true" transitive="true" type="jar"/>
+
 		<copy todir="${build.staf.jars.dir}">
-            <fileset dir="${build.dir}">
-                <include name="ExtensionCustomAuthQA.jar"/>
-            	<include name="zimbra-extns-storemanager.jar" />
-            	<include name="ScalityHttpStore.jar" /> 
-            </fileset>
+      		<fileset dir="${build.dir}">
+         		<include name="ExtensionCustomAuthQA.jar"/>
+         		<include name="zimbra-extns-storemanager.jar" />
+    	   		<include name="ScalityHttpStore.jar" />
+      		</fileset>
 			<fileset dir="${build.dir}/tmp">
 				<include name="*.jar"/>
 			</fileset>
-
-			<fileset dir="${common.jars.dir}">
-				<include name="json.jar"/>
-				<include name="ant-contrib-*.jar"/>
-				<include name="bouncycastle.jar"/>
-				<include name="commons-cli-1.2.jar"/>
-				<include name="commons-codec-1.7.jar"/>
-				<include name="commons-dbcp-1.1.jar"/>
-				<include name="commons-fileupload-1.0-zimbra.jar"/>
-				<include name="commons-httpclient-3.1.jar"/>
-				<include name="commons-logging.jar"/>
-				<include name="commons-pool-1.1.jar"/>
-				<include name="dom4j-1.5.2.jar"/>
-				<include name="ganymed-ssh2-build209.jar"/>
-				<include name="guava-*.jar"/>
-				<include name="ical4j-0.9.16-patched.jar"/>
-				<include name="jsieve-0.1.jar"/>
-				<include name="jzlib-1.0.7.jar"/>
-				<include name="jaxen-1.1.3.jar"/>
-				<include name="log4j-1.2.16.jar"/>
-				<include name="lucene-*.jar"/>
-				<include name="unboundid-ldapsdk-2.3.5*.jar"/>
-				<include name="mariadb-java-client-*.jar"/>
-				<include name="javamail-1.4.5.jar"/>
-				<include name="mail-1.4.5.jar"/>
-				<include name="nekohtml-1.9.13.1z.jar"/>
-				<include name="whack.jar"/>
-				<include name="xercesImpl.jar"/>
-				<include name="xpp3.jar"/>
-				<include name="zimbra-charset.jar"/>
-			</fileset>
-	<!--		<fileset dir="${common.internal.jars.dir}">
-				<include name="tnef-1.3.0.jar"/>
-			</fileset> -->
-	<!--		<fileset dir="../ZimbraQA/jars/metro-wsdl/">
-				<include name="webservices-api.jar"/>
-				<include name="webservices-rt.jar"/>
-				<include name="metro-zcs-soapservice.jar"/>
-			</fileset>	
-			<fileset dir="../ZimbraQA/jars/">
-				<include name="testng-6.8.jar"/>
-			</fileset> -->
 		</copy>
+
 		<jar destfile="${dist.lib.dir}/zimbrastaf.jar" basedir="${build.staf.dir}">
 			<manifest>
-			<attribute name="Main-Class" value="com.zimbra.qa.soap.SoapTestMain"/>
-			<section name="staf/service/info">
-				<attribute name="Service-Class" value="com.zimbra.qa.soap.StafIntegration"/>
-				<attribute name="Packaged-Jars" value="webservices-api webservices-rt metro-zcs-soapservice testng-6.8 guava-13.0.1 json commons-codec-1.7 zimbrastore activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 unboundid-ldapsdk-2.3.5* log4j-1.2.16 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
-			</section>
+				<attribute name="Main-Class" value="com.zimbra.qa.soap.SoapTestMain"/>
+				<section name="staf/service/info">
+					<attribute name="Service-Class" value="com.zimbra.qa.soap.StafIntegration"/>
+					<attribute name="Packaged-Jars" value="webservices-api webservices-rt metro-zcs-soapservice testng-6.8 guava-13.0.1 json-20160810 commons-codec-1.7 zimbrastore activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 unboundid-ldapsdk-2.3.5* log4j-1.2.16 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
+				</section>
 			</manifest>
 		</jar>
+
 		<jar destfile="${dist.lib.dir}/zimbrasmtp.jar" basedir="${build.staf.dir}">
 			<manifest>
-			<attribute name="Main-Class" value="com.zimbra.qa.smtp.StafTestSMTP"/>
-			<section name="staf/service/info">
-				<attribute name="Service-Class" value="com.zimbra.qa.smtp.StafTestSMTP"/>
-				<attribute name="Packaged-Jars" value="json commons-codec-1.6.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
-			</section>
+				<attribute name="Main-Class" value="com.zimbra.qa.smtp.StafTestSMTP"/>
+				<section name="staf/service/info">
+					<attribute name="Service-Class" value="com.zimbra.qa.smtp.StafTestSMTP"/>
+					<attribute name="Packaged-Jars" value="json-20160810 commons-codec-1.6.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
+				</section>
 			</manifest>
 		</jar>
+
 		<jar destfile="${dist.lib.dir}/zimbrasample.jar" basedir="${build.staf.dir}">
 			<manifest>
-			<attribute name="Main-Class" value="com.zimbra.qa.sample.StafCore"/>
-			<section name="staf/service/info">
-				<attribute name="Service-Class" value="com.zimbra.qa.sample.StafMain"/>
-				<attribute name="Packaged-Jars" value="json commons-codec-1.6.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
-			</section>
+				<attribute name="Main-Class" value="com.zimbra.qa.sample.StafCore"/>
+				<section name="staf/service/info">
+					<attribute name="Service-Class" value="com.zimbra.qa.sample.StafMain"/>
+					<attribute name="Packaged-Jars" value="json-20160810 commons-codec-1.6.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
+				</section>
 			</manifest>
 		</jar>
+
 		<jar destfile="${dist.lib.dir}/zimbraemail.jar" basedir="${build.staf.dir}">
 			<manifest>
-			<attribute name="Main-Class" value="com.zimbra.qa.email.INJECTCore"/>
-			<section name="staf/service/info">
-			<attribute name="Service-Class" value="com.zimbra.qa.email.INJECTStaf"/>
-			<attribute name="Packaged-Jars" value="json commons-codec-1.6.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.15 jaxen-1.1.3 commons-logging ${zimbraJarPath}"/>
-			</section>
+				<attribute name="Main-Class" value="com.zimbra.qa.email.INJECTCore"/>
+				<section name="staf/service/info">
+					<attribute name="Service-Class" value="com.zimbra.qa.email.INJECTStaf"/>
+					<attribute name="Packaged-Jars" value="json-20160810 commons-codec-1.6.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.15 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
+				</section>
 			</manifest>
 		</jar>
+
 	</target>
 
-	<target name="build-soap-data-file" depends="staf-jar">
+	<target name="zm-network-soap-content" description="Copies network related soap data and tests">
+		<mkdir dir="${build.tmp.dir}"/>
+    	<echo message="Copying network related data and tests..."/>
+    	<if> <available file="${zm-network-soap-harness.dir}" type="dir"/>
+      		<then>
+        		<copy todir="${build.tmp.dir}/data">
+         			<fileset dir="${zm-network-soap-harness.dir}/data">
+          				<include name="**/*"/>
+          			</fileset>
+        		</copy>
+      		</then>
+    	</if>
+  	</target>
+
+   	<target name="soap-build-set-up" depends="zm-network-soap-content">
+    	<copy todir="${build.tmp.dir}/data/TestMailRaw">
+      		<fileset dir="data/TestMailRaw" includes="**"/>		
+    	</copy>
+
+    	<copy todir="${build.tmp.dir}/data/soapvalidator">
+      		<fileset dir="data/soapvalidator" includes="**"/>
+    	</copy>
+
+  	</target>
+    
+	<target name="build-soap-data-file" depends="soap-build-set-up,staf-jar">
 		<copy todir="${build.dir}">
 			<fileset dir="src/bin">
 				<include name="runreports.sh"/>
@@ -406,58 +412,58 @@
 				<include name="runreports_p.sh"/>
 			</fileset>
 		</copy>
-		<fixcrlf srcdir="${build.dir}"
-			eol="lf"
-			eof="remove"
-			includes="*.sh" />
+
+		<fixcrlf srcdir="${build.dir}" eol="lf" eof="remove" includes="*.sh" />
+
 		<tar longfile="gnu" destfile="${build.dir}/soapdata.tar">
-			<tarfileset dir="data/soapvalidator" prefix="soapvalidator/data/soapvalidator" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
+			<tarfileset dir="${build.tmp.dir}/data/soapvalidator" prefix="soapvalidator/data/soapvalidator" mode="555" includes="**"/>
+			
 			<tarfileset dir="${build.dir}" prefix="soapvalidator/bin" mode="555">
 				<include name="runreports.sh"/>
 				<include name="runtmssoap.sh"/>
 				<include name="runreports_p.sh"/>
 			</tarfileset>
-			<tarfileset dir="data/TestMailRaw" prefix="soapvalidator/data/TestMailRaw" mode="555">
-				<include name="**/*"/>
-			</tarfileset>
+
+			<tarfileset dir="${build.tmp.dir}/data/TestMailRaw" prefix="soapvalidator/data/TestMailRaw" mode="555" includes="**"/>
+
 			<tarfileset dir="conf" prefix="soapvalidator/conf" mode="555">
 				<include name="**/*"/>
 			</tarfileset>
+
 			<tarfileset dir="${build.staf.jars.dir}" prefix="soapvalidator/bin/jars" mode="555">
 				<include name="**/*.jar"/>
-                                <exclude name="**/ExtensionCustomAuthQA.jar"/>
+        		<exclude name="**/ExtensionCustomAuthQA.jar"/>
 			</tarfileset>
+
 			<tarfileset dir="${build.staf.jars.dir}" prefix="soapvalidator/build" mode="555">
 				<include name="**/ExtensionCustomAuthQA.jar"/>
 			</tarfileset>
+
 			<tarfileset dir="${build.staf.jars.dir}" prefix="soapvalidator/build" mode="555">
-							<include name="**/zimbra-extns-storemanager.jar"/>
+				<include name="**/zimbra-extns-storemanager.jar"/>
 			</tarfileset>
+
 			<tarfileset dir="${build.staf.jars.dir}" prefix="soapvalidator/build" mode="555">
-										<include name="**/ScalityHttpStore.jar"/>
+				<include name="**/ScalityHttpStore.jar"/>
 			</tarfileset>
+
 			<tarfileset dir="${dist.lib.dir}" prefix="soapvalidator/bin" mode="555">
 				<include name="**/*.jar"/>
-			</tarfileset>		</tar>
+			</tarfileset>
+
+		</tar>
+		
+		<!-- Delete the build/tmp directory after build-->
+		<!-- <delete dir="${build.tmp.dir}"/> -->
+
 	</target>
+	
+	<target name="build-testware-one" description="testware one" depends="build-soap-data-file" />
 
+  	<target name="build-testware-two" description="testware two" depends="build-smtp-service-file" />
 
-	<target name="build-testware-one"
-                description="testware one"
-                depends="build-soap-data-file">
-        </target>
-
-    <target name="build-testware-two"
-                description="testware two"
-                depends="build-smtp-service-file,build-stax-file">
-        </target>
-
-        <target name="build-testware"
-                description="testware"
-                depends="clean,build-testware-one,build-testware-two,build-tenv-setup,build-tools-setup,compress-move">
-        </target>		
+  	<target name="build-testware" description=" Build soap harness testware." 
+  								depends="clean,build-testware-one,build-testware-two,build-tools-setup,compress-move" />		
 
 	<target name="Run SoapTestCore" depends="compile" description="Run Staf Tests in non-STAF environment">
 		<property name="testRoot" value="data/soapvalidator/MailClient/Auth/auth_basic.xml"/>
