@@ -850,10 +850,11 @@ public class SoapTest extends Test {
     protected boolean setUri() throws HarnessException {
 
         initializeUriProperties();
-
+        
+        // Post 8.7.0, all requests to mailbox will go via proxy.
         if ( mNamespace.equals(AdminConstants.NAMESPACE_STR)  ) {
 
-            String server = TestProperties.testProperties.getProperty("server.zimbraAdmin", null);
+            String server = SoapTestMain.globalProperties.getProperty("zimbraServer.name");
             if ( server != null ) {
 
                 String newUri = mSoapAdminMode + "://" + server + ":" + mSoapAdminPort + "/" + mSoapAdminPath;
@@ -863,44 +864,8 @@ public class SoapTest extends Test {
                 mUri = newUri;
                 return (true);
             }
-
-            server = TestProperties.testProperties.getProperty("adminServer.name", null);
-            if ( server != null ) {
-
-                String newUri = mSoapAdminMode + "://" + server + ":" + mSoapAdminPort + "/" + mSoapAdminPath;
-                if ( mUri.equals(newUri) )      return (false);
-
-                TestProperties.testProperties.setProperty("currentClientServer", server);
-                mUri = newUri;
-                return (true);
-            }
-
-            // Fallthrough: fall back to uri property setting
         }
-
-        String server = TestProperties.testProperties.getProperty("server.zimbraAccount", null);
-        if ( server != null )
-        {
-            String newUri = mSoapClientMode + "://" + server + ":" + mSoapClientPort + "/" + mSoapClientPath;
-            if ( mUri.equals(newUri) )      return (false);
-
-            TestProperties.testProperties.setProperty("currentClientServer", server);
-            mUri = newUri;
-            return (true);
-        }
-
-        server = TestProperties.testProperties.getProperty("server.zimbraMail", null);
-        if ( server != null )
-        {
-            String newUri = mSoapClientMode + "://" + server + ":" + mSoapClientPort + "/" + mSoapClientPath;
-            if ( mUri.equals(newUri) )      return (false);
-
-            TestProperties.testProperties.setProperty("currentClientServer", server);
-            mUri = newUri;
-            return (true);
-        }
-
-        server = TestProperties.testProperties.getProperty("zimbraServer.name", null);
+        String server = SoapTestMain.globalProperties.getProperty("zimbraServer.name");
         if ( server != null )
         {
             String newUri = mSoapClientMode + "://" + server + ":" + mSoapClientPort + "/" + mSoapClientPath;
