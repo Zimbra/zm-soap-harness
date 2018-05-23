@@ -6,7 +6,6 @@
     <t:property name="domain2.galdatasource1.name" value="datasource${TIME}${COUNTER}"/>
     <t:property name="domain2.galdatasource2.name" value="ds${TIME}${COUNTER}"/>
     <t:property name="domain2.galsync.name" value="galsync@${domain2_name}"/>
-    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test_case testcaseid="AcctSetup1_filters_save" type="always" >
         <t:objective>create domain and test account</t:objective>
@@ -61,20 +60,32 @@
                         attr="id" set="domain2.id" />
             </t:response>
         </t:test>
+
+            <t:test>
+                <t:request>
+                        <GetServerRequest xmlns="urn:zimbraAdmin">
+                                <server by="name">${zimbraServer.name}</server>
+                        </GetServerRequest>
+                </t:request>
+                <t:response>
+                    <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraReverseProxyUpstreamLoginServers"]' set="mailbox.server"/>
+                </t:response>
+            </t:test>
+
         <!-- create and add galsync account on domain2 -->
         <t:test >
             <t:request>
-                <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain2.galdatasource1.name}" type="zimbra" domain="${domain2_name}" server="${server.zimbraAdmin}">
+                <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain2.galdatasource1.name}" type="zimbra" domain="${domain2_name}" server="${mailbox.server}">
                     <account by="name">${domain2.galsync.name}</account>
                 </CreateGalSyncAccountRequest>
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain2.galaccount.id"/>
             </t:response>
-        </t:test>  
+        </t:test>
         <t:test >
             <t:request>
-                <AddGalSyncDataSourceRequest xmlns="urn:zimbraAdmin" name="${domain2.galdatasource2.name}" type="zimbra" domain="${domain2_name}" server="${server.zimbraAdmin}" folder="${domain2.galdatasource2.name}">
+                <AddGalSyncDataSourceRequest xmlns="urn:zimbraAdmin" name="${domain2.galdatasource2.name}" type="zimbra" domain="${domain2_name}" server="${mailbox.server}" folder="${domain2.galdatasource2.name}">
                     <account by="name">${domain2.galsync.name}</account>
                 </AddGalSyncDataSourceRequest>
             </t:request>
@@ -92,7 +103,6 @@
             </t:request>
             <t:response>
                     <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
-                    <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
             </t:response>
         </t:test>
     </t:test_case>
@@ -102,7 +112,6 @@
             1. Do SearchGalRequest without galsync account
         </t:objective>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -143,7 +152,6 @@
             1. Do SearchGalRequest with galsync account
         </t:objective>
 
-	<t:property name="server.zimbraAccount" value="${account2.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -181,7 +189,6 @@
 
     <!-- clean up -->
     <t:finally>
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test id="admin_login" required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -248,3 +255,4 @@
         </t:test>
         </t:finally>
 </t:tests>
+
