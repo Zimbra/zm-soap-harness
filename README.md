@@ -9,6 +9,7 @@ This harness enables you to execute soap automation for supported functionality 
 - git clone https://github.com/Zimbra/zm-zcs.git
 - git clone https://github.com/Zimbra/zm-mailbox.git
 - git clone https://github.com/Zimbra/zm-soap-harness.git
+- mkdir -p /root/.ivy2/cache
 
 2. Go to zm-mailbox directory and execute following command to generate necessary zimbra dependencies:
 
