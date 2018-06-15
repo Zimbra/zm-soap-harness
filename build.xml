@@ -324,9 +324,8 @@
 			<ivy:install organisation="org.mariadb.jdbc" module="mariadb-java-client" revision="1.1.8" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="	true" transitive="true" type="jar"/>
 			<ivy:install organisation="net.sourceforge.nekohtml" module="nekohtml" revision="1.9.13.1z" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="org.igniterealtime.whack" module="core" revision="2.0.0" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
-			<ivy:install organisation="xerces" module="xercesImpl" revision="2.10.0" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+			<ivy:install organisation="xerces" module="xercesImpl" revision="2.9.1-patch-01" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="xpp3" module="xpp3" revision="1.1.3.4.O" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
-
 			<copy todir="${build.staf.jars.dir}">
       	<fileset dir="${build.dir}">
          	<include name="ExtensionCustomAuthQA.jar"/>
@@ -363,7 +362,7 @@
 					<include name="mail-1.4.5.jar"/>
 					<include name="nekohtml-1.9.13.1z.jar"/>
 					<include name="whack-2.0.0.jar"/>
-					<include name="xercesImpl-2.10.0.jar"/>
+					<include name="xercesImpl-2.9.1-patch-01"/>
 					<include name="xpp3-1.1.3.4.O.jar"/>
 				</fileset>
 			</copy>
@@ -496,7 +495,7 @@
   	<target name="build-testware" description=" Build soap harness testware." 
   								depends="clean,build-testware-one,build-testware-two,build-tools-setup,compress-move" />		
 
-		<target name="Run SoapTestCore" depends="compile" description="Run Staf Tests in non-STAF environment">
+		<target name="Run-SoapTestCore" depends="compile" description="Run Staf Tests in non-STAF environment">
 			<property name="testRoot" value="data/soapvalidator/MailClient/Auth/auth_basic.xml"/>
 			<echo>STAF: Executing ${testRoot}</echo>
 			<java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
