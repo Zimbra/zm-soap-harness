@@ -51,6 +51,7 @@ public class RestServletTest extends Test {
 	// http://server/zimbra/user/[~][{username}]/[{folder}]?[{query-params}]fmt={ics, csv, etc}
 	//
 	public static final String A_REST_URL = "url";
+	public static final String A_REST_CONFIGTYPE = "configType";
 
 	public static final String A_REST_USER = "user";
 	public static final String A_REST_USERID = "userid";
@@ -293,7 +294,7 @@ public class RestServletTest extends Test {
 			mLog.debug("RestServlet: "+ restURI.toString());
 
         	// For logging
-			mSetupDetails = restURI.toString() + "  (Uploaded Filename: " + f.getCanonicalPath() +")";
+			mSetupDetails = restURI.toString() + "  (Uploaded Filename name is: " + f.getCanonicalPath() +")";
 
 
         	//FileRequestEntity request = new FileRequestEntity(f, "text/plain");
@@ -990,6 +991,11 @@ public class RestServletTest extends Test {
 		String auth = e.getAttribute(A_REST_AUTH, null);
 		if ( auth != null ) {
 			queryMap.put("auth", auth);
+		}
+		
+		String configType = e.getAttribute(A_REST_CONFIGTYPE, null);
+		if ( configType != null ) {
+			queryMap.put("configType", configType);
 		}
 
 		String format = e.getAttribute(A_REST_FORMAT, null);

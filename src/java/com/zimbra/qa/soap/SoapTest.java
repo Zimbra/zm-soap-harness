@@ -7,16 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import net.fortuna.ical4j.data.CalendarBuilder;
-import net.fortuna.ical4j.data.ParserException;
-import net.fortuna.ical4j.model.Calendar;
-import net.fortuna.ical4j.model.Component;
-import net.fortuna.ical4j.model.Property;
 
 import org.dom4j.DocumentException;
 import org.dom4j.QName;
@@ -26,14 +19,20 @@ import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.AdminConstants;
 import com.zimbra.common.soap.DomUtil;
 import com.zimbra.common.soap.Element;
+import com.zimbra.common.soap.Element.JSONElement;
 import com.zimbra.common.soap.HeaderConstants;
 import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.soap.SoapParseException;
 import com.zimbra.common.soap.SoapProtocol;
 import com.zimbra.common.soap.SoapUtil;
-import com.zimbra.common.soap.Element.JSONElement;
 import com.zimbra.common.util.StringUtil;
 import com.zimbra.qa.soap.SoapTestCore.HarnessException;
+
+import net.fortuna.ical4j.data.CalendarBuilder;
+import net.fortuna.ical4j.data.ParserException;
+import net.fortuna.ical4j.model.Calendar;
+import net.fortuna.ical4j.model.Component;
+import net.fortuna.ical4j.model.Property;
 
 public class SoapTest extends Test {
 
@@ -307,6 +306,11 @@ public class SoapTest extends Test {
             // Bug 29021
             // clear the authToken/sessionId for all AuthRequests
             TestProperties.testProperties.clearProperty("authToken");
+            int jwtTypeAuth  = Utilities.getElementsFromPath(mDocRequest, "//acct:AuthRequest/acct:jwtToken").length;
+            mLog.debug("jwtTypeAuth: " + jwtTypeAuth);
+            if (jwtTypeAuth == 0) {
+                TestProperties.testProperties.clearProperty("jwtSalt");
+            }
             TestProperties.testProperties.clearProperty("sessionId");
 
             // The currentClientServer value will be set in setUri() before the SOAP is sent
@@ -339,12 +343,19 @@ public class SoapTest extends Test {
             // <notify/> sequence number, if available
             //
 
+
             ZAuthToken zat = new ZAuthToken(null, TestProperties.testProperties.getProperty("authToken", null), null);
             String sessionId = mSessionMap.get(TestProperties.testProperties.getProperty("authToken", null));
             String target = TestProperties.testProperties.getProperty("target", null);
+            String salt = TestProperties.testProperties.getProperty("jwtSalt", null);
             if ( sessionId == null )
             {
-                context = SoapUtil.toCtxt(mSoapProto, zat, null);
+                if (salt == null) {
+                    context = SoapUtil.toCtxt(mSoapProto, zat, null);
+                } else {
+                    context = toJwtContxt(mSoapProto, zat, null, salt);
+                }
+                
             }
             else
             {
@@ -379,6 +390,11 @@ public class SoapTest extends Test {
         mSoapRequest = mSoapProto.soapEnvelope( mDocRequest, context );
         setTransport();
         mReference = mUri;
+        
+        String salt = TestProperties.testProperties.getProperty("jwtSalt", null);
+        if (salt != null) {
+            mTransport.setJwtSalt(salt);
+        }
 
         mTransport.setAuthTokenS(TestProperties.testProperties.getProperty("authToken", null));
 
@@ -402,6 +418,10 @@ public class SoapTest extends Test {
                 TestProperties.testProperties.setProperty("currentClientServer", refers[i].getText());
             }
         }
+        
+//        if (mTransport.getJwtSalt() != null) {
+//            TestProperties.testProperties.setProperty("jwtSalt", mTransport.getJwtSalt());
+//        }
 
         // Remember the sequence number, if returned in the response
         //
@@ -446,6 +466,25 @@ public class SoapTest extends Test {
             }
         }
 
+    }
+
+    /**
+     * @param soapProto
+     * @param zat
+     * @param object
+     * @return
+     */
+    private Element toJwtContxt(SoapProtocol protocol, ZAuthToken authToken, String csrfToken, String salt) {
+         Element ctxt = protocol.getFactory().createElement(HeaderConstants.CONTEXT);
+
+         Element eAuthToken = ctxt.addElement("jwtToken");
+         
+         eAuthToken.setText(authToken.getValue());
+         
+         Element saltElm = ctxt.addElement("jwtSalt");
+         saltElm.setText(salt);
+         return ctxt;
+        
     }
 
     protected void doResponse(Element test) throws SoapFaultException,
@@ -887,7 +926,7 @@ public class SoapTest extends Test {
         return (true);
 
     }
-
+    
     private String setNamespace(Element e) {
 
         mLog.debug("setNamespace: " + e.toString());

@@ -74,10 +74,13 @@ public class UploadServletTest extends Test {
 
 
 
-
 	/** File upload servlet URL, ex:  https://dogfood.liquidsys.com/service/upload/ */
 	protected URL usURL = null;
 	protected String uploadServletServerName = null;
+	
+	protected ProxySoapHttpTransport mTransport = null;
+	
+
 
 
 	public UploadServletTest() {
@@ -108,6 +111,8 @@ public class UploadServletTest extends Test {
 		if ( filename == null )
 			throw new HarnessException("UploadServletTest needs a filename element");
 
+		String jwt = element.getAttribute("jwtToken", null);
+		
 		String contentType = element.getAttribute(A_CONTENT_TYPE, contentTypeMap.getContentType(new File(filename)));
 		String encoding = element.getAttribute(A_XFER_ENCODING, FilePart.DEFAULT_TRANSFER_ENCODING);
 		mLog.debug("fileName: " + filename + ", content type: " + contentType + ", encoding: " + encoding);
@@ -125,19 +130,29 @@ public class UploadServletTest extends Test {
 
 		String mAuthToken = TestProperties.testProperties.getProperty("authToken", null);
 		String mSessionId = TestProperties.testProperties.getProperty("sessionId", null);
+		String jwtSalt = TestProperties.testProperties.getProperty("jwtSalt", null);
 		mLog.debug("mAuthToken [" + mAuthToken + "] ...");
 		mLog.debug("mSessionID [" + mSessionId + "] ...");
 
 
 
 		//Build the cookies to connect to the content servlet
-
-		//
+		
+		//***************** Custom JWT code
 		HttpState initialState = new HttpState();
-		Cookie authCookie = new Cookie(usURL.getHost(), "ZM_AUTH_TOKEN", mAuthToken, "/", null, false);
-		Cookie sessionCookie = new Cookie(usURL.getHost(), "JSESSIONID", mSessionId, "/zimbra", null, false);
-		initialState.addCookie(authCookie);
-		initialState.addCookie(sessionCookie);
+		if(mAuthToken != null && jwtSalt == null )
+		{
+			
+			Cookie authCookie = new Cookie(usURL.getHost(), "ZM_AUTH_TOKEN", mAuthToken, "/", null, false);
+			Cookie sessionCookie = new Cookie(usURL.getHost(), "JSESSIONID", mSessionId, "/zimbra", null, false);
+			initialState.addCookie(authCookie);
+			initialState.addCookie(sessionCookie);
+		}
+		else if (jwtSalt != null)
+		{
+			Cookie authCookie = new Cookie(usURL.getHost(), "ZM_JWT", jwtSalt, "/", null, false);
+			initialState.addCookie(authCookie);
+		}
 
 
         // make the post
@@ -168,6 +183,10 @@ public class UploadServletTest extends Test {
 
         	MultipartRequestEntity request = new MultipartRequestEntity(parts, mPost.getParams());
         	mPost.setRequestEntity( request );
+        	
+        	if (mAuthToken != null && jwtSalt != null) {
+        		mPost.setRequestHeader("Authorization", "Bearer " + mAuthToken);
+        	}
 
         	code = client.executeMethod(mPost);
 
