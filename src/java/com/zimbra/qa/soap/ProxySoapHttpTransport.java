@@ -66,6 +66,7 @@ public class ProxySoapHttpTransport extends com.zimbra.common.soap.SoapTransport
     private String mUri;
     private HttpClient mClient;
     private String mAuthToken = null;
+    private String jwtSalt = null;
     
     public String getAuthTokenS() {
         return (mAuthToken);
@@ -75,6 +76,15 @@ public class ProxySoapHttpTransport extends com.zimbra.common.soap.SoapTransport
         return (mAuthToken = token);
     }
     
+    public String getJwtSalt() {
+        return jwtSalt;
+    }
+
+    
+    public void setJwtSalt(String jwtSalt) {
+        this.jwtSalt = jwtSalt;
+    }
+
     public String toString() { 
         return "ProxySoapHttpTransport(uri="+mUri+")";
     }
@@ -262,7 +272,7 @@ public class ProxySoapHttpTransport extends com.zimbra.common.soap.SoapTransport
             if (getRequestProtocol().hasSOAPActionHeader())
                 method.setRequestHeader("SOAPAction", mUri);
 
-            if ( mAuthToken != null )
+            if ( mAuthToken != null && jwtSalt == null)
             {
                 HttpState initialState = new HttpState();
                 String mUriHost = "";
@@ -275,6 +285,17 @@ public class ProxySoapHttpTransport extends com.zimbra.common.soap.SoapTransport
                     // TODO: how to handle this?
                 }
 
+            } else if (jwtSalt != null) {
+                HttpState initialState = new HttpState();
+                String mUriHost = "";
+                try {
+                    mUriHost = (new URI(mUri)).getHost();
+                    Cookie authCookie = new Cookie(mUriHost, "ZM_JWT", jwtSalt, "/", null, false);
+                    initialState.addCookie(authCookie);
+                    mClient.setState(initialState);
+                } catch (URISyntaxException e) {
+                    // TODO: how to handle this?
+                }
             }
             
             for (int attempt = 0; statusCode == -1 && attempt < mRetryCount; attempt++) {
@@ -295,6 +316,18 @@ public class ProxySoapHttpTransport extends com.zimbra.common.soap.SoapTransport
             // Deal with the response.
             // Use caution: ensure correct character encoding and is not binary data
             String responseStr = SoapProtocol.toString(responseBody);
+
+            if ( method.getResponseHeader("Set-Cookie") != null) {
+                String value = method.getResponseHeader("Set-Cookie").getValue();
+                String [] temp = value.split(";");
+                if (temp != null && temp.length > 0) {
+                    String [] jwtSaltCookie = temp[0].split("=");
+                    if (jwtSaltCookie[0].equals("ZM_JWT"))  {
+                        jwtSalt = temp[0].split("=")[1];
+                        TestProperties.testProperties.setProperty("jwtSalt", jwtSalt);
+                    }
+                }
+            }
 
             try {
                 return parseSoapResponse(responseStr, raw);
@@ -328,22 +361,22 @@ public class ProxySoapHttpTransport extends com.zimbra.common.soap.SoapTransport
         return raw ? env : extractBodyElement(env);
     }
 
-	@Override
-	public Future<HttpResponse> invokeAsync(Element arg0, boolean arg1,
+    @Override
+    public Future<HttpResponse> invokeAsync(Element arg0, boolean arg1,
 			boolean arg2, String arg3, String arg4, String arg5,
 			NotificationFormat arg6, String arg7,
 			FutureCallback<HttpResponse> arg8) throws IOException {
 		// TODO Auto-generated method stub
 		return null;
-	}
+    }
 
-	@Override
-	public Element invoke(Element arg0, boolean arg1, boolean arg2,
+    @Override
+    public Element invoke(Element arg0, boolean arg1, boolean arg2,
 			String arg3, String arg4, String arg5, NotificationFormat arg6,
 			String arg7) throws IOException, HttpException, ServiceException {
 		// TODO Auto-generated method stub
 		return null;
-	}
+    }
 
 
 }
