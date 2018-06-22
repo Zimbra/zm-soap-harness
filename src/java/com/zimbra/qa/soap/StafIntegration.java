@@ -69,6 +69,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
     private String	aHALT = "HALT";
     private String	aVERSION = "VERSION";
     private String	aHELP = "HELP";
+    private String	aTESTSUITES = "TESTSUITES";
    
     // STAF Harness Specifics
     private boolean fAlreadyRunning = false;
@@ -176,7 +177,8 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
         fExecuteParser.addOption(aDURATION, 1, 
     			STAFCommandParser.VALUEREQUIRED);
 
-
+		fExecuteParser.addOption(aTESTSUITES, 1,
+				STAFCommandParser.VALUEREQUIRED);
 
         // this means you must have one of the following options, but not multiple
         // fExecuteParser.addOptionGroup(aSUITE + " " + aDIRECTORY, 1, 1);
@@ -187,6 +189,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
         fExecuteParser.addOptionGroup(aTESTCASE, 0, 1);
         fExecuteParser.addOptionGroup(aWSTEST, 0, 1);
         fExecuteParser.addOptionGroup(aRUNWSDLTESTS, 0, 1);
+        fExecuteParser.addOptionGroup(aTESTSUITES, 0, 1);
         
         fExecuteParser.addOptionGroup(aSETUP, 0, 1);
         fExecuteParser.addOptionGroup(aAREAS, 0, 1);
@@ -204,6 +207,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
         fExecuteParser.addOptionNeed(aDIRECTORY, aZIMBRAQAROOT);
         fExecuteParser.addOptionNeed(aTESTCASE, aZIMBRAQAROOT);
         fExecuteParser.addOptionNeed(aWSTEST, aZIMBRAQAROOT);
+        fExecuteParser.addOptionNeed(aTESTSUITES, aZIMBRAQAROOT);
         
         //
         // QUERY parser
@@ -366,7 +370,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 	        parseExecute(parsedRequest);
 
 			// Make sure that the test case root FILE was opened.
-			if ( SoapTestMain.sHarnessTestCases == null && SoapTestMain.testPackageOrClassName.equals("")  ) {
+			if ( SoapTestMain.sHarnessTestCases == null && SoapTestMain.sHarnessTestSuite == null && SoapTestMain.testPackageOrClassName.equals("")  ) {
 				resultString.append("Test Case Root or File is not opened!");
 				return (new STAFResult(STAFResult.JavaError, resultString.toString()));			
 			}
@@ -417,7 +421,6 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 	            }
 
 	            resultString.append("\n\nTest finished: " + ( (SoapTestMain.mTotalTestCaseFail + SoapTestMain.mTotalTestCaseError > 0) ? "FAIL" : "PASS") + "\n");
-
 	            
 	            // Write the pass/fail results to file
 	    		writeTestSummaryTxt(SoapTestCore.mLogDirectory, 
@@ -425,6 +428,37 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 	    				SoapTestMain.mTotalTestCaseFail, 
 	    				SoapTestMain.mTotalTestCaseError);	            
 
+	    		// Write Results-Soap.xml for rerun
+	        	ResultsXml.writeResultsFile(SoapTestCore.mLogDirectory);
+	    		
+	            // Build the parsable return result for rerun
+	            resultString.append("======================================================================================\n");
+	            resultString.append("Rerun Executed:" + (SoapTestMain.mTotalRerunTestCasePass + SoapTestMain.mTotalRerunTestCaseFail) +"\n");
+	            resultString.append("Pass:" + SoapTestMain.mTotalRerunTestCasePass +"\n");
+	            resultString.append("Fail:" + SoapTestMain.mTotalRerunTestCaseFail +"\n");
+	            resultString.append("Script Errors:" + SoapTestMain.mTotalRerunTestCaseError +"\n\n");
+
+	            if (SoapTestMain.sFailedRerunTestFiles.size() > 0) {
+	                resultString.append("These rerun tests had failures:" + "\n");
+	                for (String filename : SoapTestMain.sFailedRerunTestFiles)
+	                    resultString.append("	").append(filename).append("\n");
+	            }
+
+	            if (SoapTestMain.sExceptionRerunTestFiles.size() > 0) {
+	                resultString.append("These rerun tests had exceptions:" + "\n");
+	                for (String filename : SoapTestMain.sExceptionRerunTestFiles)
+	                    resultString.append("	").append(filename).append("\n");
+	            }
+
+	            resultString.append("\n\nRerun Test finished: " + ( (SoapTestMain.mTotalRerunTestCaseFail + SoapTestMain.mTotalRerunTestCaseError > 0) ? "FAIL" : "PASS") + "\n");
+
+	            
+	            // Write the pass/fail results to file
+	    		writeTestSummaryTxt(SoapTestCore.mLogDirectory, 
+	    				SoapTestMain.mTotalRerunTestCasePass, 
+	    				SoapTestMain.mTotalRerunTestCaseFail, 
+	    				SoapTestMain.mTotalRerunTestCaseError);
+	    		
 	    		// Close out the log file
 	    		if ( executeAppender != null ) {
 	    			mLog.removeAppender(executeAppender);
@@ -616,7 +650,26 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
             
             mLog.debug(aDIRECTORY + " is " + SoapTestMain.sHarnessTestCases);
 
-        } else  if ( parsedRequest.optionTimes(aSUITE) > 0 ) {
+		} else if (parsedRequest.optionTimes(aTESTSUITES) > 0) {
+
+			// Reset fXMLRoot to whatever was specified on the command line
+			SoapTestMain.sHarnessTestSuite = new File(parsedRequest.optionValue(aTESTSUITES));
+
+			if (parsedRequest.optionTimes(aSUITE) > 0) {
+
+				String value = parsedRequest.optionValue(aSUITE);
+				mLog.debug(aSUITE + " is " + value);
+
+				// Set the test case types accordingly
+				if (value.equalsIgnoreCase("SANITY")) {
+					SoapTestMain.sHarnessTestCases = new File(
+							SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
+				}
+			}
+
+			mLog.debug(aTESTSUITES + " is " + SoapTestMain.sHarnessTestSuite);
+
+		} else  if ( parsedRequest.optionTimes(aSUITE) > 0 ) {
             	
             	String value = parsedRequest.optionValue(aSUITE);
             	mLog.debug(aSUITE + " is " + value);
@@ -830,6 +883,32 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 			}
 			
 			// Print the test constraints, too
+			
+        	// Print the high level rerun results
+        	resultString.append("In Progress:" + fLineSep +
+        	"Rerun Executed:" + (SoapTestMain.mTotalRerunTestCasePass + SoapTestMain.mTotalRerunTestCaseFail) + fLineSep +
+			"Pass:" + SoapTestMain.mTotalRerunTestCasePass + fLineSep +
+			"Fail:" + SoapTestMain.mTotalRerunTestCaseFail + fLineSep +
+			"Script Errors:" + SoapTestMain.mTotalRerunTestCaseError + fLineSep);
+        	resultString.append(fLineSep);
+        	
+
+			if ( (SoapTestMain.sFailedRerunTestFiles != null) && (SoapTestMain.sFailedRerunTestFiles.size() > 0)) {
+				resultString.append("These tests have failures:").append(fLineSep);
+				for (String filename : SoapTestMain.sFailedRerunTestFiles)
+					resultString.append("	").append(filename).append(fLineSep);
+				resultString.append(fLineSep);
+			}
+			
+			if ( (SoapTestMain.sExceptionRerunTestFiles != null) && (SoapTestMain.sExceptionRerunTestFiles.size() > 0)) {
+				resultString.append("These tests have exceptions:").append(fLineSep);
+				for (String filename : SoapTestMain.sExceptionRerunTestFiles)
+					resultString.append("	").append(filename).append(fLineSep);
+				resultString.append(fLineSep);
+			}
+			
+			// Print the test constraints, too
+			
 	        resultString.append("Server type: " + SoapTestCore.testServerBits + fLineSep);
 	        resultString.append("Areas: ");
 	        if (SoapTestCore.testAreas == null) {
@@ -988,9 +1067,14 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
     	SoapTestMain.mTotalTestCasePass = 0;
     	SoapTestMain.mTotalTestCaseFail = 0;
     	SoapTestMain.mTotalTestCaseError = 0;
+    	SoapTestMain.mTotalRerunTestCasePass = 0;
+    	SoapTestMain.mTotalRerunTestCaseFail = 0;
+    	SoapTestMain.mTotalRerunTestCaseError = 0;
     	SoapTestMain.testCaseId = null;
     	SoapTestMain.sFailedTestFiles = new ArrayList<String>();
     	SoapTestMain.sExceptionTestFiles = new ArrayList<String>();
+    	SoapTestMain.sFailedRerunTestFiles = new ArrayList<String>();
+    	SoapTestMain.sExceptionRerunTestFiles = new ArrayList<String>();
 
     	SoapTestCore.rootZimbraQA = null;
     	SoapTestCore.testAreas = null;
@@ -1038,3 +1122,4 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 
     
 }
+

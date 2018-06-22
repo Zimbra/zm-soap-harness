@@ -1,8 +1,10 @@
 package com.zimbra.qa.soap;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,6 +56,9 @@ public class SoapTestMain {
     public static ArrayList<String> sFailedTestFiles = new ArrayList<String>();
     public static ArrayList<String> sExceptionTestFiles = new ArrayList<String>();
     
+    public static ArrayList<String> sFailedRerunTestFiles = new ArrayList<String>();
+    public static ArrayList<String> sExceptionRerunTestFiles = new ArrayList<String>();
+    
     // Reporting counters:
     public static int mTotalTestCasePass = 0;
     public static int mTotalTestCaseFail = 0;
@@ -61,12 +66,20 @@ public class SoapTestMain {
 
     public static int mTotalTestStepPass = 0;
     public static int mTotalTestStepFail = 0;
+
+    public static int mTotalRerunTestCasePass = 0;
+    public static int mTotalRerunTestCaseFail = 0;
+    public static int mTotalRerunTestCaseError = 0; // Test Case Counters per main run
+
+    public static int mTotalRerunTestStepPass = 0;
+    public static int mTotalRerunTestStepFail = 0;
     
     public static String testCaseId = null;
     public static String testPackageOrClassName = "";
     public static boolean runWsdlTests=true;
     
     public static File sHarnessTestCases = null;
+    public static File sHarnessTestSuite = null;
     public static String sZDCTestScript = null;
     public static File sSetupXmlScript = null;
 
@@ -100,13 +113,14 @@ public class SoapTestMain {
         Option j = new Option("j", "java", false, "Run test with java (without STAF)");
         Option w = new Option("w", "wstest", true, "test package or classname for wsdl tests.");
         Option r = new Option("r", "runwsdl", true, "allow wsdl test to run or not (true/false)");
+        Option sf = new Option("sf", "runSelective", true, "execute tests scripts mentioned in a file");
 
         Options options = new Options();
         options.addOption(i).addOption(h).addOption(v).addOption(f).addOption(x).
 	        addOption(p).addOption(c).addOption(t).addOption(a).
 	        addOption(e).addOption(b).addOption(d).addOption(l).
 	        addOption(o).addOption(z).addOption(j).addOption(s).
-	        addOption(k).addOption(w).addOption(r);
+	        addOption(k).addOption(w).addOption(r).addOption(sf);
 
         try {
 
@@ -247,6 +261,10 @@ public class SoapTestMain {
 
             }
 
+			if (cl.hasOption("sf")) {
+				sHarnessTestSuite = new File(cl.getOptionValue("sf"));
+			}
+
             // Option: -b network | open ... type of zimbra install bits
             SoapTestCore.testServerBits = cl.getOptionValue("b", "network");
 
@@ -277,7 +295,7 @@ public class SoapTestMain {
 
     }
 
-    public static String execute() throws HarnessException, InterruptedException {
+    public static String execute() throws HarnessException, InterruptedException, IOException {
     	
     	if (TestProperties.testProperties == null)
     	{
@@ -348,59 +366,83 @@ public class SoapTestMain {
         }
         
         if(sHarnessTestCases!=null && sHarnessTestCases.exists()) {
-        	
-        	if (sHarnessTestCases.isDirectory()) {
-        		//run wsdl tests only when root folder of xml test specified. 
-        		
-        		if(!(sHarnessTestCases.getName().endsWith("soapvalidator") || sHarnessTestCases.getName().endsWith("SanityTest"))) {
-        			if(testPackageOrClassName.equals("")) {
-        				mLog.debug("WSDL suite will not run as package or class name not specified.");
-        				runWsdlTests=false;
-        			}
-        		}
-        		StafTestDirectory harness = new StafTestDirectory();
-        		mLog.debug("Running XML harness");
-        		harness.runTestDirectory(sHarnessTestCases);
-        		harness=null;
 
-        	} else {
-        		mLog.debug("WSDL suite will not run as its xml file");
-        		//do no run wsdl test when running single xml file
-        		runWsdlTests=false;
-        		SoapTestCore harness = new SoapTestCore();
-        		
-        		try {
+			execute(sHarnessTestCases);
 
-        			harness.runTestFile(sHarnessTestCases);
-            	
-        		} catch (Exception e) {
-            	
-        			mLog.error("TEST FAILED: " + sHarnessTestCases.getAbsolutePath(), e);
-            	
-        			mTotalTestCaseError++;
-        			sExceptionTestFiles.add(sHarnessTestCases.getAbsolutePath());
-                
+        	// Retry all failed tests again
 
-        			throw new HarnessException("TEST FAILED: " + sHarnessTestCases.getAbsolutePath(), e);
+			for( String reRunFailedFileName : sFailedTestFiles )
+			{/*
+				SoapTestCore harness = new SoapTestCore();
+				
+				try {
 
-        		} finally {
+					harness.runTestFile( new File(reRunFailedFileName) );
+				
+				} catch (Exception e) {
+				
+					mLog.error("TEST RERUN FAILED: " + sHarnessTestCases.getAbsolutePath(), e);
+				
+					mTotalRerunTestCaseError++;
+					sExceptionRerunTestFiles.add(sHarnessTestCases.getAbsolutePath() );
 
-        			mTotalTestCasePass +=	harness.mTestCasePass;
-        			mTotalTestCaseFail +=	harness.mTestCaseFail;
-                                        	
-        			mTotalTestStepPass +=	harness.mTestPass;
-        			mTotalTestStepFail +=	harness.mTestFail;
-                                        	
-        			if ( harness.mTestCaseFail > 0 ) {
-        				sFailedTestFiles.add(sHarnessTestCases.getAbsolutePath());
-        			}
-                
-        			harness=null;
-            
-        		}
-        	}
+					throw new HarnessException("TEST FAILED: " + sHarnessTestCases.getAbsolutePath(), e);
+
+				} finally {
+
+					mTotalRerunTestCasePass +=	harness.mTestCasePass;
+					mTotalRerunTestCaseFail +=	harness.mTestCaseFail;
+											
+					mTotalRerunTestStepPass +=	harness.mTestPass;
+					mTotalRerunTestStepFail +=	harness.mTestFail;
+											
+					if ( harness.mTestCaseFail > 0 ) {
+						sFailedRerunTestFiles.add(reRunFailedFileName);
+					}
+					harness=null;
+			
+				}
+				
+			*/}
+			for( String reRunErrorFileName : sExceptionTestFiles )
+			{ 
+				SoapTestCore harness = new SoapTestCore();
+				
+				try {
+
+					harness.runTestFile( new File(reRunErrorFileName) );
+				
+				} catch (Exception e) {
+				
+					mLog.error("TEST RERUN FAILED: " + sHarnessTestCases.getAbsolutePath(), e);
+				
+					mTotalRerunTestCaseError++;
+					sExceptionRerunTestFiles.add(reRunErrorFileName);
+
+					throw new HarnessException("TEST FAILED: " + sHarnessTestCases.getAbsolutePath(), e);
+
+				} finally {
+
+				harness=null;
+			
+				}
+				
+			}
     	}
         
+		if (sHarnessTestSuite != null && sHarnessTestSuite.exists()) {
+			String line = null;
+			FileReader fr = new FileReader(sHarnessTestSuite);
+			BufferedReader bufferedReader = new BufferedReader(fr);
+			while ((line = bufferedReader.readLine()) != null) {
+				File enlistedTestCases = new File(SoapTestCore.rootZimbraQA + File.separatorChar + line);
+
+				execute(enlistedTestCases);
+
+			}
+			bufferedReader.close();
+		}
+
         if(runWsdlTests) {
         	try {
         		mLog.debug("WSDL Soap Started");
@@ -409,9 +451,64 @@ public class SoapTestMain {
 				mLog.error("Error Running wsdl harness",e);
 			}
         }
+        
+        
         return (resultString.toString());
         
     }
+    
+	public static void execute(File testCases) throws HarnessException, InterruptedException, IOException {
+		if (testCases.isDirectory()) {
+			// run wsdl tests only when root folder of xml test specified.
+
+			if (!(testCases.getName().endsWith("soapvalidator") || testCases.getName().endsWith("SanityTest"))) {
+				if (testPackageOrClassName.equals("")) {
+					mLog.debug("WSDL suite will not run as package or class name not specified.");
+					runWsdlTests = false;
+				}
+			}
+
+			StafTestDirectory harness = new StafTestDirectory();
+			harness.runTestDirectory(testCases);
+			harness = null;
+
+		} else {
+			mLog.debug("WSDL suite will not run as its xml file");
+			// do no run wsdl test when running single xml file
+			runWsdlTests = false;
+
+			SoapTestCore harness = new SoapTestCore();
+
+			try {
+
+				harness.runTestFile(testCases);
+
+			} catch (Exception e) {
+
+				mLog.error("TEST FAILED: " + testCases.getAbsolutePath(), e);
+
+				mTotalTestCaseError++;
+				sExceptionTestFiles.add(testCases.getAbsolutePath());
+
+				throw new HarnessException("TEST FAILED: " + testCases.getAbsolutePath(), e);
+
+			} finally {
+
+				mTotalTestCasePass += harness.mTestCasePass;
+				mTotalTestCaseFail += harness.mTestCaseFail;
+
+				mTotalTestStepPass += harness.mTestPass;
+				mTotalTestStepFail += harness.mTestFail;
+
+				if (harness.mTestCaseFail > 0) {
+					sFailedTestFiles.add(testCases.getAbsolutePath());
+				}
+
+				harness = null;
+
+			}
+		}
+	}
     
 //   static void executeWsdlTests() {
 //    	//running wsdl soap harness
@@ -460,9 +557,10 @@ public class SoapTestMain {
      * Exit status is 0 if no failures, 1 otherwise.
      * @throws HarnessException 
      * @throws InterruptedException 
+     * @throws IOException
      * @throws Exception 
      */
-    public static void main(String args[]) throws HarnessException, InterruptedException {
+    public static void main(String args[]) throws HarnessException, InterruptedException, IOException {
 
         // Set up SSL
         // Always accept self-signed SSL certificates.
@@ -477,7 +575,13 @@ public class SoapTestMain {
 
         mTotalTestStepPass = 0;
         mTotalTestStepFail = 0;
-        
+
+        mTotalRerunTestCasePass = 0;
+        mTotalRerunTestCaseFail = 0;
+        mTotalRerunTestCaseError = 0;
+
+        mTotalRerunTestStepPass = 0;
+        mTotalRerunTestStepFail = 0;
 		// Intialize the recorder for SOAP requests
 		PerformanceStatistics.initialize();
 
@@ -522,6 +626,26 @@ public class SoapTestMain {
                     resultString.append("	").append(filename).append(Layout.LINE_SEP);
             }
 
+        	resultString.append("Tests Rerun Executed:" + (mTotalRerunTestStepPass + mTotalRerunTestStepFail)).append(Layout.LINE_SEP);
+        	resultString.append("Pass:" + mTotalRerunTestStepPass).append(Layout.LINE_SEP);
+        	resultString.append("Fail:" + mTotalRerunTestStepFail).append(Layout.LINE_SEP).append(Layout.LINE_SEP);
+        	resultString.append("Test Cases Executed:" + (mTotalRerunTestCasePass + mTotalRerunTestCaseFail)).append(Layout.LINE_SEP);
+        	resultString.append("Pass:" + mTotalRerunTestCasePass).append(Layout.LINE_SEP);
+        	resultString.append("Fail:" + mTotalRerunTestCaseFail).append(Layout.LINE_SEP);
+        	resultString.append("Script Errors:" + mTotalRerunTestCaseError).append(Layout.LINE_SEP).append(Layout.LINE_SEP);
+
+            if (sFailedRerunTestFiles.size() > 0) {
+            	resultString.append("These tests had rerun failures:").append(Layout.LINE_SEP);
+                for (String filename : sFailedRerunTestFiles)
+                    resultString.append("	").append(filename).append(Layout.LINE_SEP);
+            }
+
+            if (sExceptionRerunTestFiles.size() > 0) {
+            	resultString.append("These tests had rerun exceptions:").append(Layout.LINE_SEP);
+                for (String filename : sExceptionRerunTestFiles)
+                    resultString.append("	").append(filename).append(Layout.LINE_SEP);
+            }
+            
             resultString.append(Layout.LINE_SEP).append(Layout.LINE_SEP);
             resultString.append("Test finished: " + ( (mTotalTestCaseFail + mTotalTestCaseError > 0) ? "FAIL" : "PASS")).append(Layout.LINE_SEP);
 
