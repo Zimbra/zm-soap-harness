@@ -1,0 +1,126 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="account1.name" value="test1.${TIME}@${defaultdomain.name}" />
+	<t:property name="account2.name" value="test2.${TIME}@${defaultdomain.name}" />
+	<t:property name="message.subject" value="RE:FW: Rubber Fenders from Changzhou Meridian" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>Basic system check</t:objective>
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="Account_Setup" type="always">
+
+		<t:objective>Create user account</t:objective>
+		<t:steps>1. Login to admin.
+			2. Create test accounts
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_testAccount1" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_testAccount2" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="verify_Message_retrieval" type="smoke" bugids="ZBUG-184">
+		<t:objective> Verify that message with repetitive (') character is returned in get message request </t:objective>
+
+		<t:steps>1. Log in with user 1 and Inject message.
+			2. Search injected message and retrieve message id
+			3. Using message id retrieve injected
+			message and validate it's contents
+		</t:steps>
+
+		<t:property name="msg01.file" value="${testMailRaw.root}/zbug184/210460-1031412.msg" />
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:mailinjecttest>
+			<t:lmtpInjectRequest>
+				<filename>${msg01.file}</filename>
+				<to>${account1.name}</to>
+				<from>${account2.name}</from>
+				<server>${account1.server}</server>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+
+
+		<t:test id="search_injected_msg">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>subject:"${message.subject}"</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="get_injected_msg">
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${message.id}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${message.subject}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>
