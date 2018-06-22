@@ -1,0 +1,313 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="message1.subject" value="Subject1_Unread" />
+	<t:property name="message1.content" value=" content of the Unread Message 1" />
+	<t:property name="message2.subject" value="Subject2_Unread" />
+	<t:property name="message2.content" value=" content of the Unread Message 2" />
+	<t:property name="message3.subject" value="Subject3_read" />
+	<t:property name="message3.content" value=" content of the read Message 3" />
+	<t:property name="message4.subject" value="Subject4_read" />
+	<t:property name="message4.content" value=" content of the read Message 4" />
+	<t:property name="test_account1.name" value="test${TIME}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	<t:property name="op.read" value="read" />
+	<t:property name="op.unread" value="!read" />
+
+
+
+	<t:test_case testcaseid="Ping" type="smoke">
+		<t:objective>basic system check	</t:objective>
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case> 
+
+	<t:test_case testcaseid="acct1_setup" type="always">
+		<t:objective>create test account</t:objective>
+
+		<t:test id="admin_login" required="true" depends="ping">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraMailHost">${server.zimbraAdmin}</a>
+					<a n="zimbraMailStatus">enabled</a>
+					<a n="zimbraPasswordMinAge">7</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+
+		<t:property name="server.zimbraAccount" value="${test_acct.server}" />
+		
+		</t:test_case>
+
+	<t:test_case testcaseid="send_Test_mails" type="always">
+	
+		<t:objective>Send test mails and mark them as read unread </t:objective>
+
+		<t:test id="Send_mail1">
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${message1.subject}</su>
+						<mp ct="text/plain">
+							<content>${message1.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Send_mail2">
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${message2.subject}</su>
+						<mp ct="text/plain">
+							<content>${message2.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Send_mail3">
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${message3.subject}</su>
+						<mp ct="text/plain">
+							<content>${message3.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Send_mail4">
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${message4.subject}</su>
+						<mp ct="text/plain">
+							<content>${message4.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message4.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:delay msec="5000"/>
+		
+		<t:test>
+			<t:request id="Search_mail3">
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>${message3.content}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message3.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Mark_as_read1">
+			<t:request>
+				<MsgActionRequest xmlns="urn:zimbraMail">
+					<action id="${message3.id}" op="${op.read}" />
+				</MsgActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.read}" />
+				<t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message3.id}" />
+			</t:response>
+		</t:test>
+
+
+		<t:delay msec="5000"/>
+
+		<t:test id="Search_mail4">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>${message4.content}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message4.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Mark_as_read2">
+			<t:request>
+				<MsgActionRequest xmlns="urn:zimbraMail">
+					<action id="${message4.id}" op="${op.read}" />
+				</MsgActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.read}" />
+				<t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message4.id}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="readAsc" type="always">
+		<t:objective>Sort mails by readAsc</t:objective>
+
+		<t:test id="readAsc.test">
+			<t:request>
+				<SearchRequest types="message" sortBy="readAsc" xmlns="urn:zimbraMail">
+					<query xmlns="urn:zimbraMail">in:inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m[1]//mail:su" match="${message4.subject}" />
+				<t:select path="//mail:SearchResponse/mail:m[2]//mail:su" match="${message3.subject}" />
+				<t:select path="//mail:SearchResponse/mail:m[3]//mail:su" match="${message2.subject}" />
+				<t:select path="//mail:SearchResponse/mail:m[4]//mail:su" match="${message1.subject}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+	
+	<t:test_case testcaseid="readDesc" type="always">
+
+		<t:objective>Sort mails by readDesc</t:objective>
+
+		<t:test id="readDesc.test">
+			<t:request>
+				<SearchRequest types="message" sortBy="readDesc"
+					xmlns="urn:zimbraMail">
+					<query xmlns="urn:zimbraMail">in:inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m[1]//mail:su" match="${message2.subject}" />
+				<t:select path="//mail:SearchResponse/mail:m[2]//mail:su" match="${message1.subject}" />
+				<t:select path="//mail:SearchResponse/mail:m[3]//mail:su" match="${message4.subject}" />
+				<t:select path="//mail:SearchResponse/mail:m[4]//mail:su" match="${message3.subject}" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	
+	<t:test_case testcaseid="Verify_Scrolldown_Error" type="smoke" bugids="ZBUG-425">
+		<t:objective>To verify no exception is thrown on scrolling to the end of the search results when results are sorted by read/unread</t:objective>
+
+		<t:steps>
+		1. Log in with account 1.
+		2. Search first 2 messages and get id of the last message.
+		3. Search next 2 messages and pass cursor element with id of the last message.
+		4. Verify exception is not thrown in the search response.
+		</t:steps>
+
+		<t:test id="auth" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="readAsc.test">
+			<t:request>
+				<SearchRequest types="message" sortBy="readAsc" limit="2" offset="0" xmlns="urn:zimbraMail">
+					<query xmlns="urn:zimbraMail">in:inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m[2]" attr="id"  set="cursor.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="readAsc.test">
+			<t:request>
+				<SearchRequest types="message" sortBy="readAsc" limit="2" offset="2" xmlns="urn:zimbraMail">
+					<query xmlns="urn:zimbraMail">in:inbox</query>
+					<cursor id="${cursor.id}" xmlns="urn:zimbraMail"/>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="readDesc.test">
+			<t:request>
+				<SearchRequest types="message" sortBy="readDesc" limit="2" offset="0" xmlns="urn:zimbraMail">
+					<query xmlns="urn:zimbraMail">in:inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m[2]" attr="id"  set="cursor.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="readAsc.test">
+			<t:request>
+				<SearchRequest types="message" sortBy="readDesc" limit="2" offset="2" xmlns="urn:zimbraMail">
+					<query xmlns="urn:zimbraMail">in:inbox</query>
+					<cursor id="${cursor.id}" xmlns="urn:zimbraMail"/>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+</t:tests>
