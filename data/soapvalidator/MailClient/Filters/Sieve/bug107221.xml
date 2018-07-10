@@ -33,27 +33,27 @@
 <t:property name="multistring4_1" value="=E6=97=A5=E6=9C=AC=E8=AA=9E=E3=81=AE"/>
 <t:property name="multistring4_2" value="=E4=BB=B6=E5=90=8D"/>
 
-<t:property name="sieve_rule1" value='require ["editheader", "log"];
+<t:property name="sieve_rule1" value='require ["editheader", "log", "variables"];
 replaceheader :newvalue "[NEWVAL] ${dollar1}" :matches "X-Sieve-Header1" "*";
 log "done";'/>
 
-<t:property name="sieve_rule2" value='require ["editheader", "log"];
+<t:property name="sieve_rule2" value='require ["editheader", "log", "variables"];
 replaceheader :newvalue "[NEWVAL] ${dollar1}" :matches "X-Sieve-Header1" "* newlineabc";
 log "done";'/>
 
-<t:property name="sieve_rule3" value='require ["editheader", "log"];
+<t:property name="sieve_rule3" value='require ["editheader", "log", "variables"];
 replaceheader :newvalue "[NEWVAL] ${dollar1}" :matches "X-Sieve-Header1" "*";
 log "done";'/>
 
-<t:property name="sieve_rule4" value='require ["editheader", "log"];
+<t:property name="sieve_rule4" value='require ["editheader", "log", "variables"];
 replaceheader :newvalue "هِجَائِي ${dollar1}" :matches "X-Sieve-Header1" "*";
 log "done";'/>
 
-<t:property name="sieve_rule5" value='require ["editheader", "log"];
+<t:property name="sieve_rule5" value='require ["editheader", "log", "variables"];
 replaceheader :newvalue "[NEWVAL] ${dollar1}" :contains "X-Sieve-Header1" "VGVzdOS7tuWQjeimlumgu9mH2ZDYrNmO2KfYpt";
 log "done";'/>
 
-<t:property name="sieve_rule6" value='require ["editheader", "log"];
+<t:property name="sieve_rule6" value='require ["editheader", "log", "variables"];
 replaceheader :newvalue "${dollar1} [NEWVAL]" :matches "X-Sieve-Header1" "*";
 log "done";'/>
 
@@ -75,8 +75,7 @@ log "done";'/>
     
 </t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-<t:test_case testcaseid="acctSetup1" type="deprecated">
+<t:test_case testcaseid="acctSetup1" type="smoke">
     <t:objective>create test account</t:objective>
     
 	<t:test required="true">
@@ -90,7 +89,31 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-            
+
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	                
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -185,7 +208,7 @@ log "done";'/>
                      
 </t:test_case>
 
-<t:test_case testcaseid="bug107221_rule1" type="deprecated" bugids="107221">
+<t:test_case testcaseid="bug107221_rule1" type="smoke" bugids="107221">
    <t:objective>SIEVE: New header text replaced by "replaceheader" gets garbled</t:objective>
     <steps> 
         1. Add sieve rule for a user to match multiline header and replace it with new one as per the sieve rule
@@ -207,7 +230,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account2.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule1}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -278,7 +301,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug107221_rule2" type="deprecated" bugids="107221">
+<t:test_case testcaseid="bug107221_rule2" type="smoke" bugids="107221">
    <t:objective>SIEVE: New header text replaced by "replaceheader" gets garbled</t:objective>
     <steps> 
         1. Add sieve rule for a user to match multiline header and replace it with new one as per the sieve rule
@@ -300,7 +323,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account3.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule2}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule2}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -371,7 +394,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug107221_rule3" type="deprecated" bugids="107221">
+<t:test_case testcaseid="bug107221_rule3" type="smoke" bugids="107221">
    <t:objective>SIEVE: New header text replaced by "replaceheader" gets garbled</t:objective>
     <steps> 
         1. Add sieve rule for a user to match multiline header and replace it with new one as per the sieve rule
@@ -394,7 +417,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account4.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule3}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule3}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -465,7 +488,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug107221_rule4" type="deprecated" bugids="107221">
+<t:test_case testcaseid="bug107221_rule4" type="smoke" bugids="107221">
    <t:objective>SIEVE: New header text replaced by "replaceheader" gets garbled</t:objective>
     <steps> 
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
@@ -488,7 +511,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account5.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule4}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule4}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -559,7 +582,7 @@ log "done";'/>
 	    
 </t:test_case>  
 
-<t:test_case testcaseid="bug107221_rule5" type="deprecated" bugids="107221">
+<t:test_case testcaseid="bug107221_rule5" type="smoke" bugids="107221">
    <t:objective>SIEVE: New header text replaced by "replaceheader" gets garbled</t:objective>
     <steps> 
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
@@ -582,7 +605,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account6.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule5}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule5}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -653,7 +676,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug107221_rule6" type="deprecated" bugids="107221">
+<t:test_case testcaseid="bug107221_rule6" type="smoke" bugids="107221">
    <t:objective>SIEVE: New header text replaced by "replaceheader" gets garbled</t:objective>
     <steps> 
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
@@ -675,7 +698,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account7.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule6}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule6}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -745,5 +768,33 @@ log "done";'/>
 	</t:resttest>
 
 </t:test_case> 
-      
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>      
 </t:tests>

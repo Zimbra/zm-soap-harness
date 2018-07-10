@@ -1,6 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_notify_account1.name" value="notify1.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -45,17 +43,6 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
             </t:response>
         </t:test>
 
-                <t:test>
-                        <t:request>
-                                <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                        <account by="name">${admin.user}</account>
-                                </GetAccountRequest>
-                        </t:request>
-                        <t:response>
-                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                        </t:response>
-               </t:test>
-
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -66,7 +53,6 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
             </t:response>
         </t:test>
 
@@ -79,7 +65,6 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account1.id" />
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account1.server"/>
             </t:response>
         </t:test>
 
@@ -111,8 +96,6 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
 
     <t:test_case testcaseid="bug106846_rule1" type="smoke" bugids="106846">
         <t:objective>notify - if body param is not specified, a notification with empty body should be sent</t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         
         <t:test required="true">
             <t:request>
@@ -142,8 +125,6 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${notify_account1.server}"/>
 
         <t:test>
             <t:request>
@@ -191,8 +172,6 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -221,8 +200,6 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
     <t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
         
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">

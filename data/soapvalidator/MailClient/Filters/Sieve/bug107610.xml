@@ -1,6 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -10,27 +8,8 @@
     <t:property name="msg01.file" value="${testMailRaw.root}/bug107610/mime1.txt" />
     <t:property name="msg02.file" value="${testMailRaw.root}/bug107610/mime2.txt" />
 
-<!-- Disabling EditHeaders rule. They should be enabled once zcs-1254 is fixed -->
     <!-- Sieve rules declaration -->
-    <t:property name="sieve_rule1" value='require ["tag"];
-if header :contains "Subject" "test message" {
-    tag "SHOULD-NOT-BE-ADDED-1";
-}
-if header :contains "Subject" "reply message" {
-    tag "Reply";
-}
-if header :contains "To" "user2" {
-    tag "SHOULD-NOT-BE-ADDED-2";
-}
-if address :contains "To" "user2" {
-    tag "SHOULD-NOT-BE-ADDED-3";
-}
-if address :contains "To" "user1" {
-    tag "To";
-}
-'/>
-
-<!--     <t:property name="sieve_rule1" value='require ["tag", "editheader"];
+     <t:property name="sieve_rule1" value='require ["tag", "editheader"];
 if header :contains "Subject" "test message" {
     tag "SHOULD-NOT-BE-ADDED-1";
 }
@@ -48,7 +27,7 @@ if address :contains "To" "user1" {
 }
 replaceheader :newvalue "REPLACED" :matches "X-Test-Header-1" "value1";
 deleteheader :matches "X-Test-Header-2" "value2";
-'/> -->
+'/>
 
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
@@ -76,17 +55,30 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:response>
         </t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -116,8 +108,6 @@ deleteheader :matches "X-Test-Header-2" "value2";
 
     <t:test_case testcaseid="bug107610_rule1" type="smoke" bugids="107610">
         <t:objective>Test header/address and editheader should ignore message/rfc822 part - text format</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -134,7 +124,7 @@ deleteheader :matches "X-Test-Header-2" "value2";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule1}</a>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -142,7 +132,6 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg01.file}</filename>
@@ -152,7 +141,6 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -180,8 +168,7 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-   <!--     <t:resttest>
+     <t:resttest>
             <t:restServletRequest>
                 <id>${msg1.id}</id>
             </t:restServletRequest>
@@ -189,13 +176,11 @@ deleteheader :matches "X-Test-Header-2" "value2";
                 <t:content match=".*X-Test-Header-1: value1.*" />
                 <t:content match=".*X-Test-Header-2: value2.*" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
 
     <t:test_case testcaseid="bug107610_rule2" type="smoke" bugids="107610">
         <t:objective>Test header/address and editheader should ignore message/rfc822 part - html format</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -212,7 +197,7 @@ deleteheader :matches "X-Test-Header-2" "value2";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account2.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule1}</a>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -220,7 +205,6 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg02.file}</filename>
@@ -230,7 +214,6 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -258,8 +241,7 @@ deleteheader :matches "X-Test-Header-2" "value2";
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-   <!--  <t:resttest>
+  	<t:resttest>
             <t:restServletRequest>
                 <id>${msg2.id}</id>
             </t:restServletRequest>
@@ -267,6 +249,35 @@ deleteheader :matches "X-Test-Header-2" "value2";
                 <t:content match=".*X-Test-Header-1: value1.*" />
                 <t:content match=".*X-Test-Header-2: value2.*" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
+    
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>    
 </t:tests>

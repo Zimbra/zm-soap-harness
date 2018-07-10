@@ -1,6 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="account1.name"
         value="user.${TIME}${COUNTER}@${defaultdomain.name}" />
@@ -41,17 +40,6 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-
-                <t:test>
-                        <t:request>
-                                <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                        <account by="name">${admin.user}</account>
-                                </GetAccountRequest>
-                        </t:request>
-                        <t:response>
-                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                        </t:response>
-               </t:test>
 
         <t:test required="true">
             <t:request>
@@ -95,8 +83,6 @@
         type="smoke" bugids="106993">
         <t:objective> Regression</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -121,8 +107,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -140,8 +124,6 @@
                     set="Sent_message1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
         <t:test>
             <t:request>

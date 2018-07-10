@@ -31,8 +31,7 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
         </t:test>
     </t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-    <t:test_case testcaseid="AcctSetup1_create_account" type="deprecated">
+    <t:test_case testcaseid="AcctSetup1_create_account" type="smoke">
         <t:objective>create test accounts</t:objective>
         <t:test required="true">
             <t:request>
@@ -46,11 +45,47 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
             </t:response>
         </t:test>
 
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header</a>
+                </ModifyConfigRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyConfigResponse" />
+            </t:response>
+        </t:test>
+        	    
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -63,6 +98,7 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -75,6 +111,7 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account3.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -83,31 +120,21 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107361_rule1" type="deprecated" bugids="107361">
+    <t:test_case testcaseid="bug107361_rule1" type="smoke" bugids="107361">
         <t:objective>replaced (renamed) header should be always added at the same position as the original one - replace two headers</t:objective>
-        <t:test>
+
+        <t:test required="true">
             <t:request>
-                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header</a>
-                </ModifyConfigRequest>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
             </t:request>
             <t:response>
-                <t:select path="//admin:ModifyConfigResponse" />
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-
-        <t:test id="modifyaccountrequest1">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account1.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule1}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
-            </t:response>
-        </t:test>
-
+        
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -165,7 +192,7 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107361_rule2" type="deprecated" bugids="107361">
+    <t:test_case testcaseid="bug107361_rule2" type="smoke" bugids="107361">
         <t:objective>replaced (renamed) header should be always in the same position as the original one - replace a header</t:objective>
         <t:test required="true">
             <t:request>
@@ -176,17 +203,6 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-        <t:test id="modifyaccountrequest2">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account2.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule2}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -247,7 +263,7 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107361_rule3" type="deprecated" bugids="107361">
+    <t:test_case testcaseid="bug107361_rule3" type="smoke" bugids="107361">
         <t:objective>replaced (not renamed) header should be always in the same position as the original one</t:objective>
         <t:test required="true">
             <t:request>
@@ -258,17 +274,6 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-        <t:test id="modifyaccountrequest3">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account3.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule3}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -328,4 +333,43 @@ replaceheader :newvalue "new value" :comparator "i;ascii-casemap" :is "X-Test-He
             </t:restServletResponse>
         </t:resttest>
     </t:test_case>
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+                    <a n="zimbraCustomMimeHeaderNameAllowed"></a>
+                </ModifyConfigRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyConfigResponse" />
+            </t:response>
+        </t:test>
+    </t:finally>    
 </t:tests>

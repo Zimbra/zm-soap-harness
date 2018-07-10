@@ -1,0 +1,458 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="account1.name"
+		value="account1.${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account2.name"
+		value="account2.${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account3.name"
+		value="account3.${TIME}${COUNTER}@${defaultdomain.name}" />
+
+	<t:property name="compose.subject1" value="subject1.${TIME}" />
+	<t:property name="compose.content1" value="content1.${TIME}" />
+
+	<t:property name="compose.subject2" value="subject2.${TIME}" />
+	<t:property name="compose.content2" value="content2.${TIME}" />
+
+	<t:property name="compose.subject3" value="subject3.${TIME}" />
+	<t:property name="compose.content3" value="content3.${TIME}" />
+
+	<t:property name="folder1.name" value="folder1.${TIME}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="adminlogin" required="true" depends="Ping">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraFeatureMarkMailForwardedAsRead">TRUE</a>
+					<a n="zimbraPrefMailForwardingAddress">${account3.name}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account2.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account3.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account3.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZCS-2746-testcase1" type="smoke"
+		bugids="2746">
+		<t:objective>Verify forwarded messages are mark read if
+			zimbraFeatureMarkMailForwardedAsRead set to true</t:objective>
+		<t:steps>
+			1. User 2 sends a mail to user 1.
+			2. Verify on user 1 the mail is marked as read.
+			3. Verify on user 3 the forwarded mail is received in unread status.
+		</t:steps>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${account1.name}' />
+						<su>${compose.subject1}</su>
+						<mp ct="text/plain">
+							<content> ${compose.content1} </content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>is:read</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m" attr="id" set="message1.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>is:unread subject:(${compose.subject1})</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m//mail:su" match="${compose.subject1}" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-2746-testcase2" type="smoke"
+		bugids="2746">
+		<t:objective>Verify forwarded messages are mark unread if
+			zimbraFeatureMarkMailForwardedAsRead set to false</t:objective>
+		<t:steps>
+			1. User 1 sets the zimbraFeatureMarkMailForwardedAsRead to false.
+			2. User 2 sends a mail to user 1.
+			3. Verify on user 1 the mail is marked as unread.
+			4. Verify on user 3 the forwarded mail is received in unread status.
+		</t:steps>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test id="adminlogin" required="true" depends="Ping">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraFeatureMarkMailForwardedAsRead">FALSE</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${account1.name}' />
+						<su>${compose.subject2}</su>
+						<mp ct="text/plain">
+							<content> ${compose.content2} </content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>is:unread subject:(${compose.subject2})</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m" attr="id" set="message1.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>is:unread subject:(${compose.subject2})</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m" attr="id" set="message2.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-2746-testcase3" type="smoke"
+		bugids="2746">
+		<t:objective>Verify forwarded messages are mark read if
+			zimbraFeatureMarkMailForwardedAsRead set to true in custom folder
+		</t:objective>
+		<t:steps>
+			1. User 1 sets the zimbraFeatureMarkMailForwardedAsRead to true.
+			2. User 1 sets a filter for incoming mail to be received in
+			${folder1.name}
+			3. User 2 sends a mail to user 1.
+			4. Verify on user 1 the mail is marked as read in ${folder1.name}.
+		</t:steps>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+		<t:test id="adminlogin" required="true" depends="Ping">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraFeatureMarkMailForwardedAsRead">TRUE</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder1.name}" l="1" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder1.id" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter1.name" value="filter_name1${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter1.name}" active="1">
+							<filterTests condition="anyof">
+								<headerTest header="subject" stringComparison="contains"
+									value="${compose.subject3}" />
+							</filterTests>
+							<filterActions>
+								<actionFileInto folderPath="${folder1.name}" />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${account1.name}' />
+						<su>${compose.subject3}</su>
+						<mp ct="text/plain">
+							<content> ${compose.content3} </content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} is:read subject:${compose.subject3}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m" attr="id" set="message1.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>

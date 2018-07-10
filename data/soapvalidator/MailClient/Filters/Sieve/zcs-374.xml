@@ -17,6 +17,8 @@
 	<t:property name="content04" value="content4.${TIME}${COUNTER}" />
 	<t:property name="content05" value="content5.${TIME}${COUNTER}" />
 
+
+
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
 
 	<t:test_case testcaseid="Ping" type="always">
@@ -48,17 +50,6 @@
 			</t:response>
 		</t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-
 		<t:test>
 			<t:request>
 				<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
@@ -89,10 +80,22 @@
 			</t:response>
 		</t:test>
 
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
 	</t:test_case>
 
-<!-- Marking soap to sieve tests deprecated since they are removed from the code. They should be enabled once the code is added back -->
-	<t:test_case testcaseid="ZCS-374_Filter1" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter1" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for new Reject
 			action.
@@ -153,7 +156,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -185,7 +187,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}" />
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -214,7 +215,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-374_Filter2" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter2" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for new Ereject
 			action.
@@ -276,7 +277,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -307,7 +307,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}" />
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -336,7 +335,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-374_Filter3" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter3" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for new "Log"
 			filter action.
@@ -400,12 +399,10 @@
 					attr="level" match="info" />
 			</t:response>
 		</t:test>
-
-
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-374_Filter4" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter4" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for new log and
 			reject filter action.
@@ -480,7 +477,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -512,7 +508,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}" />
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -537,11 +532,9 @@
 					match="${subject03}" emptyset="1" />
 			</t:response>
 		</t:test>
-
-
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-374_Filter5" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter5" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request with Reject,log and
 			tag in one script. Should throw error
@@ -584,14 +577,14 @@
 				</ModifyFilterRulesRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//zimbra:Code" contains="mail.NO_SUCH_TAG" />
+				<t:select path="//zimbra:Code" contains="service.PARSE_ERROR" />
+				<t:select path="//soap:Text" contains="parse error: evaluating Sieve script" />
 			</t:response>
 		</t:test>
 
 	</t:test_case>
 
-
-	<t:test_case testcaseid="ZCS-374_Filter6" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter6" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request with 2 rejects in
 			one script. Should throw error
@@ -642,7 +635,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-374_Filter7" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter7" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request with two Erejects
 			in one script. Should throw error
@@ -694,7 +687,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-374_Filter8" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter8" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for with one Reject
 			and one Ereject in one script. Should throw error
@@ -745,7 +738,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-374_Filter9" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter9" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for new reject and
 			log actions.
@@ -814,7 +807,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -846,7 +838,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}" />
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -875,13 +866,13 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-374_Filter10" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter10" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for new filter
 			actions in Admin namespace
 		</t:objective>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
 
 		<t:test required="true">
 			<t:request>
@@ -957,7 +948,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-374_Filter11" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter11" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for log action with
 			invalid log level.
@@ -1002,7 +993,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}" />
 		<t:test>
 			<t:request>
 				<GetFilterRulesRequest xmlns="urn:zimbraMail">
@@ -1026,8 +1016,7 @@
 	</t:test_case>
 
 
-
-	<t:test_case testcaseid="ZCS-374_Filter12" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter12" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for new Reject
 			action with empty message.
@@ -1076,7 +1065,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="ZCS-374_Filter13" type="deprecated"
+	<t:test_case testcaseid="ZCS-374_Filter13" type="smoke"
 		bugids="ZCS-374">
 		<t:objective>Execute Modify and Get Filter Request for new Ereject
 			action with empty message.
@@ -1128,7 +1117,6 @@
 
 	<t:finally>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">

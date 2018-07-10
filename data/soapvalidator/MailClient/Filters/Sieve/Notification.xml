@@ -15,7 +15,9 @@
 	<t:property name="notify_account5.name" value="notify5.${TIME}.${COUNTER}@${defaultdomain.name}" />	
 	<t:property name="test_account6.name" value="test6.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="notify_account6.name" value="notify6.${TIME}.${COUNTER}@${defaultdomain.name}" />			
-		
+	<t:property name="test_account7.name" value="test7.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="notify_account7.name" value="notify7.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
 	<t:property name="mail_subject_1" value="mail_subject"></t:property>
 	<t:property name="mail_content" value="Hi,\\rYou have got a mail!\\r."></t:property>
 	<t:property name="notifymessage" value="Notification mail."></t:property>
@@ -47,8 +49,11 @@
 	<t:property name="sieve_rule6" value='require ["enotify", "variables"];
 	notify :message "${notifymessage}" "mailto:${notify_account6.name}?Importance=High&#038;X-Priority=1&#038;body=${notifybody}&#038;message-id=&#038;date=";'>
 	</t:property>
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		
+	<t:property name="sieve_rule7" value='require ["enotify", "variables"];
+	notify :message "${notifymessage}" "mailto:${notify_account7.name}?X-HEADER1=value1&#038;x-header2=value2&#038;sUbJeCt=${notifymessage}&#038;body=${notifybody}&#038;";'>
+	</t:property>
+
 	<t:test_case testcaseid="acctSetup1" type="always">
 		<t:objective>create test account</t:objective>
 
@@ -63,18 +68,6 @@
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-
-
-	        <t:test>
-        	        <t:request>
-                	        <GetAccountRequest xmlns="urn:zimbraAdmin">
-                        	        <account by="name">${admin.user}</account>
-                        	</GetAccountRequest>
-	        	</t:request>
-        	        <t:response>
-	                   <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-        	        </t:response>
-	       </t:test>
 
 	    <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
@@ -109,7 +102,7 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 
@@ -122,7 +115,7 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 		<t:test required="true">
@@ -134,7 +127,7 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 		
@@ -147,7 +140,7 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 
@@ -160,7 +153,7 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 
@@ -173,10 +166,23 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
-		</t:test>	
-						
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account7.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_rule7}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -185,7 +191,7 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify1.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>			
 
@@ -197,7 +203,7 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify2.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 		
@@ -209,7 +215,7 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify3.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 		
@@ -221,7 +227,7 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify4.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 		
@@ -233,10 +239,10 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify5.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
-		
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -245,16 +251,25 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify6.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
-		</t:test>												
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${notify_account7.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
 	</t:test_case>
 
 	<t:test_case testcaseid="zcs-862_rule1" type="smoke" bugids="zcs-862">
 		<t:objective>Verify custom message-id field is not present in notification message</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -284,8 +299,6 @@
 					set="Sent_message1.id"></t:select>
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${notify1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -325,9 +338,6 @@
 	
  	<t:test_case testcaseid="zcs-862_rule2" type="smoke" bugids="zcs-862">
 		<t:objective>Verify custom date field is not present in notification message</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -357,8 +367,6 @@
 					set="Sent_message1.id"></t:select>
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${notify2.server}"/>
 
 		<t:test>
 			<t:request>
@@ -398,9 +406,6 @@
 	
 	<t:test_case testcaseid="zcs-862_rule3" type="smoke" bugids="zcs-862">
 		<t:objective>Verify custom message-id and date field are not present in notification message</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -430,8 +435,6 @@
 					set="Sent_message1.id"></t:select>
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${notify3.server}"/>
 
 		<t:test>
 			<t:request>
@@ -472,9 +475,6 @@
 	
 	<t:test_case testcaseid="zcs-862_rule4" type="smoke" bugids="zcs-862">
 		<t:objective>Verify custom message-id and date field which has proper format are not present in notification message</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -504,8 +504,6 @@
 					set="Sent_message1.id"></t:select>
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${notify4.server}"/>
 
 		<t:test>
 			<t:request>
@@ -546,9 +544,6 @@
 	
 	<t:test_case testcaseid="zcs-862_rule5" type="smoke" bugids="zcs-862">
 		<t:objective>Verify custom message-id and date specified through variables are not present in notification message</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -578,8 +573,6 @@
 					set="Sent_message1.id"></t:select>
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${notify5.server}"/>
 
 		<t:test>
 			<t:request>
@@ -620,9 +613,6 @@
 
 	<t:test_case testcaseid="zcs-862_rule6" type="smoke" bugids="zcs-862">
 		<t:objective>Verify blank custom message-id and date field are not present in notification message as specified in the rule</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -652,8 +642,6 @@
 					set="Sent_message1.id"></t:select>
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${notify6.server}"/>
 
 		<t:test>
 			<t:request>
@@ -692,12 +680,88 @@
         </t:resttest>
 	</t:test_case>	
 
+	<t:test_case testcaseid="zcs-282_rule7" type="smoke" bugids="zcs-282">
+		<t:objective>Verify that the header name specified in the "mailto:" parameter
+		  is capitalized at the first letter, and the rest of them are not changed.
+		  (But the standard header name, such as Subject, should be appeared in the
+		  normalized (standard) way; "Subject".)</t:objective>
+		<steps>
+            1. Add sieve_rule7 for the user.
+		    2. Send email to that user. notification is generated and has all the data as per rule7
+		    3. Verify that the name of the header is not changed.
+        </steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="!">
+						<e t="t" a="${test_account7.name}" />
+						<su>${mail_subject_1}</su>
+						<mp ct="text/plain">
+							<content>${mail_content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message1.id"></t:select>
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${notify_account7.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su" match="${notifymessage}" />
+				<t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${notifybody}" />
+				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id" />
+			</t:response>
+		</t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg1.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="X-HEADER1" match="value1" />
+                <t:select attr="X-header2" match="value2" />
+                <t:select attr="Subject" match="${notifymessage}" />
+            </t:restServletResponse>
+        </t:resttest>
+	</t:test_case>
+
     <t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
         
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">

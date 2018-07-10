@@ -1,6 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="account1.name"
         value="user.${TIME}${COUNTER}@${defaultdomain.name}" />
@@ -138,17 +137,6 @@
             </t:response>
         </t:test>
 
-                <t:test>
-                        <t:request>
-                                <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                        <account by="name">${admin.user}</account>
-                                </GetAccountRequest>
-                        </t:request>
-                        <t:response>
-                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                        </t:response>
-               </t:test>
-
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -275,20 +263,6 @@
         <t:objective> Simple variable test
         </t:objective>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
-    <t:test required="true">
-        <t:request>
-            <AuthRequest xmlns="urn:zimbraAdmin">
-                <name>${admin.user}</name>
-                <password>${admin.password}</password>
-            </AuthRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>
-    </t:test>
-
         <t:test id="modifyaccountrequest">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -318,8 +292,6 @@
                     set="Sent_message1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
         <t:test>
             <t:request>
@@ -351,8 +323,6 @@
         <t:objective> Empty variable name test
         </t:objective>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -377,8 +347,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
          <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -402,8 +370,6 @@
                 <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test required="true">
             <t:request>
@@ -435,8 +401,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -467,8 +431,6 @@
         <t:objective> Special character in variable name test
         </t:objective>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -493,8 +455,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-
          <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -518,8 +478,6 @@
                 <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test required="true">
             <t:request>
@@ -551,8 +509,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -583,8 +539,6 @@
         <t:objective> Numbers for variable name i.e. $\{1}
         </t:objective>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -609,8 +563,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-
          <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -634,8 +586,6 @@
                 <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test required="true">
             <t:request>
@@ -667,8 +617,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -698,8 +646,6 @@
         type="smoke" bugids="106350">
         <t:objective> Empty string test
         </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test required="true">
             <t:request>
@@ -743,8 +689,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -775,8 +719,6 @@
         type="smoke" bugids="106350">
         <t:objective> Nested variables test
         </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test required="true">
             <t:request>
@@ -820,8 +762,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account5.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -851,8 +791,6 @@
         type="smoke" bugids="106350">
         <t:objective> Modifiers test
         </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test required="true">
             <t:request>
@@ -895,8 +833,6 @@
                     set="Sent_message1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account6.server}"/>
 
         <t:test>
             <t:request>

@@ -1,0 +1,2946 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account6.name" value="test6.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account7.name" value="test7.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account8.name" value="test8.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account9.name" value="test9.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account10.name" value="test10.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account11.name" value="test11.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account12.name" value="test12.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account13.name" value="test13.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account14.name" value="test14.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account15.name" value="test15.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account16.name" value="test16.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account17.name" value="test17.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account18.name" value="test18.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account19.name" value="test19.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account20.name" value="test20.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="account21.name" value="test21.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+<t:property name="outgoing.name" value="outgoing.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+<t:property name="mail_subject" value="Sieve Mail" />
+<t:property name="msg01.file" value="${testMailRaw.root}/zcs-273/mime1.txt"/>
+<t:property name="msg02.file" value="${testMailRaw.root}/zcs-273/mime2.txt"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping">
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct1_setup_AccountBy" type="always" bugids="62702">
+ <t:objective>create test accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<!-- Remember these values for later -->
+	<t:property name="authToken.admin" value="${authToken}"/>
+
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+	                <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header</a>
+	            </ModifyConfigRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyConfigResponse"/>
+	        </t:response>
+	    </t:test>
+	    	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account4.server"/>
+        </t:response>
+    </t:test>
+    
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account5.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account5.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account5.server" />
+   </t:response>
+  </t:test>
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account6.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account6.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account6.server" />
+   </t:response>
+  </t:test>
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account7.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account7.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account7.server" />
+   </t:response>
+  </t:test>
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account8.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account8.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account8.server" />
+   </t:response>
+  </t:test>
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account9.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account9.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account9.server" />
+   </t:response>
+  </t:test>
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account10.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account10.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account10.server" />
+   </t:response>
+  </t:test>
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account11.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account11.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account11.server" />
+   </t:response>
+  </t:test>
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account12.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account12.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account12.server" />
+   </t:response>
+  </t:test>
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account13.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account13.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account13.server" />
+   </t:response>
+  </t:test>
+  
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account14.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account14.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account14.server" />
+   </t:response>
+  </t:test>
+  
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account15.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account15.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account15.server" />
+   </t:response>
+  </t:test>
+      
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account16.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account16.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account16.server" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account17.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account17.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account17.server" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account18.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account18.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account18.server" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account19.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account19.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account19.server" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account20.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account20.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account20.server" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account21.name}</name>
+     <password>${defaultpassword.value}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account21.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account21.server" />
+   </t:response>
+  </t:test>
+      
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${outgoing.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="outgoing.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="outgoing.server"/>
+        </t:response>
+    </t:test>
+                  
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_before_is" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader with last=true
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account1.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true" offset="1">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test matchType="is" comparator="i;ascii-casemap" >
+								<headerName>X-Sieve-Header1</headerName>
+								<headerValue>Oldval1</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account1.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue1" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg01.file}</filename>
+				<to>${account1.name}</to>
+				<from>${admin.user}</from>
+				<server>${account1.server}</server>
+	            <modify>
+	                <header a="To">${account1.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_after_contains" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin after script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader with last=false
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+            <account by="name">${account2.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="false">
+				              <test matchType="contains">
+								<headerName>X-Sieve-Header1</headerName>
+								<headerValue>Oldval3</headerValue>
+							  </test>				              
+				              <newName>X-New-Sieve-Header2</newName>
+				              <newValue>NewValue2</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+	    		<account by="name">${account2.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header2" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue2" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg01.file}</filename>
+				<to>${account2.name}</to>
+				<from>${admin.user}</from>
+				<server>${account2.server}</server>
+	            <modify>
+	                <header a="To">${account2.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header2" match="NewValue2"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_after1_contains" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin after script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader without last
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+            <account by="name">${account3.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader>
+				              <test matchType="contains" comparator="i;ascii-casemap" >
+								<headerName>X-Sieve-Header1</headerName>
+								<headerValue>Oldval3</headerValue>
+							  </test>				              
+				              <newName>X-New-Sieve-Header2</newName>
+				              <newValue>NewValue2</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+	    		<account by="name">${account3.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header2" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue2" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg01.file}</filename>
+				<to>${account3.name}</to>
+				<from>${admin.user}</from>
+				<server>${account3.server}</server>
+	            <modify>
+	                <header a="To">${account3.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account3.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header2" match="NewValue2"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_after_contains_octet" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin after script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader with last=false and comparator=octet
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+            <account by="name">${account4.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="false">
+				              <test matchType="contains" comparator="i;octet" >
+								<headerName>X-Sieve-Header1</headerName>
+								<headerValue>Oldval3</headerValue>
+							  </test>				              
+				              <newName>X-New-Sieve-Header2</newName>
+				              <newValue>NewValue2</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+	    		<account by="name">${account4.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header2" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue2" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg01.file}</filename>
+				<to>${account4.name}</to>
+				<from>${admin.user}</from>
+				<server>${account4.server}</server>
+	            <modify>
+	                <header a="To">${account4.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account4.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header2" match="NewValue2"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_after_matches" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin after script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader with offset param
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+            <account by="name">${account5.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader offset="3">
+				              <test matchType="matches" comparator="i;ascii-casemap" >
+								<headerName>X-Sieve-Header1</headerName>
+								<headerValue>*</headerValue>
+							  </test>				              
+				              <newName>X-New-Sieve-Header3</newName>
+				              <newValue>NewValue3</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+	    		<account by="name">${account5.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header3" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue3" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg01.file}</filename>
+				<to>${account5.name}</to>
+				<from>${admin.user}</from>
+				<server>${account5.server}</server>
+	            <modify>
+	                <header a="To">${account5.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account5.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header3" match="NewValue3"/>
+				<t:select attr="X-Sieve-Header1" match="Oldval3"/>
+				<t:select attr="X-Sieve-Header1" match="Oldval2"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_before_matches_2" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin after script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader without last parameter
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account6.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader>
+				              <test matchType="matches" comparator="i;ascii-casemap" >
+								<headerName>X-Sieve-Header1</headerName>
+								<headerValue>*</headerValue>
+							  </test>				              
+				              <newValue>NewValue4</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account6.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" emptyset="1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue4" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg01.file}</filename>
+				<to>${account6.name}</to>
+				<from>${admin.user}</from>
+				<server>${account6.server}</server>
+	            <modify>
+	                <header a="To">${account6.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account6.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-Sieve-Header1" count="3" match="NewValue4"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_before_value_gt" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account7.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader>
+				              <test valueComparator="true" relationalComparator="gt" comparator="i;ascii-numeric" >
+								<headerName>X-Numeric-Header</headerName>
+								<headerValue>1</headerValue>
+							  </test>				              
+				              <newValue>NewValue5</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account7.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" emptyset="1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue5" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account7.name}</to>
+				<from>${admin.user}</from>
+				<server>${account7.server}</server>
+	            <modify>
+	                <header a="To">${account7.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account7.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-Numeric-Header" match="NewValue5"/>
+				<t:select attr="X-Numeric-Header" match="2" emptyset="1"/>
+				<t:select attr="X-Numeric-Header" match="3" emptyset="1"/>
+				<t:select attr="X-Numeric-Header" match="4" emptyset="1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_after_value_ge" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin after script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader with last=true and offset param
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+            <account by="name">${account8.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true" offset="1">
+				              <test valueComparator="true" relationalComparator="ge" comparator="i;ascii-numeric" >
+								<headerName>X-Numeric-Header</headerName>
+								<headerValue>4</headerValue>
+							  </test>
+							  <newName>X-New-Header</newName>				              
+				              <newValue>NewValue6</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+	    		<account by="name">${account8.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Header" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue6" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account8.name}</to>
+				<from>${admin.user}</from>
+				<server>${account8.server}</server>
+	            <modify>
+	                <header a="To">${account8.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account8.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Header" match="NewValue6"/>
+				<t:select attr="X-Numeric-Header" match="2"/>
+				<t:select attr="X-Numeric-Header" match="3"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_after_value_lt" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin after script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader with last=true and offset param and countComparator is set false
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+            <account by="name">${account9.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true" offset="2">
+				              <test valueComparator="true" countComparator="false" relationalComparator="lt" comparator="i;ascii-numeric" >
+								<headerName>X-Numeric-Header</headerName>
+								<headerValue>4</headerValue>
+							  </test>
+							  <newName>X-New-Header</newName>				              
+				              <newValue>NewValue7</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="after">
+	    		<account by="name">${account9.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Header" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue7" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account9.name}</to>
+				<from>${admin.user}</from>
+				<server>${account9.server}</server>
+	            <modify>
+	                <header a="To">${account9.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account9.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Header" match="NewValue7"/>
+				<t:select attr="X-Numeric-Header" match="2"/>
+				<t:select attr="X-Numeric-Header" match="4"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_before_count_le" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader with last=false and offset param
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account10.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="false" offset="2">
+				              <test countComparator="true" relationalComparator="le" comparator="i;ascii-numeric" >
+								<headerName>X-Test-Header</headerName>
+								<headerValue>5</headerValue>
+							  </test>
+							  <newName>X-New-Header</newName>				              
+				              <newValue>NewValue8</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account10.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Header" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue8" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account10.name}</to>
+				<from>${admin.user}</from>
+				<server>${account10.server}</server>
+	            <modify>
+	                <header a="To">${account10.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account10.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Header" match="NewValue8"/>
+				<t:select attr="X-Test-Header" match="test1"/>
+				<t:select attr="X-Test-Header" match="test3"/>
+				<t:select attr="X-Test-Header" match="test4"/>
+				<t:select attr="X-Test-Header" match="test2" emptyset="1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_after_count_eq" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader with last=true and offset param
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account11.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true" offset="2">
+				              <test countComparator="true" relationalComparator="eq" comparator="i;ascii-numeric" >
+								<headerName>X-Test-Header</headerName>
+								<headerValue>4</headerValue>
+							  </test>
+							  <newName>X-New-Header</newName>				              
+				              <newValue>NewValue9</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account11.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Header" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue9" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account11.name}</to>
+				<from>${admin.user}</from>
+				<server>${account11.server}</server>
+	            <modify>
+	                <header a="To">${account11.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account11.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Header" match="NewValue9"/>
+				<t:select attr="X-Test-Header" match="test1"/>
+				<t:select attr="X-Test-Header" match="test2"/>
+				<t:select attr="X-Test-Header" match="test4"/>
+				<t:select attr="X-Test-Header" match="test3" emptyset="1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_after_count_ne" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script</t:objective>
+    <t:steps>
+    	1. Create after rule for admin for replaceheader with last=false and offset param
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account12.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="false" offset="1">
+				              <test countComparator="true" relationalComparator="ne" comparator="i;ascii-numeric" >
+								<headerName>X-Test-Header</headerName>
+								<headerValue>5</headerValue>
+							  </test>
+				              <newValue>NewValue10</newValue>
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account12.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" emptyset="1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue10" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account12.name}</to>
+				<from>${admin.user}</from>
+				<server>${account12.server}</server>
+	            <modify>
+	                <header a="To">${account12.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account12.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">					
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-Test-Header" match="NewValue10"/>
+				<t:select attr="X-Test-Header" match="test2"/>
+				<t:select attr="X-Test-Header" match="test3"/>
+				<t:select attr="X-Test-Header" match="test4"/>
+				<t:select attr="X-Test-Header" match="test1" emptyset="1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_before_is_Outgoing" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before outgoing script</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader with last=true and offset param for Outgoing
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${outgoing.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true" offset="1">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test matchType="is" comparator="i;ascii-casemap" >
+								<headerName>X-Test-Header</headerName>
+								<headerValue>Value1</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyOutgoingFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyOutgoingFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${outgoing.name}</account>
+	    	</GetOutgoingFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue1" />
+	   	</t:response>
+	  </t:test>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${outgoing.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<header name="X-Test-Header">Value1</header>
+						<e t="t" a='${account13.name}' />
+						<su>${mail_subject}</su>
+						<mp ct="text/plain">
+							<content>Good Morning</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="msg1.id" />
+			</t:response>
+		</t:test>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account13.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_before_contains_Outgoing" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before outgoing script</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader with last=false for Outgoing
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${outgoing.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="false">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test matchType="contains" comparator="i;ascii-casemap" >
+								<headerName>X-Test-Header</headerName>
+								<headerValue>Value1</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyOutgoingFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyOutgoingFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${outgoing.name}</account>
+	    	</GetOutgoingFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue1" />
+	   	</t:response>
+	  </t:test>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${outgoing.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<header name="X-Test-Header">Value1</header>
+						<e t="t" a='${account14.name}' />
+						<su>${mail_subject}</su>
+						<mp ct="text/plain">
+							<content>Good Morning</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="msg1.id" />
+			</t:response>
+		</t:test>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account14.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_DefaultTest" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader.
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+    	4. Default matchtype should be set to is and comparator to casemap
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account15.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true" offset="1">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test>
+								<headerName>X-Sieve-Header3</headerName>
+								<headerValue>Oldval5</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account15.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue1" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg01.file}</filename>
+				<to>${account15.name}</to>
+				<from>${admin.user}</from>
+				<server>${account15.server}</server>
+	            <modify>
+	                <header a="To">${account15.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account15.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_casemap" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script using casemap comparator with value comparison=true</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader.
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+    	4. Default matchtype should be set to is
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account16.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true" offset="1">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test valueComparator="true" relationalComparator="ge" comparator="i;ascii-casemap">
+								<headerName>X-Alpha-Header</headerName>
+								<headerValue>A</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account16.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue1" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account16.name}</to>
+				<from>${admin.user}</from>
+				<server>${account16.server}</server>
+	            <modify>
+	                <header a="To">${account16.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account16.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_octet" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script using octet comparator with value comparison=true</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader and comparator to octet
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+    	4. Default matchtype should be set to is and comparator to casemap
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account17.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader>
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test valueComparator="true" relationalComparator="eq" comparator="i;octet">
+								<headerName>X-Alpha-Header</headerName>
+								<headerValue>d</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account17.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue1" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account17.name}</to>
+				<from>${admin.user}</from>
+				<server>${account17.server}</server>
+	            <modify>
+	                <header a="To">${account17.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account17.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="NewValue1" emptyset="1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_multiheader_value" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script for multiple value header</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader.
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account18.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="false">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test>
+								<headerName>X-MultiVal-Header</headerName>
+								<headerValue>Val1</headerValue>
+								<headerValue>Val2</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account18.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" match="NewValue1" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account18.name}</to>
+				<from>${admin.user}</from>
+				<server>${account18.server}</server>
+	            <modify>
+	                <header a="To">${account18.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account18.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_onlyname" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script and replace only name of the header</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader.
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name only
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account19.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader>
+				              <newName>X-New-Sieve-Header1</newName>
+				              <test matchType="is" comparator="i;ascii-casemap">
+								<headerName>X-Sieve-Header2</headerName>
+								<headerValue>Oldval4</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account19.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" emptyset="1" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg01.file}</filename>
+				<to>${account19.name}</to>
+				<from>${admin.user}</from>
+				<server>${account19.server}</server>
+	            <modify>
+	                <header a="To">${account19.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account19.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="Oldval4"/>
+				<t:select attr="X-Sieve-Header2" match="Oldval4" emptyset="1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_onlyNewName" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script to replace only the name of the header for multiple value header</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader.
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account20.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="false">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue></newValue>
+				              <test matchType="is" comparator="i;ascii-casemap">
+								<headerName>X-MultiVal-Header</headerName>
+								<headerValue>Val1</headerValue>
+								<headerValue>Val2</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account20.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/mail:filterActions/mail:actionReplaceheader" attr="newValue" emptyset="1" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg02.file}</filename>
+				<to>${account20.name}</to>
+				<from>${admin.user}</from>
+				<server>${account20.server}</server>
+	            <modify>
+	                <header a="To">${account20.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account20.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="Val1"/>
+				<t:select attr="X-New-Sieve-Header1" match="Val2"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_before_json" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for admin before script</t:objective>
+    <t:steps>
+    	1. Create before rule for admin for replaceheader and verify json response
+    	2. Send an email to user
+    	3. Login to user and verify header is replaced with new header name and new value
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+	    <t:requestContext>
+	    	<authToken>${authToken}</authToken>
+            <format type="js"/>
+        </t:requestContext>       
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account21.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true" offset="1">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test matchType="is" comparator="i;ascii-casemap" >
+								<headerName>X-Sieve-Header1</headerName>
+								<headerValue>Oldval1</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyFilterRulesResponse"/>
+	        </t:response>
+    </t:test>
+    
+	  <t:test>
+	    <t:requestContext>
+	    	<authToken>${authToken}</authToken>
+            <format type="js"/>
+        </t:requestContext>   	  
+	   	<t:request>
+	    	<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+	    		<account by="name">${account21.name}</account>
+	    	</GetFilterRulesRequest>
+	   	</t:request>
+	   	<t:response>
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/admin:filterActions/admin:actionReplaceheader/admin:newName" match="X-New-Sieve-Header1" />
+	    	<t:select path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule/admin:filterActions/admin:actionReplaceheader/admin:newValue" match="NewValue1" />
+	   	</t:response>
+	  </t:test>
+
+	    <t:mailinjecttest >
+	        <t:lmtpInjectRequest>
+	            <filename>${msg01.file}</filename>
+				<to>${account21.name}</to>
+				<from>${admin.user}</from>
+				<server>${account21.server}</server>
+	            <modify>
+	                <header a="To">${account21.name}</header>
+	                <header a="From">${admin.user}</header>
+	                <header a="Subject">${mail_subject}</header>
+	            </modify>
+	        </t:lmtpInjectRequest>
+	    </t:mailinjecttest>
+		
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+	          	<account by="name">${account21.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+			</t:request>
+			<t:response>		   
+				 <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	     <t:test>
+				<t:request>
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:${mail_subject}</query>
+					</SearchRequest>
+				</t:request>
+		        <t:response>			
+					<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}"/>
+					<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+				</t:response>
+	    </t:test>
+	
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Sieve-Header1" match="NewValue1"/>
+			</t:restServletResponse>
+		</t:resttest>				    
+</t:test_case>
+
+<t:test_case testcaseid="ReplaceHeader_negative_tests" type="smoke" bugids="zcs-273">
+    <t:objective>Replaceheader rule for error codes</t:objective>
+    <t:steps>
+    	1. Create rule for admin for replaceheader for invalid values/parameters and verify correct error is returned.
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account17.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader>
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test matchType="is" countComparator="true" valueComparator="true" relationalComparator="ge" comparator="i;ascii-casemap">
+								<headerName>X-MultiVal-Header</headerName>
+								<headerValue>Val1</headerValue>
+								<headerValue>Val2</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//zimbra:Code" match="service.PARSE_ERROR"/>
+	            <t:select path="//soap:Text" match="parse error: EditheaderTest : :count and :value, both can not be received"/>
+	        </t:response>
+    </t:test>
+ 
+     <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account17.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader>
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test matchType="invalid" comparator="invalid">
+								<headerName>X-MultiVal-Header</headerName>
+								<headerValue>Val1</headerValue>
+								<headerValue>Val2</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//zimbra:Code" match="service.PARSE_ERROR"/>
+	            <t:select path="//soap:Text" match="parse error: EditheaderTest : Invalid comparator type provided: invalid"/>
+	        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account17.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="false">
+				              <newName></newName>
+				              <newValue></newValue>
+				              <test matchType="is" comparator="i;ascii-casemap">
+								<headerName>X-MultiVal-Header</headerName>
+								<headerValue>Val1</headerValue>
+								<headerValue>Val2</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//zimbra:Code" match="service.PARSE_ERROR"/>
+	            <t:select path="//soap:Text" match="parse error: :newname or :newvalue must be provided with replaceHeader"/>
+	        </t:response>
+    </t:test>
+
+     <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account17.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader>
+				              <newName></newName>
+				              <newValue></newValue>
+				              <test matchType="is" comparator="i;ascii-casemap">
+								<headerName>X-Test-Heade</headerName>
+								<headerValue>test1</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//zimbra:Code" match="service.PARSE_ERROR"/>
+	            <t:select path="//soap:Text" match="parse error: :newname or :newvalue must be provided with replaceHeader"/>
+	        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account17.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader>
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test matchType="is" comparator="i;ascii-casemap">
+								<headerName></headerName>
+								<headerValue>Val1</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//zimbra:Code" match="service.PARSE_ERROR"/>
+	            <t:select path="//soap:Text" match="parse error: EditheaderTest : Missing headerName"/>
+	        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account17.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test matchType="is" comparator="i;ascii-casemap">
+								<headerName>X-Sieve-Header1</headerName>
+								<headerValue>Oldval1</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//zimbra:Code" match="service.PARSE_ERROR"/>
+	            <t:select path="//soap:Text" match="parse error: :index &lt;offset&gt; must be provided with :last"/>
+	        </t:response>
+    </t:test>
+    
+    <t:test >       
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+            <account by="name">${account21.name}</account>
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                              <filterActions xmlns="urn:zimbraMail">
+				              <actionReplaceheader last="true" offset="1">
+				              <newName>X-New-Sieve-Header1</newName>
+				              <newValue>NewValue1</newValue>
+				              <test countComparator="true" relationalComparator="invalid" comparator="i;ascii-numeric" >
+								<headerName>X-Sieve-Header1</headerName>
+								<headerValue>Oldval1</headerValue>
+							  </test>					              
+				            </actionReplaceheader>
+				          </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+	        <t:response>
+	            <t:select path="//zimbra:Code" match="service.PARSE_ERROR"/>
+	            <t:select path="//soap:Text" match='parse error: EditheaderTest : Invalid relationalComparator provided : "invalid"'/>
+	        </t:response>
+    </t:test>
+                            	    
+</t:test_case>
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyConfigRequest xmlns="urn:zimbraAdmin">
+					<a n="zimbraCustomMimeHeaderNameAllowed"></a>
+				</ModifyConfigRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyConfigResponse" />
+			</t:response>
+		</t:test>
+		
+    </t:finally>
+</t:tests>

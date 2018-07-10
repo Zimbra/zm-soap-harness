@@ -3108,7 +3108,6 @@ TODO
 		</t:request>
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account7.id"/>
-			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account7.server"/>
 		</t:response>
 	</t:test>  
     
@@ -3121,7 +3120,6 @@ TODO
 		</t:request>
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account8.id"/>
-			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account8.server"/>
 		</t:response>
 	</t:test>  
     
@@ -3134,7 +3132,6 @@ TODO
 		</t:request>
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account9.id"/>
-			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account9.server"/>
 		</t:response>
 	</t:test>  
     
@@ -3147,11 +3144,9 @@ TODO
 		</t:request>
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account10.id"/>
-			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account10.server"/>
 		</t:response>
 	</t:test>  
 
-	<t:property name="server.zimbraAccount" value="${test_account7.server}"/>
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -3164,7 +3159,6 @@ TODO
 		</t:response>
 	</t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account8.server}"/>
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -3177,7 +3171,7 @@ TODO
 		</t:response>
 	</t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account9.server}"/>
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:test required="true" >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -3190,7 +3184,6 @@ TODO
 		</t:response>
 	</t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account10.server}"/>
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAccount">
@@ -3203,7 +3196,6 @@ TODO
 		</t:response>
 	</t:test>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:test >
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">

@@ -14,9 +14,8 @@
 	<t:property name="h1" value="$\{h1}" />
 	<t:property name="h2" value="$\{h2}" />
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
 	<t:property name="sieve_test1"
-		value='require ["log","fileinto","editheader"];	
+		value='require ["editheader", "variables"];
 		addheader "X-Header" "val1test";
 		if allof address :matches "from" "admin@${defaultdomain.name}" 
 		{ 
@@ -26,7 +25,7 @@
 
 
 	<t:property name="sieve_test2"
-		value='require ["log","fileinto","editheader"];	
+		value='require ["editheader", "variables"];
 		set :upper "h1" "X.co,m";
 		set :upperfirst :lower "h2" "tEst-sieve";
 		addheader "${h1}" "${h1}";
@@ -39,7 +38,7 @@
 ' />
 
 	<t:property name="sieve_test3"
-		value='require ["log","fileinto","editheader"];	
+		value='require ["editheader", "variables"];
 		addheader "X-Header" "val1test";
 		if allof address :matches "from" "admin@${defaultdomain.name}" 
 		{ 
@@ -48,8 +47,7 @@
 		 
 ' />
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-	<t:test_case testcaseid="AcctSetup1_zcs1238" type="deprecated"
+	<t:test_case testcaseid="AcctSetup1_zcs1238" type="always"
 		bugids="zcs1238">
 		<t:objective> Create test account and login to first account
 		</t:objective>
@@ -66,6 +64,30 @@
 			</t:response>
 		</t:test>
 
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -86,7 +108,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-1238_Filter1" type="deprecated"
+	<t:test_case testcaseid="ZCS-1238_Filter1" type="smoke"
 		bugids="ZCS-1238">
 		<t:objective>ReplaceHeader command should match variable within the
 			new header name
@@ -113,7 +135,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test1}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_test1}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -176,7 +198,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-1238_Filter2" type="deprecated"
+	<t:test_case testcaseid="ZCS-1238_Filter2" type="smoke"
 		bugids="ZCS-1238">
 		<t:objective>ReplaceHeader command should match variable within the
 			new header name
@@ -203,7 +225,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test2}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_test2}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -267,7 +289,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-1238_Filter3" type="deprecated"
+	<t:test_case testcaseid="ZCS-1238_Filter3" type="smoke"
 		bugids="ZCS-1238">
 		<t:objective>ReplaceHeader command should match variable within the
 			new header name
@@ -294,7 +316,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test3}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_test3}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -357,4 +379,32 @@
 
 	</t:test_case>
 
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>
 </t:tests>

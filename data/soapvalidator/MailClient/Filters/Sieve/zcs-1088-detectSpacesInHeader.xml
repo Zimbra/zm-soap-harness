@@ -196,8 +196,7 @@ log "Replace header 8 done";' />
 
  </t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
- <t:test_case testcaseid="acctSetup1" type="deprecated">
+ <t:test_case testcaseid="acctSetup1" type="smoke">
   <t:objective>create test account</t:objective>
 
   <t:test required="true">
@@ -229,6 +228,7 @@ log "Replace header 8 done";' />
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cosid}</id>
 	                <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
@@ -725,7 +725,7 @@ log "Replace header 8 done";' />
  </t:test_case>
 
 
- <t:test_case testcaseid="zcs1088_1" type="deprecated" bugids="bugZCS1008_1">
+ <t:test_case testcaseid="zcs1088_1" type="smoke" bugids="bugZCS1008_1">
   <t:objective>Verify that header with space in name is not added
   </t:objective>
   <steps>
@@ -752,7 +752,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account2.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule1}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -827,7 +827,7 @@ log "Replace header 8 done";' />
  </t:test_case>
 
 
- <t:test_case testcaseid="zcs1088_2" type="deprecated" bugids="bugZCS1008_2">
+ <t:test_case testcaseid="zcs1088_2" type="smoke" bugids="bugZCS1008_2">
   <t:objective>Verify that header with space in name is not added
   </t:objective>
   <steps>
@@ -855,7 +855,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account1.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule2}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -929,7 +929,7 @@ log "Replace header 8 done";' />
   </t:resttest>
  </t:test_case>
 
- <t:test_case testcaseid="zcs1088_3" type="deprecated" bugids="bugZCS1008_3">
+ <t:test_case testcaseid="zcs1088_3" type="smoke" bugids="bugZCS1008_3">
   <t:objective>Verify that header with space in name is not added
   </t:objective>
   <steps>
@@ -955,7 +955,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account1.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule3}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1029,7 +1029,7 @@ log "Replace header 8 done";' />
   </t:resttest>
  </t:test_case>
 
- <t:test_case testcaseid="zcs1088_4" type="deprecated" bugids="zcs-1088_4">
+ <t:test_case testcaseid="zcs1088_4" type="smoke" bugids="zcs-1088_4">
   <t:objective>Verify that header with space in name is not added
   </t:objective>
   <steps>
@@ -1056,7 +1056,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account1.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule4}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1130,7 +1130,7 @@ log "Replace header 8 done";' />
   </t:resttest>
  </t:test_case>
 
- <t:test_case testcaseid="bugZCS1008_5" type="deprecated" bugids="bugZCS1008_5">
+ <t:test_case testcaseid="bugZCS1008_5" type="smoke" bugids="bugZCS1008_5">
   <t:objective>Add a sieve rule to delete custom header with space in
    name and verify the
    mime via rest servlet
@@ -1152,7 +1152,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account2.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_del_1}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_del_1}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1224,7 +1224,7 @@ log "Replace header 8 done";' />
   </t:test>
  </t:test_case>
 
- <t:test_case testcaseid="bugZCS1008_6" type="deprecated" bugids="bugZCS1008_6">
+ <t:test_case testcaseid="bugZCS1008_6" type="smoke" bugids="bugZCS1008_6">
   <t:objective>Add a sieve rule to delete custom header with space in
    name and verify the
    mime via rest servlet
@@ -1246,7 +1246,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account3.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_del_2}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_del_2}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1305,7 +1305,7 @@ log "Replace header 8 done";' />
 
  </t:test_case>
 
- <t:test_case testcaseid="bugZCS1008_7" type="deprecated" bugids="bugZCS1008_7">
+ <t:test_case testcaseid="bugZCS1008_7" type="smoke" bugids="bugZCS1008_7">
   <t:objective>Add a sieve rule to delete custom header with space in
    name and verify the
    mime via rest servlet
@@ -1327,7 +1327,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account4.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_del_3}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_del_3}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1386,7 +1386,7 @@ log "Replace header 8 done";' />
 
  </t:test_case>
 
- <t:test_case testcaseid="bugZCS1008_8" type="deprecated" bugids="bugZCS1008_8">
+ <t:test_case testcaseid="bugZCS1008_8" type="smoke" bugids="bugZCS1008_8">
   <t:objective>Add a sieve rule to delete custom header with space in
    name and verify the
    mime via rest servlet
@@ -1408,7 +1408,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account5.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_del_4}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_del_4}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1467,7 +1467,7 @@ log "Replace header 8 done";' />
 
  </t:test_case>
 
- <t:test_case testcaseid="bugZCS1008_9" type="deprecated" bugids="bugZCS1008_9">
+ <t:test_case testcaseid="bugZCS1008_9" type="smoke" bugids="bugZCS1008_9">
   <t:objective>Add a sieve rule to replace custom header with space in
    name and verify the
    mime via rest servlet
@@ -1489,7 +1489,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account6.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_edit_1}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_edit_1}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1549,7 +1549,7 @@ log "Replace header 8 done";' />
 
  </t:test_case>
 
- <t:test_case testcaseid="bugZCS1008_10" type="deprecated"
+ <t:test_case testcaseid="bugZCS1008_10" type="smoke"
   bugids="bugZCS1008_10">
   <t:objective>Add a sieve rule to replace custom header with space in
    name and verify the
@@ -1572,7 +1572,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account6.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_edit_2}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_edit_2}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1632,7 +1632,7 @@ log "Replace header 8 done";' />
 
  </t:test_case>
 
- <t:test_case testcaseid="bugZCS1008_11" type="deprecated"
+ <t:test_case testcaseid="bugZCS1008_11" type="smoke"
   bugids="bugZCS1008_11">
   <t:objective>Add a sieve rule to replace custom header with space in
    name and verify the
@@ -1655,7 +1655,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account6.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_edit_3}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_edit_3}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1715,7 +1715,7 @@ log "Replace header 8 done";' />
 
  </t:test_case>
 
- <t:test_case testcaseid="bugZCS1008_12" type="deprecated"
+ <t:test_case testcaseid="bugZCS1008_12" type="smoke"
   bugids="bugZCS1008_12">
   <t:objective>Add a sieve rule to replace custom header with space in
    name and verify the
@@ -1738,7 +1738,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account9.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_edit_4}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_edit_4}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1799,7 +1799,7 @@ log "Replace header 8 done";' />
  </t:test_case>
 
 
- <t:test_case testcaseid="bugZCS1008_13" type="deprecated"
+ <t:test_case testcaseid="bugZCS1008_13" type="smoke"
   bugids="bugZCS1008_13">
   <t:objective>Add a sieve rule to replace custom header with space in
    name and verify the
@@ -1822,7 +1822,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account10.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_edit_5}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_edit_5}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1883,7 +1883,7 @@ log "Replace header 8 done";' />
  </t:test_case>
 
 
- <t:test_case testcaseid="bugZCS1008_14" type="deprecated"
+ <t:test_case testcaseid="bugZCS1008_14" type="smoke"
   bugids="bugZCS1008_14">
   <t:objective>Add a sieve rule to replace custom header with space in
    name and verify the
@@ -1906,7 +1906,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account11.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_edit_6}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_edit_6}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -1968,7 +1968,7 @@ log "Replace header 8 done";' />
 
 
 
- <t:test_case testcaseid="bugZCS1008_15" type="deprecated"
+ <t:test_case testcaseid="bugZCS1008_15" type="smoke"
   bugids="bugZCS1008_15">
   <t:objective>Add a sieve rule to replace custom header with space in
    name and verify the
@@ -1991,7 +1991,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account12.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_edit_7}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_edit_7}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -2052,7 +2052,7 @@ log "Replace header 8 done";' />
  </t:test_case>
 
 
- <t:test_case testcaseid="bugZCS1008_16" type="deprecated"
+ <t:test_case testcaseid="bugZCS1008_16" type="smoke"
   bugids="bugZCS1008_16">
   <t:objective>Add a sieve rule to replace custom header with space in
    name and verify the
@@ -2075,7 +2075,7 @@ log "Replace header 8 done";' />
    <t:request>
     <ModifyAccountRequest xmlns="urn:zimbraAdmin">
      <id>${test_account13.id}</id>
-     <a n="zimbraMailSieveScript">${sieve_rule_edit_8}</a>
+     <a n="zimbraAdminSieveScriptBefore">${sieve_rule_edit_8}</a>
     </ModifyAccountRequest>
    </t:request>
    <t:response>
@@ -2135,7 +2135,7 @@ log "Replace header 8 done";' />
 
  </t:test_case>
 
- <t:test_case testcaseid="ZCS-1088_rule16" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule16" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the addheader should error out during the
    validation, and none of header is added.
@@ -2263,7 +2263,7 @@ tag "${label16}";
 
 
  <t:property name="msg17.file" value="${testMailRaw.root}/zcs-1088/mime17.txt" />
- <t:test_case testcaseid="ZCS-1088_rule17" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule17" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the delete should error out during the
    validation, and none of header is deleted.
@@ -2383,7 +2383,7 @@ tag "${label17}";
 
 
  <t:property name="msg18.file" value="${testMailRaw.root}/zcs-1088/mime18.txt" />
- <t:test_case testcaseid="ZCS-1088_rule18" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule18" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the replaceheader should error out during the
    validation, and none of header is replaced.
@@ -2507,7 +2507,7 @@ tag "${label18}";
 
 
  <t:property name="msg19.file" value="${testMailRaw.root}/zcs-1088/mime19.txt" />
- <t:test_case testcaseid="ZCS-1088_rule19" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule19" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the replaceheader should error out during the
    validation, and none of header is replaced.
@@ -2629,7 +2629,7 @@ tag "${label19}";
 
 
 
- <t:test_case testcaseid="ZCS-1088_rule20" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule20" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the 'notify' should error out during the
    validation, and none of notification message is sent.
@@ -2773,7 +2773,7 @@ tag "${label20}";
 
 
 
- <t:test_case testcaseid="ZCS-1088_rule21" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule21" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the 'notify' should error out during the
    validation, and none of notification message is sent.
@@ -2917,7 +2917,7 @@ tag "${label21}";
 
 
 
- <t:test_case testcaseid="ZCS-1088_rule22" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule22" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the 'notify' should error out during the
    validation, and none of notification message is sent.
@@ -3060,7 +3060,7 @@ tag "${label22}";
  </t:test_case>
 
 
- <t:test_case testcaseid="ZCS-1088_rule23" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule23" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the address test should error out during the
    validation
@@ -3173,7 +3173,7 @@ tag "${label23}";
  </t:test_case>
 
 
- <t:test_case testcaseid="ZCS-1088_rule24" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule24" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the address test should error out during the
    validation
@@ -3286,7 +3286,7 @@ tag "${label24}";
 
 
 
- <t:test_case testcaseid="ZCS-1088_rule25" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule25" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the address test should error out during the
    validation
@@ -3400,7 +3400,7 @@ tag "${label25}";
 
 
 
- <t:test_case testcaseid="ZCS-1088_rule26" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule26" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the header test should error out during the
    validation
@@ -3513,7 +3513,7 @@ tag "${label26}";
 
 
 
- <t:test_case testcaseid="ZCS-1088_rule27" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule27" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the header test should error out during the
    validation
@@ -3626,7 +3626,7 @@ tag "${label27}";
 
 
 
- <t:test_case testcaseid="ZCS-1088_rule28" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule28" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the header test should error out during the
    validation
@@ -3739,7 +3739,7 @@ tag "${label28}";
 
 
 
- <t:test_case testcaseid="ZCS-1088_rule29" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule29" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the header test should error out during the
    validation
@@ -3855,7 +3855,7 @@ tag "${label29}";
 
 
 
- <t:test_case testcaseid="ZCS-1088_rule30" type="deprecated"
+ <t:test_case testcaseid="ZCS-1088_rule30" type="smoke"
   bugids="ZCS-1088">
   <t:objective>Verify that the addheader should error out during the
    validation, and none of header is added.
@@ -3978,7 +3978,7 @@ tag "${label30}";
   </t:resttest>
  </t:test_case>
 
-<!-- This block should be enabled once the above testcases are enabled
+
  <t:finally>
   <t:test required="false">
    <t:request>
@@ -4009,6 +4009,7 @@ tag "${label30}";
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cosid}</id>
 	                <a n="zimbraSieveNotifyActionRFCCompliant">FALSE</a>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
@@ -4016,5 +4017,5 @@ tag "${label30}";
 	        </t:response>
 	    </t:test>
 	    
- </t:finally> -->
+ </t:finally> 
 </t:tests>

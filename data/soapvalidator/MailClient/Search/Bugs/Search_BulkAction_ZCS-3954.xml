@@ -1,0 +1,726 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="test_account1.name" value="test1_${TIME}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	<t:property name="test_account2.name" value="test2_${TIME}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="test123" />
+	<t:property name="message1.subject" value="Subject1" />
+	<t:property name="message1.content" value=" content of the Message 1" />
+	<t:property name="message2.subject" value="Subject2" />
+	<t:property name="message2.content" value=" content of the Message 2" />
+	<t:property name="message3.subject" value="Subject3" />
+	<t:property name="message3.content" value=" content of the Message 3" />
+	<t:property name="message4.subject" value="Subject4" />
+	<t:property name="message4.content" value=" content of the Message 4" />
+	<t:property name="message5.subject" value="Subject5" />
+	<t:property name="message5.content" value=" content of the Message 5" />
+	<t:property name="message6.subject" value="Subject6" />
+	<t:property name="message6.content" value=" content of the Message 6" />
+	<t:property name="message7.subject" value="Subject7" />
+	<t:property name="message7.content" value=" content of the Message 7" />
+	<t:property name="folder.name" value="Test_Folder" />
+	<t:property name="folder1.name" value="Nested_Folder" />
+
+	
+	<t:test_case testcaseid="ping" type="smoke">
+		<t:objective>basic system check	</t:objective>
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	
+	<t:test_case testcaseid="acct_setup" type="always">
+	
+		<t:objective>Create Test Accounts</t:objective>
+		
+		<t:test id="admin_login" required="true" depends="ping">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="create_test_account1" required="false" depends="admin_login">
+
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+					<a n="zimbraMailHost">${server.zimbraAdmin}</a>
+					<a n="zimbraMailStatus">enabled</a>
+					<a n="zimbraPasswordMinAge">7</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="server.zimbraAdmin" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_test_account2" required="false" depends="admin_login">
+
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+					<a n="zimbraMailHost">${server.zimbraAdmin}</a>
+					<a n="zimbraMailStatus">enabled</a>
+					<a n="zimbraPasswordMinAge">7</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct.server" />
+			</t:response>
+		</t:test>
+		
+		<t:property name="server.zimbraAccount" value="${test_acct.server}" />
+
+	</t:test_case>
+	
+	<t:test_case testcaseid = "send_testMessages" type = "always">
+	
+		<t:objective> Send test messages </t:objective>
+		
+		<t:test id = "auth_admin" required = "true">
+			<t:request>
+				<AuthRequest xmlns = "urn:zimbraAccount">
+					<account by = "name">${admin.user}</account>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Send_mail1">
+			<t:request>
+				<SendMsgRequest xmlns = "urn:zimbraMail">
+					<m>
+						<e t = "t" a = "${test_account1.name}" />
+						<su>${message1.subject}</su>
+						<mp ct = "text/plain">
+							<content>${message1.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id = "Send_mail2">
+			<t:request>
+				<SendMsgRequest xmlns = "urn:zimbraMail">
+					<m>
+						<e t = "t" a = "${test_account1.name}" />
+						<su>${message2.subject}</su>
+						<mp ct = "text/plain">
+							<content>${message2.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "message2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id = "Send_mail3">
+		
+			<t:request>
+				<SendMsgRequest xmlns = "urn:zimbraMail">
+					<m>
+						<e t = "t" a = "${test_account1.name}" />
+						<su>${message3.subject}</su>
+						<mp ct = "text/plain">
+							<content>${message3.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" />
+			</t:response>
+		</t:test>
+
+		<t:test id = "Send_mail6">
+		
+			<t:request>
+				<SendMsgRequest xmlns = "urn:zimbraMail">
+					<m>
+						<e t = "t" a = "${test_account2.name}" />
+						<su>${message6.subject}</su>
+						<mp ct = "text/plain">
+							<content>${message6.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" />
+			</t:response>
+		</t:test>
+
+		<t:test id = "Send_mail7">
+		
+			<t:request>
+				<SendMsgRequest xmlns = "urn:zimbraMail">
+					<m>
+						<e t = "t" a = "${test_account2.name}" />
+						<su>${message7.subject}</su>
+						<mp ct = "text/plain">
+							<content>${message7.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" />
+			</t:response>
+		</t:test>		
+		
+		<t:test id = "auth_testAccount2" required = "true">
+			<t:request>
+				<AuthRequest xmlns = "urn:zimbraAccount">
+					<account by = "name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Send_mail4">
+			<t:request>
+				<SendMsgRequest xmlns = "urn:zimbraMail">
+					<m>
+						<e t = "t" a = "${test_account1.name}" />
+						<su>${message4.subject}</su>
+						<mp ct = "text/plain">
+							<content>${message4.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" />
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Send_mail5">
+			<t:request>
+				<SendMsgRequest xmlns = "urn:zimbraMail">
+					<m>
+						<e t = "t" a = "${test_account1.name}" />
+						<su>${message5.subject}</su>
+						<mp ct = "text/plain">
+							<content>${message5.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:SendMsgResponse/mail:m" attr="id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid = "create_folders" type = "always">
+	
+		<t:objective> Create folders </t:objective>
+		
+		<t:test id = "auth_testAccount1" required = "true">
+			<t:request>
+				<AuthRequest xmlns = "urn:zimbraAccount">
+					<account by = "name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken" />
+			</t:response>
+		</t:test>
+
+		
+		<t:test id = "Create_test_folder">
+			
+			<t:request>
+				<CreateFolderRequest xmlns = "urn:zimbraMail">
+					<folder name = "${folder.name}" l = "1" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:CreateFolderResponse/mail:folder">
+					<t:select attr = "id" set = "folder.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Create_nested_folder">
+			<t:request>
+				<CreateFolderRequest xmlns = "urn:zimbraMail">
+					<folder name = "${folder1.name}" l = "${folder.id}" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:CreateFolderResponse/mail:folder">
+					<t:select attr = "id" set = "folder1.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<t:test_case testcaseid = "save_draftMessages" type = "always">
+		<t:objective> Save few messages as drafts </t:objective>
+		
+		<t:test id="SaveDraftMessage1">
+			<t:request>
+				<SaveDraftRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}'/>
+						<su> ${message1.subject}_Draft </su>
+						<mp ct="text/plain">
+							<content> ${message1.content}_Draft</content>
+						</mp>
+					</m>					
+				</SaveDraftRequest>
+			</t:request>
+		</t:test>
+		
+		<t:test id="SaveDraftMessage2">
+			<t:request>
+				<SaveDraftRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}'/>
+						<su> ${message2.subject}_Draft </su>
+						<mp ct="text/plain">
+							<content> ${message2.content}_Draft</content>
+						</mp>
+					</m>					
+				</SaveDraftRequest>
+			</t:request>
+		</t:test>
+	</t:test_case>
+	
+	<t:test_case testcaseid = "move_testMessages" type = "always" >
+	
+		<t:objective> Move test messages to other location </t:objective>
+		
+		<t:test id = "Move_mail3">
+	
+			<t:delay msec="5000"/>
+		
+			<t:request>
+				<SearchActionRequest xmlns  =  "urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types = "message">
+						<query>subject:${message3.subject}</query>
+					</SearchRequest>
+					<BulkAction op = "move" l = "${folder.name}" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:SearchActionResponse" />
+			</t:response>
+	
+		</t:test>
+		
+		<t:test id = "Move_mail5">
+			
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns = "urn:zimbraMail">
+					<SearchRequest xmlns = "urn:zimbraMail" types = "message">
+						<query>subject:${message5.subject}</query>
+					</SearchRequest>
+					<BulkAction op = "move" l = "${folder.name}/${folder1.name}" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//mail:SearchActionResponse" />
+			</t:response>
+	
+		</t:test>
+
+	</t:test_case>
+	
+ 	<t:test_case testcaseid = "searchAction_SingleSearchtest" type = "always" >
+		
+		<t:objective> Search message from admin and mark them as unread/read in bulk action </t:objective>
+
+		<t:test id = "Mark message from admin as unread" >
+		
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user}</query>
+					</SearchRequest>
+					<BulkAction op="unread" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id = "Verify messages have been marked unread " >
+			
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+					sortBy="dateDesc" offset="0" limit="25">
+					<query>from:${admin.user}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:c[1]" attr="f" match="u"/>
+				<t:select path="//mail:SearchResponse//mail:c[2]" attr="f" match="u"/>
+				<t:select path="//mail:SearchResponse//mail:c[3]" attr="f" match="u"/>
+			</t:response>
+		</t:test>
+
+		<t:test id = "Mark message from admin as read" >
+		
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user}</query>
+					</SearchRequest>
+					<BulkAction op="read" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id = "Verify messages have been marked read " >
+			
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+					sortBy="dateDesc" offset="0" limit="25">
+					<query>from:${admin.user}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:c[1]" attr="f" emptyset="1"/>
+				<t:select path="//mail:SearchResponse//mail:c[2]" attr="f" emptyset="1"/>
+				<t:select path="//mail:SearchResponse//mail:c[3]" attr="f" emptyset="1"/>
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Mark message from admin as unread to reset test data" >
+		
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user}</query>
+					</SearchRequest>
+					<BulkAction op="unread" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+ 
+	<t:test_case testcaseid = "searchAction_MultipleSearchtest" type = "always" >
+		
+		<t:objective> Search message from admin in inbox and mark them as unread/read in bulk action </t:objective>
+
+		<t:test id = "Mark message from admin in inbox as unread" >
+		
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user} in:Inbox</query>
+					</SearchRequest>
+					<BulkAction op="unread" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id = "Verify messages have been marked unread " >
+			
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+					sortBy="dateDesc" offset="0" limit="25">
+					<query>from:${admin.user} in:Inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:c[1]" attr="f" match="u"/>
+				<t:select path="//mail:SearchResponse//mail:c[2]" attr="f" match="u"/>
+			</t:response>
+		</t:test>
+
+		<t:test id = "Mark message from admin as read" >
+		
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user} in:Inbox</query>
+					</SearchRequest>
+					<BulkAction op="read" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id = "Verify messages have been marked read " >
+			
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+					sortBy="dateDesc" offset="0" limit="25">
+					<query>from:${admin.user} in:Inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:c[1]" attr="f" emptyset="1"/>
+				<t:select path="//mail:SearchResponse//mail:c[2]" attr="f" emptyset="1"/>
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Mark message from admin as unread to reset test data" >
+		
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user} in:Inbox</query>
+					</SearchRequest>
+					<BulkAction op="unread" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+	
+	<!-- Following test case has been added to make sure bulk action works on draft folder as well. Because this is blocked on UI level and should work through API to comply with MsgActionRequest -->
+	<t:test_case testcaseid = "searchAction_DraftMessages" type = "always" >
+		<t:objective> Verify that bulk action does not alter status of draft messages </t:objective>
+		
+		<t:test id = "Mark Draft Messages as Read">
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>In:Drafts</query>
+					</SearchRequest>
+					<BulkAction op="unread" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Verify Draft Messages is not marked as read ">
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>In:Drafts</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:m[1]" attr="f" match="sdu"/>
+				<t:select path="//mail:SearchResponse//mail:m[2]" attr="f" match="sdu"/>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid = "share_Folder_Search_Action" type = "always" >
+		<t:objective> Share User2's Inbox with User1 and Trigger bulk action on shared folder </t:objective>
+		<t:property name = "perm" value = "rwidx" />
+		<t:property name="grant.usr" value="usr"/>
+		<t:property name="op.grant" value="grant"/>
+		<t:property name="test_account2.inbox.folder.id" value = "" />
+		<t:property name="test_account2.folder.shared.name" value = "Shared_Folder" />
+		<t:property name="view.message" value = "message" />
+		
+		
+		<t:test id = "Auth_testAccount2" required = "true">
+			<t:request>
+				<AuthRequest xmlns = "urn:zimbraAccount">
+					<account by = "name">${test_account2.name}</account>
+					<password>${test_account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id = "Get_Folder_Ids"  required="true" >
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail"/>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetFolderResponse">
+					<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="test_account2.inbox.folder.id"/>
+				</t:select>
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Share_user2_inbox_with_user1"  required="true" >
+			<t:request>
+				<FolderActionRequest xmlns="urn:zimbraMail">
+					<action op="${op.grant}" id="${test_account2.inbox.folder.id}">
+						<grant gt="${grant.usr}" d="${test_account1.name}" perm="${perm}"/>
+					</action>
+				</FolderActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:FolderActionResponse/mail:action"/>
+			</t:response>			
+		</t:test>
+	
+		<t:test id = "Auth_testAccount1" required = "true">
+			<t:request>
+				<AuthRequest xmlns = "urn:zimbraAccount">
+					<account by = "name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Get_Folder_Ids"  required="true" >
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail"/>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetFolderResponse">
+					<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="test_account1.folder1.id"/>
+				</t:select>
+			</t:response>
+		</t:test>
+		
+		<t:test id ="Mount_Shared_Folder" required="true">
+			<t:request>
+				<CreateMountpointRequest xmlns="urn:zimbraMail">
+					<link l="1" name="${test_account2.folder.shared.name}" zid="${test_account1.id}" rid="${test_account1.folder1.id}" view="${view.message}"/>
+				</CreateMountpointRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Mark Shared Folder Messages as unread">
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>In:${test_account2.folder.shared.name}</query>
+					</SearchRequest>
+					<BulkAction op="unread" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Verify Shared Messages is not marked as unread ">
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>In:${test_account2.folder.shared.name}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:m[1]" attr="f" match="u"/>
+				<t:select path="//mail:SearchResponse//mail:m[2]" attr="f" match="u"/>
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Mark Shared Folder Messages as Read">
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>In:${test_account2.folder.shared.name}</query>
+					</SearchRequest>
+					<BulkAction op="read" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+		
+		<t:test id = "Verify Shared Messages is not marked as read ">
+			<t:delay msec="5000"/>
+			
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>In:${test_account2.folder.shared.name}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:c[1]" attr="f" emptyset="1"/>
+				<t:select path="//mail:SearchResponse//mail:c[2]" attr="f" emptyset="1"/>
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+</t:tests>

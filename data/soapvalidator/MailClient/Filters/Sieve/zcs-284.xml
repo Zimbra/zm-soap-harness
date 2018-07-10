@@ -1,5 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -132,8 +131,6 @@
 
     <t:test_case testcaseid="AcctSetup2_modify_accounts" type="always">
         <t:objective>Add sieve rules</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -181,10 +178,8 @@
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="test1" type="smoke" bugids="zcs-284">
+    <t:test_case testcaseid="test1_rule1" type="smoke" bugids="zcs-284">
         <t:objective>Test sieve rule 1</t:objective>
-
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -210,7 +205,6 @@
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -236,9 +230,8 @@
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="test2" type="smoke" bugids="zcs-284">
+    <t:test_case testcaseid="test2_rule2" type="smoke" bugids="zcs-284">
         <t:objective>Test sieve rule 2</t:objective>
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -264,7 +257,6 @@
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -290,9 +282,8 @@
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="test3" type="smoke" bugids="zcs-284">
+    <t:test_case testcaseid="test3_rule3" type="smoke" bugids="zcs-284">
         <t:objective>Test sieve rule 3</t:objective>
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -318,7 +309,6 @@
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">

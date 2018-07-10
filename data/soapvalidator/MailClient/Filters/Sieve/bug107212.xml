@@ -83,8 +83,7 @@ log "Sieve rule 11";
     
 </t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-<t:test_case testcaseid="acctSetup1" type="deprecated">
+<t:test_case testcaseid="acctSetup1" type="smoke">
     <t:objective>create test account</t:objective>
     
 	<t:test required="true">
@@ -98,7 +97,31 @@ log "Sieve rule 11";
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-            
+
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	                
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -258,7 +281,7 @@ log "Sieve rule 11";
                               
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule1" type="deprecated" bugids="107212">
+<t:test_case testcaseid="bug107212_rule1" type="smoke" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using "matches"</t:objective>
     <steps> 
         1. Add sieve rule for a user to match multiline header and replace it with new one as per the sieve rule
@@ -280,7 +303,7 @@ log "Sieve rule 11";
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account2.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule1}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -351,7 +374,7 @@ log "Sieve rule 11";
 	    
 </t:test_case>
  
-<t:test_case testcaseid="bug107212_rule2" type="deprecated" bugids="107212">
+<t:test_case testcaseid="bug107212_rule2" type="smoke" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using "is"</t:objective>
     <steps> 
         1. Add sieve rule for a user to match multiline header and replace it with new one as per the sieve rule
@@ -373,7 +396,7 @@ log "Sieve rule 11";
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account3.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule2}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule2}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -444,7 +467,7 @@ log "Sieve rule 11";
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule3" type="deprecated" bugids="107212">
+<t:test_case testcaseid="bug107212_rule3" type="smoke" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using contains</t:objective>
     <steps> 
         1. Add sieve rule for a user to match multiline header and replace it with new one as per the sieve rule
@@ -466,7 +489,7 @@ log "Sieve rule 11";
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account4.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule3}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule3}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -537,7 +560,7 @@ log "Sieve rule 11";
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule4" type="deprecated" bugids="107212">
+<t:test_case testcaseid="bug107212_rule4" type="smoke" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using contains and space in the match value</t:objective>
     <steps> 
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
@@ -559,7 +582,7 @@ log "Sieve rule 11";
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account5.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule4}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule4}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -630,7 +653,7 @@ log "Sieve rule 11";
 	    
 </t:test_case>  
 
-<t:test_case testcaseid="bug107212_rule5" type="deprecated" bugids="107212">
+<t:test_case testcaseid="bug107212_rule5" type="smoke" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail where mime has multiple multi line headers</t:objective>
     <steps> 
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
@@ -652,7 +675,7 @@ log "Sieve rule 11";
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account6.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule5}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule5}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -723,7 +746,7 @@ log "Sieve rule 11";
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule6" type="deprecated" bugids="107212">
+<t:test_case testcaseid="bug107212_rule6" type="smoke" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using index value</t:objective>
     <steps> 
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
@@ -745,7 +768,7 @@ log "Sieve rule 11";
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account7.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule6}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule6}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -816,7 +839,7 @@ log "Sieve rule 11";
 	    
 </t:test_case>   
 
-<t:test_case testcaseid="bug107212_rule8" type="deprecated" bugids="107212">
+<t:test_case testcaseid="bug107212_rule8" type="smoke" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail using dollar1</t:objective>
     <steps> 
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
@@ -838,7 +861,7 @@ log "Sieve rule 11";
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account9.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule8}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule8}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -909,7 +932,7 @@ log "Sieve rule 11";
 	    
 </t:test_case> 
 
-<t:test_case testcaseid="bug107212_rule9" type="deprecated" bugids="107212">
+<t:test_case testcaseid="bug107212_rule9" type="smoke" bugids="107212">
    <t:objective>Verify Oldval1\nOldvalabc is replaced with [NEWVAL] Sieve Mail if mime has 3-4 multiline value in header</t:objective>
     <steps> 
         1. Verify if there are multiple multilines headers and sieve rule matches the condition, those should be replaced.
@@ -931,7 +954,7 @@ log "Sieve rule 11";
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account10.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule9}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule9}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1002,7 +1025,7 @@ log "Sieve rule 11";
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug107212_rule10" type="deprecated" bugids="107212">
+<t:test_case testcaseid="bug107212_rule10" type="smoke" bugids="107212">
    <t:objective>Verify all the matching headers should be deleted using :matches</t:objective>
     <steps> 
         1. Verify the matching header is deleted if value has some part of it in all headers.
@@ -1024,7 +1047,7 @@ log "Sieve rule 11";
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account11.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule10}</a>             
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule10}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1095,7 +1118,7 @@ log "Sieve rule 11";
 
 </t:test_case>
 
-	<t:test_case testcaseid="bug107212_SieveRule11" type="deprecated" bugids="107212">
+	<t:test_case testcaseid="bug107212_SieveRule11" type="smoke" bugids="107212">
 		<t:objective>Add a sieve rule to delete custom header and verify the mime via rest servlet</t:objective>
 
 		<t:test required="true">
@@ -1114,7 +1137,7 @@ log "Sieve rule 11";
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account12.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule11}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_rule11}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1172,5 +1195,33 @@ log "Sieve rule 11";
 			</t:restServletResponse>
 		</t:resttest>
 	</t:test_case>	     
-    
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>    
 </t:tests>

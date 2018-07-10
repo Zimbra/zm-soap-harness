@@ -30,6 +30,7 @@
         value="test14.${TIME}.${COUNTER}@${defaultdomain.name}" />
   <t:property name="test_account15.name"
         value="test15.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="cos1.name" value="mycos1${TIME}${COUNTER}" />        
 	<t:property name="mail_subject" value="subject.${TIME}.${COUNTER}" />
 	<t:property name="mail_subject1" value="subject1.${TIME}.${COUNTER}" />
 	<t:property name="mail_subject2" value="subject2.${TIME}.${COUNTER}" />
@@ -67,7 +68,7 @@
 
 	<t:property name="sieve_rule3"
 		value='require ["editheader","log"];
-     deleteheader :last "X-Test-Header";
+     deleteheader :last :index 1 "X-Test-Header";
      log "Sieve rule 3";
  ' />
 
@@ -96,13 +97,13 @@
  ' />
 
 	<t:property name="sieve_rule8"
-		value='require ["editheader","log"];
+		value='require ["editheader","log", "comparator-i;ascii-numeric", "relational"];
       deleteheader :value "lt" :comparator "i;ascii-numeric" "X-Numeric-Header" "3";
       log "Sieve rule 8";
  ' />
 
 	<t:property name="sieve_rule9"
-		value='require ["editheader","log"];
+		value='require ["editheader","log", "comparator-i;ascii-numeric", "relational"];
       deleteheader :count "ge" :comparator "i;ascii-numeric" "X-Numeric-Header" "3";
       log "Sieve rule 9";
  ' />
@@ -148,7 +149,7 @@
  ' />
  
  <t:property name="sieve_rule16"
-    value='require ["editheader","log"];
+    value='require ["editheader","log", "comparator-i;ascii-numeric", "relational"];
       deleteheader :count "ge" :comparator "i;ascii-numeric" "X-Test-Header" "";
       log "Sieve rule 16";
  ' />
@@ -170,8 +171,7 @@
 
 	</t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-	<t:test_case testcaseid="acctSetup1" type="deprecated">
+	<t:test_case testcaseid="acctSetup1" type="always">
 		<t:objective>create test account</t:objective>
 
 		<t:test required="true">
@@ -186,11 +186,36 @@
 			</t:response>
 		</t:test>
 
+        <t:test id="CreateCosRequest1">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name xmlns="">${cos1.name}</name>
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos1.name}" />
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cos1.id}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account1.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -207,6 +232,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account2.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -223,6 +249,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account3.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -238,6 +265,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account4.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -253,6 +281,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account5.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -268,6 +297,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account6.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -283,6 +313,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account7.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -299,6 +330,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account8.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -315,6 +347,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account9.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -331,6 +364,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account10.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -347,6 +381,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account11.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -363,6 +398,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account12.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -379,6 +415,7 @@
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account13.name}</name>
 					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -387,6 +424,9 @@
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
 					set="test_acct13.server" />
+			    <t:select
+			        path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraSieveImmutableHeaders"]'
+			        set="defaultzimbraSieveImmutableHeaders" />
 			</t:response>
 		</t:test>
   
@@ -395,6 +435,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account14.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cos1.id}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -410,6 +451,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account15.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cos1.id}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -425,7 +467,7 @@
 	</t:test_case>
 
 
-	<t:test_case testcaseid="bug106870_SieveRule1" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule1" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -446,7 +488,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule1}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -485,7 +527,7 @@
 		</t:resttest>
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule2" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule2" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -494,7 +536,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule2}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -522,7 +564,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account1.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -556,7 +598,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule3" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule3" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -577,7 +619,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account2.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule3}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -590,7 +632,7 @@
 				<filename>${msg01.file}</filename>
 				<to>${test_account2.name}</to>
 				<from>${admin.user}</from>
-				<server>${test_acct1.server}</server>
+				<server>${test_acct2.server}</server>
 				<modify>
 					<header a="To">${test_account2.name}</header>
 					<header a="From">${admin.user}</header>
@@ -603,7 +645,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account2.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -637,7 +679,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule4" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule4" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -658,7 +700,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account3.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule4}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -684,7 +726,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account3.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -718,7 +760,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule5" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule5" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -739,7 +781,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account4.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule5}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule5}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -765,7 +807,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account4.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -800,7 +842,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule6" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule6" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -821,7 +863,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account5.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule6}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule6}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -847,7 +889,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account5.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -882,7 +924,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule7" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule7" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -903,7 +945,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account6.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule7}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule7}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -929,7 +971,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account6.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -962,7 +1004,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule8" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule8" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -983,7 +1025,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account7.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule8}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule8}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1009,7 +1051,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account7.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1044,7 +1086,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule9" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule9" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1065,7 +1107,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account8.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule9}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule9}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1091,7 +1133,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account8.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1124,7 +1166,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule10" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule10" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1145,7 +1187,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account9.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule10}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule10}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1171,7 +1213,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account9.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1204,7 +1246,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule11" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule11" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1225,7 +1267,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account10.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule11}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule11}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1251,7 +1293,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account10.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1285,7 +1327,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule12" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule12" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1306,7 +1348,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account11.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule12}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule12}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1332,7 +1374,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account11.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1366,7 +1408,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="bug106870_SieveRule13" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule13" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1387,7 +1429,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account12.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule13}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule13}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1413,7 +1455,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account12.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1448,7 +1490,7 @@
 
 	</t:test_case>
 	
-	<t:test_case testcaseid="bug106870_SieveRule14" type="deprecated"
+	<t:test_case testcaseid="bug106870_SieveRule14" type="smoke"
 		bugids="106870">
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
@@ -1465,34 +1507,17 @@
 			</t:response>
 		</t:test>
 		
-		<t:test id="service_check" required="true" depends="ping">
-        <t:request>
-            <GetServerRequest xmlns="urn:zimbraAdmin">
-				<server by="name">${zimbraServer.name}</server>
-			</GetServerRequest>
-        </t:request>
-        <t:response>
-            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
-        </t:response>
-    	</t:test>
-    
-		<t:staftask>
-			<t:request>
-				<server>${mta.server}</server>
-				<service>PROCESS</service>
-				<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmlocalconfig -e sieve_immutable_headers=X-Sieve-Header1\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
-			</t:request>
-		</t:staftask>
-		
-		<t:staftask>
-			<t:request>
-				<server>${mta.server}</server>
-				<service>PROCESS</service>
-				<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
-			</t:request>
-		</t:staftask>
-		
-		
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cos1.id}</id>
+	                <a n="zimbraSieveImmutableHeaders">${defaultzimbraSieveImmutableHeaders},X-Sieve-Header1</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
 		
 		<t:test required="true">
 			<t:request>
@@ -1510,7 +1535,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account13.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_rule14}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule14}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1536,7 +1561,7 @@
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account13.name}</account>
-					<password>test123</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1578,28 +1603,24 @@
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-		
-		<t:staftask>
-			<t:request>
-				<server>${mta.server}</server>
-				<service>PROCESS</service>
-				<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmlocalconfig -e sieve_immutable_headers=''\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
-			</t:request>
-		</t:staftask>
 
-		<t:staftask>
-			<t:request>
-				<server>${mta.server}</server>
-				<service>PROCESS</service>
-				<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
-			</t:request>
-		</t:staftask>
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cos1.id}</id>
+	                <a n="zimbraSieveImmutableHeaders">${defaultzimbraSieveImmutableHeaders}</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
 		
 	</t:test_case>
  
  
   <!-- ZCS-859 -->
-  <t:test_case testcaseid="bugZCS-859" type="deprecated"
+  <t:test_case testcaseid="bugZCS-859" type="smoke"
     bugids="ZCS-859">
     <t:objective>Add a sieve rule to delete custom header and verify the
       mime via rest servlet</t:objective>
@@ -1620,7 +1641,7 @@
       <t:request>
         <ModifyAccountRequest xmlns="urn:zimbraAdmin">
           <id>${test_account8.id}</id>
-          <a n="zimbraMailSieveScript">${sieve_rule15}</a>
+          <a n="zimbraAdminSieveScriptBefore">${sieve_rule15}</a>
         </ModifyAccountRequest>
       </t:request>
       <t:response>
@@ -1646,7 +1667,7 @@
       <t:request>
         <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
           <account by="name">${test_account8.name}</account>
-          <password>test123</password>
+          <password>${defaultpassword.value}</password>
         </AuthRequest>
       </t:request>
       <t:response>
@@ -1680,7 +1701,7 @@
   </t:test_case>
   
      <!-- ZCS-859 -->
-  <t:test_case testcaseid="bugZCS-859_15" type="deprecated"
+  <t:test_case testcaseid="bugZCS-859_15" type="smoke"
     bugids="ZCS-859">
     <t:objective>Add a sieve rule to delete custom header and verify the
       mime via rest servlet</t:objective>
@@ -1701,7 +1722,7 @@
       <t:request>
         <ModifyAccountRequest xmlns="urn:zimbraAdmin">
           <id>${test_account14.id}</id>
-          <a n="zimbraMailSieveScript">${sieve_rule15}</a>
+          <a n="zimbraAdminSieveScriptBefore">${sieve_rule15}</a>
         </ModifyAccountRequest>
       </t:request>
       <t:response>
@@ -1727,14 +1748,16 @@
       <t:request>
         <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
           <account by="name">${test_account14.name}</account>
-          <password>test123</password>
+          <password>${defaultpassword.value}</password>
         </AuthRequest>
       </t:request>
       <t:response>
         <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
       </t:response>
     </t:test>
+    
   <t:delay msec="5000" />
+  
     <t:test>
       <t:request>
         <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1761,7 +1784,7 @@
   </t:test_case>
   
   
-  <t:test_case testcaseid="bugZCS-859_16" type="deprecated"
+  <t:test_case testcaseid="bugZCS-859_16" type="smoke"
     bugids="ZCS-859">
     <t:objective>Add a sieve rule to delete custom header and verify the
       mime via rest servlet</t:objective>
@@ -1782,7 +1805,7 @@
       <t:request>
         <ModifyAccountRequest xmlns="urn:zimbraAdmin">
           <id>${test_account15.id}</id>
-          <a n="zimbraMailSieveScript">${sieve_rule16}</a>
+          <a n="zimbraAdminSieveScriptBefore">${sieve_rule16}</a>
         </ModifyAccountRequest>
       </t:request>
       <t:response>
@@ -1808,14 +1831,16 @@
       <t:request>
         <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
           <account by="name">${test_account15.name}</account>
-          <password>test123</password>
+          <password>${defaultpassword.value}</password>
         </AuthRequest>
       </t:request>
       <t:response>
         <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
       </t:response>
     </t:test>
+    
   <t:delay msec="10000" />
+  
     <t:test>
       <t:request>
         <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -1839,6 +1864,7 @@
       </t:restServletResponse>
     </t:resttest>
 
-  </t:test_case>
+  </t:test_case>  
+  
 </t:tests>
 

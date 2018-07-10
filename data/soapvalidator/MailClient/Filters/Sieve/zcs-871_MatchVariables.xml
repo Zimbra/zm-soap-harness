@@ -88,18 +88,6 @@
 			</t:response>
 		</t:test>
 
-        <t:test>
-                <t:request>
-                        <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                <account by="name">${admin.user}</account>
-                        </GetAccountRequest>
-                </t:request>
-                <t:response>
-                        <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                </t:response>
-        </t:test>
-
-
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -112,7 +100,6 @@
 					attr="id" set="account1.id" />
 				<t:select path="//admin:CreateAccountResponse/admin:account"
 					attr="name" set="account1.name" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 			</t:response>
 		</t:test>
 
@@ -141,7 +128,6 @@
 		3. Check on user 1 message is in inbox and tagged with 'tag1'.
 		</t:steps>
 
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -167,8 +153,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -187,7 +171,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -226,7 +209,6 @@
 		3. Check on user 1 message is in inbox and tagged with 'tag2'.
 		</t:steps>
 		
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -252,7 +234,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -271,7 +252,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -310,7 +290,6 @@
 		3. Check on user 1 message is in inbox and tagged with 'tag3'.
 		</t:steps>
 
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -336,7 +315,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -355,7 +333,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -394,7 +371,6 @@
 		3. Check on user 1 message is in inbox and tagged with 'tag4'.
 		</t:steps>
 
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -420,7 +396,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -439,7 +414,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

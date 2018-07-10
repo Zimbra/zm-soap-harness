@@ -1,0 +1,217 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <t:property name="account1.name" value="user1.${TIME}${COUNTER}@${defaultdomain.name}" />
+    <t:property name="account2.name" value="user2.${TIME}${COUNTER}@${defaultdomain.name}" />
+    <t:property name="mail_subject_1" value="var test 5  var test 6" />
+    <t:property name="mail_subject_2" value="var test4  var test 5  var test 6" />
+    <t:property name="mail_content"   value="Hi,\\rYou have got a mail!\\r." />
+    <t:property name="folder_name_1"  value="var test 5" />
+    <t:property name="folder_name_2"  value="  var test 5" />
+    <t:property name="sieve_rule1" value='
+require ["fileinto", "variables"];
+set "var5" "var test 5";
+if allof (header :matches ["subject"] "$\{var5}*") {
+    fileinto "$\{var5}";
+    set "var6" "var test 6";
+    if anyof (header :matches ["subject"] "*$\{var6}") {
+        fileinto "$\{1}";
+    }
+}' />
+
+    <t:property name="sieve_rule2" value='
+require ["fileinto", "variables"];
+set "var5" "var test 5";
+if allof (header :matches ["subject"] "*$\{var5}*") {
+    fileinto "$\{var5}";
+    set "var6" "var test 6";
+    if anyof (header :matches ["subject"] "var test4*$\{var6}") {
+        fileinto "$\{1}";
+    }
+}' />
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="acctSetup1" type="always">
+        <t:objective>create test account</t:objective>
+
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+         <t:test>
+            <t:request xmlns="urn:zimbraAdmin">
+                <GetCosRequest>
+                    <cos by="name">default</cos>
+                </GetCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+                <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraMailSieveScript">${sieve_rule1}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account1.id" />
+            </t:response>
+        </t:test>
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraMailSieveScript">${sieve_rule2}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account2.id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+     <t:test_case testcaseid="rule1_TrailingSpaces" type="smoke" bugids="zcs-1591">
+        <t:objective>Verify the trailing spaces in the folder name parameter is ignored.</t:objective>
+        <t:steps>
+            1. Set sieve rule1
+            2. Send email and verify that only one message is stored to the fileinto folder.
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${account1.name}" />
+                        <su>${mail_subject_1}</su>
+                        <mp ct="text/plain">
+                            <content>${mail_content}</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+                    set="Sent_message1.id"></t:select>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFolderRequest xmlns = "urn:zimbraMail"/>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:folder[@name='${folder_name_1}']" attr="n" match="1"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+     <t:test_case testcaseid="rule2_HeadSpaces" type="smoke" bugids="zcs-1591">
+        <t:objective>Verify the spaces at the beginning of the folder name is NOT ignored.</t:objective>
+        <t:steps>
+            1. Set sieve rule1
+            2. Send email and verify that two messages are delivered to the separate folders.
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${account2.name}" />
+                        <su>${mail_subject_2}</su>
+                        <mp ct="text/plain">
+                            <content>${mail_content}</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+                    set="Sent_message1.id"></t:select>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFolderRequest xmlns = "urn:zimbraMail"/>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:folder[@name='${folder_name_1}']" attr="n" match="1"/>
+                <t:select path="//mail:folder[@name='${folder_name_2}']" attr="n" match="1"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+</t:tests>

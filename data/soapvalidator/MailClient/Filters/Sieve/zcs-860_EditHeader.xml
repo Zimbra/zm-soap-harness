@@ -22,7 +22,7 @@
 	<t:property name="subject13" value="sub13.${TIME}${COUNTER}" />
 
 	<t:property name="sieve_test1"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag","editheader"];
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub1"
 			{
 				addheader "" "Val1";
@@ -31,7 +31,7 @@
 	' />
 
 	<t:property name="sieve_test2"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag","editheader"];
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub2"
 			{
 				addheader "X-Header1" "";
@@ -40,7 +40,7 @@
 	' />
 
 	<t:property name="sieve_test3"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag","editheader"];
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub3"
 			{
 				addheader "" "";
@@ -49,7 +49,7 @@
 	' />
 
 	<t:property name="sieve_test4"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag","editheader"];
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub4"
 			{
 				addheader :last "  " "Val2";  
@@ -58,7 +58,7 @@
 	' />
 
 	<t:property name="sieve_test5"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag","editheader"];
 			addheader "X-ZCS860-Header1" "Val3";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub5"
 			{
@@ -68,7 +68,7 @@
 	' />
 
 	<t:property name="sieve_test6"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag","editheader"];
 			addheader "X-ZCS860-Header2" "Val5";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub6"
 			{
@@ -78,7 +78,7 @@
 	' />
 
 	<t:property name="sieve_test7"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag", "editheader"];
 			addheader "X-ZCS860-Header3" "Val7";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub7"
 			{
@@ -88,7 +88,7 @@
 	' />
 
 	<t:property name="sieve_test8"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag", "editheader"];
 			addheader "X-ZCS860-Header4" "Val8";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub8"
 			{
@@ -98,17 +98,17 @@
 	' />
 
 	<t:property name="sieve_test9"
-		value='require ["log","fileinto","tag","editheader"];
+		value='require ["tag","editheader"];
 			addheader "X-ZCS860-Header5" "Val10";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub9"
 			{
-					replaceheader :last :newname "X-ZCS860-ReplaceName" :newvalue "" :comparator "i;ascii-casemap" :matches "X-ZCS860-Header5" "Val10";		
+					replaceheader :last :index 0 :newname "X-ZCS860-ReplaceName" :newvalue "" :comparator "i;ascii-casemap" :matches "X-ZCS860-Header5" "Val10";		
 					tag "tag9";	
 			}   
 	' />
 
 	<t:property name="sieve_test10"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag", "editheader"];
 			addheader "X-ZCS860-Header6" "Val11";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub10"
 			{
@@ -118,7 +118,7 @@
 	' />
 
 	<t:property name="sieve_test11"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag", "editheader"];
 			addheader "X-ZCS860-Header7" "Val12";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub11"
 			{
@@ -128,7 +128,7 @@
 	' />
 
 	<t:property name="sieve_test12"
-		value='require ["log","fileinto","tag"];
+		value='require ["tag", "editheader"];
 			addheader "X-ZCS860-Header8" "Val13";
 			if header :comparator "i;ascii-casemap" :contains "Subject" "sub12"
 			{
@@ -138,8 +138,7 @@
 	' />
 
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-	<t:test_case testcaseid="AcctSetup1_ZCS-860" type="deprecated"
+	<t:test_case testcaseid="AcctSetup1_ZCS-860" type="smoke"
 		bugids="zcs860">
 		<t:objective> Create test account and login to first account
 		</t:objective>
@@ -156,6 +155,30 @@
 			</t:response>
 		</t:test>
 
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -172,7 +195,7 @@
 		</t:test>
 	</t:test_case>
   
-	<t:test_case testcaseid="ZCS-860_Filter1" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter1" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Add a header with empty name. Should give error and
 			message should not be tagged.
@@ -194,7 +217,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test1}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test1}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -249,7 +272,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter2" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter2" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Add a header with empty value. Rule should pass and
 			message should be tagged.
@@ -271,7 +294,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test2}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test2}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -337,7 +360,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter3" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter3" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Add a header with empty name and value. Rule should not
 			pass and message should not be tagged.
@@ -359,7 +382,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test3}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test3}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -415,7 +438,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter4" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter4" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Add a header with empty space in header name . Rule
 			should not pass and message should not be tagged.
@@ -437,7 +460,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test4}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test4}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -494,7 +517,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter5" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter5" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty new header name . Rule should
 			not pass and message should not be tagged
@@ -516,7 +539,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test5}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test5}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -573,7 +596,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter6" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter6" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty space in header name . Rule
 			should not pass and message should not be tagged
@@ -595,7 +618,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test6}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test6}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -650,7 +673,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter7" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter7" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty space in header name and
 			value . Rule should not pass and message should not be tagged
@@ -672,7 +695,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test7}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test7}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -727,7 +750,7 @@
 
 	</t:test_case>
 	
-	<t:test_case testcaseid="ZCS-860_Filter8" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter8" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty "tobe replaced" header name .
 			Rule should not pass and message should not be tagged
@@ -749,7 +772,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test8}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test8}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -804,7 +827,7 @@
 
 	</t:test_case>  
 
-	<t:test_case testcaseid="ZCS-860_Filter9" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter9" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Replace a header with empty new header value . Rule
 			should pass and message should be tagged
@@ -826,7 +849,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test9}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test9}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -893,7 +916,7 @@
 
 	</t:test_case>
  
-	<t:test_case testcaseid="ZCS-860_Filter10" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter10" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Delete a header with empty header name . Rule should not
 			pass and message should not be tagged
@@ -915,7 +938,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test10}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test10}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -970,7 +993,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter11" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter11" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Delete a header with header name preceded by space . Rule
 			should not pass and message should not be tagged
@@ -992,7 +1015,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test11}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test11}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1047,7 +1070,7 @@
 
 	</t:test_case>
 
-	<t:test_case testcaseid="ZCS-860_Filter12" type="deprecated"
+	<t:test_case testcaseid="ZCS-860_Filter12" type="smoke"
 		bugids="ZCS-860">
 		<t:objective>Delete a header with index 1 containing empty space
 			header name . Rule should not pass and message should not be tagged
@@ -1069,7 +1092,7 @@
 			<t:request>
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${account1.id}</id>
-					<a n="zimbraMailSieveScript">${sieve_test12}</a>
+					<a n="zimbraAdminSieveScriptAfter">${sieve_test12}</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1125,4 +1148,32 @@
 
 	</t:test_case>
 
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>
 </t:tests>
