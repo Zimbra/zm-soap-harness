@@ -1,0 +1,1171 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="test_account.name" value="10test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="test_account3.name" value="13test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="folder1.name" value="folder1.${TIME}${COUNTER}" />
+<t:property name="subject01" value="subject1.${TIME}${COUNTER}" />
+<t:property name="content01" value="content1.${TIME}${COUNTER}" />
+<t:property name="subject02" value="subject2.${TIME}${COUNTER}" />
+<t:property name="content02" value="content2.${TIME}${COUNTER}" />
+<t:property name="subject03" value="subject3.${TIME}${COUNTER}" />
+<t:property name="content03" value="content3.${TIME}${COUNTER}" />
+<t:property name="subject04" value="subject4.${TIME}${COUNTER}" />
+<t:property name="content04" value="content4.${TIME}${COUNTER}" />
+<t:property name="subject05" value="subject5.${TIME}${COUNTER}" />
+<t:property name="content05" value="content5.${TIME}${COUNTER}" />
+<t:property name="subject06" value="subject6.${TIME}${COUNTER}" />
+<t:property name="content06" value="content6.${TIME}${COUNTER}" />
+<t:property name="subject07" value="subject7.${TIME}${COUNTER}" />
+<t:property name="content07" value="content7.${TIME}${COUNTER}" />
+<t:property name="subject08" value="subject8.${TIME}${COUNTER}" />
+<t:property name="content08" value="content8.${TIME}${COUNTER}" />
+<t:property name="subject09" value="subject9.${TIME}${COUNTER}" />
+<t:property name="content09" value="content9.${TIME}${COUNTER}" />
+<t:property name="subject10" value="subject10.${TIME}${COUNTER}" />
+<t:property name="content10" value="content10.${TIME}${COUNTER}" />
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="AcctSetup1_create_account" type="always">
+        <t:objective>create test accounts</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account.server" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account.server" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account3.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account.server" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="test_account1.name" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account1.server" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder1.name}" l="1" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id1" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+<!-- Zcs-2725: Apply case flag to sieve condition in EnvelopTest -->
+	<t:test_case testcaseid="ZCS-2725_rule1" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify user incoming rule with case-sensitive</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter1.name" value="filter_name1${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter1.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="from" caseSensitive="true" stringComparison="contains"
+									value="tEsT" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${test_account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject01}</su>
+						<mp ct="text/plain">
+							<content>${content01}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject01}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject01}" emptyset="1" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-2725_rule2" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify user incoming rule with valueComparisonComparator</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter2.name" value="filter_name2${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter2.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="from" valueComparison="lt" valueComparisonComparator="i;ascii-numeric" 
+									value="12test" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${test_account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter2.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject02}</su>
+						<mp ct="text/plain">
+							<content>${content02}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject02}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject02}" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-2725_rule3" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify user incoming rule  with using case-sensitive and valuecomparisonComparator in one rule</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter3.name" value="filter_name3${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter3.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="from" caseSensitive="true" valueComparison="lt" valueComparisonComparator="i;ascii-numeric" 
+									value="12tEst" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${test_account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter3.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject03}</su>
+						<mp ct="text/plain">
+							<content>${content03}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message3.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject03}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject03}" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+	
+	<t:test_case testcaseid="ZCS-2725_rule4" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify user incoming rule  with using case-sensitive=false and valuecomparisonComparator in one rule</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter4.name" value="filter_name4${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter4.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="from" caseSensitive="false" valueComparison="eq" valueComparisonComparator="i;ascii-casemap" 
+									value="${test_account.name}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${test_account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter4.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject04}</su>
+						<mp ct="text/plain">
+							<content>${content04}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message4.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject04}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject04}" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-2725_rule5" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify admin incoming rule with case-sensitive</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter5.name" value="filter_name5${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+				    <account by="name">${test_account1.name}</account>
+					<filterRules>
+						<filterRule name="${filter5.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="from" caseSensitive="true" stringComparison="contains"
+									value="tEsT" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+					<account by="name">${test_account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule"
+					attr="name" match="${filter5.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject05}</su>
+						<mp ct="text/plain">
+							<content>${content05}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message5.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject05}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject05}" emptyset="1" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-2725_rule6" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify admin incoming rule with valueComparisonComparator</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter6.name" value="filter_name6${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+				    <account by="name">${test_account1.name}</account>
+					<filterRules>
+						<filterRule name="${filter6.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="from" valueComparison="lt" valueComparisonComparator="i;ascii-numeric" 
+									value="12test" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+					<account by="name">${test_account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule"
+					attr="name" match="${filter6.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject06}</su>
+						<mp ct="text/plain">
+							<content>${content06}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message6.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject06}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject06}" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>	
+
+	<t:test_case testcaseid="ZCS-2725_rule7" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify user outgoing rule with case-sensitive</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter7.name" value="filter_name7${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter7.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="to" caseSensitive="true" stringComparison="contains"
+									value="tEsT" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyOutgoingFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetOutgoingFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${test_account1.name}</account>
+				</GetOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetOutgoingFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter7.name}" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account.name}" />
+						<su>${subject07}</su>
+						<mp ct="text/plain">
+							<content>${content07}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message7.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject07}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject07}" emptyset="1" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-2725_rule8" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify user outgoing rule with valueComparisonComparator</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter8.name" value="filter_name8${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter8.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="to" valueComparison="lt" valueComparisonComparator="i;ascii-numeric" 
+									value="12test" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyOutgoingFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetOutgoingFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${test_account.name}</account>
+				</GetOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetOutgoingFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter8.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject08}</su>
+						<mp ct="text/plain">
+							<content>${content08}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message8.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject08}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject08}" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-2725_rule9" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify admin outgoing rule with case-sensitive</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter9.name" value="filter_name9${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+				    <account by="name">${test_account1.name}</account>
+					<filterRules>
+						<filterRule name="${filter9.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="to" caseSensitive="true" stringComparison="contains"
+									value="tEsT" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+					<account by="name">${test_account1.name}</account>
+				</GetOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule"
+					attr="name" match="${filter9.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account3.name}" />
+						<su>${subject09}</su>
+						<mp ct="text/plain">
+							<content>${content09}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message9.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject09}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject09}" emptyset="1" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+	
+	<t:test_case testcaseid="ZCS-2725_rule10" type="smoke" bugids="ZCS-2725">
+		<t:objective>Verify admin outgoing rule with valueComparisonComparator</t:objective>
+		<t:property name="server.zimbraAccount" value="${test_account1.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter10.name" value="filter_name10${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+				    <account by="name">${test_account.name}</account>
+					<filterRules>
+						<filterRule name="${filter10.name}" active="1">
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<envelopeTest header="to" valueComparison="lt" valueComparisonComparator="i;ascii-numeric" 
+									value="12test" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${folder1.name}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin" type="before">
+					<account by="name">${test_account.name}</account>
+				</GetOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//admin:GetOutgoingFilterRulesResponse/admin:filterRules/admin:filterRule"
+					attr="name" match="${filter10.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject10}</su>
+						<mp ct="text/plain">
+							<content>${content10}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message10.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder1.name} subject:${subject10}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject10}" />
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+	
+</t:tests>

@@ -41,7 +41,6 @@
 	notify :from "\\"us\\\\\\\\\\\\\\"e\\\\\\\\\\\\\\"r\\\\\\\\\\\\\\"te\\\\\\\\st\\"@domain1.zimbra.com" :message "${notifymessage}" "mailto:${notify_account5.name}?Importance=High&#038;X-Priority=1&#038;body=${notifybody}&#038;message-id=dummymessageid";'>
 	</t:property>
 				
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
         <t:test required="true">
@@ -67,17 +66,6 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
 
 	    <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
@@ -113,7 +101,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 			</t:response>
 		</t:test>
 
@@ -127,7 +114,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 			</t:response>
 		</t:test>
 
@@ -141,7 +127,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
 			</t:response>
 		</t:test>
 
@@ -155,7 +140,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
 			</t:response>
 		</t:test>
 
@@ -169,7 +153,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
 			</t:response>
 		</t:test>
 								
@@ -182,7 +165,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account1.server"/>
 			</t:response>
 		</t:test> 
 		
@@ -195,7 +177,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account2.server"/>
 			</t:response>
 		</t:test>
 		
@@ -208,7 +189,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account3.server"/>
 			</t:response>
 		</t:test>
 		
@@ -221,7 +201,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account4.server"/>
 			</t:response>
 		</t:test>
 
@@ -234,7 +213,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account5.server"/>
 			</t:response>
 		</t:test>
 										               
@@ -242,8 +220,6 @@
     
 	<t:test_case testcaseid="zcs-560_rule1" type="smoke" bugids="zcs-560">
 		<t:objective>Verify user "user\\test"@domain1.zimbra.com in :from header of notification message</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -274,7 +250,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${notify_account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -314,7 +289,6 @@
 	
 	<t:test_case testcaseid="zcs-862_rule2" type="smoke" bugids="zcs-862">
 		<t:objective>Verify user "user\\te\\st@domain1.zimbra.com" in :from header of notification message</t:objective>
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -345,7 +319,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${notify_account2.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -385,7 +358,6 @@
 	
 	<t:test_case testcaseid="zcs-862_rule3" type="smoke" bugids="zcs-862">
 		<t:objective>Verify user "\"user\\\"test\"@domain1.zimbra.com" in :from header of notification message</t:objective>
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -416,7 +388,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${notify_account3.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -456,7 +427,6 @@
 	
 	<t:test_case testcaseid="zcs-862_rule4" type="smoke" bugids="zcs-862">
 		<t:objective>Verify user "\"us\\\"er\\\"te\\\"st\"@domain1.zimbra.com" in :from header of notification message</t:objective>
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -487,7 +457,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${notify_account4.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -527,7 +496,6 @@
 	
 	<t:test_case testcaseid="zcs-862_rule5" type="smoke" bugids="zcs-862">
 		<t:objective>Verify user "\"us\\\"e\\\"r\\\"te\\st\"@domain1.zimbra.com" in :from header of notification message</t:objective>
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -558,7 +526,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${notify_account5.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -598,7 +565,6 @@
 
     <t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         
         <t:test required="true">
             <t:request>

@@ -1,0 +1,122 @@
+<!-- Description: When a header string contains CRLF and it is base64 encoded, 
+     wildcard ":matches" should match such string. -->
+
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="msg01.file" value="${testMailRaw.root}/ZCS-296/mime1.txt" />
+    <t:property name="one" value="$\{1}" />
+    <t:property name="sieve_rule1"
+        value='require ["editheader", "variables"];
+        replaceheader :newvalue "[Modified]${one}" :matches "Subject" "*";'/>
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="AcctSetup_create_account" type="always">
+        <t:objective>create test accounts</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="AcctSetup_modify_accounts" type="always">
+        <t:objective>Add sieve rules</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="modifyaccountrequest01">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account" />
+            </t:response>
+        </t:test>
+        <t:test id="modifyaccountrequest01">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+ 
+    <t:test_case testcaseid="test1" type="smoke" bugids="ZCS-296">
+        <t:objective>Test sieve_rule1 that match condition returns TRUE, thus replacing the subject with new modified subject value.</t:objective>
+        <t:mailinjecttest>
+            <t:lmtpInjectRequest>
+                <filename>${msg01.file}</filename>
+                <to>${test_account1.name}</to>
+                <from>""</from>
+                <server>${test_acct1.server}</server>
+            </t:lmtpInjectRequest>
+        </t:mailinjecttest>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
+                    <account by="name">${test_account1.name}</account>
+                    <password>test123</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>Subject: [Modified]test1 CRLF test2</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" contains='[Modified]test1 CRLF' />
+                 <t:select path="//mail:SearchResponse/mail:m/mail:su" contains="test2" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+</t:tests>

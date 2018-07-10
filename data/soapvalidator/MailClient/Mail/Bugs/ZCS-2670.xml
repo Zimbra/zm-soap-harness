@@ -1,0 +1,466 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+ <t:property name="test_acct.server" value="NOT_DEFINED" />
+
+ <t:property name="test_account.name"
+  value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+ <t:property name="test_account.password" value="test123" />
+ <t:property name="account1.name"
+  value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+ <t:property name="test_account2.name"
+  value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+ <t:property name="test_account3.name"
+  value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+ <t:property name="test_account4.name"
+  value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+ <t:property name="test_account5.name"
+  value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+
+ <t:property name="contacts" value="in:${globals.contacts}" />
+ <t:property name="test_account.folder.shared.name" value="share.${TIME}.${COUNTER}" />
+
+ <t:property name="search.shared.string" value="(is:remote OR is:local)" />
+
+ <t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+ <t:test_case testcaseid="Ping" type="always">
+  <t:objective>basic system check</t:objective>
+
+  <t:test required="true">
+   <t:request>
+    <PingRequest xmlns="urn:zimbraAdmin" />
+   </t:request>
+   <t:response>
+    <t:select path="//admin:PingResponse" />
+   </t:response>
+  </t:test>
+
+ </t:test_case>
+
+
+ <t:test_case testcaseid="admin_auth" type="always">
+  <t:objective>Login as the admin and create a test account
+  </t:objective>
+  <t:steps>1. Login to admin
+   2. Create a test accounts
+  </t:steps>
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${account1.name}</name>
+     <password>${test_account.password}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account1.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account1.server" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${test_account2.name}</name>
+     <password>${test_account.password}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account2.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account1.server" />
+   </t:response>
+  </t:test>
+
+  <t:test required="true">
+   <t:request>
+    <CreateAccountRequest xmlns="urn:zimbraAdmin">
+     <name>${test_account3.name}</name>
+     <password>${test_account.password}</password>
+    </CreateAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account"
+     attr="id" set="account3.id" />
+    <t:select
+     path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+     set="account1.server" />
+   </t:response>
+  </t:test>
+
+ </t:test_case>
+
+ <t:test_case testcaseid="zcs-2670_testcase1" type="smoke">
+  <t:objective>Send
+   email verification link to user 2.
+  </t:objective>
+  <t:steps> 1. Set zimbraFeatureMailForwardingEnabled
+   to false 2. Fire ModifyPrefs request with zimbraMailForwardingAddress
+   as
+   email address of the recipient of verification link. 3. Verify response of
+   ModifyPrefs is error.
+  </t:steps>
+  <t:property name="server.zimbraAccount" value="${account1.server}" />
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+  <t:test id="create_test_account1" required="true" depends="admin_login">
+   <t:request>
+    <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+     <id>${account1.id}</id>
+     <a n="zimbraFeatureMailForwardingEnabled">FALSE</a>
+    </ModifyAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:ModifyAccountResponse" />
+   </t:response>
+  </t:test>
+  <t:test>
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${account1.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+  <t:test>
+   <t:request>
+    <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+     <zimbraPref name="zimbraPrefMailForwardingAddress">${test_account2.name}</zimbraPref>
+    </ModifyPrefsRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:ModifyPrefsResponse" />
+   </t:response>
+  </t:test>
+  <t:test>
+   <t:request>
+    <GetPrefsRequest xmlns="urn:zimbraAccount">
+     <pref name="zimbraPrefMailForwardingAddress" />
+    </GetPrefsRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:GetPrefsResponse">
+     <t:select path="acct:pref[@name='zimbraPrefMailForwardingAddress']"
+      emptyset="1" />
+    </t:select>
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+
+
+
+ <t:test_case testcaseid="zcs-2670_testcase2" type="smoke">
+  <t:objective>Send email verification link to user 2.</t:objective>
+  <t:steps>
+   1. Set zimbraFeatureMailForwardingEnabled to true
+   2. Fire ModifyPrefs request with zimbraMailForwardingAddress as email address  of the receipient of verification link.
+   3. Set zimbraMailForwardingVerificationEnabled to TRUE.
+   4. Verify an email verification mail with a link is sent to the recipient.
+  </t:steps>
+
+ 
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test id="create_test_account1" required="true" depends="admin_login">
+   <t:request>
+    <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+     <id>${account1.id}</id>
+     <a n="zimbraFeatureMailForwardingEnabled">TRUE</a>
+     <a n="zimbraFeatureAddressVerificationEnabled">TRUE</a>
+    </ModifyAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:ModifyAccountResponse" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <SendMsgRequest xmlns="urn:zimbraMail">
+     <m>
+      <e t="t" a='${account1.name}' />
+      <su>Hello</su>
+      <mp ct="text/plain">
+       <content>Good Morning</content>
+      </mp>
+     </m>
+    </SendMsgRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+     set="msg1.id" />
+   </t:response>
+  </t:test>
+
+  <t:delay sec="10" />
+
+  <t:test>
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${account1.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+
+
+
+   <t:test>
+    <t:request>
+     <ModifyPrefsRequest xmlns="urn:zimbraAccount"
+      requestId="0">
+      <pref name="zimbraPrefMailForwardingAddress">${test_account2.name}</pref>
+     </ModifyPrefsRequest>
+    </t:request>
+    <t:response>
+     <t:select path="//acct:ModifyPrefsResponse" />
+    </t:response>
+   </t:test>
+
+  <t:delay sec="5"/>
+
+   <t:test>
+    <t:request>
+     <AuthRequest xmlns="urn:zimbraAccount">
+      <account by="name">${test_account2.name}</account>
+      <password>${defaultpassword.value}</password>
+     </AuthRequest>
+    </t:request>
+    <t:response>
+     <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+    </t:response>
+   </t:test>
+
+   <t:test>
+    <t:request>
+     <SearchRequest xmlns="urn:zimbraMail" types="message">
+      <query>in:inbox</query>
+     </SearchRequest>
+    </t:request>
+    <t:response>
+    <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id" />
+    </t:response>
+   </t:test>
+
+   <t:test>
+    <t:request>
+     <GetMsgRequest xmlns="urn:zimbraMail">
+      <m id="${message1.id}" />
+     </GetMsgRequest>
+    </t:request>
+    <t:response>
+     <t:select path="//mail:GetMsgResponse//mail:mp" attr="ct"
+      match="text/html" />	   
+    </t:response>
+   </t:test>
+
+ </t:test_case>
+
+ <t:test_case testcaseid="zcs-2670_testcase3" type="smoke">
+  <t:objective>Send email verification link to user 2.</t:objective>
+  <t:steps>
+   1. Set zimbraFeatureMailForwardingEnabled to true
+   2. Set zimbraMailForwardingVerificationEnabled to FALSE.
+   3. Fire ModifyPrefs request with zimbraMailForwardingAddress as email address of the recipient of verification link.
+   4. Verify an email verification mail with a link is not sent to the recipient.
+  </t:steps>
+
+
+  <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test id="create_test_account1" required="true" depends="admin_login">
+   <t:request>
+    <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+     <id>${account1.id}</id>
+     <a n="zimbraFeatureMailForwardingEnabled">TRUE</a>
+     <a n="zimbraFeatureAddressVerificationEnabled">FALSE</a>
+    </ModifyAccountRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:ModifyAccountResponse" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${account1.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+     <pref name="zimbraPrefMailForwardingAddress">${test_account3.name}</pref>
+    </ModifyPrefsRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:ModifyPrefsResponse" />
+   </t:response>
+  </t:test>
+
+  <t:delay sec="10"/>
+ <!--   <t:test required="true">
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAdmin">
+     <name>${admin.user}</name>
+     <password>${admin.password}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+   </t:response>
+  </t:test> -->
+
+  <t:test>
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${test_account3.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <SearchRequest xmlns="urn:zimbraMail" types="message">
+     <query>in:inbox</query>
+    </SearchRequest>
+   </t:request>
+   <t:select path="//mail:SearchResponse//mail:m" attr="id"
+    set="mail02_id" emptyset="1" />
+   <t:response>
+   </t:response>
+  </t:test>
+
+ </t:test_case>
+
+
+ <t:test_case testcaseid="zcs-2670_testcase4" type="smoke">
+  <t:objective>Account 2 user views the link in plain text format
+  </t:objective>
+  <t:steps>
+   1. Login to account 2
+   2. Fire ModifyPrefs request with zimbraPrefClientType as standard.
+   3. Search the mail in test case 2.
+   4. Viewing the link in plain text format should be possible.
+  </t:steps>
+
+
+  <t:test>
+   <t:request>
+    <AuthRequest xmlns="urn:zimbraAccount">
+     <account by="name">${test_account2.name}</account>
+     <password>${defaultpassword.value}</password>
+    </AuthRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+     <pref name="zimbraPrefClientType">standard</pref>
+    </ModifyPrefsRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//acct:ModifyPrefsResponse" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <SearchRequest xmlns="urn:zimbraMail" types="message">
+     <query>in:inbox</query>
+    </SearchRequest>
+   </t:request>
+     <t:response>
+   <t:select path="//mail:SearchResponse//mail:m" attr="id"
+    set="mail03_id" />
+   </t:response>
+  </t:test>
+
+  <t:test>
+   <t:request>
+    <GetMsgRequest xmlns="urn:zimbraMail">
+     <m id="${mail03_id}" />
+    </GetMsgRequest>
+   </t:request>
+   <t:response>
+    <t:select path="//mail:GetMsgResponse//mail:mp" attr="ct"
+     match="text/html" />
+     <t:select path="//mail:GetMsgResponse//mail:mp/mail:content" 
+     contains="verify" />
+   </t:response>
+  </t:test>
+ </t:test_case>
+
+</t:tests>
+
+
+
+

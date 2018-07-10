@@ -30,24 +30,11 @@
                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
 </t:test_case>   
 
 <!-- browseBy tests -->
 <t:test_case testcaseid="bug93399" type="smoke" bugids="93399">
  <t:objective>BrowseRequest regex expression used blindly gives an error</t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 	<t:test>
 	 <t:request>

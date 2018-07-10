@@ -19,7 +19,7 @@
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -36,7 +36,7 @@
 
 <t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
-   
+
     <!-- Login to admin -->
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
@@ -49,7 +49,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_account1" required="false" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -64,7 +64,7 @@
     </t:test>
 
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+        <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="auth1" required="true">
         <t:request>
@@ -78,7 +78,7 @@
 
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
@@ -86,49 +86,49 @@
     <t:objective>Create Single event with reminder.</t:objective>
 
 
-	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
-   
-	<t:test>
-		<t:request>
-			<GetFolderRequest xmlns="urn:zimbraMail"/>
-		</t:request>
-		<t:response>
-			<t:select path="//mail:GetFolderResponse">
-				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.calendar.folder.id"/>
-			</t:select>
-		</t:response>
-	</t:test>
+        <t:property name="time.20071201120000.gmt" value="1196510400000"/>
+
+        <t:test>
+                <t:request>
+                        <GetFolderRequest xmlns="urn:zimbraMail"/>
+                </t:request>
+                <t:response>
+                        <t:select path="//mail:GetFolderResponse">
+                                <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.calendar.folder.id"/>
+                        </t:select>
+                </t:response>
+        </t:test>
 
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
-                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
-	                        <or a="${account1.name}"/>
-						<alarm action="DISPLAY">
-							<trigger>
-							  <rel related="START" neg="1" m="30"/>
-							</trigger>
-								<desc>${reminder.text}</desc>
-							 <repeat count="2" m="10"/>
-						 </alarm>
-						</comp>
+                    <inv >
+                        <comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+                                <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>
+                                <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>
+                                <or a="${account1.name}"/>
+                                                <alarm action="DISPLAY">
+                                                        <trigger>
+                                                          <rel related="START" neg="1" m="30"/>
+                                                        </trigger>
+                                                                <desc>${reminder.text}</desc>
+                                                         <repeat count="2" m="10"/>
+                                                 </alarm>
+                                                </comp>
                     </inv>
                 <mp ct="text/plain">
-				 <content>${appointment.content}</content>
+                                 <content>${appointment.content}</content>
               </mp>
-		          <su>${appointment.subject}</su>
-	          </m>
-	        </CreateAppointmentRequest>
+                          <su>${appointment.subject}</su>
+                  </m>
+                </CreateAppointmentRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateAppointmentResponse">
-            	<t:select attr="calItemId" set="appt1.calItemId"/>
-            	<t:select attr="invId" set="appt1.invId"/>
-            	<t:select attr="apptId" set="appt1.apptId"/>
+                <t:select attr="calItemId" set="appt1.calItemId"/>
+                <t:select attr="invId" set="appt1.invId"/>
+                <t:select attr="apptId" set="appt1.apptId"/>
             </t:select>
         </t:response>
     </t:test>
@@ -141,23 +141,23 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt1.invId}']">
-        		<t:select path="//mail:comp">
-        			<t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20071201120000.gmt}]}"/>
-            	</t:select>
+                        <t:select path="//mail:comp">
+                                <t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20071201120000.gmt}]}"/>
+                </t:select>
             </t:select>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
-			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20071201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20071201120000.gmt}]}" types="appointment">
-				<query>inid:${account1.calendar.folder.id}</query>
-			</SearchRequest>
+                        <SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20071201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20071201120000.gmt}]}" types="appointment">
+                                <query>inid:${account1.calendar.folder.id}</query>
+                        </SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
-            	<t:select path="//mail:appt[@invId='${appt1.invId}']"/>
-				<!-- Alarm info for past appointment will not be present. -->
+                <t:select path="//mail:appt[@invId='${appt1.invId}']"/>
+                                <!-- Alarm info for past appointment will not be present. -->
             </t:select>
         </t:response>
     </t:test>
@@ -169,43 +169,43 @@
     <t:objective> Setup single events and set reminder to email for Second time - Hours </t:objective>
 
 
-	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
-	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
-	<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
-  
+        <t:property name="time.20250101120000.gmt" value="1735732800000"/>
+        <t:property name="time.20250101120000.pst" value="${TIME(-8h)[${time.20250101120000.gmt}]}"/>
+        <t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv > 
-                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" >
-	                        <s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20180101120000.pst}]}" tz="${timezone.pst}"/>  
-	                        <or a="${account1.name}"/>
-						  <alarm action="DISPLAY">
-							<trigger>
-							  <rel related="START" neg="1" h="3"/>
-							</trigger>
-							<desc>${reminder2.text1}</desc>
-						  </alarm>
-						  <alarm action="DISPLAY">
-							<trigger>
-							  <rel related="START" neg="1" h="2"/>
-							</trigger>
-							<desc>${reminder2.text2}</desc>
-						  </alarm>
-						</comp>
+                    <inv >
+                        <comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment2.subject}" >
+                                <s d="${ICALTIME[${time.20250101120000.pst}]}" tz="${timezone.pst}"/>
+                                <e d="${ICALTIME(+1h)[${time.20250101120000.pst}]}" tz="${timezone.pst}"/>
+                                <or a="${account1.name}"/>
+                                                  <alarm action="DISPLAY">
+                                                        <trigger>
+                                                          <rel related="START" neg="1" h="3"/>
+                                                        </trigger>
+                                                        <desc>${reminder2.text1}</desc>
+                                                  </alarm>
+                                                  <alarm action="DISPLAY">
+                                                        <trigger>
+                                                          <rel related="START" neg="1" h="2"/>
+                                                        </trigger>
+                                                        <desc>${reminder2.text2}</desc>
+                                                  </alarm>
+                                                </comp>
                     </inv>
                 <mp ct="text/plain">
-				 <content>${appointment2.content}</content>
+                                 <content>${appointment2.content}</content>
               </mp>
-		          <su>${appointment2.subject}</su>
-	          </m>
-	        </CreateAppointmentRequest>
+                          <su>${appointment2.subject}</su>
+                  </m>
+                </CreateAppointmentRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appt2.invId"/>
-		</t:response>
+                </t:response>
     </t:test>
 
     <t:test>
@@ -216,24 +216,24 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt2.invId}']">
-        		<t:select path="//mail:comp">
-        			<t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20180101120000.pst}]}"/>
-            	</t:select>
+                        <t:select path="//mail:comp">
+                                <t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20250101120000.pst}]}"/>
+                </t:select>
             </t:select>
         </t:response>
     </t:test>
 
     <t:test>
         <t:request>
-			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20180101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20180101120000.gmt}]}" types="appointment">
-				<query>inid:${account1.calendar.folder.id}</query>
-			</SearchRequest>
+                        <SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20250101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20250101120000.gmt}]}" types="appointment">
+                                <query>inid:${account1.calendar.folder.id}</query>
+                        </SearchRequest>
         </t:request>
-        <t:response>      
+        <t:response>
             <t:select path="//mail:SearchResponse">
-            	<t:select path="//mail:appt[@invId='${appt2.invId}']"/>
-            	<t:select path="//mail:appt/mail:alarmData/mail:alarm" attr="action" match="DISPLAY"/>
-            	<t:select path="//mail:appt/mail:alarmData/mail:alarm" attr="desc" match="${reminder2.text1}"/>
+                <t:select path="//mail:appt[@invId='${appt2.invId}']"/>
+                <t:select path="//mail:appt/mail:alarmData/mail:alarm" attr="action" match="DISPLAY"/>
+                <t:select path="//mail:appt/mail:alarmData/mail:alarm" attr="desc" match="${reminder2.text1}"/>
             </t:select>
         </t:response>
     </t:test>

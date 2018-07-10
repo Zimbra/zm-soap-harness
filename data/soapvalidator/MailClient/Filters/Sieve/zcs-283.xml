@@ -16,32 +16,32 @@
 <t:property name="varName" value="X-New-Header"/>
 <t:property name="varValue" value="Value1"/>
 
-<t:property name="sieve_rule1" value='require  ["log","variables","editheader"];
+<t:property name="sieve_rule1" value='require  ["log","editheader", "variables"];
 set "varName" "${varName}"; set "varValue" "${varValue}";
 addheader :last "${dollar}{varName}" "${dollar}{varValue}";'
 />
 
-<t:property name="sieve_rule2" value='require  ["log","variables","editheader"];
+<t:property name="sieve_rule2" value='require  ["log","editheader", "variables"];
 set "VARName" "${varName}"; set "VARValue" "${varValue}";
 addheader :last "${dollar}{VarName}" "${dollar}{VarValue}";'
 />
 
-<t:property name="sieve_rule3" value='require  ["log","variables","editheader"];
+<t:property name="sieve_rule3" value='require  ["log","editheader", "variables"];
 set "VARNAME" "${varName}"; set "varvalue" "${varValue}";
 addheader :last "${dollar}{VarName}" "${dollar}{VARVALUE}";'
 />
 
-<t:property name="sieve_rule4" value='require  ["log","variables","editheader"];
+<t:property name="sieve_rule4" value='require  ["log","editheader", "variables"];
 set "VaRnAmE" "${varName}"; set "VaRValUe" "${varValue}";
 addheader :last "${dollar}{VarName}" "${dollar}{varvalue}";'
 />
 
-<t:property name="sieve_rule5" value='require  ["log","variables","editheader"];
+<t:property name="sieve_rule5" value='require  ["log","editheader", "variables"];
 set "VARname" "${varName}"; set "VarVALUE" "${varValue}";
 addheader "${dollar}{varNAME}" "${dollar}{varvalue}";'
 />
 
-<t:property name="sieve_rule6" value='require  ["log","variables","editheader"];
+<t:property name="sieve_rule6" value='require  ["log","editheader", "variables"];
 set "VARname" "${varName}"; set "VarVALUE" "${varValue}";
 addheader "${dollar}{Dummy}" "${dollar}{varvalue}";'
 />
@@ -54,7 +54,6 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
     
@@ -70,7 +69,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 </t:test_case>
 
 
-<t:test_case testcaseid="acctSetup1" type="deprecated">
+<t:test_case testcaseid="acctSetup1" type="smoke">
     <t:objective>create test account</t:objective>
     
 	<t:test required="true">
@@ -84,7 +83,31 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-    
+
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	        
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -103,6 +126,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule1}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -116,6 +140,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule2}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -129,6 +154,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account4.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule3}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -142,6 +168,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account5.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule4}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -155,6 +182,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account6.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule5}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -168,6 +196,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account7.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule6}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -181,6 +210,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account8.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n = "zimbraAdminSieveScriptAfter">${sieve_rule7}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -191,7 +221,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	                                              
 </t:test_case>
 
-<t:test_case testcaseid="bugZCS-283_rule1" type="deprecated" bugids="ZCS-283">
+<t:test_case testcaseid="bugZCS-283_rule1" type="smoke" bugids="ZCS-283">
    <t:objective>Uppercase letters are not allowed to be used in variable name in sieve script </t:objective>
     <steps> 
         1. Add sieve_rule1 for the user.
@@ -199,31 +229,6 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 		3. Verify header is added and value is appended even though the case of variable name does not match.
     </steps>	
 
-	<t:test required="true">
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAdmin">
-				<name>${admin.user}</name>
-				<password>${admin.password}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-		</t:response>
-	</t:test>
-    	
-    <t:test id = "modifyaccountrequest01">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account2.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>             
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test> 
-	
-	
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -288,7 +293,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	             
 </t:test_case>
 
-<t:test_case testcaseid="bugZCS-283_rule2" type="deprecated" bugids="ZCS-283">
+<t:test_case testcaseid="bugZCS-283_rule2" type="smoke" bugids="ZCS-283">
    <t:objective>Uppercase letters are not allowed to be used in variable name in sieve script </t:objective>
     <steps> 
         1. Add sieve_rule2 for the user.
@@ -296,31 +301,6 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 		3. Verify header is added and value is appended even though the case of variable name does not match.
     </steps>	
 
-	<t:test required="true">
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAdmin">
-				<name>${admin.user}</name>
-				<password>${admin.password}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-		</t:response>
-	</t:test>
-    	
-    <t:test id = "modifyaccountrequest01">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account3.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule2}</a>             
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test> 
-	
-	
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -385,7 +365,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	             
 </t:test_case>
 
-<t:test_case testcaseid="bugZCS-283_rule3" type="deprecated" bugids="ZCS-283">
+<t:test_case testcaseid="bugZCS-283_rule3" type="smoke" bugids="ZCS-283">
    <t:objective>Uppercase letters are not allowed to be used in variable name in sieve script </t:objective>
     <steps> 
         1. Add sieve_rule3 for the user.
@@ -393,31 +373,6 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 		3. Verify header is added and value is appended even though the case of variable name does not match.
     </steps>	
 
-	<t:test required="true">
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAdmin">
-				<name>${admin.user}</name>
-				<password>${admin.password}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-		</t:response>
-	</t:test>
-    	
-    <t:test id = "modifyaccountrequest01">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account4.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule3}</a>             
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test> 
-	
-	
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -482,7 +437,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	             
 </t:test_case>
 
-<t:test_case testcaseid="bugZCS-283_rule4" type="deprecated" bugids="ZCS-283">
+<t:test_case testcaseid="bugZCS-283_rule4" type="smoke" bugids="ZCS-283">
    <t:objective>Uppercase letters are not allowed to be used in variable name in sieve script </t:objective>
     <steps> 
         1. Add sieve_rule4 for the user.
@@ -490,31 +445,6 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 		3. Verify header is added and value is appended even though the case of variable name does not match.
     </steps>	
 
-	<t:test required="true">
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAdmin">
-				<name>${admin.user}</name>
-				<password>${admin.password}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-		</t:response>
-	</t:test>
-    	
-    <t:test id = "modifyaccountrequest01">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account5.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule4}</a>             
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test> 
-	
-	
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -579,7 +509,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	             
 </t:test_case>
 
-<t:test_case testcaseid="bugZCS-283_rule5" type="deprecated" bugids="ZCS-283">
+<t:test_case testcaseid="bugZCS-283_rule5" type="smoke" bugids="ZCS-283">
    <t:objective>Uppercase letters are not allowed to be used in variable name in sieve script </t:objective>
     <steps> 
         1. Add sieve_rule5 for the user.
@@ -587,31 +517,6 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 		3. Verify header is added and value is appended even though the case of variable name does not match.
     </steps>	
 
-	<t:test required="true">
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAdmin">
-				<name>${admin.user}</name>
-				<password>${admin.password}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-		</t:response>
-	</t:test>
-    	
-    <t:test id = "modifyaccountrequest01">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account6.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule5}</a>             
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test> 
-	
-	
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -676,7 +581,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	             
 </t:test_case>
 
-<t:test_case testcaseid="bugZCS-283_rule6" type="deprecated" bugids="ZCS-283">
+<t:test_case testcaseid="bugZCS-283_rule6" type="smoke" bugids="ZCS-283">
    <t:objective>Uppercase letters are not allowed to be used in variable name in sieve script </t:objective>
     <steps> 
         1. Add sieve_rule6 for the user.
@@ -684,31 +589,6 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 		3. Verify header is not added since the dummy variable is not set
     </steps>	
 
-	<t:test required="true">
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAdmin">
-				<name>${admin.user}</name>
-				<password>${admin.password}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-		</t:response>
-	</t:test>
-    	
-    <t:test id = "modifyaccountrequest01">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account7.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule6}</a>             
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test> 
-	
-	
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -772,7 +652,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="bugZCS-283_rule7" type="deprecated" bugids="ZCS-283">
+<t:test_case testcaseid="bugZCS-283_rule7" type="smoke" bugids="ZCS-283">
    <t:objective>Uppercase letters are not allowed to be used in variable name in sieve script </t:objective>
     <steps> 
         1. Add sieve_rule7 for the user to verify replaceheader.
@@ -780,31 +660,6 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 		3. Verify header is replaced even though the name does not match exactly
     </steps>	
 
-	<t:test required="true">
-		<t:request>
-			<AuthRequest xmlns="urn:zimbraAdmin">
-				<name>${admin.user}</name>
-				<password>${admin.password}</password>
-			</AuthRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-		</t:response>
-	</t:test>
-    	
-    <t:test id = "modifyaccountrequest01">
-        <t:request>
-            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
-                <id>${test_account8.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule7}</a>             
-            </ModifyAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
-        </t:response>
-    </t:test> 
-	
-	
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -865,5 +720,33 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	</t:resttest>
 		             
 </t:test_case>
-    
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>    
 </t:tests>

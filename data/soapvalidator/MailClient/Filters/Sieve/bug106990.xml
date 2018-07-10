@@ -1,6 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -62,17 +61,6 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
-
-                <t:test>
-                        <t:request>
-                                <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                        <account by="name">${admin.user}</account>
-                                </GetAccountRequest>
-                        </t:request>
-                        <t:response>
-                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                        </t:response>
-               </t:test>	
     
     <t:test required="true">
         <t:request>
@@ -122,20 +110,6 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
         type="smoke" bugids="106990" >
         <t:objective> Check variable within envelope test
         </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
-    <t:test required="true">
-        <t:request>
-            <AuthRequest xmlns="urn:zimbraAdmin">
-                <name>${admin.user}</name>
-                <password>${admin.password}</password>
-            </AuthRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>
-    </t:test>
      
         <t:test>
             <t:request>
@@ -154,8 +128,6 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
                     set="Sent_message1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 		<t:test>
             <t:request>
@@ -188,7 +160,6 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
         <t:objective> Check variable within envelope test
         </t:objective>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		
 		<t:test required="true">
 			<t:request>
@@ -219,8 +190,6 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
                     set="Sent_message1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
 		<t:test>
             <t:request>
@@ -253,7 +222,6 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
         <t:objective> Check variable within envelope test
         </t:objective>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		
 		<t:test required="true">
 			<t:request>
@@ -284,8 +252,6 @@ if envelope :contains "From" "admin@${defaultdomain.name}" {
                     set="Sent_message1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
 
 		<t:test>
             <t:request>

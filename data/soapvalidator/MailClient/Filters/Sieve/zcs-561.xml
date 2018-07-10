@@ -128,7 +128,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
  }
 ' />
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="AcctSetup1_filters_actions"
 		type="smoke">
@@ -146,17 +145,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
 
 		<t:test required="true">
 			<t:request>
@@ -182,7 +170,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		type="smoke">
 		<t:objective> Set sieve script for with header name and value empty
 		</t:objective>
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -210,7 +197,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -229,7 +215,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -263,8 +248,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		<t:objective> Set sieve script for with invalid header name and value empty
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -291,7 +274,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -310,7 +292,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -343,8 +324,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		<t:objective> Set sieve script for with correct header name and value empty
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -372,7 +351,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		</t:test>
 
 		
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -392,7 +370,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		</t:test>
 
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -427,8 +404,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		<t:objective> Set sieve script for with empty header name and valid value
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -454,7 +429,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -473,7 +447,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -507,8 +480,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		<t:objective> Set sieve script for with invalid header name and value
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -534,7 +505,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -553,7 +523,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -587,8 +556,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		<t:objective> Set sieve script for with empty condition in else action
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -615,7 +582,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		</t:test>
 
 		
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -634,7 +600,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -680,8 +645,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		<t:objective> Set sieve script for with Invalid header name and value as '\' which should be escaped
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -707,7 +670,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<!-- Send a mail with admin as sender. Should go in Junk of account 1 user -->
 		<t:test>
 			<t:request>
@@ -727,7 +689,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -761,8 +722,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		<t:objective> Set sieve script for with both header name and value as '\' to be escaped
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -789,7 +748,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		</t:test>
 
 		
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -808,7 +766,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -842,8 +799,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 		<t:objective> Set sieve script  with header name and value empty for admin before, user script and admin after
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -871,7 +826,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -890,7 +844,6 @@ if header :contains :comparator "i;ascii-casemap" "" ""
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

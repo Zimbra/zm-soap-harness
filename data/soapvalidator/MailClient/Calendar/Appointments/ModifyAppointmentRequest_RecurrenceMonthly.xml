@@ -90,8 +90,8 @@
     <t:objective> Open Monthly recurring events and set reminder for First time and Second time and later change event start time for All Dates - Days then Hours.</t:objective>
 
 
-	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
-	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+	<t:property name="time.20500101120000.gmt" value="2524651200000"/>
+	<t:property name="time.20500101120000.pst" value="${TIME(-8h)[${time.20500101120000.gmt}]}"/>
 	<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
 
     <t:test>
@@ -100,8 +100,8 @@
 				<m >
 					<inv>
 						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment1.subject}">
-							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
-							<e  d="${ICALTIME(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<s d="${ICALTIME[${time.20500101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20500101120000.pst}]}" tz="${timezone.pst}" />
 							<or a="${account1.name}"/>
 							<recur>
 								<add>
@@ -130,8 +130,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject}" >
-	                        <s d="${ICALTIME[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME[${time.20500101120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20500101120000.gmt}]}" tz="${timezone.pst}"/>  
 	                        <or a="${account1.name}"/>
 							<recur>
 								<add>
@@ -166,8 +166,8 @@
             <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appt1.invId}" comp="0">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject}" >
-	                        <s d="${ICALTIME(+30m)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20180101120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <s d="${ICALTIME(+30m)[${time.20500101120000.gmt}]}" tz="${timezone.pst}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20500101120000.gmt}]}" tz="${timezone.pst}"/>  
 	                        <or a="${account1.name}"/>
 							<recur>
 								<add>
@@ -199,7 +199,7 @@
 
     <t:test>
         <t:request>
-			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20180101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20180101120000.gmt}]}" types="appointment">
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20500101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20500101120000.gmt}]}" types="appointment">
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
@@ -218,8 +218,8 @@
 		</t:request>
 		<t:response>
 			<t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp" attr="name" match="${appointment1.subject}"/>
-			<t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:s" attr="d" match="${ICALTIME(+30m)[${time.20180101120000.gmt}]}"/>
-			<t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:e" attr="d" match="${ICALTIME(+1h)[${time.20180101120000.gmt}]}"/>
+			<t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:s" attr="d" match="${ICALTIME(+30m)[${time.20500101120000.gmt}]}"/>
+			<t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:e" attr="d" match="${ICALTIME(+1h)[${time.20500101120000.gmt}]}"/>
 		</t:response>
 	</t:test>
 

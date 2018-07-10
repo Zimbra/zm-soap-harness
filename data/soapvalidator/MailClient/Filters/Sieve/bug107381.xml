@@ -1,6 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -31,7 +29,6 @@
     <t:property name="notify_body_variable" value="$\{notify_body}"/>
     <t:property name="msg01.file" value="${testMailRaw.root}/bug107381/mime.txt" />
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
     <!-- Sieve rules declaration -->
     <!-- Match-type :matches - * and ? sholud be treated as wildcard -->
     <t:property name="sieve_rule1" value='require ["tag", "editheader", "envelope", "variables"];
@@ -296,7 +293,6 @@ redirect "redirect3${backslash}${backslash}*abc${backslash}${backslash}?123${acc
 keep;
 ' />
 
-
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
         <t:test required="true">
@@ -323,16 +319,16 @@ keep;
             </t:response>
         </t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
+   <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+				<a n="zimbraSpamSubjectTag"/>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
 
 	    <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
@@ -351,6 +347,7 @@ keep;
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cosid}</id>
 	                <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
@@ -507,7 +504,6 @@ keep;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account1.id" />
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account1.server" />
             </t:response>
         </t:test>
 
@@ -516,11 +512,11 @@ keep;
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_redirect_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraSpamApplyUserFilters">TRUE</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_redirect_account1.id" />
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account1.server" />
             </t:response>
         </t:test>
 
@@ -547,7 +543,6 @@ keep;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account2.id" />
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account2.server" />
             </t:response>
         </t:test>
 
@@ -556,11 +551,11 @@ keep;
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_redirect_account2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraSpamApplyUserFilters">TRUE</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_redirect_account2.id" />
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account2.server" />
             </t:response>
         </t:test>
 
@@ -587,7 +582,6 @@ keep;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account3.id" />
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify_account3.server" />
             </t:response>
         </t:test>
 
@@ -596,19 +590,17 @@ keep;
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_redirect_account3.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraSpamApplyUserFilters">TRUE</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_redirect_account3.id" />
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="redirect_account3.server" />
             </t:response>
         </t:test>
     </t:test_case>
 
     <t:test_case testcaseid="bug107381_rule1" type="smoke" bugids="107381">
         <t:objective>* and ? should be treated as wildcard if Match-type is :matches</t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -630,7 +622,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -656,8 +647,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-  <!--       <t:resttest>
+       <t:resttest>
             <t:restServletRequest>
                 <id>${msg1.id}</id>
             </t:restServletRequest>
@@ -665,7 +655,7 @@ keep;
                 <t:select attr="X-Test-Header-1" match="REPLACED" />
                 <t:select attr="X-Test-Header-2" emptyset="1" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case> 
 
     <t:test_case testcaseid="bug107381_rule2" type="smoke" bugids="107381">
@@ -691,7 +681,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -717,8 +706,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-     <!--   <t:resttest>
+        <t:resttest>
             <t:restServletRequest>
                 <id>${msg2.id}</id>
             </t:restServletRequest>
@@ -726,7 +714,7 @@ keep;
                 <t:select attr="X-Test-Header-1" match="REPLACED" />
                 <t:select attr="X-Test-Header-2" emptyset="1" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case> 
 
     <t:test_case testcaseid="bug107381_rule3" type="smoke" bugids="107381">
@@ -752,7 +740,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -778,8 +765,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
- <!--      <t:resttest>
+      <t:resttest>
             <t:restServletRequest>
                 <id>${msg3.id}</id>
             </t:restServletRequest>
@@ -789,7 +775,7 @@ keep;
                 <t:select attr="X-Test-Header-3" match="test\*abc\?123" />
                 <t:select attr="X-Test-Header-4" match="test\*abc\?123" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
 
     <t:test_case testcaseid="bug107381_rule4" type="smoke" bugids="107381">
@@ -815,7 +801,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account4.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -841,8 +826,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-   <!--    <t:resttest>
+      <t:resttest>
             <t:restServletRequest>
                 <id>${msg4.id}</id>
             </t:restServletRequest>
@@ -850,7 +834,7 @@ keep;
                 <t:select attr="X-Test-Header-1" match="REPLACED" />
                 <t:select attr="X-Test-Header-2" emptyset="1" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
 
     <t:test_case testcaseid="bug107381_rule5" type="smoke" bugids="107381">
@@ -876,7 +860,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account5.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -902,8 +885,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-  <!--     <t:resttest>
+     <t:resttest>
             <t:restServletRequest>
                 <id>${msg5.id}</id>
             </t:restServletRequest>
@@ -911,7 +893,7 @@ keep;
                 <t:select attr="X-Test-Header-1" match="REPLACED" />
                 <t:select attr="X-Test-Header-2" emptyset="1" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
 
     <t:test_case testcaseid="bug107381_rule6" type="smoke" bugids="107381">
@@ -937,7 +919,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account6.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -967,8 +948,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-  <!--      <t:resttest>
+        <t:resttest>
             <t:restServletRequest>
                 <id>${msg6.id}</id>
             </t:restServletRequest>
@@ -980,7 +960,7 @@ keep;
                 <t:select attr="X-Test-Header-5" match="REPLACED" />
                 <t:select attr="X-Test-Header-6" emptyset="1" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
 
     <t:test_case testcaseid="bug107381_rule7" type="smoke" bugids="107381">
@@ -1006,7 +986,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account7.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1032,8 +1011,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-  <!--   <t:resttest>
+     <t:resttest>
             <t:restServletRequest>
                 <id>${msg7.id}</id>
             </t:restServletRequest>
@@ -1041,7 +1019,7 @@ keep;
                 <t:select attr="X-Test-Header-1" match="REPLACED" />
                 <t:select attr="X-Test-Header-2" emptyset="1" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
 
     <t:test_case testcaseid="bug107381_rule8" type="smoke" bugids="107381">
@@ -1067,7 +1045,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account8.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1093,8 +1070,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-   <!--    <t:resttest>
+       <t:resttest>
             <t:restServletRequest>
                 <id>${msg8.id}</id>
             </t:restServletRequest>
@@ -1102,7 +1078,7 @@ keep;
                 <t:select attr="X-Test-Header-1" match="REPLACED" />
                 <t:select attr="X-Test-Header-2" emptyset="1" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
 
     <t:test_case testcaseid="bug107381_rule9" type="smoke" bugids="107381">
@@ -1128,7 +1104,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account9.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1158,8 +1133,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-   <!--   <t:resttest>
+      <t:resttest>
             <t:restServletRequest>
                 <id>${msg9.id}</id>
             </t:restServletRequest>
@@ -1171,7 +1145,7 @@ keep;
                 <t:select attr="X-Test-Header-5" match="REPLACED" />
                 <t:select attr="X-Test-Header-6" emptyset="1" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
 
     <t:test_case testcaseid="bug107381_rule10" type="smoke" bugids="107381">
@@ -1197,7 +1171,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account10.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1223,8 +1196,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-   <!--   <t:resttest>
+      <t:resttest>
             <t:restServletRequest>
                 <id>${msg10.id}</id>
             </t:restServletRequest>
@@ -1235,9 +1207,8 @@ keep;
                 <t:select attr="X-Test-Header-8" emptyset="1" />
                 <t:select attr="X-New-Header-3-test*abc?123" match="REPLACED" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
 
-	<t:property name="server.zimbraAccount" value="${notify_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1273,7 +1244,6 @@ keep;
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${redirect_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1322,7 +1292,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account11.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1348,8 +1317,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-  <!--    <t:resttest>
+      <t:resttest>
             <t:restServletRequest>
                 <id>${msg11.id}</id>
             </t:restServletRequest>
@@ -1360,8 +1328,7 @@ keep;
                 <t:select attr="X-Test-Header-8" emptyset="1" />
                 <t:select attr="X-New-Header-3-test*abc?123" match="REPLACED" />
             </t:restServletResponse>
-        </t:resttest> -->
-	<t:property name="server.zimbraAccount" value="${notify_account2.server}"/>
+        </t:resttest> 
 
         <t:test>
             <t:request>
@@ -1398,7 +1365,6 @@ keep;
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${redirect_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1447,7 +1413,6 @@ keep;
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account12.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1472,8 +1437,7 @@ keep;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-  <!--    <t:resttest>
+      <t:resttest>
             <t:restServletRequest>
                 <id>${msg12.id}</id>
             </t:restServletRequest>
@@ -1484,9 +1448,8 @@ keep;
                 <t:select attr="X-Test-Header-8" emptyset="1" />
                 <t:select attr="X-New-Header-3-test\*abc\?123" match="REPLACED" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
 
-	<t:property name="server.zimbraAccount" value="${notify_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1522,7 +1485,6 @@ keep;
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${redirect_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1550,8 +1512,6 @@ keep;
 
     <t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         
         <t:test required="true">
             <t:request>
@@ -1570,6 +1530,7 @@ keep;
             <ModifyCosRequest xmlns="urn:zimbraAdmin">
                 <id>${cosid}</id>
                 <a n="zimbraSieveNotifyActionRFCCompliant">FALSE</a>
+                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
             </ModifyCosRequest>
         </t:request>
         <t:response>

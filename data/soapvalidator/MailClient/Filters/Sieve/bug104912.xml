@@ -1,12 +1,13 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:property name="account1.name"
 		value="keep1.${TIME}${COUNTER}@${defaultdomain.name}" />
 	<t:property name="account2.name"
 		value="keep2.${TIME}${COUNTER}@${defaultdomain.name}" />
 	<t:property name="account3.name"
 		value="keep3.${TIME}${COUNTER}@${defaultdomain.name}" />
+
+
 	<t:property name="folder1.name" value="folder1.${TIME}${COUNTER}" />
 	<t:property name="folder2.name" value="folder2.${TIME}${COUNTER}" />
 	<t:property name="subject1" value="High priority mail" />
@@ -22,6 +23,11 @@
 	<t:property name="subject11" value="sub11.${TIME}${COUNTER}" />
 	<t:property name="subject12" value="discard user script" />
 	<t:property name="subject13" value="sub13.${TIME}${COUNTER}" />
+
+
+	<t:property name="test_account1.password" value="test123" />
+
+
 
 	<t:property name="admin_script_value_before_1"
 		value='require ["fileinto", "tag", "flag"];
@@ -274,6 +280,8 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 }
 ' />
 
+
+
 	<t:test_case testcaseid="AcctSetup1_filters_actions_discard_basic"
 		type="smoke">
 		<t:objective> Create test account and login to first account
@@ -291,17 +299,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
     
-                <t:test>
-                        <t:request>
-                                <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                        <account by="name">${admin.user}</account>
-                                </GetAccountRequest>
-                        </t:request>
-                        <t:response>
-                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                        </t:response>
-               </t:test>
-		
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -369,13 +366,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -406,7 +401,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 		<t:objective>Create sieve filters for incoming admin before, user and
 			admin after and verify them</t:objective>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -456,13 +450,14 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -485,13 +480,13 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -512,7 +507,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
+
 
 		<t:test required="true">
 			<t:request>
@@ -545,13 +540,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -573,13 +566,13 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -611,8 +604,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 		<t:objective> Modify account and send mail to check sieve filter
 		</t:objective>
 
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -663,13 +654,13 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -690,13 +681,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -718,7 +707,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -753,13 +741,13 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -780,13 +768,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -824,7 +811,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			sieve filter is not executed
 		</t:objective>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
+
 
 		<t:test required="true">
 			<t:request>
@@ -854,13 +841,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -888,13 +874,13 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -915,14 +901,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					match="${subject5}" />
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account3.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -943,13 +927,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -992,8 +974,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 		type="smoke">
 		<t:objective> Modify account and send mail to check seive filter
 		</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -1053,13 +1033,13 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1080,13 +1060,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1107,8 +1086,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					match="${subject6}" emptyset="1" />
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -1142,13 +1119,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1169,13 +1145,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1204,8 +1179,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 		type="smoke">
 		<t:objective> Modify account and send mail to check sieve Outgoing
 			filter</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -1240,13 +1213,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1274,13 +1246,13 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1303,13 +1275,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account3.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1330,13 +1301,13 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1365,13 +1336,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account2.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1394,13 +1363,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account3.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1427,7 +1395,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 		<t:objective> Modify account and send mail to check seive filter for
 			outgoing mails</t:objective>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -1458,13 +1425,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1512,13 +1478,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account3.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account3.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1539,13 +1503,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1575,13 +1537,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account3.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account3.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1602,13 +1562,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1640,7 +1598,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 		<t:objective> Modify account and send mail to check sieve filter for
 			incoming mail</t:objective>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -1666,7 +1623,8 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:request>
 
 			<t:response>
-				<t:select path="//admin:ModifyAccountResponse/admin:account" attr="name" match="${account1.name}" />
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
 			</t:response>
 		</t:test>
 
@@ -1692,13 +1650,12 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1742,7 +1699,6 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 		<t:objective> Modify account and send mail to check seive filter for
 			incoming mail</t:objective>
 
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -1794,13 +1750,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account1.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1833,13 +1787,11 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account3.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
 					<account by="name">${account3.name}</account>
-					<password>${defaultpassword.value}</password>
+					<password>${test_account1.password}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1860,6 +1812,9 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 
+
+
 	</t:test_case>
+
 
 </t:tests>	

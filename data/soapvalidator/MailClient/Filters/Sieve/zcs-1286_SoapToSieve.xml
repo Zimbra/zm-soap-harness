@@ -2,7 +2,6 @@
 <!-- Following bug is included as part of this testcase -->
 	<!-- zcs-1286:-Regression : ModifyOutgoingFilterRulesRequest fails -->
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:property name="account1.name"
 		value="test_zcs1286.${TIME}${COUNTER}@${defaultdomain.name}" />
 
@@ -64,17 +63,6 @@
 			</t:response>
 		</t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -93,7 +81,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -249,7 +236,6 @@
 			5. Folder in step 2 should get created again and mail should be delivered in it.
 		</t:steps>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -353,7 +339,6 @@
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -384,7 +369,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -411,8 +395,9 @@
 		</t:test>		
 
 	</t:test_case>
-		
-	<t:test_case testcaseid="ZCS-1286_Filter2" type="smoke"
+
+<!-- Behavior was changed as part of zcs-540. Marking this test as deprecated -->		
+	<t:test_case testcaseid="ZCS-1286_Filter2" type="deprecated"
 		bugids="ZCS-1286">
 		<t:objective>Run filter and check the deleted folder gets created again.
 		</t:objective>
@@ -423,7 +408,6 @@
 			5. All mails from inbox in step 1 should be moved to newly created folder (deleted in step2).
 		</t:steps>		
 		
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -511,7 +495,6 @@
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<GetFilterRulesRequest xmlns="urn:zimbraMail">
@@ -597,7 +580,6 @@
 			6. Folder 2 should get created and incoming mail should be delivered in it.
 		</t:steps>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -701,7 +683,6 @@
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -745,7 +726,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -785,7 +765,6 @@
 		5. Deleted folder should get created again with mail delivered in it.
 		</t:steps>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -897,7 +876,6 @@
 			</t:response>
 		</t:test>
 		
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -928,7 +906,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

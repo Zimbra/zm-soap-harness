@@ -1,6 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -32,17 +30,8 @@ if  header :contains ["Subject"] "require abc def" {
 }
 '/>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed. -->
     <!--  multiple require commands -->
-    <t:property name="admin_sieve_before_rule2" value='require ["tag"];
-require ["fileinto"];
-tag "admin_sieve_before";
-fileinto "/Inbox/sub";
-if  header :contains ["Subject"] "require abc def" {
-  log "--- require in admin sieve before  ---";
-}
-'/>
-<!--   <t:property name="admin_sieve_before_rule2" value='require ["tag"];
+   <t:property name="admin_sieve_before_rule2" value='require ["tag"];
 require ["fileinto"];
 require ["editheader"];
 tag "admin_sieve_before";
@@ -50,7 +39,7 @@ fileinto "/Inbox/sub";
 addheader :last "X-New-Header-1" "value1";
 if  header :contains ["Subject"] "require abc def" {
 log "require in admin sieve before" ;}
-'/> -->
+'/> 
 
     <t:property name="account_sieve_rule2" value='require ["fileinto"];
 require ["flag"];
@@ -63,15 +52,7 @@ if  header :contains ["Subject"] "require abc def" {
 }
 '/>
 
-    <t:property name="admin_sieve_after_rule2" value='require ["flag"];
-require ["tag"];
-flag "flagged";
-tag "admin_sieve_script_after";
-if  header :contains ["Subject"] "require abc def" {
-  log "--- require in admin sieve after  ---";
-}
-'/>
-<!--   <t:property name="admin_sieve_after_rule2" value='require ["flag"];
+   <t:property name="admin_sieve_after_rule2" value='require ["flag"];
 require ["editheader"];
 require ["tag"];
 flag "flagged";
@@ -80,18 +61,10 @@ addheader :last "X-New-Header-2" "value2";
 if  header :contains ["Subject"] "require abc def" {
  log "require in admin sieve before" ;
 }
-'/> -->
+'/> 
 
     <!-- with line breaks -->
-    <t:property name="admin_sieve_before_rule3" value='require ["tag"];&#010;
-require ["fileinto"];&#010;
-tag "admin_sieve_before";&#010;
-fileinto "/Inbox/sub";&#010;
-if  header :contains ["Subject"] "require abc def" {&#010;
-  log "--- require in admin sieve before  ---";&#010;
-}&#010;
-'/>
-<!--   <t:property name="admin_sieve_before_rule3" value='require ["tag"];&#010;
+   <t:property name="admin_sieve_before_rule3" value='require ["tag"];&#010;
 require ["fileinto"];&#010;
 require ["editheader"];&#010;
 tag "admin_sieve_before";&#010;
@@ -100,9 +73,9 @@ addheader :last "X-New-Header-1" "value1";&#010;
 if  header :contains ["Subject"] "require abc def" {&#010;
   log "require in admin sieve before";&#010;
 }&#010;
-'/> -->
+'/> 
 
-    <t:property name="account_sieve_rule3" value='require ["fileinto"];&#010;
+  <t:property name="account_sieve_rule3" value='require ["fileinto"];&#010;
 require ["flag"];&#010;
 require ["tag"];&#010;
 fileinto "/Inbox/sub2";&#010;
@@ -112,15 +85,8 @@ if  header :contains ["Subject"] "require abc def" {&#010;
   log "--- require in account sieve  ---";&#010;
 }&#010;
 '/>
-    <t:property name="admin_sieve_after_rule3" value='require ["flag"];&#010;
-require ["tag"];&#010;
-flag "flagged";&#010;
-tag "admin_sieve_script_after";&#010;
-if  header :contains ["Subject"] "require abc def" {&#010;
-  log "--- require in admin sieve after  ---";&#010;
-}&#010;
-'/>
-<!-- <t:property name="admin_sieve_after_rule3" value='require ["flag"];&#010;
+
+ <t:property name="admin_sieve_after_rule3" value='require ["flag"];&#010;
 require ["editheader"];&#010;
 require ["tag"];&#010;
 flag "flagged";&#010;
@@ -129,7 +95,7 @@ addheader :last "X-New-Header-2" "value2";&#010;
 if  header :contains ["Subject"] "require abc def" {&#010;
   log "require in admin sieve after";&#010;
 }&#010;
-'/> -->
+'/> 
 
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
@@ -157,17 +123,30 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -177,7 +156,6 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
             </t:response>
         </t:test>
 
@@ -190,7 +168,6 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
             </t:response>
         </t:test>
 
@@ -203,15 +180,12 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
             </t:response>
         </t:test>
     </t:test_case>
 
     <t:test_case testcaseid="bug107562_rule1" type="smoke" bugids="107562">
         <t:objective>A word "require" in other commands should not picked up. (pattern 1: single line and single require command in each attribute)</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -237,7 +211,6 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -255,7 +228,6 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -284,8 +256,6 @@ if  header :contains ["Subject"] "require abc def" {&#010;
 
     <t:test_case testcaseid="bug107562_rule2" type="smoke" bugids="107562">
         <t:objective>A word "require" in other commands should not picked up. (pattern 2: single line and multiple require commands in each attribute)</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -311,7 +281,6 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -329,7 +298,6 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -368,8 +336,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-   <!--      <t:resttest>
+      <t:resttest>
             <t:restServletRequest>
                 <id>${msg2.id}</id>
             </t:restServletRequest>
@@ -377,13 +344,11 @@ if  header :contains ["Subject"] "require abc def" {&#010;
                 <t:select attr="X-New-Header-1" match="value1" />
                 <t:select attr="X-New-Header-2" match="value2" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
 
     <t:test_case testcaseid="bug107562_rule3" type="smoke" bugids="107562">
         <t:objective>A word "require" in other commands should not picked up. (pattern 3: multiple lines and multiple require commands in each attribute)</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -409,7 +374,6 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -427,7 +391,6 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -466,8 +429,7 @@ if  header :contains ["Subject"] "require abc def" {&#010;
             </t:response>
         </t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-<!--      <t:resttest>
+     <t:resttest>
             <t:restServletRequest>
                 <id>${msg3.id}</id>
             </t:restServletRequest>
@@ -475,6 +437,36 @@ if  header :contains ["Subject"] "require abc def" {&#010;
                 <t:select attr="X-New-Header-1" match="value1" />
                 <t:select attr="X-New-Header-2" match="value2" />
             </t:restServletResponse>
-        </t:resttest> -->
+        </t:resttest> 
     </t:test_case>
+
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>    
 </t:tests>

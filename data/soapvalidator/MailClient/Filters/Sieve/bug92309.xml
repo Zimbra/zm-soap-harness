@@ -1,5 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <!-- Test accounts declaration -->
     <t:property name="account1.name"
@@ -53,7 +52,6 @@ if anyof (address :domain :is ["to"] ) {
         <t:objective> With unidentified charset
         </t:objective>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -85,6 +83,18 @@ if anyof (address :domain :is ["to"] ) {
             </t:request>
             <t:response>
                 <t:select path="//mail:ModifyFilterRulesResponse"/>
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
 

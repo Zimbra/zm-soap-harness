@@ -2,6 +2,7 @@
 
 <t:property name="domain1.name" value="test${TIME}${COUNTER}"/>
 <t:property name="domain2.name" value="test${TIME}${COUNTER}"/>
+<t:property name="domain3.name" value="test${TIME}${COUNTER}"/>
 
 <t:property name="domain.space" value="    "/>
 <t:property name="domain.blank" value=""/>
@@ -10,6 +11,8 @@
 <t:property name="domain.negative" value="-1"/>
 <t:property name="domain.zero" value="0"/>
 <t:property name="domain.largeNumber" value="1112223333"/>
+<t:property name="ldap.zimbraAuthLdapURL1" value = "ldap://ldap1.com" />
+<t:property name="ldap.zimbraAuthLdapURL2" value = " ldap://ldap2.com" />
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -65,6 +68,30 @@
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain2.id"/>
         </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain3.name}</name>
+                <a n="zimbraAuthLdapURL">${ldap.zimbraAuthLdapURL1}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain3.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <ModifyDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain3.id}</id>
+                <a n="+zimbraAuthLdapURL">${ldap.zimbraAuthLdapURL2}</a>
+            </ModifyDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+		</t:response>
     </t:test>
 
 </t:test_case>
@@ -401,6 +428,23 @@
         </t:request>
         <t:response>
             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetDomainRequest10" type="smoke" bugids="ZBUG-201">
+	<t:objective> GetDomainRequest when zimbraAuthLdapURL is space separated list </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin" applyConfig="0">
+            	<domain by="id">${domain3.id}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetDomainResponse/admin:domain" attr="name"  match="^${domain3.name}$"/>
+            <t:select path="//admin:GetDomainResponse/admin:domain/admin:a[@n='zimbraAuthLdapURL']" match="${ldap.zimbraAuthLdapURL1} ${ldap.zimbraAuthLdapURL2}"/>
         </t:response>
     </t:test>
 

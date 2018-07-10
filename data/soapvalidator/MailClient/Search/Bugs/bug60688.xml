@@ -26,17 +26,6 @@
         </t:response>
     </t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -50,7 +39,6 @@
         </t:response>
     </t:test>  
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 <!-- find out which folder ID is the inbox -->
     <t:test id="getFolderRequest">
         <t:request>

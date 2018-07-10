@@ -10,6 +10,9 @@
     <t:property name="sieve_rule2" value='require ["tag"];if anyof true { tag "t2"; }' />
     <t:property name="sieve_rule3" value='require ["tag"];if anyof true { tag "t3"; }' />
     <t:property name="sieve_rule4" value='require ["tag"];if anyof true { tag "t4"; }' />
+    <t:property name="sieve_rule5" value='require ["editheader"];addheader "X-New-Header" "test value";' />
+    <t:property name="test.subject" value='subject1' />
+    <t:property name="test.subject2" value='subject2' />
 
     <t:test_case testcaseid="SetupEnviroment" type="always" bugids="ZCS-1291">
         <t:objective>create test account</t:objective>
@@ -380,7 +383,164 @@
                     matches="${sieve_rule4}" />
             </t:response>
         </t:test>
-
     </t:test_case>
 
+    <t:test_case testcaseid="EditheaderEnableDisableVerification" type="smoke" bugids="ZCS-1841">
+        <t:objective> Verify whether zimbraSieveEditHeaderEnabled works or not </t:objective>
+        <t:steps>
+            1. auth with admin
+            2. set zimbraSieveEditHeaderEnabled to false and admin sieve script on account1
+            3. send mail from admin to account1
+            4. verify editheader is not processed
+            5. set zimbraSieveEditHeaderEnabled to true on account1
+            6. send mail from admin to account1
+            7. verify editheader is processed
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${account1.id}</id>
+                    <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule5}</a>
+                </ModifyAccountRequest>
+            </t:request>
+        </t:test>
+
+        <t:test >
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m>
+                      <e t="t" a='${account1.name}'/>
+                      <su>${test.subject}</su>
+                      <mp ct="text/plain">
+                          <content>Good Morning</content>
+                      </mp>
+                   </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>${test.subject}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m//mail:su" match="${test.subject}" />
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg1.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="X-New-Header" match="test value" emptyset="1" />
+            </t:restServletResponse>
+        </t:resttest>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${account1.id}</id>
+                    <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+                </ModifyAccountRequest>
+            </t:request>
+        </t:test>
+
+        <t:test >
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m>
+                      <e t="t" a='${account1.name}'/>
+                      <su>${test.subject2}</su>
+                      <mp ct="text/plain">
+                          <content>Good Morning</content>
+                      </mp>
+                   </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>${test.subject2}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m//mail:su" match="${test.subject2}" />
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id" />
+            </t:response>
+        </t:test>
+
+        <t:resttest>
+            <t:restServletRequest>
+                <id>${msg2.id}</id>
+            </t:restServletRequest>
+            <t:restServletResponse>
+                <t:select attr="X-New-Header" match="test value" />
+            </t:restServletResponse>
+        </t:resttest>
+
+      </t:test_case>
 </t:tests>
