@@ -40,8 +40,6 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class RestServletTest extends Test {
 
-	protected static Logger mLog = Logger.getLogger(RestServletTest.class.getName());
-
 
 	// XML definitions
     public static final QName E_RESTSERVLETTEST = QName.get("resttest", SoapTestCore.NAMESPACE);
@@ -107,6 +105,7 @@ public class RestServletTest extends Test {
 	public static final String A_MATCH = "match";
 	public static final String A_FILENAME = "file";
 	public static final String A_STRING = "string";
+	public static final String A_COUNT = "count";
 
 
 	// REST servlet URL, ex:  https://dogfood.liquidsys.com/zimbra/user/roland/inbox.rss
@@ -634,10 +633,13 @@ public class RestServletTest extends Test {
 		String match = select.getAttribute(A_MATCH, null);
 		String property = select.getAttribute(A_SET, null);
 		String emptyset = select.getAttribute(A_EMPTYSET, "0");
+		String countStr = select.getAttribute(A_COUNT, "-1");
+
 		String value; // TBD below
 		boolean negativeTest = emptyset.equals("1");
+		int count = Integer.parseInt(countStr);
 
-		String resultMessage = "doCsSelect: path ("+path+") attr ("+attr+") match ("+match+") set ("+property+") emptyset ("+emptyset+")";
+		String resultMessage = "doCsSelect: path ("+path+") attr ("+attr+") match ("+match+") set ("+property+") emptyset ("+emptyset+") count ("+count+")";
 		mLog.debug(resultMessage);
 
 		// Convert the massive response String into an array of individual lines
@@ -646,6 +648,7 @@ public class RestServletTest extends Test {
 
 		boolean matchFound = false;
 		boolean attrFound = false;
+		int numMatchFound = 0;
 
 		// Parse each line, looking for the requested attribute
 		for (int i=0; i < contextArray.length; i++) {
@@ -705,10 +708,12 @@ public class RestServletTest extends Test {
 						// Bug 9092
 						if (Pattern.matches(match.toLowerCase(), value.toLowerCase())) {
 							matchFound = true;
+							numMatchFound++;
 						}
 					} else {
 						if (Pattern.matches(match, value)) {
 							matchFound = true;
+							numMatchFound++;
 						}
 					}
 				} catch (PatternSyntaxException pse) {
@@ -725,7 +730,7 @@ public class RestServletTest extends Test {
 			// Keep looking until all conditions have been satisfied
 			boolean keepLooking = false;
 			if (!elementHasValue ||
-				(match != null && !matchFound) ||
+				(match != null && (!matchFound || count >= 0)) ||
 				(attr != null && !attrFound)) {
 				keepLooking = true;
 			}
@@ -738,8 +743,12 @@ public class RestServletTest extends Test {
 		// Process the result
 		boolean success = true;
 
-		if ((match != null && !matchFound)) {
+		if ((match != null && count < 0 && !matchFound)) {
 			resultMessage = resultMessage.concat(", match not found");
+			success = false;
+		}
+		if ((match != null && count >= 0 && count != numMatchFound)) {
+			resultMessage = resultMessage.concat(", match not found " + count + " time(s) (found " + numMatchFound + " time(s)");
 			success = false;
 		}
 		if (attr != null && !attrFound) {
@@ -861,12 +870,13 @@ public class RestServletTest extends Test {
 
 		File f = new File(coreController.rootDebugDir, fileName == null ? ""+System.currentTimeMillis() : fileName);;
 
-		if ( httpResponseFile == null )
+		if ( httpResponseFile == null ) {
 			throw new HarnessException("response data never saved to file.  this shouldn't happen");
+		}
 
-		if ( httpResponseFile.renameTo(f) )
+		if ( httpResponseFile.renameTo(f) ) {
 			mTeardownDetails = "data saved/moved to "+ f.getAbsolutePath();
-
+		}
 		if ( fileSet != null ) {
 			String path = null;
 			try {

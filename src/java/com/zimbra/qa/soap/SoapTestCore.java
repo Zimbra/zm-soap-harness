@@ -1405,6 +1405,7 @@ public class SoapTestCore {
 			
 			try {
 
+				method.setRequestBody(getPayload());
 				method.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	        	
 	        	httpResponseCode = client.executeMethod(method);
@@ -1444,6 +1445,53 @@ public class SoapTestCore {
 	        }
 					
     	}
+		
+		protected String getPayload() throws HarnessException
+		{
+			StringBuilder sb = new StringBuilder("accountId=&verb=add");
+			
+			if ( getAccountFlavor().equalsIgnoreCase(zDesktopAcctTest.S_FLAVOR_ZIMBRA) )
+			{
+				sb.append("&accountFlavor=").append(getAccountFlavor());
+				sb.append("&email=").append(getEmail());
+				sb.append("&accountName=").append(getAccountName());
+				sb.append("&password=").append(getPassword());
+				sb.append("&host=").append(getHost());
+				sb.append("&port=").append(getPort());
+				sb.append("&syncFreqSecs=").append(getSyncFreqSecs());
+				sb.append("&debugTraceEnabled=").append(getDebugTraceEnabled());
+			}
+			else if ( getAccountFlavor().equalsIgnoreCase(zDesktopAcctTest.S_FLAVOR_YMP) )
+			{
+				sb.append("&accountFlavor=").append(getAccountFlavor());
+				sb.append("&domain=").append(getDomain());
+				sb.append("&accountName=").append(getAccountName());
+				sb.append("&fromDisplay=").append(getFromDisplay());
+				sb.append("&email=").append(getEmail());
+				sb.append("&password=").append(getPassword());
+				sb.append("&syncFreqSecs=").append(getSyncFreqSecs());
+				sb.append("&debugTraceEnabled=").append(getDebugTraceEnabled());
+			}
+			else if ( getAccountFlavor().equalsIgnoreCase(zDesktopAcctTest.S_FLAVOR_GMAIL) )
+			{
+				sb.append("&accountFlavor=").append(getAccountFlavor());
+				sb.append("&domain=").append(getDomain());
+				sb.append("&accountName=").append(getAccountName());
+				sb.append("&fromDisplay=").append(getFromDisplay());
+				sb.append("&email=").append(getEmail());
+				sb.append("&password=").append(getPassword());
+				sb.append("&syncFreqSecs=").append(getSyncFreqSecs());
+				sb.append("&debugTraceEnabled=").append(getDebugTraceEnabled());
+			}
+			else
+			{
+				throw new HarnessException("getPayload: Not supported yet: accountFlavor = " + getAccountFlavor());
+			}
+
+			
+			return (sb.toString());
+			
+		}
 		
 		protected URL getURL(String server, String password) throws HarnessException {
 			
@@ -2761,7 +2809,7 @@ public class SoapTestCore {
                     fmt.applyPattern("yyyyMMddHHmmss'Z'");
                     replace = fmt.format(d.getTime());
                 } else if (prop.startsWith("XMLTIME")) {
-                    fmt.applyPattern("yyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                    fmt.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
                     replace = fmt.format(d.getTime());
                 } else if (prop.startsWith("GENDATESTAMP")) {
                 	fmt.applyPattern("MM/dd/yyyy");
@@ -2778,7 +2826,10 @@ public class SoapTestCore {
                 }   else if (prop.startsWith("ICALTIME")) {
                 	fmt.applyPattern("yyyyMMdd'T'HHmmss");
         		    replace = fmt.format(d.getTime());
-				} else if (prop.startsWith("CURRWEEKDAY")) {
+				} else if (prop.startsWith("GMTTIME")) {
+                    fmt.applyPattern("yyyyMMdd'T'HHmmss'Z'");
+                    replace = fmt.format(d.getTime());
+                } else if (prop.startsWith("CURRWEEKDAY")) {
 					//sun=0,mon=1,....,sat=6
 					replace = String.valueOf(d.get(Calendar.DAY_OF_WEEK)-1);
 				} else if (prop.startsWith("CURRDAY")) {					

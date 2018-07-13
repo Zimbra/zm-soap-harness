@@ -79,9 +79,19 @@ public class TestFactory {
 			theTestObjectMap.put(SoapTest.E_TESTTEST, "com.zimbra.qa.soap.SoapTest");
 			theTestObjectMap.put(SoapTest.E_SOAPTEST, "com.zimbra.qa.soap.SoapTest");
 			theTestObjectMap.put(UploadServletTest.E_UPLOADSERVLETTEST, "com.zimbra.qa.soap.UploadServletTest");
+			theTestObjectMap.put(YABTest.E_YABTEST, "com.zimbra.qa.soap.YABTest");
+			theTestObjectMap.put(YMailTest.E_YMAILTEST, "com.zimbra.qa.soap.YMailTest");
+			theTestObjectMap.put(YCalTest.E_YCALTEST, "com.zimbra.qa.soap.YCalTest");
+			theTestObjectMap.put(MigrationTest.E_MIGRATIONTEST, "com.zimbra.qa.soap.MigrationTest");
 			theTestObjectMap.put(PstImportTest.E_PSTIMPORTTEST, "com.zimbra.qa.soap.PstImportTest");
 			theTestObjectMap.put(SmtpInjectTest.E_SMTPINJECTTEST, "com.zimbra.qa.soap.SmtpInjectTest");
 			theTestObjectMap.put(StafTaskTest.E_STAFTEST, "com.zimbra.qa.soap.StafTaskTest");
+//			theTestObjectMap.put(WizardVersionTest.E_WIZARDVERSIONTEST, "com.zimbra.qa.soap.WizardVersionTest");
+			theTestObjectMap.put(zDesktopAcctTest.E_ZDESKTOPACCT, "com.zimbra.qa.soap.zDesktopAcctTest");
+			theTestObjectMap.put(zDesktopExternalTest.E_ZEXTERNALTEST, "com.zimbra.qa.soap.zDesktopExternalTest");
+			theTestObjectMap.put(zDesktopTest.E_ZDESKTOPTEST, "com.zimbra.qa.soap.zDesktopTest");
+
+  			theTestObjectMap.put(CalDavTest.E_CALDAVTEST, "com.zimbra.qa.soap.CalDavTest");
 
 		}
 	}

@@ -159,6 +159,34 @@ public class TestProperties {
 		String value = null;
 		
 		// Some special case keys
+		if ( key.equals("zdesktopuser.password") )
+		{
+
+			value = mDynamicProps.getProperty("zdesktopuser.password", "UNSET");
+			if (SoapTestMain.setupProperties != null)
+				value = SoapTestMain.setupProperties.getProperty("zdesktopuser.password", value);
+			value = SoapTestMain.globalProperties.getProperty("zdesktopuser.password", value);
+
+			String zdesktophost = getProperty("zdesktopuser.server", "localhost");
+			value = zDesktopTest.getDesktopPassword(zdesktophost, value);
+
+			return (value);
+		}
+		
+		if ( key.equals("zexternal.password") )
+		{
+
+			value = mDynamicProps.getProperty("zexternal.password", "UNSET");
+			if (SoapTestMain.setupProperties != null)
+				value = SoapTestMain.setupProperties.getProperty("zexternal.password", value);
+			value = SoapTestMain.globalProperties.getProperty("zexternal.password", value);
+
+			String zexternalhost = getProperty("zexternal.server","localhost");
+			value = zDesktopExternalTest.getDesktopPassword(zexternalhost, value);
+				
+			return (value);
+		}
+		
 		String server = mDynamicProps.getProperty("server.zimbraAccount");
 		
 		if(server == null)
