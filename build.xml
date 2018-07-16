@@ -416,6 +416,9 @@
 		<target name="zm-network-soap-content" description="Copies network related soap data and tests">
 			<mkdir dir="${build.temp.dir}"/>
     		<echo message="Copying network related data and tests..."/>
+			<if><available file="${zm-network-soap-harness.dir}/conf/setup.sh" type="file"/>
+				<then><delete file="./conf/setup.sh"/></then>
+			</if>
     		<if> <available file="${zm-network-soap-harness.dir}" type="dir"/>
       		<then>
         		<copy todir="${build.temp.dir}/data">
@@ -423,6 +426,11 @@
           				<include name="**/*"/>
           			</fileset>
         		</copy>
+      			<copy todir="./conf">
+      				<fileset dir="${zm-network-soap-harness.dir}/conf">
+      					<include name="**/*"/>
+      				</fileset>
+      			</copy>
       		</then>
     		</if>
   	</target>
@@ -435,11 +443,6 @@
     	<copy todir="${build.temp.dir}/data/soapvalidator">
       	<fileset dir="data/soapvalidator" includes="**"/>
     	</copy>
-		<copy todir="./conf">
-			<fileset dir="${zm-network-soap-harness.dir}/c">
-				<include name="**/*"/>
-			</fileset>
-		</copy>
 
   	</target>
     
