@@ -1,0 +1,534 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="invalidDomain_name" value="invalid.com" />
+	<t:property name="invalid_user" value="invaliduser${TIME}@${defaultdomain.name}" />
+
+	<t:property name="test_account1.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account1.newname"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="${defaultpassword.value}" />
+	<t:property name="test_account2.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account2.newname"
+		value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account2.password" value="${defaultpassword.value}" />
+	<t:property name="test_account3.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account3.alias"
+		value="test3alias.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account3.newname"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account3.password" value="${defaultpassword.value}" />
+	<t:property name="test_account4.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account4.newname"
+		value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account4.password" value="${defaultpassword.value}" />
+	<t:property name="test_account5.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account5.newname"
+		value="test5.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account5.password" value="${defaultpassword.value}" />
+	<t:property name="test_account6.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account6.newname"
+		value="test6.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account6.password" value="${defaultpassword.value}" />
+	<t:property name="test_account7.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account7.newname"
+		value="test7.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account7.password" value="${defaultpassword.value}" />
+	<t:property name="test_account8.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account8.password" value="${defaultpassword.value}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="admin_auth" type="always">
+		<t:objective>login as the admin</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="PrimaryEmailAddressChange_01"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address for user. Verify both old
+			and new addresses are active using GetAccountRequest
+		</t:objective>
+
+		<t:test id="createAccountRequest01">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="changePrimaryEmailAddress01">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account1.name}</account>
+					<newName>${test_account1.newname}</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ChangePrimaryEmailResponse" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for old email address. It should pass as keepOldEmailAddressActive 
+			is true by default -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account1.name}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for new email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account1.newname}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="PrimaryEmailAddressChange_02"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address for user. Deleted the alias.
+			Verify only new
+			address is active and old is disabled using
+			GetAccountRequest
+		</t:objective>
+
+		<t:test id="createAccountRequest02">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${test_account2.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="changePrimaryEmailAddress02">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account2.name}</account>
+					<newName>${test_account2.newname}</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ChangePrimaryEmailResponse" />
+				<t:select path="//admin:ChangePrimaryEmailResponse/admin:account"
+					attr="id" set="test_account2.renamedAdress.id" />
+			</t:response>
+		</t:test>
+
+		<!-- Remove the old email address from zimbraMailAlias -->
+		<t:test depends="removeaccountaliasrequest">
+			<t:request>
+				<RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
+					<id>${test_account2.renamedAdress.id}</id>
+					<alias>${test_account2.name}</alias>
+				</RemoveAccountAliasRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:RemoveAccountAliasResponse" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for old email address. It should fail as alias is removed -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account2.name}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT$" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for new email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account2.newname}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="PrimaryEmailAddressChange_03"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address for user using it's alias.
+			Verify both old and new addresses are active using GetAccount Request
+		</t:objective>
+
+		<t:test id="createAccountRequest03">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account3.name}</name>
+					<password>${test_account3.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account3.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addAccountAlias">
+			<t:request>
+				<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+					<id>${test_account3.id}</id>
+					<alias>${test_account3.alias}</alias>
+				</AddAccountAliasRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddAccountAliasResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="changePrimaryEmailAddress03">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account3.alias}</account>
+					<newName>${test_account3.newname}</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ChangePrimaryEmailResponse/admin:account"
+					attr="id" set="test_account2.renamedAdress.id" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraMailAlias']"
+					match="${test_account3.name}" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for old email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account3.name}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for new email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account3.newname}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="PrimaryEmailAddressChange_04"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address for user using it's ID.
+			Verify both old and new addresses are active using GetAccount Request
+		</t:objective>
+
+		<t:test id="createAccountRequest04">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account4.name}</name>
+					<password>${test_account4.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account4.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="changePrimaryEmailAddress04">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${test_account4.id}</account>
+					<newName>${test_account4.newname}</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ChangePrimaryEmailResponse" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for old email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account4.name}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for new email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account4.newname}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="PrimaryEmailAddressChange_05"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address to a name already present in
+			server. Should received error as already exists
+		</t:objective>
+
+		<t:test id="createAccountRequest05">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account5.name}</name>
+					<password>${test_account5.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account5.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="changePrimaryEmailAddress05">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account5.name}</account>
+					<newName>${admin.user}</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="PrimaryEmailAddressChange_06"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address to a domain not present in
+			server. Should receive error as 'No Such Domain'
+		</t:objective>
+
+		<t:test id="createAccountRequest06">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account6.name}</name>
+					<password>${test_account6.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account6.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="changePrimaryEmailAddress06">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account6.name}</account>
+					<newName>user@${invalidDomain_name}</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.NO_SUCH_DOMAIN" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="PrimaryEmailAddressChange_07"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address to a new name without
+			domain.
+			Should receive error as Invalid Request
+		</t:objective>
+
+		<t:test id="createAccountRequest07">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account7.name}</name>
+					<password>${test_account7.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account7.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="changePrimaryEmailAddress07">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account7.name}</account>
+					<newName>user</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" /> <!-- Failed response to be added after implementation -->
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="PrimaryEmailAddressChange_08"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address to a email address not
+			present on server. Should get error as 'No Such Account'
+		</t:objective>
+
+		<t:test id="changePrimaryEmailAddress08">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${invalid_user}</account>
+					<newName>${test_account8.name}</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.NO_SUCH_ACCOUNT" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="PrimaryEmailAddressChange_09"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address for a resource.
+			Verify both old and new addresses are active using GetAccount Request
+		</t:objective>
+
+		<t:property name="Resource.name1"
+			value="testresource1.${TIME}${COUNTER}@${defaultdomain.name}" />
+		<t:property name="Resource.equipment" value="Equipment" />
+		<t:property name="active" value="active" />
+		<t:property name="displayName1" value="DP1" />
+		<t:property name="Resource.newname"
+			value="newresource.${TIME}${COUNTER}@${defaultdomain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+					<name>${Resource.name1}</name>
+					<a n="zimbraCalResType">${Resource.equipment}</a>
+					<a n="zimbraAccountStatus">${active}</a>
+					<a n="displayName">${displayName1}</a>
+					<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+					<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+				</CreateCalendarResourceRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource"
+					attr="id" set="resource1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="changePrimaryEmailAddress09">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${resource1.id}</account>
+					<newName>${Resource.newname}</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ChangePrimaryEmailResponse/admin:account"
+					attr="id" set="resource.renamedAdress.id" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraMailAlias']"
+					match="${Resource.name1}" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for old email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${Resource.name1}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for new email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${Resource.newname}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>
