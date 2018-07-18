@@ -511,5 +511,12 @@
                         </java>
                 </target>
 
-	
+                <target name="Run-SmokeSuite" depends="compile" description="Run Staf Tests in non-STAF environment">
+                        <property name="testRoot" value="data/soapvalidator/"/>
+                        <echo>STAF: Executing ${testRoot}</echo>
+                        <java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
+                                <arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none -t SMOKE"/>
+                        </java>
+                </target>
+
 </project>
