@@ -43,6 +43,11 @@
 	<t:property name="test_account8.name"
 		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account8.password" value="${defaultpassword.value}" />
+	<t:property name="test_account10.name"
+		value="test10.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account10.newname"
+		value="test10.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account10.password" value="${defaultpassword.value}" />
 
 	<t:test_case testcaseid="Ping" type="always">
 		<t:objective>basic system check</t:objective>
@@ -78,8 +83,13 @@
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_01"
 		type="smoke" bugids="ZCS-5359">
-		<t:objective>Change primary email address for user. Verify both old
-			and new addresses are active using GetAccountRequest
+		<t:objective>
+			ChangePrimaryEmail Address of an account by name.
+			<t:steps>
+				1. Create a new account.
+				2. Fire ChangePrimaryEmailRequest to change it's email address.
+				3. GetAccount request to verify both old and new account exists.
+			</t:steps>
 		</t:objective>
 
 		<t:test id="createAccountRequest01">
@@ -136,11 +146,18 @@
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_02"
 		type="smoke" bugids="ZCS-5359">
-		<t:objective>Change primary email address for user. Deleted the alias.
-			Verify only new
-			address is active and old is disabled using
-			GetAccountRequest
+		<t:objective>Change primary email address for user. Delete alias and
+			verify addresses.
 		</t:objective>
+		<t:steps>
+			1. Create a new account.
+			2. Fire ChangePrimaryEmailRequest to
+			change it's email address.
+			3. RemoveAccountAlias to delete the alias
+			with old email
+			3. GetAccount request to verify new account exits and
+			old deleted.
+		</t:steps>
 
 		<t:test id="createAccountRequest02">
 			<t:request>
@@ -211,8 +228,13 @@
 	<t:test_case testcaseid="PrimaryEmailAddressChange_03"
 		type="smoke" bugids="ZCS-5359">
 		<t:objective>Change primary email address for user using it's alias.
-			Verify both old and new addresses are active using GetAccount Request
 		</t:objective>
+		<t:steps>
+			1. Create a new account. Add an alias to this account
+			2. Fire
+			ChangePrimaryEmailRequest to change it's email address using alias.
+			3. GetAccount request to verify both old and new account remains.
+		</t:steps>
 
 		<t:test id="createAccountRequest03">
 			<t:request>
@@ -284,8 +306,14 @@
 	<t:test_case testcaseid="PrimaryEmailAddressChange_04"
 		type="smoke" bugids="ZCS-5359">
 		<t:objective>Change primary email address for user using it's ID.
-			Verify both old and new addresses are active using GetAccount Request
 		</t:objective>
+		<t:steps>
+			1. Create a new account.
+			2. Fire ChangePrimaryEmailRequest to
+			change it's email address using id.
+			3. GetAccount request to verify
+			both old and new account remains.
+		</t:steps>
 
 		<t:test id="createAccountRequest04">
 			<t:request>
@@ -341,8 +369,15 @@
 	<t:test_case testcaseid="PrimaryEmailAddressChange_05"
 		type="smoke" bugids="ZCS-5359">
 		<t:objective>Change primary email address to a name already present in
-			server. Should received error as already exists
+			server.
 		</t:objective>
+		<t:steps>
+			1. Create a new account.
+			2. Fire ChangePrimaryEmailRequest to
+			change it's email address to a name already present in mailbox.
+			3.
+			Should receive an error as account exists.
+		</t:steps>
 
 		<t:test id="createAccountRequest05">
 			<t:request>
@@ -374,8 +409,15 @@
 	<t:test_case testcaseid="PrimaryEmailAddressChange_06"
 		type="smoke" bugids="ZCS-5359">
 		<t:objective>Change primary email address to a domain not present in
-			server. Should receive error as 'No Such Domain'
+			server.
 		</t:objective>
+		<t:steps>
+			1. Create a new account.
+			2. Fire ChangePrimaryEmailRequest
+			with newName as an invalid domain.
+			3. Verify error received as No Such
+			Domain.
+		</t:steps>
 
 		<t:test id="createAccountRequest06">
 			<t:request>
@@ -408,8 +450,14 @@
 		type="smoke" bugids="ZCS-5359">
 		<t:objective>Change primary email address to a new name without
 			domain.
-			Should receive error as Invalid Request
 		</t:objective>
+		<t:steps>
+			1. Create a new account.
+			2. Fire ChangePrimaryEmailRequest
+			with newName without domain.
+			3. Verify error received as Invalid
+			Request.
+		</t:steps>
 
 		<t:test id="createAccountRequest07">
 			<t:request>
@@ -432,7 +480,7 @@
 				</ChangePrimaryEmailRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" /> <!-- Failed response to be added after implementation -->
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 			</t:response>
 		</t:test>
 
@@ -440,9 +488,14 @@
 
 	<t:test_case testcaseid="PrimaryEmailAddressChange_08"
 		type="smoke" bugids="ZCS-5359">
-		<t:objective>Change primary email address to a email address not
-			present on server. Should get error as 'No Such Account'
+		<t:objective>Change primary email address with old address not
+			present on server
 		</t:objective>
+		<t:steps>
+			1. Fire ChangePrimaryEmailRequest with account by name for
+			invalid user.
+			2. Verify error received as No Such Account.
+		</t:steps>
 
 		<t:test id="changePrimaryEmailAddress08">
 			<t:request>
@@ -461,8 +514,14 @@
 	<t:test_case testcaseid="PrimaryEmailAddressChange_09"
 		type="smoke" bugids="ZCS-5359">
 		<t:objective>Change primary email address for a resource.
-			Verify both old and new addresses are active using GetAccount Request
 		</t:objective>
+		<t:steps>
+			1. Create a new resource equipment.
+			2. Fire
+			ChangePrimaryEmailRequest with newName as a new resource name.
+			3.
+			GetAccountRequest to verify both name remains.
+		</t:steps>
 
 		<t:property name="Resource.name1"
 			value="testresource1.${TIME}${COUNTER}@${defaultdomain.name}" />
@@ -530,5 +589,72 @@
 		</t:test>
 
 	</t:test_case>
+	
+	<t:test_case testcaseid="PrimaryEmailAddressChange_10"
+		type="smoke" bugids="ZCS-5359">
+		<t:objective>Change primary email address for user using it's foreign principal.
+		</t:objective>
+		<t:steps>
+			1. Create a new account.
+			2. Fire ChangePrimaryEmailRequest to
+			change it's email address using foreign principal.
+			3. GetAccount request to verify
+			both old and new account remains.
+		</t:steps>
+		
+		<t:property name="account.foreignPrincipal" value="testZCS-5359:${TIME}.${COUNTER}"/>
+
+		<t:test id="createAccountRequest10">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account10.name}</name>
+					<password>${test_account10.password}</password>
+					<a n="zimbraForeignPrincipal">${account.foreignPrincipal}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account10.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="changePrimaryEmailAddress10">
+			<t:request>
+				<ChangePrimaryEmailRequest xmlns="urn:zimbraAdmin">
+					<account by="foreignPrincipal">${account.foreignPrincipal}</account>
+					<newName>${test_account10.newname}</newName>
+				</ChangePrimaryEmailRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ChangePrimaryEmailResponse" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for old email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account10.name}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+		<!-- Get account for new email address. It should pass -->
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${test_account10.newname}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+	
 
 </t:tests>
