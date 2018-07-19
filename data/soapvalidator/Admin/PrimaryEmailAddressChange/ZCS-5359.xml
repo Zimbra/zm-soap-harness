@@ -2,6 +2,9 @@
 
 	<t:property name="invalidDomain_name" value="invalid.com" />
 	<t:property name="invalid_user" value="invaliduser${TIME}@${defaultdomain.name}" />
+	
+	<t:property name="message.subject" value="subject1" />
+	<t:property name="message.content" value="content1" />
 
 	<t:property name="test_account1.name"
 		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -89,6 +92,7 @@
 				1. Create a new account.
 				2. Fire ChangePrimaryEmailRequest to change it's email address.
 				3. GetAccount request to verify both old and new account exists.
+				4. Send mail to old email address. Verify new one also receives it.
 			</t:steps>
 		</t:objective>
 
@@ -114,6 +118,15 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:ChangePrimaryEmailResponse" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraMailAlias']"
+					match="${test_account1.name}" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraPrimaryEmailChangeHistory']"
+					contains="${test_account1.name}" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraOldMailAddress']"
+					emptyset="1" />
 			</t:response>
 		</t:test>
 
@@ -140,6 +153,52 @@
 				<t:select path="//admin:GetAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
+		
+		<!-- Send mail to old email address from admin. It should be received by new email address too -->
+		
+		<t:test id="send_message">
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}' />
+						<su>${message.subject}</su>
+						<mp ct="text/plain">
+							<content>${message.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+			    <t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+			     set="Sent_message1.id" />
+		   </t:response>
+		</t:test>
+		
+		<t:delay msec="3000" />
+		
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.newname}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="search_message">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>subject:${message.subject}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:su" match="${message.subject}" />
+			</t:response>
+		</t:test>
 
 	</t:test_case>
 
@@ -157,6 +216,18 @@
 			3. GetAccount request to verify new account exits and
 			old deleted.
 		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
 
 		<t:test id="createAccountRequest02">
 			<t:request>
@@ -182,6 +253,12 @@
 				<t:select path="//admin:ChangePrimaryEmailResponse" />
 				<t:select path="//admin:ChangePrimaryEmailResponse/admin:account"
 					attr="id" set="test_account2.renamedAdress.id" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraMailAlias']"
+					match="${test_account2.name}" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraPrimaryEmailChangeHistory']"
+					contains="${test_account2.name}" />
 			</t:response>
 		</t:test>
 
@@ -273,6 +350,9 @@
 				<t:select
 					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraMailAlias']"
 					match="${test_account3.name}" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraPrimaryEmailChangeHistory']"
+					contains="${test_account3.name}" />
 			</t:response>
 		</t:test>
 
@@ -336,6 +416,9 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:ChangePrimaryEmailResponse" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraPrimaryEmailChangeHistory']"
+					contains="${test_account4.name}" />
 			</t:response>
 		</t:test>
 
@@ -560,6 +643,9 @@
 				<t:select
 					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraMailAlias']"
 					match="${Resource.name1}" />
+				<t:select
+					path="//admin:ChangePrimaryEmailResponse//admin:a[@n='zimbraPrimaryEmailChangeHistory']"
+					contains="${Resource.name1}" />
 			</t:response>
 		</t:test>
 
