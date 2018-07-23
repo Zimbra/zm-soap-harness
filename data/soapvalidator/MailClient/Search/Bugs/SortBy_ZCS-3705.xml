@@ -85,7 +85,7 @@
 				<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id" />
 			</t:response>
 		</t:test>
-
+		<t:delay msec="5000"/>
 		<t:test id="Send_mail2">
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -102,7 +102,7 @@
 				<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id" />
 			</t:response>
 		</t:test>
-
+		<t:delay msec="5000"/>
 		<t:test id="Send_mail3">
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -119,7 +119,7 @@
 				<t:select path="//mail:SendMsgResponse/mail:m" attr="id" />
 			</t:response>
 		</t:test>
-
+		<t:delay msec="5000"/>
 		<t:test id="Send_mail4">
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -240,15 +240,16 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-	
-	<t:test_case testcaseid="Verify_Scrolldown_Error" type="smoke" bugids="ZBUG-425">
-		<t:objective>To verify no exception is thrown on scrolling to the end of the search results when results are sorted by read/unread</t:objective>
+
+	<t:test_case testcaseid="Verify_Scrolldown_Error" type="smoke" bugids="ZBUG-425, ZBUG-563">
+		<t:objective>To verify no exception is thrown on scrolling to the end of the search results when results are sorted by read/unread
+		</t:objective>
 
 		<t:steps>
-		1. Log in with account 1.
-		2. Search first 2 messages and get id of the last message.
-		3. Search next 2 messages and pass cursor element with id of the last message.
-		4. Verify exception is not thrown in the search response.
+			1. Log in with account 1.
+			2. Search first 2 messages and get id of the last message.
+			3. Search next 2 messages and pass cursor element with id of the last message.
+			4. Verify exception is not thrown in the search response.
 		</t:steps>
 
 		<t:test id="auth" required="true">
@@ -270,7 +271,7 @@
 				</SearchRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//mail:SearchResponse/mail:m[2]" attr="id"  set="cursor.id" />
+				<t:select path="//mail:SearchResponse/mail:m[2]" attr="id" set="cursor.id" />
 			</t:response>
 		</t:test>
 
@@ -278,7 +279,7 @@
 			<t:request>
 				<SearchRequest types="message" sortBy="readAsc" limit="2" offset="2" xmlns="urn:zimbraMail">
 					<query xmlns="urn:zimbraMail">in:inbox</query>
-					<cursor id="${cursor.id}" xmlns="urn:zimbraMail"/>
+					<cursor id="${cursor.id}" xmlns="urn:zimbraMail" />
 				</SearchRequest>
 			</t:request>
 			<t:response>
@@ -293,7 +294,7 @@
 				</SearchRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//mail:SearchResponse/mail:m[2]" attr="id"  set="cursor.id" />
+				<t:select path="//mail:SearchResponse/mail:m[2]" attr="id" set="cursor.id" />
 			</t:response>
 		</t:test>
 
@@ -301,13 +302,75 @@
 			<t:request>
 				<SearchRequest types="message" sortBy="readDesc" limit="2" offset="2" xmlns="urn:zimbraMail">
 					<query xmlns="urn:zimbraMail">in:inbox</query>
-					<cursor id="${cursor.id}" xmlns="urn:zimbraMail"/>
+					<cursor id="${cursor.id}" xmlns="urn:zimbraMail" />
 				</SearchRequest>
 			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse" />
 			</t:response>
 		</t:test>
+
+		<t:test id="readDesc.test.Conv">
+			<t:request>
+				<SearchRequest types="conversation" sortBy="readDesc" needExp="1" recip="0" fullConversation="1" limit="2" offset="0"
+					xmlns="urn:zimbraMail">
+					<query>in:inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c[1]/mail:su" match="${message2.subject}" />
+				<t:select path="//mail:SearchResponse/mail:c[2]/mail:su" match="${message1.subject}" />
+				<t:select path="//mail:SearchResponse/mail:c[2]" attr="id" set="cursor.id" />
+				<t:select path="//mail:SearchResponse/mail:c[2]" attr="id" set="sortVal" />
+				<t:select path="//mail:SearchResponse" attr="more" match="1" />
+			</t:response>
+		</t:test>
+
+		<t:test id="readDesc.test.Conv">
+			<t:request>
+				<SearchRequest types="conversation" sortBy="readDesc" needExp="1" recip="0" fullConversation="1" limit="2" offset="2"
+					xmlns="urn:zimbraMail">
+					<query>in:inbox</query>
+					<cursor id="${cursor.id}" sortVal="${sortVal}" />
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c[1]/mail:su" match="${message4.subject}" />
+				<t:select path="//mail:SearchResponse/mail:c[2]/mail:su" match="${message3.subject}" />
+				<t:select path="//mail:SearchResponse" attr="more" match="0" />
+			</t:response>
+		</t:test>
+
+		<t:test id="readAsc.test.Conv">
+			<t:request>
+				<SearchRequest types="conversation" sortBy="readAsc" needExp="1" recip="0" fullConversation="1" limit="2" offset="0"
+					xmlns="urn:zimbraMail">
+					<query>in:inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c[1]/mail:su" match="${message4.subject}" />
+				<t:select path="//mail:SearchResponse/mail:c[2]/mail:su" match="${message3.subject}" />
+				<t:select path="//mail:SearchResponse/mail:c[2]" attr="id" set="cursor.id" />
+				<t:select path="//mail:SearchResponse" attr="more" match="1" />
+			</t:response>
+		</t:test>
+
+		<t:test id="readAsc.test.Conv">
+			<t:request>
+				<SearchRequest types="conversation" sortBy="readAsc" needExp="1" recip="0" fullConversation="1" limit="2" offset="2"
+					xmlns="urn:zimbraMail">
+					<query>in:inbox</query>
+					<cursor id="${cursor.id}" sortVal="${sortVal}" />
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c[1]/mail:su" match="${message2.subject}" />
+				<t:select path="//mail:SearchResponse/mail:c[2]/mail:su" match="${message1.subject}" />
+				<t:select path="//mail:SearchResponse" attr="more" match="0" />
+			</t:response>
+		</t:test>
+
 
 	</t:test_case>
 </t:tests>
