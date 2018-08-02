@@ -1,0 +1,47 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="incorrect.password" value="test124" />
+	<t:property name="incorrect.username" value="account1.name.incorrect" />
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>Basic system check</t:objective>
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="Basic_auth_verification1" type="smoke"	bugids="ZCS-5598">
+		<t:objective>Verify 'WWW-Authenticate: BASIC realm="Zimbra"' is not returned for non-existent account/ existing account</t:objective>
+		<t:steps>1. Trigger GET request with correct username and
+			incorrect password.
+			2. Trigger GET request with non existent username and
+			incorrect password.
+		</t:steps>
+
+		<t:resttest testcaseid="verification_for_correct_username_pwd">
+			<t:restServletRequest>
+				<guest>admin</guest>
+				<password>${incorrect.password}</password>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="401" />
+				<t:select attr="WWW-Authenticate" emptyset="1" />
+			</t:restServletResponse>
+		</t:resttest>
+
+		<t:resttest testcaseid="verification_for_correct_username_pwd">
+			<t:restServletRequest>
+				<guest>${incorrect.username}</guest>
+				<password>${incorrect.password}</password>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="401" />
+				<t:select attr="WWW-Authenticate" emptyset="1" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+</t:tests>
