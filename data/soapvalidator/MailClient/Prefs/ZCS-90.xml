@@ -1,0 +1,842 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="account1.name" value="user1_${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account2.name" value="user2_${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account3.name" value="user3_${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account4.name" value="user4_${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account5.name" value="user5_${TIME}${COUNTER}@${defaultdomain.name}" />
+
+	<t:property name="DefaultCalendarId" value="10" />
+	<t:property name="RootFolderId" value="1" />
+	<t:property name="newFolders.root" value="NewFolderInRoot" />
+	<t:property name="newFolders.subOfDefault" value="NewSubFolderInDefault" />
+	<t:property name="newFolders.subOfNew" value="NewSubFolderInNonDefaultFolder" />
+	<t:property name="newFolders.root.id" value="" />
+	<t:property name="newFolders.subOfDefault.id" value="" />
+	<t:property name="newFolders.subOfNew.id" value="" />
+	<t:property name="newFolders.subOfNew" value="NewSubFolderInNonDefaultFolder" />
+
+	<t:property name="op.grant" value="grant" />
+	<t:property name="op.delete" value="delete" />
+	<t:property name="grant.usr" value="usr" />
+	<t:property name="rights.none" value="" />
+	<t:property name="rights.viewer" value="r" />
+	<t:property name="rights.manager" value="rwidx" />
+	<t:property name="rights.admin" value="rwidxa" />
+
+
+
+	<t:test_case testcaseid="acct1_setup" type="always">
+		<t:objective>create test account</t:objective>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account3.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account4.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account5.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="set_zimbraPrefDefaultCalendarId" type="smoke">
+
+		<t:objective>Verify default value for 'zimbraPrefDefaultCalendarId'</t:objective>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_zimbraPrefDefaultCalendarId">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefDefaultCalendarId']" match="${DefaultCalendarId}" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="Create_folder_for_test" type="smoke">
+		<t:objective>Set 'zimbraPrefDefaultCalendarId' to non default value and verify</t:objective>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_folders">
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${newFolders.root}" l="${RootFolderId}" view="appointment" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="newFolders.root.id" />
+			</t:response>
+		</t:test>
+		<t:test id="create_folders">
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${newFolders.subOfDefault}" l="${DefaultCalendarId}" view="appointment" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="newFolders.subOfDefault.id" />
+			</t:response>
+		</t:test>
+		<t:test id="create_folders">
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${newFolders.subOfNew}" l="${newFolders.root.id}" view="appointment" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="newFolders.subOfNew.id" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="Share_and_mount_calendars_for_tests" type="smoke">
+		<t:objective>Share calendars with user 1 with none, viewer, manager and admin rights and mount them in user1's account</t:objective>
+
+		<t:test id="auth_testAccount2" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<FolderActionRequest xmlns="urn:zimbraMail">
+					<action op="${op.grant}" id="${DefaultCalendarId}">
+						<grant gt="${grant.usr}" d="${account1.name}" perm="${rights.viewer}" />
+					</action>
+				</FolderActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:FolderActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth_testAccount3" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<FolderActionRequest xmlns="urn:zimbraMail">
+					<action op="${op.grant}" id="${DefaultCalendarId}">
+						<grant gt="${grant.usr}" d="${account1.name}" perm="${rights.manager}" />
+					</action>
+				</FolderActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:FolderActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth_testAccount4" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account4.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<FolderActionRequest xmlns="urn:zimbraMail">
+					<action op="${op.grant}" id="${DefaultCalendarId}">
+						<grant gt="${grant.usr}" d="${account1.name}" perm="${rights.admin}" />
+					</action>
+				</FolderActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:FolderActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateMountpointRequest xmlns="urn:zimbraMail">
+					<link l="${DefaultCalendarId}" name="Calendar.${account2.name}" view="appointment" rid="${DefaultCalendarId}" zid="${account2.id}" />
+				</CreateMountpointRequest>
+			</t:request>
+			<t:response>
+				<t:select path="/mail:CreateMountpointResponse/mail:link" attr="id" set="SharedViewerCalendarID" />
+			</t:response>
+
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateMountpointRequest xmlns="urn:zimbraMail">
+					<link l="${DefaultCalendarId}" name="Calendar.${account3.name}" view="appointment" rid="${DefaultCalendarId}" zid="${account3.id}" />
+				</CreateMountpointRequest>
+			</t:request>
+			<t:response>
+				<t:select path="/mail:CreateMountpointResponse/mail:link" attr="id" set="SharedManagerCalendarID" />
+			</t:response>
+
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateMountpointRequest xmlns="urn:zimbraMail">
+					<link l="${DefaultCalendarId}" name="Calendar.${account4.name}" view="appointment" rid="${DefaultCalendarId}" zid="${account4.id}" />
+				</CreateMountpointRequest>
+			</t:request>
+			<t:response>
+				<t:select path="/mail:CreateMountpointResponse/mail:link" attr="id" set="SharedAdminCalendarID" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="verify_for_RootSubFolder" type="smoke">
+		<t:objective>Set sub calendar of root calendar as default and verify user preference. </t:objective>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${newFolders.subOfDefault.id}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_zimbraPrefDefaultCalendarId">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefDefaultCalendarId']" match="${newFolders.subOfDefault.id}" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="verify_for_NewFolder" type="smoke">
+		<t:objective>Set new calendar as default and verify user preference. </t:objective>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${newFolders.root.id}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_zimbraPrefDefaultCalendarId">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefDefaultCalendarId']" match="${newFolders.root.id}" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="verify_for_SubFolderOfNewFolder" type="smoke">
+		<t:objective>Set sub calendar of new calendar as default and verify user preference. </t:objective>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${newFolders.subOfNew.id}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_zimbraPrefDefaultCalendarId">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefDefaultCalendarId']" match="${newFolders.subOfNew.id}" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="verify_for_SharedCalendar_ViewerRight" type="smoke">
+		<t:objective>Set shared calendar with viewer right as default and verify user preference. </t:objective>
+		<t:steps>
+			1. Set default value for calendar
+			2. try to change default to shared calendar with viewer rights
+			3. zimbraPrefDefaultCalendarId should not change
+		</t:steps>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${DefaultCalendarId}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${SharedViewerCalendarID}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Fault/soap:Reason/soap:Text" match="permission denied: ${account1.name} do not have enough permissions on Calendar.${account2.name} to set default." />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_zimbraPrefDefaultCalendarId">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefDefaultCalendarId']" match="${DefaultCalendarId}" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="verify_for_SharedCalendar_ManagerRight" type="smoke">
+		<t:objective>Set shared calendar with manager right as default and verify user preference. </t:objective>
+		<t:steps>
+			1. Set default value for calendar
+			2. try to change default to shared calendar with viewer rights
+			3. zimbraPrefDefaultCalendarId should change to new value
+		</t:steps>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${DefaultCalendarId}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${SharedManagerCalendarID}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_zimbraPrefDefaultCalendarId">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefDefaultCalendarId']" match="${SharedManagerCalendarID}" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="verify_for_SharedCalendar_AdminRight" type="smoke">
+		<t:objective>Set shared calendar with admin right as default and verify user preference. </t:objective>
+		<t:steps>
+			1. Set default value for calendar
+			2. try to change default to shared calendar with admin rights
+			3. zimbraPrefDefaultCalendarId should change to new value
+		</t:steps>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${DefaultCalendarId}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${SharedAdminCalendarID}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_zimbraPrefDefaultCalendarId">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefDefaultCalendarId']" match="${SharedAdminCalendarID}" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="verify_when_default_calendar_deleted" type="smoke">
+		<t:objective>Delete default set calendar and verify default calendar value is reset. </t:objective>
+		<t:steps>
+			1. Set default value for calendar as new calendar
+			2. delete this calendar and verify that zimbraPrefDefaultCalendarId changes to default value
+		</t:steps>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${newFolders.root.id}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<FolderActionRequest xmlns="urn:zimbraMail">
+					<action op="${op.delete}" id="${newFolders.root.id}" />
+				</FolderActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:FolderActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_zimbraPrefDefaultCalendarId">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefDefaultCalendarId']" match="${DefaultCalendarId}" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="modify_zimbraPrefDefaultCalendarId_COS_level" type="smoke">
+		<t:objective>Set  </t:objective>
+		<t:steps>
+			1. Set default value for calendar
+			2. try to change default to some other value at COS level
+			3. zimbraPrefDefaultCalendarId should not
+			change.
+		</t:steps>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyprefsrequest1">
+			<t:request>
+				<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+					<pref name="zimbraPrefDefaultCalendarId">${DefaultCalendarId}</pref>
+				</ModifyPrefsRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:ModifyPrefsResponse" />
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cos.id"/>
+	        </t:response>
+	    </t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyCosRequest xmlns="urn:zimbraAdmin">
+					<id>${cos.id}</id>
+					<a n="zimbraPrefDefaultCalendarId">${newFolders.root.id}</a>
+				</ModifyCosRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Fault/soap:Reason/soap:Text" match="invalid request: Changing value for zimbraPrefDefaultCalendarId on COS is not allowed." />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_zimbraPrefDefaultCalendarId">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefDefaultCalendarId']" match="${DefaultCalendarId}" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>
