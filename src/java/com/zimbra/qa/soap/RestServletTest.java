@@ -360,6 +360,13 @@ public class RestServletTest extends Test {
 		return false;
 	}
 
+	private boolean isBinary(String contentType) {
+		if (contentType.equalsIgnoreCase("application/zip")) {
+			return true;
+		}
+		return false;
+	}
+
 	private boolean executeRestGetRequest(Element element) throws HarnessException {
 
 		mLog.debug("executeRestGetRequest execute");
@@ -380,8 +387,8 @@ public class RestServletTest extends Test {
 		Cookie sessionCookie = new Cookie(restURI.getHost(), "JSESSIONID", mSessionId, "/zimbra", null, false);
 		initialState.addCookie(authCookie);
 		initialState.addCookie(sessionCookie);
-		mReference = mReference+ "Cookie: " + (authCookie==null ? "\n" : authCookie.getValue()+"\n");;
-		mReference = mReference+ "Session: " + (sessionCookie==null ? "\n" : sessionCookie.getValue()+"\n");;
+		mReference = mReference+ "Cookie: " + (authCookie==null ? "\n" : authCookie.getValue()+"\n");
+		mReference = mReference+ "Session: " + (sessionCookie==null ? "\n" : sessionCookie.getValue()+"\n");
 
 		// If <guest> or <password> are used, then we must guest authenticate
 		//
@@ -426,66 +433,15 @@ public class RestServletTest extends Test {
 
 				httpResponseHeaders = null;
 				httpResponseBody = null;
-
+				processResponseHeaders(method);
 			}
 			else {
 
 				httpResponseBody = null;
 				boolean chunked = false;
 				boolean textContent = false;
-
-				// Add all the HTTP headers (not the message headers, which are added below)
-				httpResponseHeaders = method.getResponseHeaders();
-				for (int i=0; i < httpResponseHeaders.length; i++) {
-					mResponseDetails = mResponseDetails.concat(httpResponseHeaders[i].toString());
-					if ( httpResponseHeaders[i].getName().equals("Transfer-Encoding") && httpResponseHeaders[i].getValue().equals("chunked") ) {
-						chunked=true;
-					}
-					if ( httpResponseHeaders[i].getName().equals("Content-Type") && containsText(httpResponseHeaders[i].getValue()) ) {
-						textContent=true;
-					}
-				}
-				mResponseDetails = mResponseDetails.concat(".....\n");
-
-				OutputStream os = null;
-				try{
-					if ( chunked && !textContent ) {
-
-						// Write the binary data to a file for later comparison
-						//
-
-						InputStream is = method.getResponseBodyAsStream();
-
-						// Create a temporary file name
-						// Put the file in the samle directory as the *.txt file
-						os = new FileOutputStream(httpResponseFile = new File(coreController.rootDebugDir, System.currentTimeMillis() + ".txt"));
-
-						int b;
-						while ( (b = is.read()) != -1) {
-							os.write(b);
-						}
-						os.close();
-						is.close();
-
-						// For logging
-						mResponseDetails = mResponseDetails.concat("binary data saved in file: "+ httpResponseFile);
-
-					} else {
-						httpResponseBody = method.getResponseBodyAsString();
-						mResponseDetails = mResponseDetails.concat(httpResponseBody);
-
-						// Create a temporary file name
-						os = new FileOutputStream(httpResponseFile = new File(coreController.rootDebugDir, System.currentTimeMillis() + ".txt"));
-						os.write(httpResponseBody.getBytes());
-						os.close();
-
-					}
-				}catch(IOException e){
-					mLog.warn("IOException while writing data", e);
-				}finally{
-					Utilities.close(os, mLog);
-				}
-
+				
+				processResponseHeaders(method);
 
 				mLog.debug("detailsResponse " + mResponseDetails);
 
@@ -506,7 +462,69 @@ public class RestServletTest extends Test {
 
 
 	}
+	
+	private void processResponseHeaders(HttpMethod method){
+		
+		boolean chunked = false;
+		boolean textContent = false;
+		boolean binary = false;
+		
+		httpResponseHeaders = method.getResponseHeaders();
+		for (int i=0; i < httpResponseHeaders.length; i++) {
+			mResponseDetails = mResponseDetails.concat(httpResponseHeaders[i].toString());
+			if ( httpResponseHeaders[i].getName().equals("Transfer-Encoding") && httpResponseHeaders[i].getValue().equals("chunked") ) {
+				chunked = true;
+			}
+			if ( httpResponseHeaders[i].getName().equals("Content-Type") && containsText(httpResponseHeaders[i].getValue()) ) {
+				textContent = true;
+			}
+			if ( httpResponseHeaders[i].getName().equals("Content-Type") && isBinary(httpResponseHeaders[i].getValue()) ) {
+				binary = true;
+			}
+		}
+		mResponseDetails = mResponseDetails.concat(".....\n");
 
+		OutputStream os = null;
+		try {
+			if ( (chunked && !textContent) || binary ) {
+
+				// Write the binary data to a file for later comparison
+				//
+
+				InputStream is = method.getResponseBodyAsStream();
+
+				// Create a temporary file name
+				// Put the file in the samle directory as the *.txt file
+				os = new FileOutputStream(httpResponseFile = new File(coreController.rootDebugDir, System.currentTimeMillis() + ".txt"));
+
+				int b;
+				while ( (b = is.read()) != -1) {
+					os.write(b);
+				}
+				os.close();
+				is.close();
+
+				// For logging
+				mResponseDetails = mResponseDetails.concat("binary data saved in file: "+ httpResponseFile);
+
+			} else {
+				httpResponseBody = method.getResponseBodyAsString();
+				mResponseDetails = mResponseDetails.concat(httpResponseBody);
+
+				// Create a temporary file name
+				os = new FileOutputStream(httpResponseFile = new File(coreController.rootDebugDir, System.currentTimeMillis() + ".txt"));
+				os.write(httpResponseBody.getBytes());
+				os.close();
+
+			}
+		}catch(IOException e){
+			mLog.warn("IOException while writing data", e);
+		}finally{
+			Utilities.close(os, mLog);
+		}
+
+		
+	}
 	public boolean executeRestResponse(Element element) throws HarnessException {
 
 		mLog.debug("executeTestResponse execute");
