@@ -463,22 +463,25 @@ public class RestServletTest extends Test {
 
 	}
 	
-	private void processResponseHeaders(HttpMethod method){
-		
+	private void processResponseHeaders(HttpMethod method) {
+
 		boolean chunked = false;
 		boolean textContent = false;
 		boolean binary = false;
-		
+
 		httpResponseHeaders = method.getResponseHeaders();
-		for (int i=0; i < httpResponseHeaders.length; i++) {
+		for (int i = 0; i < httpResponseHeaders.length; i++) {
 			mResponseDetails = mResponseDetails.concat(httpResponseHeaders[i].toString());
-			if ( httpResponseHeaders[i].getName().equals("Transfer-Encoding") && httpResponseHeaders[i].getValue().equals("chunked") ) {
+			if (httpResponseHeaders[i].getName().equals("Transfer-Encoding")
+					&& httpResponseHeaders[i].getValue().equals("chunked")) {
 				chunked = true;
 			}
-			if ( httpResponseHeaders[i].getName().equals("Content-Type") && containsText(httpResponseHeaders[i].getValue()) ) {
+			if (httpResponseHeaders[i].getName().equals("Content-Type")
+					&& containsText(httpResponseHeaders[i].getValue())) {
 				textContent = true;
 			}
-			if ( httpResponseHeaders[i].getName().equals("Content-Type") && isBinary(httpResponseHeaders[i].getValue()) ) {
+			if (httpResponseHeaders[i].getName().equals("Content-Type")
+					&& isBinary(httpResponseHeaders[i].getValue())) {
 				binary = true;
 			}
 		}
@@ -486,44 +489,38 @@ public class RestServletTest extends Test {
 
 		OutputStream os = null;
 		try {
-			if ( (chunked && !textContent) || binary ) {
-
-				// Write the binary data to a file for later comparison
-				//
-
+			if ((chunked && !textContent) || binary) {
 				InputStream is = method.getResponseBodyAsStream();
-
-				// Create a temporary file name
 				// Put the file in the samle directory as the *.txt file
 				os = new FileOutputStream(httpResponseFile = new File(coreController.rootDebugDir, System.currentTimeMillis() + ".txt"));
 
 				int b;
-				while ( (b = is.read()) != -1) {
+				while ((b = is.read()) != -1) {
 					os.write(b);
 				}
 				os.close();
 				is.close();
 
 				// For logging
-				mResponseDetails = mResponseDetails.concat("binary data saved in file: "+ httpResponseFile);
+				mResponseDetails = mResponseDetails.concat("binary data saved in file: " + httpResponseFile);
 
 			} else {
 				httpResponseBody = method.getResponseBodyAsString();
 				mResponseDetails = mResponseDetails.concat(httpResponseBody);
 
 				// Create a temporary file name
-				os = new FileOutputStream(httpResponseFile = new File(coreController.rootDebugDir, System.currentTimeMillis() + ".txt"));
+				os = new FileOutputStream(
+						httpResponseFile = new File(coreController.rootDebugDir, System.currentTimeMillis() + ".txt"));
 				os.write(httpResponseBody.getBytes());
 				os.close();
 
 			}
-		}catch(IOException e){
+		} catch (IOException e) {
 			mLog.warn("IOException while writing data", e);
-		}finally{
+		} finally {
 			Utilities.close(os, mLog);
 		}
 
-		
 	}
 	public boolean executeRestResponse(Element element) throws HarnessException {
 
