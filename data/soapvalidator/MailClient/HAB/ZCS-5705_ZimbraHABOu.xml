@@ -1,0 +1,341 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="domain.name" value="test${TIME}${COUNTER}.com" />
+	<t:property name="account1.name" value="test1account${COUNTER}@${domain.name}" />
+	<t:property name="ou1.name" value="ZimbraOU${COUNTER}" />
+	<t:property name="ou1.newname" value="ZimbraOU_new${COUNTER}" />
+	<t:property name="ou2.name" value="ZimbraOU2${COUNTER}" />
+	<t:property name="ou2.newname" value="ZimbraOU2New${COUNTER}" />
+	<t:property name="ou3.name" value="ZimbraOU3${COUNTER}" />
+	<t:property name="ou4.name" value="ZimbraOU4${COUNTER}" />
+	<t:property name="ou5.name" value="ZimbraOU5${COUNTER}" />
+	<t:property name="ou5.newname" value="ZimbraOU5new${COUNTER}" />
+	<t:property name="ou6.name" value="ZimbraOU6${COUNTER}" />
+	<t:property name="ou7.name" value="ZimbraOU7${COUNTER}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu" type="always">
+		<t:objective>Account Setup </t:objective>
+		<t:steps>
+			1. Login into admin.
+			2. Create test accounts.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain.name}</name>
+					<a n="zimbraNotes">test of adding an OU</a>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse/admin:domain"
+					attr="id" set="domain.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraIsAdminAccount">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu_1" type="smoke"
+		bugids="ZCS-5705">
+		<t:objective>Create a zimbra organisational unit for a domain
+		</t:objective>
+		<t:steps>
+			1. Create a new HAB OU and assign to a domain
+			2. Verify the OU
+			gets created
+		</t:steps>
+
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou1.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou1.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu_2" type="smoke"
+		bugids="ZCS-5705">
+		<t:objective>Rename an zimbra organisational unit for a domain
+		</t:objective>
+		<t:steps>
+			1. Rename an existing HAB OU assigned to a domain to a
+			newname
+			2. Verify
+			the OU gets renamed
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="rename" name="${ou1.name}"
+					newName="${ou1.newname}" xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou1.newname}" />
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou1.name}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu_3" type="smoke"
+		bugids="ZCS-5705">
+		<t:objective>Delete an existing zimbra organisational unit for a
+			domain
+		</t:objective>
+		<t:steps>
+			1. Delete an existing HAB OU assigned to a domain.
+			2. Verify
+			the OU gets removed
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="delete" name="${ou1.newname}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse" />
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou1.newname}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu_4" type="smoke"
+		bugids="ZCS-5705">
+		<t:objective>Create a new OU for a domain by id
+		</t:objective>
+		<t:steps>
+			1. Create a new OU under a domain by id
+			2. Verify the OU gets
+			created.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou2.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="id">${domain.id}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou2.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu_5" type="smoke"
+		bugids="ZCS-5705">
+		<t:objective>HabOrgUnitRequest for an existing OU which is already
+			attached to a domain
+		</t:objective>
+		<t:steps>
+			1. Fire HabOrgUnitRequest for an existing OU which is already
+			attached to a domain
+			2. Verify error is received in the response
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou2.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="id">${domain.id}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="service.FAILURE" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu_6" type="smoke"
+		bugids="ZCS-5705">
+		<t:objective>HabOrgUnitRequest for creating a new HAB OU for existing
+			domain
+		</t:objective>
+		<t:steps>
+			1. Fire HabOrgUnitRequest for creating a new OU for an
+			existing domain.
+			2. Verify success in the response
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou3.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="id">${domain.id}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou3.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu_7" type="smoke"
+		bugids="ZCS-5705">
+		<t:objective>HabOrgUnitRequest for trying to renaming an OU of another
+			domain
+		</t:objective>
+		<t:steps>
+			1. Fire HabOrgUnitRequest to rename an OU of other domain
+			2.
+			Verify error is received in the response
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="rename" name="${ou2.name}"
+					newName="${ou2.newname}" xmlns="urn:zimbraAdmin">
+					<domain by="name">${defaultdomain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="service.FAILURE" />  <!-- Should fail -->
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu_8" type="smoke"
+		bugids="ZCS-5705">
+		<t:objective>HabOrgUnitRequest for trying to renaming an OU which is
+			already deleted
+		</t:objective>
+		<t:steps>
+			1. Fire HabOrgUnitRequest for an OU already deleted
+			2. Verify
+			error is received in the response
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="rename" name="${ou1.newname}"
+					newName="${ou5.newname}" xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="service.FAILURE" />  <!-- Should fail -->
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="ZimbraHABCreateOu_9" type="smoke"
+		bugids="ZCS-5705">
+		<t:objective>ForceDelete should be an optional parameter and work with
+			non delete operation
+		</t:objective>
+		<t:steps>
+			1. HabOrgUnitRequest for force delete operation with create
+			OU request
+			2. Verify success is received in the response
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou6.name}"
+					forceDelete="1" xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou6.name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<!-- Deprecated as forceDelete has not been implemented -->
+	<t:test_case testcaseid="ZimbraHABCreateOu_10" type="deprecated"
+		bugids="ZCS-5705">
+		<t:objective>ForceDelete should only work with delete operation
+		</t:objective>
+		<t:steps>
+			1. HabOrgUnitRequest for force delete operation for delete OU
+			request
+			2. Verify response as success
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="delete" name="${ou3.name}"
+					forceDelete="1" xmlns="urn:zimbraAdmin">
+					<domain by="id">${domain.id}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse" />  <!-- Should pass -->
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+</t:tests>
