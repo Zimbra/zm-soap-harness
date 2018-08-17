@@ -1,0 +1,468 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="domain.name" value="test${TIME}${COUNTER}.com" />
+	<t:property name="domain.name_hindi" value="पीयूष.भारत${TIME}.com" />
+	<t:property name="adminAcct1.name" value="test1${TIME}.${COUNTER}@${domain.name}" />
+	<t:property name="adminAcct2.name"
+		value="test1${TIME}.${COUNTER}@${domain.name_hindi}" />
+	<t:property name="ou1.name" value="ZimbraOU${COUNTER}" />
+	<t:property name="ou2.name" value="ZimbraOU2${COUNTER}" />
+	<t:property name="hab.notes" value="Group created notes" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZimbraHABCreateOu" type="always">
+		<t:objective>Account Setup </t:objective>
+		<t:steps>
+			1. Login into admin.
+			2. Create test accounts.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain.name}</name>
+					<a n="zimbraNotes">test of adding an OU</a>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse/admin:domain"
+					attr="id" set="domain.id" />
+			</t:response>
+		</t:test>
+
+		<!-- Create an admin account under this domain -->
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${adminAcct1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraIsAdminAccount">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="adminAcct1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain.name_hindi}</name>
+					<a n="zimbraNotes">test of adding an OU in hindi</a>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse/admin:domain"
+					attr="id" set="domain_hindi.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${adminAcct2.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraIsAdminAccount">TRUE</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="adminAcct2.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateHABGroup_1" type="smoke"
+		bugids="ZCS-5394">
+		<t:objective>Create a new HAB group and link it to existing OU
+		</t:objective>
+		<t:steps>
+			1. Create a new HAB OU under domain ${domain.name}.
+			2. Fire
+			CreateHABGroupRequest to create a new HAB non root group in above OU.
+			3. Verify request should succeed.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${adminAcct1.name}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou1.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:property name="hab.group1_name" value="grouphab1${TIME}" />
+		<t:property name="hab.group1" value="${hab.group1_name}@${domain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habGroupName="${hab.group1_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group1}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group1}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group1_name}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='objectClass']"
+					match="zimbraHabGroup" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:a[@n='mail']"
+					match="${hab.group1}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateHABGroup_2" type="smoke"
+		bugids="ZCS-5394">
+		<t:objective>Admin tries to create a new HAB group of some other
+			domain in it's current OU
+		</t:objective>
+		<t:steps>
+			1. Fire CreateHABGroupRequest to create a new HAB of other
+			domain under the OU of ${domain.name} domain
+			2. Verify request should
+			fail.
+		</t:steps>
+
+		<t:property name="hab.group2_name" value="grouphab2${TIME}" />
+		<t:property name="hab.group2" value="${hab.group2_name}@${defaultdomain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habGroupName="${hab.group2_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group2}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="account.NO_SUCH_ORG_UNIT" /> <!-- Should fail -->
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateHABGroup_3" type="smoke"
+		bugids="ZCS-5394">
+		<t:objective>CreateHABGroupRequest with various optional attributes.
+		</t:objective>
+		<t:steps>
+			1. Fire CreateHABGroupRequest to create a new HAB group with
+			various optional attributes
+			2. Verify request should succeed.
+		</t:steps>
+
+		<t:property name="hab.group3_name" value="grouphab3${TIME}" />
+		<t:property name="hab.group3" value="${hab.group3_name}@${domain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest name="${hab.group3}"
+					dynamic="0" habGroupName="${hab.group3_name}" habOrgUnit="${ou1.name}"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="description">A test HAB group3 description</a>
+					<a n="zimbraMailStatus">disabled</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group3}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group3_name}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='objectClass']"
+					match="zimbraHabGroup" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:a[@n='mail']"
+					match="${hab.group3}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='zimbraMailStatus']"
+					match="disabled" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateHABGroup_4" type="smoke"
+		bugids="ZCS-5394">
+		<t:objective>CreateHABGroupRequest with a non existent OU
+		</t:objective>
+		<t:steps>
+			1. Fire CreateHABGroupRequest to create a new HAB group with
+			non existent OU
+			2. Verify request should fail.
+		</t:steps>
+
+		<t:property name="hab.group4_name" value="grouphab4${TIME}" />
+		<t:property name="hab.group4" value="${hab.group4_name}@${domain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest name="${hab.group4}"
+					dynamic="0" habGroupName="${hab.group4_name}" habOrgUnit="${ou2.name}"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="description">A test HAB group4 description</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="account.NO_SUCH_ORG_UNIT" /> <!-- Should fail -->
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateHABGroup_5" type="smoke"
+		bugids="ZCS-5394">
+		<t:objective>CreateHABGroupRequest with the group name already exists
+		</t:objective>
+		<t:steps>
+			1. Fire CreateHABGroupRequest to create a new HAB group with
+			group name already exists
+			2. Verify request should fail.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest name="${hab.group1}"
+					dynamic="0" habGroupName="${hab.group1_name}" habOrgUnit="${ou1.name}"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="description">Group already exists</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="account.DISTRIBUTION_LIST_EXISTS" /> <!-- Should fail -->
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateHABGroup_6" type="smoke"
+		bugids="ZCS-5394">
+		<t:objective>CreateHABGroupRequest for a dynamic group
+		</t:objective>
+		<t:steps>
+			1. Fire CreateHABGroupRequest to create a new dynamic HAB
+			group with member URL set
+			2. Verify request should pass.
+		</t:steps>
+
+		<t:property name="hab.group5_name" value="grouphab5${TIME}" />
+		<t:property name="hab.group5" value="${hab.group5_name}@${domain.name}" />
+		<t:property name="member_url" value="ldap:///??sub?(mail=*@${domain.name})" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest name="${hab.group5}"
+					dynamic="1" habGroupName="${hab.group5_name}" habOrgUnit="${ou1.name}"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="description">Dynamic group 1</a>
+					<a n="memberURL">${member_url}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group5}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group5_name}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='objectClass']"
+					match="zimbraHabGroup" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:a[@n='mail']"
+					match="${hab.group5}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='zimbraMailStatus']"
+					match="enabled" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='zimbraIsACLGroup']"
+					match="FALSE" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:a[@n='memberURL']"
+					contains="${member_url}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateHABGroup_7" type="smoke"
+		bugids="ZCS-5394">
+		<t:objective>CreateHABGroupRequest for a dynamic group with no
+			memberURL
+		</t:objective>
+		<t:steps>
+			1. Fire CreateHABGroupRequest to create a new dynamic HAB
+			group with no member URL set
+			2. Verify request should fail.
+		</t:steps>
+
+		<t:property name="hab.group6_name" value="groupHAB6" />
+		<t:property name="hab.group6" value="${hab.group6_name}@${domain.name}" />
+		<t:property name="member_url" value="" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest name="${hab.group6}"
+					dynamic="1" habGroupName="${hab.group6_name}" habOrgUnit="${ou1.name}"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="description">Dynamic group 1</a>
+					<a n="memberURL">${member_url}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="service.INVALID_REQUEST" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateHABGroup_8" type="smoke"
+		bugids="ZCS-5394">
+		<t:objective>CreateHABGroupRequest for a static group with memberURL
+		</t:objective>
+		<t:steps>
+			1. Fire CreateHABGroupRequest to create a new static HAB
+			group with member URL set
+			2. Verify request should fail.
+		</t:steps>
+
+		<t:property name="hab.group7_name" value="groupHAB6${TIME}" />
+		<t:property name="hab.group7" value="${hab.group7_name}@${domain.name}" />
+		<t:property name="member_url" value="ldap:///??sub?(mail=*@${domain.name})" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest name="${hab.group7}"
+					habGroupName="${hab.group7_name}" habOrgUnit="${ou1.name}" xmlns="urn:zimbraAdmin"
+					dynamic="0">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="description">Dynamic group 1</a>
+					<a n="memberURL">${member_url}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="ldap.OBJECT_CLASS_VIOLATION" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="CreateHABGroup_9" type="smoke"
+		bugids="ZCS-5394">
+		<t:objective>CreateHABGroupRequest for a static group with group name
+			in non ascii
+		</t:objective>
+		<t:steps>
+			1. Fire CreateHABGroupRequest to create a new static HAB
+			group with group name in non ascii
+			2. Verify request should pass with
+			all details.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${adminAcct2.name}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou2.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name_hindi}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou2.name}" />
+			</t:response>
+		</t:test>
+
+		<t:property name="hab.group8_name" value="äöüßgroupHAB8${TIME}यूषभारत" />
+		<t:property name="hab.group8" value="abc@${domain.name_hindi}" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest name="${hab.group8}"
+					habGroupName="${hab.group8_name}" habOrgUnit="${ou2.name}" xmlns="urn:zimbraAdmin"
+					dynamic="0">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="description">Static group in non ascii</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group8}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group8_name}" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='objectClass']"
+					match="zimbraHabGroup" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='zimbraMailStatus']"
+					match="enabled" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>
