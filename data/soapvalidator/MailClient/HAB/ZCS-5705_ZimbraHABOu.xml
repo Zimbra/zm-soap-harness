@@ -285,35 +285,7 @@
 
 	</t:test_case>
 
-
 	<t:test_case testcaseid="ZimbraHABCreateOu_9" type="smoke"
-		bugids="ZCS-5705">
-		<t:objective>ForceDelete should be an optional parameter and work with
-			non delete operation
-		</t:objective>
-		<t:steps>
-			1. HabOrgUnitRequest for force delete operation with create
-			OU request
-			2. Verify success is received in the response
-		</t:steps>
-
-		<t:test>
-			<t:request>
-				<HABOrgUnitRequest op="create" name="${ou6.name}"
-					forceDelete="1" xmlns="urn:zimbraAdmin">
-					<domain by="name">${domain.name}</domain>
-				</HABOrgUnitRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
-					match="${ou6.name}" />
-			</t:response>
-		</t:test>
-
-	</t:test_case>
-
-	<!-- Deprecated as forceDelete has not been implemented -->
-	<t:test_case testcaseid="ZimbraHABCreateOu_10" type="deprecated"
 		bugids="ZCS-5705">
 		<t:objective>ForceDelete should only work with delete operation
 		</t:objective>
@@ -331,7 +303,7 @@
 				</HABOrgUnitRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:HABOrgUnitResponse" />  <!-- Should pass -->
+				<t:select path="//zimbra:Code" match="service.INVALID_REQUEST" />
 			</t:response>
 		</t:test>
 
