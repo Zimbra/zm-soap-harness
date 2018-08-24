@@ -12,15 +12,15 @@ This harness enables you to execute soap automation tests for supported function
 
 2. Create a directory as `~/.ivy2/cache` if not present.
 
-3. Go to zm-mailbox directory and execute following command to generate necessary zimbra dependencies:
+3. Go to the `zm-mailbox` directory and execute the following command to generate necessary zimbra dependencies:
 
    `ant clean-ant publish-local-all -Dzimbra.buildinfo.version=8.8.3_GA`
 
-4. Go to zm-soap-harness directory and run jar target to get zm-soap-harness jar:
+4. Go to `zm-soap-harness` directory and run jar target to get zm-soap-harness jar:
 
    `ant jar`
 
-5. To build soapdata.tar run the following target:
+5. To build `soapdata.tar` run the following target:
 
    `ant build-soap-data-file`
 
@@ -32,10 +32,14 @@ This harness enables you to execute soap automation tests for supported function
     
    `ant "Run-SoapTestCore"`
    
-8. To execute any individual testcase or a test suite, update "Run-SoapTestCore"" target and execute it:
-- Running individual testcase, update the "value" parameter as:
+8. To execute an individual test case over-ride the `testRoot` ant property.
 
-	`value="data/soapvalidator/MailClient/Auth/auth_basic.xml"`
-- Running the complete suite, update the "value" parameter as:
+    For example:
+    
+        ant -DtestRoot=data/soapvalidator/MailClient/Auth/auth_basic.xml Run-SoapTestCore
+        
+9. To run all tests under a particular directory, specify it as the `testRoot` ant property.
 
-	`value="data/soapvalidator/MailClient/Auth/"`
+    For example:
+    
+        ant -DtestRoot=data/soapvalidator/MailClient/Auth/ Run-SoapTestCore
