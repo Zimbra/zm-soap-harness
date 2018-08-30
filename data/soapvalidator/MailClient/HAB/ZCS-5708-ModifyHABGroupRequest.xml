@@ -19,7 +19,6 @@
 				<t:select path="//admin:PingResponse" />
 			</t:response>
 		</t:test>
-
 	</t:test_case>
 
 	<t:test_case testcaseid="CreateAccount/Domain" type="always">
@@ -93,10 +92,7 @@
 					attr="id" set="account3.id" />
 			</t:response>
 		</t:test>
-		
-
 	</t:test_case>
-	
 
 	<t:test_case testcaseid="CreateOUAndHABGroups" type="smoke"
 		bugids="ZCS-5708">
@@ -135,7 +131,6 @@
 			</t:response>
 		</t:test>
 		
-
 		<t:property name="hab.group1_name" value="myorg${TIME}" />
 		<t:property name="hab.group1" value="${hab.group1_name}@${domain.name}" />
 		<t:property name="hab.group1AltOU_name" value="myorgaltou${TIME}" />
@@ -424,10 +419,9 @@
 				<t:select path="//admin:AddDistributionListMemberResponse" />
 			</t:response>
 		</t:test>
-
 	</t:test_case>
 	
-<t:test_case testcaseid="ModifyGroup1" type="smoke"
+	<t:test_case testcaseid="ModifyGroup1" type="smoke"
 		bugids="ZCS-5708">
 		<t:objective>Move static WebUx group from QA group to MyOrg
 		</t:objective>
@@ -448,7 +442,6 @@
 			</t:response>
 		</t:test>
 		
-		
 		<t:test>
 			<t:request>
 				<ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
@@ -460,7 +453,6 @@
 				<t:select path="//admin:ModifyHABGroupResponse/admin:parentHABGroup//admin:member" match="${hab.group5_name}@${domain.name}"/>
 			</t:response>
 		</t:test>	
-		
 	</t:test_case>
 
 	<t:test_case testcaseid="ModifyGroup2" type="smoke"
@@ -484,7 +476,6 @@
 			</t:response>
 		</t:test>
 		
-		
 		<t:test>
 			<t:request>
 				<ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
@@ -496,9 +487,7 @@
 				<t:select path="//admin:ModifyHABGroupResponse/admin:parentHABGroup//admin:member" match="${hab.group8_name}@${domain.name}"/>
 			</t:response>
 		</t:test>	
-		
 	</t:test_case>
-
 
 	<t:test_case testcaseid="ModifyGroup3" type="smoke"
 		bugids="ZCS-5708">
@@ -521,7 +510,6 @@
 			</t:response>
 		</t:test>
 		
-		
 		<t:test>
 			<t:request>
 				<ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
@@ -532,7 +520,6 @@
 				<t:select path="//soap:Reason/soap:Text" match="invalid request: Group to be moved is a member of the target group"/>
 			</t:response>
 		</t:test>	
-		
 	</t:test_case>
 	
 	<t:test_case testcaseid="ModifyGroup4" type="smoke"
@@ -556,7 +543,6 @@
 			</t:response>
 		</t:test>
 		
-		
 		<t:test>
 			<t:request>
 				<ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
@@ -567,7 +553,6 @@
 				<t:select path="//soap:Reason/soap:Text" match="invalid request: Target group:${hab.group10_name}@${domain.name} is a member of the group:${hab.group8_name}@${domain.name} being moved"/>
 			</t:response>
 		</t:test>	
-		
 	</t:test_case>
 	
 	<t:test_case testcaseid="ModifyGroup5" type="deprecated"
@@ -591,7 +576,6 @@
 			</t:response>
 		</t:test>
 		
-		
 		<t:test>
 			<t:request>
 				<ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
@@ -603,7 +587,6 @@
 				<t:select path="//admin:ModifyHABGroupResponse/admin:parentHABGroup//admin:member" match="${hab.group4_name}@${domain.name}"/>
 			</t:response>
 		</t:test>	
-		
 	</t:test_case>
 
 	<t:test_case testcaseid="ModifyGroup6" type="smoke"
@@ -627,7 +610,6 @@
 			</t:response>
 		</t:test>
 		
-		
 		<t:test>
 			<t:request>
 				<ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
@@ -638,7 +620,6 @@
 				<t:select path="//soap:Reason/soap:Text" match="invalid request: Target group cannot be dynamic."/>
 			</t:response>
 		</t:test>	
-		
 	</t:test_case>
 
 </t:tests>	
