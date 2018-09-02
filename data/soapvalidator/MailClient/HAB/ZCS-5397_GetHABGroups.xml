@@ -122,7 +122,7 @@
 
 		<t:test>
 			<t:request>
-				<CreateHABGroupRequest habGroupName="${hab.group1_name}"
+				<CreateHABGroupRequest habDisplayName="${hab.group1_name}"
 					habOrgUnit="${ou1.name}" name="${hab.group1}" xmlns="urn:zimbraAdmin">
 					<a n="zimbraNotes">${hab.notes}</a>
 				</CreateHABGroupRequest>
@@ -140,7 +140,7 @@
 
 		<t:test>
 			<t:request>
-				<CreateHABGroupRequest habGroupName="${hab.group2_name}"
+				<CreateHABGroupRequest habDisplayName="${hab.group2_name}"
 					habOrgUnit="${ou1.name}" name="${hab.group2}" xmlns="urn:zimbraAdmin">
 					<a n="zimbraNotes">${hab.notes}</a>
 				</CreateHABGroupRequest>
@@ -158,7 +158,7 @@
 
 		<t:test>
 			<t:request>
-				<CreateHABGroupRequest habGroupName="${hab.group3_name}"
+				<CreateHABGroupRequest habDisplayName="${hab.group3_name}"
 					habOrgUnit="${ou1.name}" name="${hab.group3}" xmlns="urn:zimbraAdmin">
 					<a n="zimbraNotes">${hab.notes}</a>
 				</CreateHABGroupRequest>
@@ -176,7 +176,7 @@
 
 		<t:test>
 			<t:request>
-				<CreateHABGroupRequest habGroupName="${hab.group4_name}"
+				<CreateHABGroupRequest habDisplayName="${hab.group4_name}"
 					habOrgUnit="${ou1.name}" name="${hab.group4}" xmlns="urn:zimbraAdmin">
 					<a n="zimbraNotes">${hab.notes}</a>
 				</CreateHABGroupRequest>
@@ -194,7 +194,7 @@
 
 		<t:test>
 			<t:request>
-				<CreateHABGroupRequest habGroupName="${hab.group5_name}"
+				<CreateHABGroupRequest habDisplayName="${hab.group5_name}"
 					habOrgUnit="${ou1.name}" name="${hab.group5}" xmlns="urn:zimbraAdmin">
 					<a n="zimbraNotes">${hab.notes}</a>
 				</CreateHABGroupRequest>
@@ -212,7 +212,7 @@
 
 		<t:test>
 			<t:request>
-				<CreateHABGroupRequest habGroupName="${hab.group6_name}"
+				<CreateHABGroupRequest habDisplayName="${hab.group6_name}"
 					habOrgUnit="${ou1.name}" name="${hab.group6}" xmlns="urn:zimbraAdmin">
 					<a n="zimbraNotes">${hab.notes}</a>
 				</CreateHABGroupRequest>
@@ -233,7 +233,7 @@
 
 		<t:test>
 			<t:request>
-				<CreateHABGroupRequest habGroupName="${hab.group7_name}"
+				<CreateHABGroupRequest habDisplayName="${hab.group7_name}"
 					habOrgUnit="${ou1.name}" name="${hab.group7}" dynamic="1"
 					xmlns="urn:zimbraAdmin">
 					<a n="zimbraNotes">${hab.notes}</a>
@@ -840,40 +840,13 @@
 
 	<t:test_case testcaseid="GetStaticHABGroups_9" type="smoke"
 		bugids="ZCS-5397">
-		<t:objective>GetHabGroup request for a non hab Group as a subgroup
+		<t:objective>GetHabGroup request for a non hab Group
 		</t:objective>
 		<t:steps>
-			1. Add the DL 'dl.name' as a child of hab group 6
-			2. Fire
-			GetHABRequest for the group6
-			3. Verify response should return only
-			group6 and not the non hab child
+			1. Fire
+			GetHABRequest for the non hab dl
+			3. Verify response return error.
 		</t:steps>
-
-		<t:test id="admin_login" required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
-
-		<t:test>
-			<t:request>
-				<AddDistributionListMemberRequest
-					xmlns="urn:zimbraAdmin">
-					<id>${hab.group6_id}</id>
-					<dlm>${dl.name}</dlm>
-				</AddDistributionListMemberRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AddDistributionListMemberResponse" />
-			</t:response>
-		</t:test>
 
 		<t:test id="auth_account" required="true">
 			<t:request>
@@ -889,25 +862,11 @@
 
 		<t:test>
 			<t:request>
-				<GetHABRequest habRootGroupId="${hab.group6_id}"
+				<GetHABRequest habRootGroupId="${dl.name}"
 					xmlns="urn:zimbraAccount" />
 			</t:request>
 			<t:response>
-				<t:select
-					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
-					attr="name" match="${hab.group6}" />
-				<t:select
-					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
-					attr="id" set="root_id" />
-				<t:select
-					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='mail']"
-					match="${hab.group6}" />
-				<t:select
-					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='displayName']"
-					match="${hab.group6_name}" />
-				<t:select
-					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
-					attr="name" match="${dl.name}" emptyset="1" />
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
 			</t:response>
 		</t:test>
 
