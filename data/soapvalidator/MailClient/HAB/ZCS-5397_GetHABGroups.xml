@@ -1,0 +1,952 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="domain.name" value="test${TIME}${COUNTER}.com" />
+	<t:property name="adminAcct1.name" value="test1${TIME}.${COUNTER}@${domain.name}" />
+	<t:property name="acct2.name" value="test2${TIME}.${COUNTER}@${domain.name}" />
+	<t:property name="ou1.name" value="ZimbraOU${COUNTER}" />
+	<t:property name="hab.notes" value="Group created notes" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAccount/Domain" type="always">
+		<t:objective>Account Setup </t:objective>
+		<t:steps>
+			1. Login into admin.
+			2. Create test accounts.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain.name}</name>
+					<a n="zimbraNotes">test of adding an OU</a>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse/admin:domain"
+					attr="id" set="domain.id" />
+			</t:response>
+		</t:test>
+
+		<!-- Create an admin account under this domain -->
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${adminAcct1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${acct2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateOUAndHABGroups" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>Create a new HAB group and link it to existing OU
+		</t:objective>
+		<t:steps>
+			1. Create a new HAB OU under domain ${domain.name}.
+			2. Fire
+			CreateHABGroupRequest to create a new HAB non root group in above OU.
+			3. Verify request should succeed.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou1.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:property name="hab.group1_name" value="grouphab1_${TIME}" />
+		<t:property name="hab.group1" value="${hab.group1_name}@${domain.name}" />
+		<t:property name="hab.group2_name" value="grouphab2_${TIME}" />
+		<t:property name="hab.group2" value="${hab.group2_name}@${domain.name}" />
+		<t:property name="hab.group3_name" value="grouphab3_${TIME}" />
+		<t:property name="hab.group3" value="${hab.group3_name}@${domain.name}" />
+		<t:property name="hab.group4_name" value="grouphab4_${TIME}" />
+		<t:property name="hab.group4" value="${hab.group4_name}@${domain.name}" />
+		<t:property name="hab.group5_name" value="grouphabx5_${TIME}" />
+		<t:property name="hab.group5" value="${hab.group5_name}@${domain.name}" />
+		<t:property name="hab.group6_name" value="grouphab6_${TIME}" />
+		<t:property name="hab.group6" value="${hab.group6_name}@${domain.name}" />
+		<t:property name="hab.group7_name" value="grouphaby7_${TIME}" />
+		<t:property name="hab.group7" value="${hab.group7_name}@${domain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group1_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group1}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group1}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group1_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group1_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group2_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group2}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group2}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group2_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group2_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group3_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group3}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group3}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group3_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group3_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group4_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group4}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group4}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group4_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group4_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group5_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group5}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group5}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group5_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group5_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group6_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group6}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group6}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group6_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group6_name}" />
+			</t:response>
+		</t:test>
+
+		<t:property name="member_url"
+			value="ldap:///??sub?(mail=test*@${domain.name})" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group7_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group7}" dynamic="1"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="memberURL">${member_url}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group7}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group7_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group7_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+					<id>${domain.id}</id>
+					<a n="zimbraHierarchicalAddressBookRoot">${hab.group1}</a>
+				</ModifyDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyDomainResponse/admin:domain" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+					<id>${hab.group7_id}</id>
+					<a n="zimbraHABSeniorityIndex">80</a>
+				</ModifyDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+					<id>${hab.group5_id}</id>
+					<a n="zimbraHABSeniorityIndex">40</a>
+				</ModifyDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+					<id>${hab.group6_id}</id>
+					<a n="zimbraHABSeniorityIndex">80</a>
+				</ModifyDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="GetStaticHABGroups_1" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>Fire GetHABRequest to get the groups added.
+		</t:objective>
+		<t:steps>
+			1. Fire GetHABRequest with id of the root group.
+			2.
+			3. Verify
+			request should succeed.
+		</t:steps>
+
+		<t:test id="auth_account" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${adminAcct1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${hab.group1_id}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
+					attr="name" match="${hab.group1}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
+					attr="id" set="root_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='mail']"
+					match="${hab.group1}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='displayName']"
+					match="${hab.group1_name}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="GetStaticHABGroups_2" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>Add members to groups and verify the groups get returned
+			in tree fashion
+		</t:objective>
+		<t:steps>
+			1. Add one group as member of others.
+			2. Verify request should
+			succeed.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group1_id}</id>
+					<dlm>${hab.group2}</dlm>
+					<dlm>${hab.group4}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group2_id}</id>
+					<dlm>${hab.group3}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group4_id}</id>
+					<dlm>${hab.group5}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group5_id}</id>
+					<dlm>${hab.group6}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group4_id}</id>
+					<dlm>${hab.group7}</dlm>
+					<dlm>${hab.group6}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${hab.group1_id}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
+					attr="name" match="${hab.group1}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
+					attr="id" set="root_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='mail']"
+					match="${hab.group1}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='displayName']"
+					match="${hab.group1_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
+					attr="name" match="${hab.group2}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
+					attr="id" set="group2_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]//acct:attr[@name='mail']"
+					match="${hab.group2}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]//acct:attr[@name='displayName']"
+					match="${hab.group2_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]/acct:habGroup"
+					attr="name" match="${hab.group3}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]/acct:habGroup"
+					attr="id" set="group3_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]/acct:habGroup//acct:attr[@name='mail']"
+					match="${hab.group3}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]/acct:habGroup//acct:attr[@name='displayName']"
+					match="${hab.group3_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]"
+					attr="name" match="${hab.group4}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]"
+					attr="id" set="group4_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]//acct:attr[@name='mail']"
+					match="${hab.group4}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]//acct:attr[@name='displayName']"
+					match="${hab.group4_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[1]"
+					attr="name" match="${hab.group6}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[1]"
+					attr="id" set="group6_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[1]//acct:attr[@name='mail']"
+					match="${hab.group6}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[1]//acct:attr[@name='displayName']"
+					match="${hab.group6_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[2]"
+					attr="name" match="${hab.group7}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[2]"
+					attr="id" set="group7_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[2]//acct:attr[@name='mail']"
+					match="${hab.group7}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[2]//acct:attr[@name='displayName']"
+					match="${hab.group7_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[3]"
+					attr="name" match="${hab.group5}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[3]"
+					attr="id" set="group5_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[3]//acct:attr[@name='mail']"
+					match="${hab.group5}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]/acct:habGroup[3]//acct:attr[@name='displayName']"
+					match="${hab.group5_name}" />
+			</t:response>
+
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="GetStaticHABGroups_3" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>Fire GetHABRequest for any group within the hierarchy
+		</t:objective>
+		<t:steps>
+			1. Fire GetHABRequest for group5 within the hierarchy
+			2.
+			Verify response should list the group5 details and it's subgroups if
+			any.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${hab.group5_id}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
+					attr="name" match="${hab.group5}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='mail']"
+					match="${hab.group5}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='displayName']"
+					match="${hab.group5_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
+					attr="name" match="${hab.group6}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
+					attr="id" set="group6_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]//acct:attr[@name='mail']"
+					match="${hab.group6}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]//acct:attr[@name='displayName']"
+					match="${hab.group6_name}" />
+			</t:response>
+
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="GetStaticHABGroups_4" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>Fire GetHABRequest for individual members in the group
+		</t:objective>
+		<t:steps>
+			1. Add individual members and not groups to one of the HAB
+			group
+			2. Verify response should list only the sub groups and not the
+			members.
+		</t:steps>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group2_id}</id>
+					<dlm>${acct2.name}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${hab.group2_id}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
+					attr="name" match="${hab.group2}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='mail']"
+					match="${hab.group2}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='displayName']"
+					match="${hab.group2_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
+					attr="name" match="${hab.group3}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
+					attr="id" set="group3_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]//acct:attr[@name='mail']"
+					match="${hab.group3}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]//acct:attr[@name='displayName']"
+					match="${hab.group3_name}" />
+			</t:response>
+
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="GetStaticHABGroups_5" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>Fire GetHABRequest after deleting a group from the group
+		</t:objective>
+		<t:steps>
+			1. Delete a HAB group3 from under group2.
+			2. Verify response
+			should not list group3 as a child of group2.
+		</t:steps>
+
+		<t:test id="deleteDistributionListRequest">
+			<t:request>
+				<DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
+					<id>${hab.group3_id}</id>
+				</DeleteDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${hab.group2_id}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
+					attr="name" emptyset="${hab.group2}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='mail']"
+					match="${hab.group2}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='displayName']"
+					match="${hab.group2_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
+					attr="name" match="${hab.group3}" emptyset="1" />
+			</t:response>
+
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="GetStaticHABGroups_6" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>Fire GetHABRequest for a non existent group
+		</t:objective>
+		<t:steps>
+			1. Fire GetHABRequest for the group3 which was deleted in
+			above case
+			2. Verify response should give an error as group not
+			exists.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${hab.group3_id}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="GetStaticHABGroups_7" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>GetHabGroup request based on seniority index.
+		</t:objective>
+		<t:steps>
+			1. Fire GetHABRequest for the group4 which has group 5=40
+			seniority and
+			group 7=80 seniority
+			above case
+			2. Verify response should
+			return group7 first and then group5
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${hab.group4_id}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
+					attr="name" match="${hab.group4}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup"
+					attr="id" set="root_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='mail']"
+					match="${hab.group4}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup//acct:attr[@name='displayName']"
+					match="${hab.group4_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
+					attr="name" match="${hab.group6}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]"
+					attr="id" set="group6_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]//acct:attr[@name='mail']"
+					match="${hab.group6}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[1]//acct:attr[@name='displayName']"
+					match="${hab.group6_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]"
+					attr="name" match="${hab.group7}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]"
+					attr="id" set="group7_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]//acct:attr[@name='mail']"
+					match="${hab.group7}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[2]//acct:attr[@name='displayName']"
+					match="${hab.group7_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[3]"
+					attr="name" match="${hab.group5}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[3]"
+					attr="id" set="group5_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[3]//acct:attr[@name='mail']"
+					match="${hab.group5}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou1.name}']/acct:habGroup/acct:habGroup[3]//acct:attr[@name='displayName']"
+					match="${hab.group5_name}" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="GetStaticHABGroups_8" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>GetHabGroup request for a non hab Group
+		</t:objective>
+		<t:steps>
+			1. Fire GetHABRequest for the group4 which has group 5=40 and
+			group 7=80
+			above case
+			2. Verify response should return group7 first and
+			then group5
+		</t:steps>
+
+		<t:property name="dl.name" value="nonhab${TIME}@${domain.name}" />
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+					<name>${dl.name}</name>
+					<a n="description">A test distribution list</a>
+				</CreateDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDistributionListResponse/admin:dl"
+					attr="id" set="test_list1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth_account" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${adminAcct1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${test_list1.id}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="GetStaticHABGroups_9" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>GetHabGroup request for a non hab Group
+		</t:objective>
+		<t:steps>
+			1. Fire
+			GetHABRequest for the non hab dl
+			3. Verify response return error.
+		</t:steps>
+
+		<t:test id="auth_account" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${adminAcct1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${dl.name}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="GetStaticHABGroups_9" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>GetHabGroup request for a renamed HAB OU
+		</t:objective>
+		<t:steps>
+			1. Rename HAB OU.
+			2. Fire
+			GetHABRequest for the group6
+			3. Verify
+			response should return renamed OU.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="ou.rename" value="renamedOU${TIME}" />
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="rename" name="${ou1.name}"
+					newName="${ou.rename}" xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou.rename}" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth_account" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${adminAcct1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetHABRequest habRootGroupId="${hab.group6_id}"
+					xmlns="urn:zimbraAccount" />
+			</t:request>
+			<t:response>
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou.rename}']/acct:habGroup"
+					attr="name" match="${hab.group6}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou.rename}']/acct:habGroup"
+					attr="id" set="root_id" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou.rename}']/acct:habGroup//acct:attr[@name='mail']"
+					match="${hab.group6}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou.rename}']/acct:habGroup//acct:attr[@name='displayName']"
+					match="${hab.group6_name}" />
+				<t:select
+					path="//acct:GetHABResponse/acct:ou[@name='${ou.rename}']/acct:habGroup/acct:habGroup[1]"
+					attr="name" match="${dl.name}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>
