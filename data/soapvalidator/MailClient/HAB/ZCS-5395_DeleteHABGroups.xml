@@ -1,0 +1,788 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="domain.name" value="test${TIME}${COUNTER}.com" />
+	<t:property name="adminAcct1.name" value="test1${TIME}.${COUNTER}@${domain.name}" />
+	<t:property name="acct2.name" value="test2${TIME}.${COUNTER}@${domain.name}" />
+	<t:property name="ou1.name" value="ZimbraOU${COUNTER}" />
+	<t:property name="hab.notes" value="Group created notes" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="CreateAccount/Domain" type="always">
+		<t:objective>Account Setup </t:objective>
+		<t:steps>
+			1. Login into admin.
+			2. Create test accounts.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain.name}</name>
+					<a n="zimbraNotes">test of adding an OU</a>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse/admin:domain"
+					attr="id" set="domain.id" />
+			</t:response>
+		</t:test>
+
+		<!-- Create an admin account under this domain -->
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${adminAcct1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${acct2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="CreateOUAndHABGroups" type="smoke"
+		bugids="ZCS-5395">
+		<t:objective>Create a new HAB group and link it to existing OU
+		</t:objective>
+		<t:steps>
+			1. Create a new HAB OU under domain ${domain.name}.
+			2. Fire
+			CreateHABGroupRequest to create a new HAB non root group in above OU.
+			3. Verify request should succeed.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou1.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:property name="hab.group1_name" value="grouphab1_${TIME}" />
+		<t:property name="hab.group1" value="${hab.group1_name}@${domain.name}" />
+		<t:property name="hab.group2_name" value="grouphab2_${TIME}" />
+		<t:property name="hab.group2" value="${hab.group2_name}@${domain.name}" />
+		<t:property name="hab.group3_name" value="grouphab3_${TIME}" />
+		<t:property name="hab.group3" value="${hab.group3_name}@${domain.name}" />
+		<t:property name="hab.group4_name" value="grouphab4_${TIME}" />
+		<t:property name="hab.group4" value="${hab.group4_name}@${domain.name}" />
+		<t:property name="hab.group5_name" value="grouphabx5_${TIME}" />
+		<t:property name="hab.group5" value="${hab.group5_name}@${domain.name}" />
+		<t:property name="hab.group6_name" value="grouphab6_${TIME}" />
+		<t:property name="hab.group6" value="${hab.group6_name}@${domain.name}" />
+		<t:property name="hab.group7_name" value="grouphaby7_${TIME}" />
+		<t:property name="hab.group7" value="${hab.group7_name}@${domain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group1_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group1}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group1}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group1_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group1_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group2_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group2}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group2}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group2_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group2_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group3_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group3}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group3}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group3_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group3_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group4_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group4}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group4}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group4_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group4_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group5_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group5}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group5}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group5_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group5_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group6_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group6}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group6}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group6_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group6_name}" />
+			</t:response>
+		</t:test>
+
+		<t:property name="member_url"
+			value="ldap:///??sub?(mail=test*@${domain.name})" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group7_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group7}" dynamic="1"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="memberURL">${member_url}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group7}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group7_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group7_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+					<id>${domain.id}</id>
+					<a n="zimbraHierarchicalAddressBookRoot">${hab.group1}</a>
+				</ModifyDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyDomainResponse/admin:domain" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group1_id}</id>
+					<dlm>${hab.group2}</dlm>
+					<dlm>${hab.group4}</dlm>
+					<dlm>${acct2.name}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group2_id}</id>
+					<dlm>${hab.group3}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group4_id}</id>
+					<dlm>${hab.group5}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group5_id}</id>
+					<dlm>${hab.group6}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group4_id}</id>
+					<dlm>${hab.group7}</dlm>
+					<dlm>${hab.group6}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="DeleteHABGroups_01" type="smoke"
+		bugids="ZCS-5395">
+		<t:objective>DeleteHABgroups for a static group with
+			cascadeDelete="true"
+		</t:objective>
+		<t:steps>
+			1. Fire DeleteHABGorups request for static group5 and
+			cascadeDelete="true"
+			2. Verify request should succeed and group5 and
+			group6 should get deleted
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<DeleteDistributionListRequest id="${hab.group5_id}"
+					cascadeDelete="true" xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${hab.group5_id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.NO_SUCH_DISTRIBUTION_LIST" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${hab.group6_id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.NO_SUCH_DISTRIBUTION_LIST" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="DeleteHABGroups_02" type="smoke"
+		bugids="ZCS-5395">
+		<t:objective>DeleteHABgroups for a dynamic group with
+			cascadeDelete="true"
+		</t:objective>
+		<t:steps>
+			1. Fire DeleteHABGorups request for static group4 and
+			cascadeDelete="true"
+			2. Verify request should succeed and group7 which
+			is dynamic subgroup should also get deleted
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<DeleteDistributionListRequest id="${hab.group4_id}"
+					cascadeDelete="true" xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${hab.group7_id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.NO_SUCH_DISTRIBUTION_LIST" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="DeleteHABGroups_03" type="smoke"
+		bugids="ZCS-5395">
+		<t:objective>DeleteHABgroups for a dynamic group with
+			cascadeDelete="false"
+		</t:objective>
+		<t:steps>
+			1. create a new dynamic group7.
+			1. Fire DeleteHABGorups request for
+			dynamic group7 and cascadeDelete="false"
+			2. Verify request should
+			succeed and group7 which is dynamic group should get deleted
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group7_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group7}" dynamic="1"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="memberURL">${member_url}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group7}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group7_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group7_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<DeleteDistributionListRequest id="${hab.group7_id}"
+					cascadeDelete="false" xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${hab.group7_id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.NO_SUCH_DISTRIBUTION_LIST" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="DeleteHABGroups_04" type="smoke"
+		bugids="ZCS-5395">
+		<t:objective>DeleteHABgroups for a dynamic sub group with
+			cascadeDelete="true"
+		</t:objective>
+		<t:steps>
+			1. Add a dynamic subgroup to a static group.
+			1. Fire DeleteHABGorups
+			request for static group6 and cascadeDelete="true"
+			2. Verify request
+			should succeed and dynamic sub group should also be deleted.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group7_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group7}" dynamic="1"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="memberURL">${member_url}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group7}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group7_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group7_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<DeleteDistributionListRequest id="${hab.group7_id}"
+					cascadeDelete="false" xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${hab.group7_id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.NO_SUCH_DISTRIBUTION_LIST" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="DeleteHABGroups_05" type="smoke"
+		bugids="ZCS-5395">
+		<t:objective>DeleteHABgroups for a static group with
+			cascadeDelete="false" and with subgroups.
+		</t:objective>
+		<t:steps>
+			1. Fire DeleteHABGorups request for static group4 and
+			cascadeDelete="false"
+			2. Verify request should give error as 'Cannot
+			delete as child members linked'
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group4_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group4}" dynamic="0"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group4}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group4_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group4_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group7_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group7}" dynamic="1"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+					<a n="memberURL">${member_url}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group7}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group7_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group7_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group4_id}</id>
+					<dlm>${hab.group7}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<DeleteDistributionListRequest id="${hab.group4_id}"
+					cascadeDelete="false" xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="DeleteHABGroups_06" type="smoke"
+		bugids="ZCS-5395">
+		<t:objective>DeleteHABgroups for a static group which is part of 2
+			parent groups
+		</t:objective>
+		<t:steps>
+			1. Add group 3 as a member of group4 and group1.
+			2. Fire DDL
+			request for group3.
+			3. Verify group3 gets deleted from both parents.
+		</t:steps>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group4_id}</id>
+					<dlm>${hab.group3}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group1_id}</id>
+					<dlm>${hab.group3}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<DeleteDistributionListRequest id="${hab.group3_id}"
+					cascadeDelete="false" xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${hab.group3_id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.NO_SUCH_DISTRIBUTION_LIST" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${hab.group1_id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetDistributionListResponse/admin:dl//admin:dlm"
+					match="${hab.group3}" emptyset="1" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="DeleteHABGroups_07" type="smoke"
+		bugids="ZCS-5395">
+		<t:objective>DeleteHABgroups for a non hab group with cascadeDelete =
+			true
+		</t:objective>
+		<t:steps>
+			1. Fire DeleteHABGorups request for non hab group dl1 having
+			dl2 as subDL and cascadeDelete="true"
+			2. Verify request should succeed
+			and dl1 and dl2 both should be deleted.
+		</t:steps>
+
+		<t:property name="dl1.name" value="nonhab1_${TIME}@${domain.name}" />
+		<t:property name="dl2.name" value="nonhab2_${TIME}@${domain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+					<name>${dl1.name}</name>
+					<a n="description">A test distribution list</a>
+				</CreateDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDistributionListResponse/admin:dl"
+					attr="id" set="test_list1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+					<name>${dl2.name}</name>
+					<a n="description">A test distribution list</a>
+				</CreateDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDistributionListResponse/admin:dl"
+					attr="id" set="test_list2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${test_list1.id}</id>
+					<dlm>${dl2.name}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<DeleteDistributionListRequest id="${test_list1.id}"
+					cascadeDelete="true" xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteDistributionListResponse" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+	<t:test_case testcaseid="DeleteHABGroups_08" type="smoke"
+		bugids="ZCS-5395">
+		<t:objective>DeleteHABgroups for a static group with
+			cascadeDelete="false" and with no subgroups.
+		</t:objective>
+		<t:steps>
+			1. Fire DeleteHABGorups request for static group6 and
+			cascadeDelete="false"
+			2. Verify request should succeed and group
+			should be deleted.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group6_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group6}" dynamic="0"
+					xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group6}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group6_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group6_name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<DeleteDistributionListRequest id="${hab.group6_id}"
+					cascadeDelete="false" xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteDistributionListResponse" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${hab.group6_id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST" />
+			</t:response>
+		</t:test>
+</t:test_case>
+
+</t:tests>
