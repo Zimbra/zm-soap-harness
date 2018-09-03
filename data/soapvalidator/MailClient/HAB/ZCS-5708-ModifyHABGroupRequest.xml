@@ -420,7 +420,7 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-	
+
 	<t:test_case testcaseid="ModifyGroup1" type="smoke"
 		bugids="ZCS-5708">
 		<t:objective>Move static WebUx group from QA group to MyOrg
@@ -555,7 +555,7 @@
 		</t:test>	
 	</t:test_case>
 	
-	<t:test_case testcaseid="ModifyGroup5" type="deprecated"
+	<t:test_case testcaseid="ModifyGroup5" type="smoke"
 		bugids="ZCS-5708">
 		<t:objective>Move static API group from QA group to Ou2->Myorg
 		</t:objective>
@@ -583,8 +583,7 @@
 				</ModifyHABGroupRequest>		
 			</t:request>
 			<t:response>
-				<t:select path="//admin:ModifyHABGroupResponse/admin:parentHABGroup" attr="id" match="${hab.group1AltOU_ou2_id}"/>
-				<t:select path="//admin:ModifyHABGroupResponse/admin:parentHABGroup//admin:member" match="${hab.group4_name}@${domain.name}"/>
+				<t:select path="//soap:Reason/soap:Text" contains="invalid request: Target group is in a different ou:"/>
 			</t:response>
 		</t:test>	
 	</t:test_case>
@@ -620,6 +619,41 @@
 				<t:select path="//soap:Reason/soap:Text" match="invalid request: Target group cannot be dynamic."/>
 			</t:response>
 		</t:test>	
+	</t:test_case>
+
+	<t:test_case testcaseid="ModifyGroup7" type="smoke" bugids="ZCS-5708">
+		<t:objective>Move a group by specifying invalid parent group ID
+		</t:objective>
+		<t:steps>
+			1. Move a group by specifying invalid parent group ID
+			2.
+			Verify request should fail.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyHABGroupRequest xmlns="urn:zimbraAdmin">
+					<habGroupOperation habGroupId="${hab.group10_id}"
+						currentParentHabGroupId="${hab.group1_id}" targetParentHabGroupId="${hab.group3_id}"
+						op="move" />
+				</ModifyHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Reason/soap:Text" contains="non-existent members: support" />
+			</t:response>
+		</t:test>
 	</t:test_case>
 
 </t:tests>	
