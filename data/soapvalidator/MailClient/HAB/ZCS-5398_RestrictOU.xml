@@ -1,0 +1,169 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="domain.name" value="test${TIME}${COUNTER}.com" />
+	<t:property name="ou1.name" value="ZimbraOU${COUNTER}" />
+	<t:property name="ou2.name" value="ZimbraOU${COUNTER}" />
+	<t:property name="hab.notes" value="Group created notes" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAccount/Domain" type="always">
+		<t:objective>Account Setup </t:objective>
+		<t:steps>
+			1. Login into admin.
+			2. Create test accounts.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain.name}</name>
+					<a n="zimbraNotes">test of adding an OU</a>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse/admin:domain"
+					attr="id" set="domain.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateOUAndHABGroups" type="smoke"
+		bugids="ZCS-5397">
+		<t:objective>Create a new HAB group and link it to existing OU
+		</t:objective>
+		<t:steps>
+			1. Create a new HAB OU under domain ${domain.name}.
+			2. Fire
+			CreateHABGroupRequest to create a new HAB non root group in above OU.
+			3. Verify request should succeed.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou1.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou1.name}" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<HABOrgUnitRequest op="create" name="${ou2.name}"
+					xmlns="urn:zimbraAdmin">
+					<domain by="name">${domain.name}</domain>
+				</HABOrgUnitRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:HABOrgUnitResponse//admin:habOrgUnitName"
+					match="${ou2.name}" />
+			</t:response>
+		</t:test>
+
+		<t:property name="hab.group1_name" value="grouphab1_${TIME}" />
+		<t:property name="hab.group1" value="${hab.group1_name}@${domain.name}" />
+		<t:property name="hab.group2_name" value="grouphab2_${TIME}" />
+		<t:property name="hab.group2" value="${hab.group2_name}@${domain.name}" />
+		<t:property name="hab.group3_name" value="grouphab3_${TIME}" />
+		<t:property name="hab.group3" value="${hab.group3_name}@${domain.name}" />
+		<t:property name="hab.group4_name" value="grouphab4_${TIME}" />
+		<t:property name="hab.group4" value="${hab.group4_name}@${domain.name}" />
+		<t:property name="hab.group5_name" value="grouphabx5_${TIME}" />
+		<t:property name="hab.group5" value="${hab.group5_name}@${domain.name}" />
+		<t:property name="hab.group6_name" value="grouphab6_${TIME}" />
+		<t:property name="hab.group6" value="${hab.group6_name}@${domain.name}" />
+		<t:property name="hab.group7_name" value="grouphaby7_${TIME}" />
+		<t:property name="hab.group7" value="${hab.group7_name}@${domain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group1_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group1}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group1}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group1_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group1_name}" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group2_name}"
+					habOrgUnit="${ou2.name}" name="${hab.group2}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group2}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group2_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group2_name}" />
+			</t:response>
+		</t:test>	
+</t:test_case>
+
+<t:test_case testcaseid="RestrictHABGroups_1" type="smoke"
+		bugids="ZCS-5398">
+		<t:objective>Restrict adding static group of one OU in another
+		</t:objective>
+		<t:steps>
+			1. Fire AddDLMembersRequest for adding group2 as child of group1
+			2. Verify
+			response should be error as 'Cannot move hab groups across OU.
+		</t:steps>
+
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group1_id}</id>
+					<dlm>${hab.group2}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+			</t:response>
+		</t:test>
+</t:test_case>
+	
+</t:tests>
