@@ -330,13 +330,13 @@
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="DeleteHABGroups_01" type="smoke"
+	<t:test_case testcaseid="DeleteDistributionList_01" type="smoke"
 		bugids="ZCS-5395">
-		<t:objective>DeleteHABgroups for a static group with
+		<t:objective>DeleteDistributionList for a static group with
 			cascadeDelete="true"
 		</t:objective>
 		<t:steps>
-			1. Fire DeleteHABGorups request for static group5 and
+			1. Fire DeleteDistributionList request for static group5 and
 			cascadeDelete="true"
 			2. Verify request should succeed and group5 and
 			group6 should get deleted
@@ -375,13 +375,13 @@
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="DeleteHABGroups_02" type="smoke"
+	<t:test_case testcaseid="DeleteDistributionList_02" type="smoke"
 		bugids="ZCS-5395">
-		<t:objective>DeleteHABgroups for a dynamic group with
+		<t:objective>DeleteDistributionList for a dynamic group with
 			cascadeDelete="true"
 		</t:objective>
 		<t:steps>
-			1. Fire DeleteHABGorups request for static group4 and
+			1. Fire DeleteDistributionList request for static group4 and
 			cascadeDelete="true"
 			2. Verify request should succeed and group7 which
 			is dynamic subgroup should also get deleted
@@ -409,17 +409,17 @@
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="DeleteHABGroups_03" type="smoke"
+	<t:test_case testcaseid="DeleteDistributionList_03" type="smoke"
 		bugids="ZCS-5395">
-		<t:objective>DeleteHABgroups for a dynamic group with
+		<t:objective>DeleteDistributionList for a dynamic group with
 			cascadeDelete="false"
 		</t:objective>
 		<t:steps>
-			1. create a new dynamic group7.
-			1. Fire DeleteHABGorups
+			1. Create a new dynamic group7.
+			2. Fire DeleteDistributionList
 			request for
 			dynamic group7 and cascadeDelete="false"
-			2. Verify request
+			3. Verify request
 			should
 			succeed and group7 which is dynamic group should get deleted
 		</t:steps>
@@ -466,17 +466,17 @@
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="DeleteHABGroups_04" type="smoke"
+	<t:test_case testcaseid="DeleteDistributionList_04" type="smoke"
 		bugids="ZCS-5395">
-		<t:objective>DeleteHABgroups for a dynamic sub group with
+		<t:objective>DeleteDistributionList for a dynamic sub group with
 			cascadeDelete="true"
 		</t:objective>
 		<t:steps>
 			1. Add a dynamic subgroup to a static group.
-			1. Fire
-			DeleteHABGorups
+			2. Fire
+			DeleteDistributionList
 			request for static group4 and cascadeDelete="true"
-			2.
+			3.
 			Verify request
 			should succeed and dynamic sub group7 should also be
 			deleted.
@@ -555,13 +555,13 @@
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="DeleteHABGroups_05" type="smoke"
+	<t:test_case testcaseid="DeleteDistributionList_05" type="smoke"
 		bugids="ZCS-5395">
-		<t:objective>DeleteHABgroups for a static group with
+		<t:objective>DeleteDistributionList for a static group with
 			cascadeDelete="false" and with subgroups.
 		</t:objective>
 		<t:steps>
-			1. Fire DeleteHABGorups request for static group4 and
+			1. Fire DeleteDistributionList request for static group4 and
 			cascadeDelete="false"
 			2. Verify request should give error as 'Cannot
 			delete as child members linked'
@@ -630,9 +630,9 @@
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="DeleteHABGroups_06" type="smoke"
+	<t:test_case testcaseid="DeleteDistributionList_06" type="smoke"
 		bugids="ZCS-5395">
-		<t:objective>DeleteHABgroups for a static group which is part of 2
+		<t:objective>DeleteDistributionList for a static group which is part of 2
 			parent groups
 		</t:objective>
 		<t:steps>
@@ -702,16 +702,16 @@
 		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="DeleteHABGroups_07" type="smoke"
+	<t:test_case testcaseid="DeleteDistributionList_07" type="smoke"
 		bugids="ZCS-5395">
-		<t:objective>DeleteHABgroups for a non hab group with cascadeDelete =
+		<t:objective>DeleteDistributionList for a non hab group with cascadeDelete =
 			true
 		</t:objective>
 		<t:steps>
-			1. Fire DeleteHABGorups request for non hab group dl1 having
+			1. Fire DeleteDistributionList request for non hab group dl1 having
 			dl2 as subDL and cascadeDelete="true"
 			2. Verify request should succeed
-			and dl1 and dl2 both should be deleted.
+			and dl1 should be deleted. Whereas dl2 should not be deleted.
 		</t:steps>
 
 		<t:property name="dl1.name" value="nonhab1_${TIME}@${domain.name}" />
@@ -765,15 +765,38 @@
 				<t:select path="//admin:DeleteDistributionListResponse" />
 			</t:response>
 		</t:test>
+		
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${test_list2.id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetDistributionListResponse/admin:dl"
+					attr="name" match="${dl2.name}" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<GetDistributionListRequest xmlns="urn:zimbraAdmin">
+					<dl by="id">${test_list1.id}</dl>
+				</GetDistributionListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="account.NO_SUCH_DISTRIBUTION_LIST" />
+			</t:response>
+		</t:test>
 	</t:test_case>
 
-	<t:test_case testcaseid="DeleteHABGroups_08" type="smoke"
+	<t:test_case testcaseid="DeleteDistributionList_08" type="smoke"
 		bugids="ZCS-5395">
-		<t:objective>DeleteHABgroups for a static group with
+		<t:objective>DeleteDistributionList for a static group with
 			cascadeDelete="false" and with no subgroups.
 		</t:objective>
 		<t:steps>
-			1. Fire DeleteHABGorups request for static group6 and
+			1. Fire DeleteDistributionList request for static group6 and
 			cascadeDelete="false"
 			2. Verify request should succeed and group
 			should be deleted.
@@ -807,7 +830,6 @@
 				<t:select path="//admin:DeleteDistributionListResponse" />
 			</t:response>
 		</t:test>
-
 
 		<t:test>
 			<t:request>
