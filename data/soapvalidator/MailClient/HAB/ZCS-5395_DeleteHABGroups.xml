@@ -472,9 +472,9 @@
 		<t:steps>
 			1. Add a dynamic subgroup to a static group.
 			1. Fire DeleteHABGorups
-			request for static group6 and cascadeDelete="true"
+			request for static group4 and cascadeDelete="true"
 			2. Verify request
-			should succeed and dynamic sub group should also be deleted.
+			should succeed and dynamic sub group7 should also be deleted.
 		</t:steps>
 
 		<t:test>
@@ -496,11 +496,42 @@
 					match="${hab.group7_name}" />
 			</t:response>
 		</t:test>
+		
+		<t:test>
+			<t:request>
+				<CreateHABGroupRequest habDisplayName="${hab.group4_name}"
+					habOrgUnit="${ou1.name}" name="${hab.group4}" xmlns="urn:zimbraAdmin">
+					<a n="zimbraNotes">${hab.notes}</a>
+				</CreateHABGroupRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="name" match="${hab.group4}" />
+				<t:select path="//admin:CreateHABGroupResponse//admin:dl"
+					attr="id" set="hab.group4_id" />
+				<t:select
+					path="//admin:CreateHABGroupResponse//admin:a[@n='displayName']"
+					match="${hab.group4_name}" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="addDistributionListMemberRequest">
+			<t:request>
+				<AddDistributionListMemberRequest
+					xmlns="urn:zimbraAdmin">
+					<id>${hab.group4_id}</id>
+					<dlm>${hab.group7}</dlm>
+				</AddDistributionListMemberRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddDistributionListMemberResponse" />
+			</t:response>
+		</t:test>
 
 		<t:test>
 			<t:request>
-				<DeleteDistributionListRequest id="${hab.group7_id}"
-					cascadeDelete="false" xmlns="urn:zimbraAdmin" />
+				<DeleteDistributionListRequest id="${hab.group4_id}"
+					cascadeDelete="true" xmlns="urn:zimbraAdmin" />
 			</t:request>
 			<t:response>
 				<t:select path="//admin:DeleteDistributionListResponse" />
