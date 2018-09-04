@@ -1,0 +1,239 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="account1.name"
+		value="user${TIME}${COUNTER}@${defaultdomain.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="acct1_setup" type="always">
+		<t:objective>create test account</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="server.zimbraAccount" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="EndSession_01" type="smoke">
+		<t:objective>End Session Request to end all active sessions
+		</t:objective>
+		<t:steps>1. Auth request for account1 user 2 times with session in
+			context header
+			2. EndSessionRequest with all=1.
+			3. Verify both the sessions should be invalidated. Verify by using
+			step1 auth tokens to generate
+			other auth token. It should fail with 'Auth Expired'
+		</t:steps>
+
+		<t:test>
+			<t:requestContext>
+				<session />
+			</t:requestContext>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken2" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<session />
+			</t:requestContext>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<EndSessionRequest xmlns="urn:zimbraAccount" all="1" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:EndSessionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false">
+					<authToken>${authToken}</authToken>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.AUTH_EXPIRED$" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false">
+					<authToken>${authToken2}</authToken>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.AUTH_EXPIRED$" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="EndSession_02" type="smoke">
+		<t:objective>End Session Request to end specific active session
+		</t:objective>
+		<t:steps>1. Auth request for account1 user 2 times with session in
+			context header
+			2. EndSessionRequest with sessionId="accoun1_first session".
+			3. Verify first session should be invalidated. Verify by using step1
+			auth tokens to generate
+			other auth token. It should fail with 'Auth Expired'. Rest other
+			authtokens should be active
+		</t:steps>
+
+		<t:test>
+			<t:requestContext>
+				<session />
+			</t:requestContext>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:session" set="sessionid_01" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken0" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<session />
+			</t:requestContext>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken1" />
+				<t:select path="//acct:AuthResponse/acct:session" set="sessionid_02" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<session />
+			</t:requestContext>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<EndSessionRequest xmlns="urn:zimbraAccount"
+					sessionId="${sessionid_01}" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:EndSessionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false">
+					<authToken>${authToken}</authToken>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="newToken1" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false">
+					<authToken>${authToken0}</authToken>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.AUTH_EXPIRED$" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false">
+					<authToken>${authToken1}</authToken>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="newToken2" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	
+</t:tests>
