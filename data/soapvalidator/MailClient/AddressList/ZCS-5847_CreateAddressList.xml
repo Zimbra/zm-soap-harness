@@ -1,0 +1,439 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="acct1.name"
+		value="test1_${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAccounts" type="always">
+		<t:objective>Account Setup </t:objective>
+		<t:steps>
+			1. Login into admin.
+			2. Create test accounts.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${acct1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_01" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list with basic parameters and
+			description</t:objective>
+		<t:steps>
+			1. Create a new address list with description and search
+			filter for accounts having department as QA
+		</t:steps>
+
+		<t:property name="addressList1_name" value="addressList1_${TIME}" />
+		<t:property name="qa_dept" value="QA" />
+		<t:property name="description" value="Test address list" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest type="account"
+					xmlns="urn:zimbraAdmin">
+					<name>${addressList1_name}</name>
+					<desc>${description}</desc>
+					<searchFilter>
+						<conds not="false" or="1">
+							<conds />
+							<cond not="false" attr="department" op="has" value="${qa_dept}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_02" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list with basic parameters
+		</t:objective>
+		<t:steps>
+			1. Create a new address list with search filter for all
+			members having job tile as manager
+		</t:steps>
+
+		<t:property name="addressList2_name" value="addressList2_${TIME}" />
+		<t:property name="manager" value="Manager" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest type="account"
+					xmlns="urn:zimbraAdmin">
+					<name>${addressList2_name}</name>
+					<searchFilter>
+						<conds not="false" or="1">
+							<conds />
+							<cond not="true" attr="jobTitle" op="eq" value="${manager}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_03" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list with basic parameters
+		</t:objective>
+		<t:steps>
+			1. Create a new address list with search filter and no name
+			for addresslist
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest type="account"
+					xmlns="urn:zimbraAdmin">
+					<name></name>
+					<searchFilter>
+						<conds not="false" or="1">
+							<conds />
+							<cond not="true" attr="jobTitle" op="eq" value="${manager}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_04" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list with basic parameters
+		</t:objective>
+		<t:steps>
+			1. Create a new address list with search filter to bring
+			bring all members
+			from ldap whose jobTitle is equal to manager and those whose work country
+			is not India
+		</t:steps>
+
+		<t:property name="addressList4_name" value="addressList4_${TIME}" />
+		<t:property name="country" value="India" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest type="account"
+					xmlns="urn:zimbraAdmin">
+					<name>${addressList4_name}</name>
+					<searchFilter>
+						<conds not="false" or="1">
+							<cond not="0" attr="jobTitle" op="eq" value="${manager}" />
+							<cond not="1" attr="workCountry" op="eq" value="${country}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+
+	<t:test_case testcaseid="CreateAddressList_05" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list for invalid domain
+		</t:objective>
+		<t:steps>
+			1. Create a new address list with search filter set and
+			invalid domain
+		</t:steps>
+
+		<t:property name="addressList5_name" value="addressList5_${TIME}" />
+		<t:property name="invalid_domain" value="domain.com" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest type="account"
+					xmlns="urn:zimbraAdmin">
+					<name>${addressList5_name}</name>
+					<searchFilter>
+						<conds not="false" or="1">
+							<cond not="0" attr="jobTitle" op="eq" value="${manager}" />
+							<cond not="1" attr="workCountry" op="eq" value="${country}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${invalid_domain}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_06" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list for resource type</t:objective>
+		<t:steps>
+			1. Create a new address list with search filter set for
+			fetching resources
+		</t:steps>
+
+		<t:property name="addressList6_name" value="addressList6_${TIME}" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest type="resource"
+					xmlns="urn:zimbraAdmin">
+					<name>${addressList6_name}</name>
+					<searchFilter>
+						<conds not="0" or="1">
+							<conds />
+							<cond attr="zimbraCalResType" op="eq" value="equipment" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_07" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list for all members</t:objective>
+		<t:steps>
+			1. Create a new address list with search filter set for
+			fetching all members
+			whose postal code is equal to 411014 or
+			zimbraCalResType has location
+		</t:steps>
+
+		<t:property name="addressList7_name" value="addressList7_${TIME}" />
+		<t:property name="postal_code" value="411014" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest xmlns="urn:zimbraAdmin">
+					<name>${addressList7_name}</name>
+					<searchFilter>
+						<conds not="0" or="1">
+							<cond attr="workPostalCode" op="eq" value="${postal_code}" />
+							<cond attr="zimbraCalResType" op="has" value="location" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_08" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list for account namespace
+		</t:objective>
+		<t:steps>
+			1. Auth token of user 1.
+			2. Fire CreateAddressLIst request
+			with auth token of account. Should fail
+		</t:steps>
+
+		<t:test id="auth1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${acct1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+
+			</t:response>
+		</t:test>
+
+		<t:property name="addressList8_name" value="addressList8_${TIME}" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest xmlns="urn:zimbraAccount">
+					<name>${addressList8_name}</name>
+					<searchFilter>
+						<conds not="0" or="1">
+							<cond attr="workPostalCode" op="eq" value="${postal_code}" />
+							<cond attr="zimbraCalResType" op="has" value="location" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.UNKNOWN_DOCUMENT" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_09" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list with no search filter
+		</t:objective>
+		<t:steps>
+			1. Create a new address list with none search filter
+			provided. Verify
+			result should be success.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="addressList9_name" value="addressList9_${TIME}" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest xmlns="urn:zimbraAdmin">
+					<name>${addressList9_name}</name>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_10" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list with name of existing
+			addressList</t:objective>
+		<t:steps>
+			1. Create a new address list with name as already existing.
+			Verify error should be
+			returned
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest xmlns="urn:zimbraAdmin">
+					<name>${addressList9_name}</name>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^ldap.ENTRY_ALREADY_EXIST" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_11" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list with all members which are
+			distribution list</t:objective>
+		<t:steps>
+			1. Create a new address list for members which are DL.
+		</t:steps>
+
+		<t:property name="addressList10_name" value="addressList10_${TIME}" />
+		<t:property name="distributionList" value="Distribution List" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest xmlns="urn:zimbraAdmin">
+					<name>${addressList10_name}</name>
+					<searchFilter>
+						<conds not="0" or="1">
+							<cond attr="description" op="has" value="${distributionList}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${defaultdomain.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressList_12" type="smoke"
+		bugids="ZCS-5847">
+		<t:objective>Create a new address list with optional domain name
+		</t:objective>
+		<t:steps>
+			1. Create a new address list for members with optional domain
+		</t:steps>
+
+		<t:property name="addressList11_name"
+			value="addressList11_${TIME}@${defaultdomain.name}" />
+
+		<t:test>
+			<t:request>
+				<CreateAddressListRequest xmlns="urn:zimbraAdmin">
+					<name>${addressList11_name}</name>
+					<searchFilter>
+						<conds not="0" or="1">
+							<cond attr="description" op="has" value="${distributionList}" />
+						</conds>
+					</searchFilter>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+</t:tests>
+		
