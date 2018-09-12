@@ -52,7 +52,8 @@
 	<t:test_case testcaseid="CreateAddressList_01" type="smoke"
 		bugids="ZCS-5847">
 		<t:objective>Create a new address list with basic parameters and
-			description</t:objective>
+			description
+		</t:objective>
 		<t:steps>
 			1. Create a new address list with description and search
 			filter for accounts having department as QA
@@ -78,7 +79,8 @@
 				</CreateAddressListRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAddressListResponse" />
+				<t:select path="//admin:CreateAddressListResponse//admin:id"
+					set="addressList1.id" />
 			</t:response>
 		</t:test>
 	</t:test_case>
@@ -89,7 +91,7 @@
 		</t:objective>
 		<t:steps>
 			1. Create a new address list with search filter for all
-			members having job tile as manager
+			acccounts having job tile as manager
 		</t:steps>
 
 		<t:property name="addressList2_name" value="addressList2_${TIME}" />
@@ -151,7 +153,8 @@
 		<t:steps>
 			1. Create a new address list with search filter to bring
 			bring all members
-			from ldap whose jobTitle is equal to manager and those whose work country
+			from ldap whose jobTitle is equal to manager and
+			those whose work country
 			is not India
 		</t:steps>
 
@@ -177,7 +180,6 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-
 
 	<t:test_case testcaseid="CreateAddressList_05" type="smoke"
 		bugids="ZCS-5847">
@@ -243,7 +245,8 @@
 
 	<t:test_case testcaseid="CreateAddressList_07" type="smoke"
 		bugids="ZCS-5847">
-		<t:objective>Create a new address list for all members</t:objective>
+		<t:objective>Create a new address list for all members with or
+			condition in search filter</t:objective>
 		<t:steps>
 			1. Create a new address list with search filter set for
 			fetching all members
@@ -358,7 +361,8 @@
 	<t:test_case testcaseid="CreateAddressList_10" type="smoke"
 		bugids="ZCS-5847">
 		<t:objective>Create a new address list with name of existing
-			addressList</t:objective>
+			addressList
+		</t:objective>
 		<t:steps>
 			1. Create a new address list with name as already existing.
 			Verify error should be
@@ -381,7 +385,8 @@
 	<t:test_case testcaseid="CreateAddressList_11" type="smoke"
 		bugids="ZCS-5847">
 		<t:objective>Create a new address list with all members which are
-			distribution list</t:objective>
+			distribution list
+		</t:objective>
 		<t:steps>
 			1. Create a new address list for members which are DL.
 		</t:steps>
