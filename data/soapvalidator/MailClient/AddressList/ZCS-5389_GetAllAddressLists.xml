@@ -1,0 +1,311 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="domain1.name" value="testdomain1.${TIME}.com" />
+	<t:property name="domain2.name" value="testdomain2.${TIME}.com" />
+	<t:property name="domain3.name" value="testdomain3.${TIME}.com" />
+	<t:property name="account1.name" value="test1${TIME}@${domain1.name}" />
+	<t:property name="account1.password" value="${defaultpassword.value}" />
+	<t:property name="account2.name" value="test2${TIME}@${domain2.name}" />
+	<t:property name="account2.password" value="${defaultpassword.value}" />
+	<t:property name="account3.name" value="test3${TIME}@${domain3.name}" />
+	<t:property name="account3.password" value="${defaultpassword.value}" />
+	<t:property name="al1.name" value="al1_${TIME}" />
+	<t:property name="al1.description" value="al1_description_${TIME}" />
+	<t:property name="al2.name" value="al2_${TIME}" />
+	<t:property name="al2.description" value="al2_description_${TIME}" />
+	<t:property name="al3.name" value="al3_${TIME}" />
+	<t:property name="al3.description" value="al3_description_${TIME}" />
+	<t:property name="al4.name" value="al4_${TIME}" />
+	<t:property name="al4.description" value="al4_description_${TIME}" />
+	<t:property name="qa_dept" value="QA" />
+	
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>Basic system check</t:objective>
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="CreateTestDomains" type="always">
+		<t:objective>Create domains</t:objective>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="CreateDomainRequest1">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain1.name}</name>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse/admin:domain"
+					attr="id" set="domain1.id" />
+			</t:response>
+		</t:test>
+		<t:test id="CreateDomainRequest2">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain2.name}</name>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse/admin:domain"
+					attr="id" set="domain2.id" />
+			</t:response>
+		</t:test>
+		<t:test id="CreateDomainRequest3">
+			<t:request>
+				<CreateDomainRequest xmlns="urn:zimbraAdmin">
+					<name>${domain3.name}</name>
+				</CreateDomainRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateDomainResponse/admin:domain"
+					attr="id" set="domain3.id" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="Account_Setup" type="always">
+		<t:objective>Create user account</t:objective>
+		<t:steps>1. Login to admin.
+			2. Create test accounts
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_testAccount1" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${account1.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+			</t:response>
+		</t:test>
+		<t:test id="create_testAccount2" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${account2.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+			</t:response>
+		</t:test>
+		<t:test id="create_testAccount3" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account3.name}</name>
+					<password>${account3.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account3.id" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="CreateAddressLists" type="smoke">
+		<t:objective>Create address lists</t:objective>
+		<t:steps>
+			1. Log in as admin
+			2. Create addressLists
+		</t:steps>
+		<t:test id="CreateAl1">
+			<t:request>
+				<CreateAddressListRequest type="account" xmlns="urn:zimbraAdmin">
+					<name>${al1.name}</name>
+					<desc>${al1.description}</desc>
+					<searchFilter>
+						<conds not="false" or="1">
+							<conds />
+							<cond not="false" attr="department" op="has" value="${qa_dept}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${domain1.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+		<t:test id="CreateAl2">
+			<t:request>
+				<CreateAddressListRequest type="account" xmlns="urn:zimbraAdmin">
+					<name>${al2.name}</name>
+					<desc>${al2.description}</desc>
+					<searchFilter>
+						<conds not="false" or="1">
+							<conds />
+							<cond not="false" attr="department" op="has" value="${qa_dept}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${domain1.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+		<t:test id="CreateAl3">
+			<t:request>
+				<CreateAddressListRequest type="account" xmlns="urn:zimbraAdmin">
+					<name>${al3.name}</name>
+					<desc>${al3.description}</desc>
+					<searchFilter>
+						<conds not="false" or="1">
+							<conds />
+							<cond not="false" attr="department" op="has" value="${qa_dept}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${domain1.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+		<t:test id="CreateAl4">
+			<t:request>
+				<CreateAddressListRequest type="account" xmlns="urn:zimbraAdmin">
+					<name>${al4.name}</name>
+					<desc>${al4.description}</desc>
+					<searchFilter>
+						<conds not="false" or="1">
+							<conds />
+							<cond not="false" attr="department" op="has" value="${qa_dept}" />
+						</conds>
+					</searchFilter>
+					<domain by="name">${domain3.name}</domain>
+				</CreateAddressListRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAddressListResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	
+	<t:test_case testcaseid="GetAllAddressListsRequest_sanity"
+		type="smoke" bugids="ZCS-5389">
+		<t:objective>GetAllAddressLists request on domain that has few valid Als</t:objective>
+		<t:steps>
+			1. Log in with account1 on domain1
+			2. Trigger GetAllAddressListsRequest
+			3. Verify list of address lists returned and validate values for name, description attributes.
+			4. Verify inactive Als are not returned.
+		</t:steps>
+		<t:test id="auth_testAccount" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test id="getAllAddressLists">
+			<t:request>
+				<GetAllAddressListsRequest xmlns="urn:zimbraAccount"/>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetAllAddressListsResponse/acct:addressLists/acct:addressList[1]" attr="name" match="${al1.name}"/>
+				<t:select path="//acct:GetAllAddressListsResponse/acct:addressLists/acct:addressList[1]" attr="description" match="${al1.description}"/>
+				<t:select path="//acct:GetAllAddressListsResponse/acct:addressLists/acct:addressList[2]" attr="name" match="${al2.name}"/>
+				<t:select path="//acct:GetAllAddressListsResponse/acct:addressLists/acct:addressList[2]" attr="description" match="${al2.description}"/>
+				<!-- This line should be uncommented after ZCS-5388 is complete and al3 has been marked as inactive using modifyAddresslist API -->
+				<!-- <t:select path="//acct:GetAllAddressListsResponse/acct:addressLists//acct:addressList[@name=${al3.name}]" emptyset="1"/> -->
+			</t:response>
+		</t:test>
+	</t:test_case>
+	
+	<t:test_case testcaseid="GetAllAddressListsRequest_noAls"
+		type="smoke" bugids="ZCS-5389">
+		<t:objective>GetAllAddressLists request on domain that has no Als</t:objective>
+		<t:steps>
+			1. Log in with account2 on domain2
+			2. Trigger GetAllAddressListsRequest
+			3. Verify no lists are returned.
+		</t:steps>
+		<t:test id="auth_testAccount" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test id="getAllAddressLists">
+			<t:request>
+				<GetAllAddressListsRequest xmlns="urn:zimbraAccount"/>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetAllAddressListsResponse/acct:addressLists//acct:addressList" emptyset="1"/>
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="GetAllAddressListsRequest_noActiveAls"
+		type="smoke" bugids="ZCS-5389">
+		<t:objective>GetAllAddressLists request on domain that has no active Als</t:objective>
+		<t:steps>
+			1. Log in with account3 on domain3
+			2. Trigger GetAllAddressListsRequest
+			3. Verify no lists are returned.
+		</t:steps>
+		<t:test id="auth_testAccount" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<password>${account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test id="getAllAddressLists">
+			<t:request>
+				<GetAllAddressListsRequest xmlns="urn:zimbraAccount"/>
+			</t:request>
+			<t:response>
+				<!-- This line should be uncommented after ZCS-5388 is complete and al3 has been marked as inactive using modifyAddresslist API -->
+				<!-- <t:select path="//acct:GetAllAddressListsResponse/acct:addressLists//acct:addressList" emptyset="1"/> -->
+			</t:response>
+		</t:test>
+	</t:test_case>
+	
+</t:tests>
