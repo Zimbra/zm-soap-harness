@@ -1,11 +1,8 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-
 	<t:property name="acct1.name"
 		value="test1_${TIME}.${COUNTER}@${defaultdomain.name}" />
-
 	<t:test_case testcaseid="Ping" type="always">
 		<t:objective>basic system check</t:objective>
-
 		<t:test required="true">
 			<t:request>
 				<PingRequest xmlns="urn:zimbraAdmin" />
@@ -15,14 +12,11 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-
+	
 	<t:test_case testcaseid="CreateAccounts" type="always">
-		<t:objective>Account Setup </t:objective>
-		<t:steps>
-			1. Login into admin.
-			2. Create test accounts.
+		<t:objective>Account Setup</t:objective>
+		<t:steps> 1. Login into admin. 2. Create test accounts.
 		</t:steps>
-
 		<t:test id="admin_login" required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -34,9 +28,7 @@
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-
 		<t:property name="domain1.name" value="domain1${COUNTER}.${TIME}.com" />
-
 		<t:test required="true">
 			<t:request>
 				<CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -47,7 +39,6 @@
 				<t:select path="//admin:CreateDomainResponse" />
 			</t:response>
 		</t:test>
-
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -61,24 +52,19 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-
+	
 	<t:test_case testcaseid="DeleteAddressList_01" type="smoke"
 		bugids="ZCS5387">
 		<t:objective>Delete an address list.
 		</t:objective>
-		<t:steps>
-			1. Create a new address list with description and search
-			filter for accounts having department as QA
-			2. Delete the address
-			list.
-			3. Verify using GetAllAddressList request the address list is
+		<t:steps> 1. Create a new address list with description and search
+			filter for accounts having department as QA 2. Delete the address
+			list. 3. Verify using GetAllAddressList request the address list is
 			not present
 		</t:steps>
-
 		<t:property name="addressList1_name" value="addressList1_${TIME}" />
 		<t:property name="qa_dept" value="QA" />
 		<t:property name="description" value="Test address list" />
-
 		<t:test>
 			<t:request>
 				<CreateAddressListRequest type="account"
@@ -98,7 +84,6 @@
 					set="addressList1.id" />
 			</t:response>
 		</t:test>
-
 		<t:test>
 			<t:request>
 				<DeleteAddressListRequest id="${addressList1.id}"
@@ -109,7 +94,6 @@
 				<t:select path="//admin:DeleteAddressListResponse" />
 			</t:response>
 		</t:test>
-
 		<t:test>
 			<t:request>
 				<GetAllAddressListsRequest xmlns="urn:zimbraAdmin">
@@ -123,17 +107,14 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-
+	
 	<t:test_case testcaseid="DeleteAddressList_02" type="smoke"
 		bugids="ZCS5387">
 		<t:objective>Delete an already deleted address list.
 		</t:objective>
-		<t:steps>
-			1. Try Deleting the address list in step above.
-			2. Verify
+		<t:steps> 1. Try Deleting the address list in step above. 2. Verify
 			error message as NO_SUCH_ADDRESS_LIST should be displayed
 		</t:steps>
-
 		<t:test>
 			<t:request>
 				<DeleteAddressListRequest id="${addressList1.id}"
@@ -145,19 +126,15 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-
+	
 	<t:test_case testcaseid="DeleteAddressList_03" type="smoke"
 		bugids="ZCS5387">
 		<t:objective>Delete an addresslist with invalid id
 		</t:objective>
-		<t:steps>
-			1. Try Deleting the address list with invalid id
-			2. Verify
+		<t:steps> 1. Try Deleting the address list with invalid id 2. Verify
 			error message as account.NO_SUCH_ADDRESS_LIST should be displayed
 		</t:steps>
-
 		<t:property name="invalid_id" value="ecasdasd-er123123-asdasdd" />
-
 		<t:test>
 			<t:request>
 				<DeleteAddressListRequest id="${invalid_id}"
@@ -169,17 +146,14 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-
+	
 	<t:test_case testcaseid="DeleteAddressList_04" type="smoke"
 		bugids="ZCS5387">
 		<t:objective>Delete an addresslist with blank id
 		</t:objective>
-		<t:steps>
-			1. Try Deleting the address list with blank id
-			2. Verify error
-			message as service.INVALID_REQUEST should be displayed
+		<t:steps> 1. Try Deleting the address list with blank id 2. Verify
+			error message as service.INVALID_REQUEST should be displayed
 		</t:steps>
-
 		<t:test>
 			<t:request>
 				<DeleteAddressListRequest id=""
@@ -191,21 +165,17 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-
+	
 	<t:test_case testcaseid="DeleteAddressList_05" type="smoke"
 		bugids="ZCS5387">
 		<t:objective>DeleteAddressList request in account namespace
 		</t:objective>
-		<t:steps>
-			1. Try Deleting the address list with account namespace
-			2.
+		<t:steps> 1. Try Deleting the address list with account namespace 2.
 			Verify error message as UKNOWN_DOCUMENT should be displayed
 		</t:steps>
-
 		<t:property name="addressList2_name" value="addressList2_${TIME}" />
 		<t:property name="qa_dept" value="QA" />
 		<t:property name="description" value="Test address list" />
-
 		<t:test>
 			<t:request>
 				<CreateAddressListRequest type="account"
@@ -225,7 +195,6 @@
 					set="addressList2.id" />
 			</t:response>
 		</t:test>
-
 		<t:test>
 			<t:request>
 				<DeleteAddressListRequest id="${addressList2.id}"
@@ -237,9 +206,8 @@
 			</t:response>
 		</t:test>
 	</t:test_case>
-
+	
 	<t:finally>
-
 		<t:test>
 			<t:request>
 				<DeleteAddressListRequest id="${addressList2.id}"
@@ -251,6 +219,4 @@
 			</t:response>
 		</t:test>
 	</t:finally>
-
 </t:tests>
-		
