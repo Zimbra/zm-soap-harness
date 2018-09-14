@@ -186,7 +186,7 @@
 				</CreateAddressListRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAddressListResponse" />
+				<t:select path="//admin:CreateAddressListResponse/admin:id" set="al1.id"/>
 			</t:response>
 		</t:test>
 		<t:test id="CreateAl2">
@@ -204,7 +204,7 @@
 				</CreateAddressListRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAddressListResponse" />
+				<t:select path="//admin:CreateAddressListResponse/admin:id" set="al2.id"/>
 			</t:response>
 		</t:test>
 		<t:test id="CreateAl3">
@@ -222,7 +222,7 @@
 				</CreateAddressListRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAddressListResponse" />
+				<t:select path="//admin:CreateAddressListResponse/admin:id" set="al3.id"/>
 			</t:response>
 		</t:test>
 		<t:test id="CreateAl4">
@@ -240,7 +240,7 @@
 				</CreateAddressListRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAddressListResponse" />
+				<t:select path="//admin:CreateAddressListResponse/admin:id" set="al4.id"/>
 			</t:response>
 		</t:test>
 	</t:test_case>
@@ -458,4 +458,37 @@
 		</t:test>
 	</t:test_case>
 	
+	<t:finally>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+			<t:request>
+				<DeleteAddressListRequest id="${al1.id}" xmlns="urn:zimbraAdmin"/>
+			</t:request>
+		</t:test>
+		<t:test>
+			<t:request>
+				<DeleteAddressListRequest id="${al2.id}" xmlns="urn:zimbraAdmin"/>
+			</t:request>
+		</t:test>
+		<t:test>
+			<t:request>
+				<DeleteAddressListRequest id="${al3.id}" xmlns="urn:zimbraAdmin"/>
+			</t:request>
+		</t:test>
+		<t:test>
+			<t:request>
+				<DeleteAddressListRequest id="${al4.id}" xmlns="urn:zimbraAdmin"/>
+			</t:request>
+		</t:test>
+	</t:finally>
 </t:tests>
