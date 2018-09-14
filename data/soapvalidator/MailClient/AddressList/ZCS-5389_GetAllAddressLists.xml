@@ -155,7 +155,8 @@
 				</CreateAddressListRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAddressListResponse" />
+				<t:select path="//admin:CreateAddressListResponse/admin:id"
+					set="al01.id" />
 			</t:response>
 		</t:test>
 		<t:test id="CreateAl2">
@@ -173,7 +174,8 @@
 				</CreateAddressListRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAddressListResponse" />
+				<t:select path="//admin:CreateAddressListResponse/admin:id"
+					set="al02.id" />
 			</t:response>
 		</t:test>
 		<t:test id="CreateAl3">
@@ -191,7 +193,8 @@
 				</CreateAddressListRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAddressListResponse" />
+				<t:select path="//admin:CreateAddressListResponse/admin:id"
+					set="al03.id" />
 			</t:response>
 		</t:test>
 		<t:test id="CreateAl4">
@@ -209,7 +212,8 @@
 				</CreateAddressListRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAddressListResponse" />
+				<t:select path="//admin:CreateAddressListResponse/admin:id"
+					set="al04.id" />
 			</t:response>
 		</t:test>
 	</t:test_case>
@@ -308,4 +312,37 @@
 		</t:test>
 	</t:test_case>
 	
+	<t:finally>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+			<t:request>
+				<DeleteAddressListRequest id="${al01.id}" xmlns="urn:zimbraAdmin"/>
+			</t:request>
+		</t:test>
+		<t:test>
+			<t:request>
+				<DeleteAddressListRequest id="${al02.id}" xmlns="urn:zimbraAdmin"/>
+			</t:request>
+		</t:test>
+		<t:test>
+			<t:request>
+				<DeleteAddressListRequest id="${al03.id}" xmlns="urn:zimbraAdmin"/>
+			</t:request>
+		</t:test>
+		<t:test>
+			<t:request>
+				<DeleteAddressListRequest id="${al04.id}" xmlns="urn:zimbraAdmin"/>
+			</t:request>
+		</t:test>
+	</t:finally>
 </t:tests>
