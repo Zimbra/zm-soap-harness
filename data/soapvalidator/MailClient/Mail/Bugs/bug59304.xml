@@ -82,7 +82,8 @@
 		</t:test>
 
 		
-		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>		<t:mailinjecttest>
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>		
+		<t:mailinjecttest>
         	<t:lmtpInjectRequest>
             	<filename>${msg01.file}</filename>
             	<to>${account1.name}</to>
@@ -90,7 +91,9 @@
             	<server>${account1.server}</server>
         	</t:lmtpInjectRequest>
     	</t:mailinjecttest>
-    	
+  
+  <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->	
+	
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">

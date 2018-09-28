@@ -115,7 +115,9 @@
 		</t:restServletResponse>
 	</t:resttest>
 
-    <t:test >
+  <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->
+  
+  <t:test >
         <t:request>
             <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TIME(-7d)[${ical1.start}]}" e="${TIME(+7d)[${ical1.end}]}"/>
         </t:request>
@@ -125,7 +127,7 @@
             <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='${ical1.name}']/mail:inst" attr="s" match="${ical1.start}"/>
             <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='${ical1.name}']/mail:fr" match="${ical1.description}"/>
         </t:response>
-    </t:test>
+   </t:test>
 
 </t:test_case>
 
@@ -167,7 +169,9 @@
 		</t:restServletResponse>
 	</t:resttest>
 
-    <t:test >
+  <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->
+  
+  <t:test >
         <t:request>
             <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${ical2.start}" e="${ical2.end}"/>
         </t:request>
@@ -175,7 +179,7 @@
             <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='Pearl Jam']"/>
             <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='Posted Rental Ad on Craigslist']"/>
         </t:response>
-    </t:test>
+   </t:test>
 
 
 </t:test_case>

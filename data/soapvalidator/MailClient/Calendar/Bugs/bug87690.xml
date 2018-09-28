@@ -166,6 +166,8 @@
             <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
+
+    <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->
     
     <t:test>
         <t:request>
@@ -240,8 +242,10 @@
             <t:select path = "//mail:CancelAppointmentResponse"/>
         </t:response>
     </t:test>
+
+    <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->
     
-   <t:test>
+    <t:test>
 	<t:request>
 		<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
 			<action op="check" id="${account2.delegated.id}"/>

@@ -86,9 +86,11 @@
 			<t:select attr="StatusCode" match="200"/>
 		</t:restServletResponse>
 	</t:resttest>
-
-    <t:test required="true" >
-        <t:request>
+ 
+  <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->
+  
+  <t:test required="true" >
+      <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${ical.start}" calExpandInstEnd="${ical.end}" types="appointment">
 				<query>${ical.subject}</query>
 			</SearchRequest>
