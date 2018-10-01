@@ -175,7 +175,8 @@
 
 	<t:property name="server.zimbraAccount" value="${user3.server}"/>
 
-    
+    <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->
+
     <t:test id="auth1" required="true">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -321,9 +322,9 @@
         </t:response>
     </t:test>
 
+    <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->
 
-
-     <t:test>
+    <t:test>
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-2d)[${time.20180101120000.gmt}]}" calExpandInstEnd="${TIME(+2d)[${time.20180101120000.gmt}]}" types="appointment">
 				<query>inid:${user3.calendar.folder.id}</query>

@@ -278,8 +278,10 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
+
+    <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->
     
-      	<t:test depends="sendInviteReplyRequesta">
+    <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
                 <query>(Subject withheld)</query>
@@ -430,8 +432,10 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
+
+    <t:delay sec="${solrcommitdelay.sec}"/>   <!-- Wait for Solr commit to happen -->
     
-      	<t:test depends="sendInviteReplyRequesta">
+    <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
                 <query>${appointment1.subject}</query>
