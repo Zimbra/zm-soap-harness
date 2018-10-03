@@ -1,5 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
 	<t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="notify1.name"	value="notify1.${TIME}.${COUNTER}@${defaultdomain.name}" />		
 	<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -92,17 +92,6 @@
 			</t:response>
 		</t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-
 	     <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
@@ -136,8 +125,8 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
 			</t:response>
 		</t:test>
 
@@ -150,7 +139,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify1.server"/>
 			</t:response>
 		</t:test>
 		
@@ -180,7 +168,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify2.server"/>
 			</t:response>
 		</t:test>
 				
@@ -210,7 +197,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify3.server"/>
 			</t:response>
 		</t:test>
 		
@@ -237,7 +223,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="notify4.server"/>
 			</t:response>
 		</t:test>
 
@@ -252,7 +237,6 @@
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account"
 					attr="id" set="test_account5.id" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
 			</t:response>
 		</t:test>
 		
@@ -332,8 +316,6 @@
             1. Set sieve rule1
             2. Send email to the user and verify variables are replaced with the values defined in sieve rule
     	</t:steps>		
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
     	
 		<t:test required="true">
 			<t:request>
@@ -365,7 +347,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${notify1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -401,7 +382,6 @@
             2. Send email to the user and verify variables are replaced with mime values
     	</t:steps>	
     	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:objective>Test notify action with variable
 		</t:objective>
 		<t:test required="true">
@@ -425,7 +405,6 @@
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-		<t:property name="server.zimbraAccount" value="${notify2.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -461,7 +440,6 @@
             2. Inject email to the user and verify variables are set as blank
     	</t:steps>
     	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -483,7 +461,6 @@
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-		<t:property name="server.zimbraAccount" value="${notify3.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -519,7 +496,6 @@
             2. Send email to the user and verify from is set to the recipient id.
     	</t:steps>
     	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -550,7 +526,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${notify4.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -586,7 +561,6 @@
             2. Send email to the user and verify tag is set using variable value.
     	</t:steps>
     	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -617,7 +591,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -653,7 +626,6 @@
             2. Inject mime to the user which has tag header in it and verify tag is set using variable value.
     	</t:steps>
     	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -675,8 +647,6 @@
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	
-		<t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -711,7 +681,6 @@
             2. Inject mime to the user which has tag header in it and verify tag is set using mime value.
     	</t:steps>
     	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -733,7 +702,6 @@
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-		<t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -768,7 +736,6 @@
             2. Inject mime to the user which has no tag header in it and verify tag is not set.
     	</t:steps>
     	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -790,7 +757,6 @@
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-		<t:property name="server.zimbraAccount" value="${test_acct8.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -825,7 +791,6 @@
             2. Send email to the user and verify * does not assign any value to $1.
     	</t:steps>
     	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -856,7 +821,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${test_acct9.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -878,7 +842,7 @@
 			</t:request>
 			<t:response>
 				<t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail_subject_1}" />
-				<t:select path="//mail:SearchResponse/mail:m" attr="tn" value="test" />
+				<t:select path="//mail:SearchResponse/mail:m" attr="tn" match="test" />
 			</t:response>
 		</t:test>
 

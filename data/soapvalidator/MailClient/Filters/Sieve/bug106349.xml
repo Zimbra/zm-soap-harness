@@ -18,7 +18,6 @@
     <t:property name="tag_spam" value="spam" />
     <t:property name="str_rock_star" value="Rock\*" />
     <t:property name="str_star" value="\*" />
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Config setup" type="always">
     <t:objective>create test account</t:objective>
@@ -52,17 +51,6 @@
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
-
-                <t:test>
-                        <t:request>
-                                <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                        <account by="name">${admin.user}</account>
-                                </GetAccountRequest>
-                        </t:request>
-                        <t:response>
-                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                        </t:response>
-               </t:test>
 
         <t:test required="true">
             <t:request>
@@ -120,21 +108,6 @@
         type="smoke">
         <t:objective> Modify zimbraMailSieveScript and run test
         </t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
-    <t:test required="true">
-        <t:request>
-            <AuthRequest xmlns="urn:zimbraAdmin">
-                <name>${admin.user}</name>
-                <password>${admin.password}</password>
-            </AuthRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>
-    </t:test>
-
         <!-- test 1 -->
         <t:test id="modifyaccountrequest">
             <t:request>
@@ -157,8 +130,6 @@ if header :contains "subject" "${variable_name_dollar_sub}" {
                 <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test>
             <t:request>
@@ -196,8 +167,6 @@ if header :contains "subject" "${variable_name_dollar_sub}" {
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -228,7 +197,6 @@ if header :contains "subject" "${variable_name_dollar_sub}" {
         <t:objective> Send test mail
         </t:objective>
         <!-- test 2 -->
-	 <t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test required="true">
             <t:request>
@@ -260,8 +228,6 @@ if header :contains "subject" "${variable_name_dollar_sub}" {
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -291,8 +257,6 @@ if header :contains "subject" "${variable_name_dollar_sub}" {
         type="always">
         <t:objective> Modify zimbraMailSieveScript and run test
         </t:objective>
-
-	 <t:property name="server.zimbraAccount" value="${admin.server}"/>
         <!-- test 3 -->
         <t:test required="true">
             <t:request>
@@ -342,8 +306,6 @@ if header :matches "Subject" "${str_star}" {
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -373,8 +335,6 @@ if header :matches "Subject" "${str_star}" {
         type="smoke">
         <t:objective> Modify zimbraMailSieveScript and run test
         </t:objective>
-
-	 <t:property name="server.zimbraAccount" value="${admin.server}"/>
         <!-- test 4 -->
         <t:test required="true">
             <t:request>
@@ -425,8 +385,6 @@ if header :contains "subject" "${variable_name_dollar_sub}" {
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -457,7 +415,6 @@ if header :contains "subject" "${variable_name_dollar_sub}" {
         <t:objective> Modify zimbraMailSieveScript and run test
         </t:objective>
         <!-- test 5 -->
-	 <t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -506,8 +463,6 @@ if header :contains "subject" "${variable_name_dollar_sub}" {
                     set="Sent_message1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
         <t:test>
             <t:request>

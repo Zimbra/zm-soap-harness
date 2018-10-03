@@ -10,18 +10,18 @@
 	<t:property name="dollar" value="$"/>
 
 
-<t:property name="sieve_rule1" value='require ["tag", "editheader"];
+<t:property name="sieve_rule1" value='require ["editheader"];
 	replaceheader :index 1 :last :newvalue "REPLACED1" :contains "X-Test-Header" "sieve";
 	replaceheader :index 2 :last :newvalue "REPLACED2" :contains "X-Test-Header" "sieve";
 	replaceheader :index 3 :last :newvalue "REPLACED3" :contains "X-Test-Header" "sieve";
 	replaceheader :index 4 :last :newvalue "REPLACED4" :contains "X-Test-Header" "sieve";
 '/>
 
-<t:property name="sieve_rule2" value='require ["tag", "editheader"];
+<t:property name="sieve_rule2" value='require ["editheader"];
 	deleteheader :index 4 :last :contains "X-Test-Header" "sieve";
 '/>
 
-<t:property name="sieve_rule3" value='require ["tag", "editheader"];
+<t:property name="sieve_rule3" value='require ["editheader"];
 	replaceheader :index 1 :last :newvalue "REPLACED1" :contains "X-Test-Header" "sieve";
 	deleteheader :index 1 :contains "X-Test-Header" "sieve";
 '/>
@@ -37,9 +37,7 @@
         </t:test>
     </t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-
-    <t:test_case testcaseid="AcctSetup1_create_account" type="deprecated">
+    <t:test_case testcaseid="AcctSetup1_create_account" type="smoke">
         <t:objective>create test accounts</t:objective>
         <t:test required="true">
             <t:request>
@@ -53,12 +51,36 @@
             </t:response>
         </t:test>
 
-
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -72,6 +94,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -85,6 +108,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account3.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -94,7 +118,7 @@
         </t:test>        
     </t:test_case>
 
-    <t:test_case testcaseid="zcs-880_rule1" type="deprecated" bugids="zcs-880">
+    <t:test_case testcaseid="zcs-880_rule1" type="smoke" bugids="zcs-880">
         <t:objective>Verify replaceheader for :index :last</t:objective>
         <t:test required="true">
             <t:request>
@@ -105,18 +129,6 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-        
-        <t:test id="modifyaccountrequest1">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account1.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule1}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -167,7 +179,7 @@
         </t:resttest>
     </t:test_case> 
     
-    <t:test_case testcaseid="zcs-880_rule2" type="deprecated" bugids="zcs-880">
+    <t:test_case testcaseid="zcs-880_rule2" type="smoke" bugids="zcs-880">
         <t:objective>Verify deleteheader for :index :last</t:objective>
         <t:test required="true">
             <t:request>
@@ -178,18 +190,6 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-        
-        <t:test id="modifyaccountrequest1">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account2.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule2}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -240,7 +240,7 @@
         </t:resttest>
     </t:test_case>
     
-    <t:test_case testcaseid="zcs-880_rule3" type="deprecated" bugids="zcs-880">
+    <t:test_case testcaseid="zcs-880_rule3" type="smoke" bugids="zcs-880">
         <t:objective>Verify replaceheader :index :last and deleteheader for only :index </t:objective>
         <t:test required="true">
             <t:request>
@@ -251,18 +251,6 @@
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-        
-        <t:test id="modifyaccountrequest1">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account3.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule3}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -312,5 +300,34 @@
                 <t:select attr="X-Test-Header" match="REPLACED1" />
             </t:restServletResponse>
         </t:resttest>
-    </t:test_case>            
+    </t:test_case>
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>                
 </t:tests>

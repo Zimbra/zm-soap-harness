@@ -759,4 +759,53 @@
 
 </t:test_case>
 
+<t:test_case testcaseid="AutoCompleteRequest_empty_nameField_10" type="smoke" bugids="ZCS-3951">
+	<t:objective>AutoCompleteRequest test for name field validation</t:objective>
+	<t:steps>
+		1. Login as account1
+		2. Send AutoCompleteRequest with empty name field
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}" />
+	<t:property name="emptyName" value="" />
+	<t:property name="Name_space" value=" " />
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+		</t:response>
+	</t:test>
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
+				<name>${emptyName}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+			<t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+			<t:select path= "//soap:Text" match =".*name parameter is empty"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail">
+				<name>${Name_space}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+			<t:select path= "//zimbra:Code" match ="^service.INVALID_REQUEST"/>
+			<t:select path= "//soap:Text" match =".*name parameter is empty"/>
+		</t:response>
+	</t:test>
+</t:test_case>
 </t:tests>

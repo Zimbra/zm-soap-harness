@@ -36,8 +36,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
         </t:test>
     </t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-    <t:test_case testcaseid="AcctSetup1_create_account" type="deprecated">
+    <t:test_case testcaseid="AcctSetup1_create_account" type="always">
         <t:objective>create test accounts</t:objective>
         <t:test required="true">
             <t:request>
@@ -51,11 +50,36 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
             </t:response>
         </t:test>
 
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -68,6 +92,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -80,6 +105,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account3.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -92,6 +118,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account4.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -100,17 +127,18 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107222_rule1" type="deprecated" bugids="107222">
+    <t:test_case testcaseid="bug107222_rule1" type="smoke" bugids="107222">
         <t:objective>addheader: set non-ascii header value</t:objective>
-        <t:test id="modifyaccountrequest1">
+
+        <t:test required="true">
             <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
-                </ModifyAccountRequest>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
             </t:request>
             <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
 
@@ -165,7 +193,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107222_rule2" type="deprecated" bugids="107222">
+    <t:test_case testcaseid="bug107222_rule2" type="smoke" bugids="107222">
         <t:objective>deleteheader: set non-ascii characters in value-patterns</t:objective>
         <t:test required="true">
             <t:request>
@@ -176,18 +204,6 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-
-        <t:test id="modifyaccountrequest2">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account2.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -243,7 +259,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107222_rule3" type="deprecated" bugids="107222">
+    <t:test_case testcaseid="bug107222_rule3" type="smoke" bugids="107222">
         <t:objective>replaceheader: set non-ascii characters in value-patterns</t:objective>
         <t:test required="true">
             <t:request>
@@ -254,18 +270,6 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-
-        <t:test id="modifyaccountrequest3">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account3.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -311,7 +315,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107222_rule4" type="deprecated" bugids="107222">
+    <t:test_case testcaseid="bug107222_rule4" type="smoke" bugids="107222">
         <t:objective>replaceheader: set non-ascii characters in new-value</t:objective>
         <t:test required="true">
             <t:request>
@@ -322,18 +326,6 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-
-        <t:test id="modifyaccountrequest4">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account4.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -389,4 +381,32 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
         </t:resttest>
     </t:test_case>
 
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>
 </t:tests>

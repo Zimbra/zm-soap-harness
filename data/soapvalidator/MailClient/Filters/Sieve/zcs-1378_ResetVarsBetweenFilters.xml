@@ -1,5 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
 
@@ -73,17 +72,6 @@ if  header :matches ["X-Header3"] "*" {
             </t:response>
         </t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-	
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -93,7 +81,6 @@ if  header :matches ["X-Header3"] "*" {
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
             </t:response>
         </t:test>
     </t:test_case>
@@ -141,8 +128,6 @@ if  header :matches ["X-Header3"] "*" {
         3. Check on user 1 message is in the inbox and tagged appropriately.
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -168,7 +153,6 @@ if  header :matches ["X-Header3"] "*" {
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -190,7 +174,6 @@ if  header :matches ["X-Header3"] "*" {
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">

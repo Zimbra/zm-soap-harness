@@ -1,0 +1,185 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account1.password" value="${defaultpassword.value}" />
+	<t:property name="incorrect.password" value="test124" />
+	<t:property name="incorrect.username" value="account1.name.incorrect" />
+
+	<t:property name="message1.content" value="content${TIME}.${COUNTER}" />
+	<t:property name="message1.subject" value="subject${TIME}.${COUNTER}" />
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>Basic system check</t:objective>
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="Account_Setup" type="always">
+
+		<t:objective>Create user account</t:objective>
+		<t:steps>1. Login to admin.
+		         2. Create test accounts
+		</t:steps>
+
+		<t:test id="admin_login" required="true" depends="ping">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${admin.user}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_testAccount" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${account1.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="Basic_auth_verification1" type="smoke" bugids="ZCS-3948">
+
+		<t:objective>Verify basic authentication for guest accounts and validate account enumeration is not possible</t:objective>
+		<t:steps>1. Send message from admin account to test account.
+		         2. Login as test account and search message sent by admin account.
+		         3. Trigger GET request using basic auth with correct username and password for above message.
+		</t:steps>
+		
+		<t:property name="server.zimbraAccount" value="${admin.server}"/>
+		
+		<t:test id="admin_login" required="true" depends="ping">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="send_message" required="true">
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${account1.name}' />
+						<su>${message1.subject}</su>
+						<mp ct="text/plain">
+							<content>${message1.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+		</t:test>
+		
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="search_message">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>subject:${message1.subject}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:resttest testcaseid="verification_for_correct_username_pwd">
+			<t:restServletRequest>
+				<guest>${account1.name}</guest>
+				<password>${account1.password}</password>
+				<auth>basic</auth>
+				<id>${message1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="200" />
+				<t:select attr="To" match="${account1.name}" />
+				<t:select attr="Subject" match="${message1.subject}" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="Basic_auth_verification2" type="smoke" bugids="ZCS-3948">
+		<t:objective>Verify basic authentication for guest accounts and validate status code returned for incorrect password</t:objective>
+		<t:steps>1. Trigger GET request using basic auth with correct username and incorrect password for above message.
+		         2. Verify status code returned is '401'.
+		</t:steps>
+
+		<t:resttest testcaseid="verification_for_correct_username_incorrect_pwd">
+			<t:restServletRequest>
+				<guest>${account1.name}</guest>
+				<password>${incorrect.password}</password>
+				<auth>basic</auth>
+				<id>${message1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="401" />
+			</t:restServletResponse>
+		</t:resttest>
+	</t:test_case>
+
+	<t:test_case testcaseid="Basic_auth_verification3" type="smoke" bugids="ZCS-3948">
+		<t:objective>Verify basic authentication for guest accounts and validate status code returned for incorrect username</t:objective>
+		
+		<t:steps>1. Trigger GET request using basic auth with incorrect username for above message.
+		         2. Verify status code returned is '401'.
+		</t:steps>
+
+		<t:resttest testcaseid="verification_for_non_existent_account">
+
+			<t:restServletRequest>
+				<guest>${incorrect.username}</guest>
+				<password>${account1.password}</password>
+				<auth>basic</auth>
+				<id>${message1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="401" />
+			</t:restServletResponse>
+		</t:resttest>
+	</t:test_case>
+
+</t:tests>

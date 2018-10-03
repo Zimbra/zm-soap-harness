@@ -67,11 +67,11 @@ log "done";'/>
 replaceheader :index 2 :newname "X-Sieve-Header2" :newvalue "[NEWVAL] ${mail_subject}" :matches "X-Sieve-Header1" "*";
 log "done";'/>
 
-<t:property name="sieve_rule11" value='require ["editheader", "log"];
+<t:property name="sieve_rule11" value='require ["editheader", "log", "comparator-i;ascii-numeric", "relational"];
 replaceheader :newname "X-Numeric2-Header" :newvalue "0" :value "lt" :comparator "i;ascii-numeric" "X-Numeric-Header" "3";
 log "done";'/>
 
-<t:property name="sieve_rule12" value='require ["editheader", "log"];
+<t:property name="sieve_rule12" value='require ["editheader", "log", "comparator-i;ascii-numeric", "relational"];
 replaceheader :newname "X-Numeric2-Header" :count "ge" :comparator "i;ascii-numeric" "X-Numeric-Header" "3";
 log "done";'/>
 
@@ -142,6 +142,7 @@ log "done";'/>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cosid}</id>
 	                <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>
@@ -151,8 +152,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-<t:test_case testcaseid="Accounts setup" type="deprecated">  
+<t:test_case testcaseid="Accounts setup" type="smoke">  
 <t:objective>create test account</t:objective>          
     <t:test required="true">
         <t:request>
@@ -365,7 +365,7 @@ log "done";'/>
 </t:test_case>
 
     
-<t:test_case testcaseid="bug104314_newval1" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval1" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newvalue "[SPAM] $\{1}"
@@ -388,7 +388,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account2.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule1}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule1}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -451,7 +451,7 @@ log "done";'/>
 </t:test_case>   
 
 
-<t:test_case testcaseid="bug104314_newval2" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval2" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newvalue "$\{1} [SPAM]"
@@ -474,7 +474,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account3.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule2}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule2}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -536,7 +536,7 @@ log "done";'/>
     
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval3" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval3" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newvalue "$\{1} [SPAM]" matching the subject
@@ -559,7 +559,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account4.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule3}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule3}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -621,7 +621,7 @@ log "done";'/>
     
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval4" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval4" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newname "X-Header2" :matches "X-Header" "*";
@@ -655,7 +655,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account5.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule4}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule4}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -728,7 +728,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval5" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval5" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :index 1 :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "*";
@@ -751,7 +751,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account6.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule5}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule5}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -822,7 +822,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval6" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval6" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newname "X-Header2" :matches "X-Header" "HeaderVal";
@@ -856,7 +856,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account7.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule6}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule6}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -929,7 +929,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval7" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval7" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newname "X-Header2" :matches "X-Header" "HeaderVal";
@@ -963,7 +963,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account8.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule7}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule7}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1036,7 +1036,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval8" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval8" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL </t:objective>
     <steps> 
         1. Add sieve rule for the user :newname "X-Sieve-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Sieve-Header" "HeaderVal";
@@ -1070,7 +1070,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account9.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule8}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule8}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1143,7 +1143,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval9" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval9" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :index 2 :newname "X-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "HeaderVal"; 
@@ -1166,7 +1166,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account10.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule9}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule9}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1237,7 +1237,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval10" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_newval10" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :index 2 :newname "X-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "HeaderVal"; 
@@ -1260,7 +1260,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account11.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule10}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule10}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1331,7 +1331,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_outgoing1" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_outgoing1" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add outgoing sieve rule for the user :newvalue "[SPAM] $\{1}"
@@ -1354,7 +1354,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account1.id}</id>
-                <a n = "zimbraMailOutgoingSieveScript">${sieve_rule1}</a>             
+                <a n = "zimbraAdminOutgoingSieveScriptBefore">${sieve_rule1}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1416,7 +1416,7 @@ log "done";'/>
      
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_comparator1" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_comparator1" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule 11 for user
@@ -1439,7 +1439,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account13.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule11}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule11}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1510,7 +1510,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_comparator2" type="deprecated" bugids="104314">
+<t:test_case testcaseid="bug104314_comparator2" type="smoke" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule 12 for user
@@ -1533,7 +1533,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account14.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule12}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule12}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1605,7 +1605,7 @@ log "done";'/>
 </t:test_case>   
 
 
-<t:test_case testcaseid="bug1ZCS-859" type="deprecated" bugids="ZCS-859">
+<t:test_case testcaseid="bug1ZCS-859" type="smoke" bugids="ZCS-859">
    <t:objective>Rewrite the "subject" header of all messages received</t:objective>
     <steps> 
         1. Add sieve rule for the user :newvalue "[SPAM] + {original subject}"
@@ -1628,7 +1628,7 @@ log "done";'/>
         <t:request>
             <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
                 <id>${test_account2.id}</id>
-                <a n = "zimbraMailSieveScript">${sieve_rule12}</a>             
+                <a n = "zimbraAdminSieveScriptBefore">${sieve_rule12}</a>             
             </ModifyAccountRequest>
         </t:request>
         <t:response>
@@ -1721,6 +1721,7 @@ log "done";'/>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cosid}</id>
 	                <a n="zimbraSieveNotifyActionRFCCompliant">FALSE</a>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
 	            </ModifyCosRequest>
 	        </t:request>
 	        <t:response>

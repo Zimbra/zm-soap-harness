@@ -25,7 +25,7 @@
     <t:property name="dateheader_str" value="$\{dateheader}"/>
 
     <!-- Sieve rules declaration -->
-    <t:property name="sieve_rule1" value='require ["editheader", "variables"];
+    <t:property name="sieve_rule1" value='require ["editheader", "variables", "relational"];
 if header :matches :comparator "i;ascii-casemap" "Subject" "${word1}* ${word3} *" {
     addheader "X-Test-Header-0" "${dollar0}";
     addheader "X-Test-Header-1" "${dollar1}";
@@ -38,7 +38,7 @@ if header :matches :comparator "i;ascii-casemap" "Subject" "${word1}* ${word3} *
     addheader "X-Test-Header-8" "${dollar8}";
     addheader "X-Test-Header-9" "${dollar9}";
 }'/>
-    <t:property name="sieve_rule2" value='require ["editheader", "variables"];
+    <t:property name="sieve_rule2" value='require ["editheader", "variables", "relational"];
 if address :matches :comparator "i;ascii-casemap" "To" "test2.*.*@*" {
     addheader "X-Test-Header-0" "${dollar0}";
     addheader "X-Test-Header-1" "${dollar1}";
@@ -51,7 +51,7 @@ if address :matches :comparator "i;ascii-casemap" "To" "test2.*.*@*" {
     addheader "X-Test-Header-8" "${dollar8}";
     addheader "X-Test-Header-9" "${dollar9}";
 }'/>
-    <t:property name="sieve_rule3" value='require ["editheader", "variables"];
+    <t:property name="sieve_rule3" value='require ["editheader", "variables", "relational", "envelope"];
 if envelope :matches :comparator "i;ascii-casemap" "To" "test3.*.*@*" {
     addheader "X-Test-Header-0" "${dollar0}";
     addheader "X-Test-Header-1" "${dollar1}";
@@ -64,7 +64,7 @@ if envelope :matches :comparator "i;ascii-casemap" "To" "test3.*.*@*" {
     addheader "X-Test-Header-8" "${dollar8}";
     addheader "X-Test-Header-9" "${dollar9}";
 }'/>
-    <t:property name="sieve_rule4" value='require ["editheader", "variables"];
+    <t:property name="sieve_rule4" value='require ["editheader", "variables", "relational"];
 if header :matches :comparator "i;ascii-casemap" "Date" "*" {
     set "dateheader" "${dollar1}";
     addheader "X-Test-Header" "${dateheader_str}";
@@ -86,8 +86,7 @@ if exists "Subject" {
         </t:test>
     </t:test_case>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-    <t:test_case testcaseid="AcctSetup1_create_account" type="deprecated">
+    <t:test_case testcaseid="AcctSetup1_create_account" type="always">
         <t:objective>create test accounts</t:objective>
         <t:test required="true">
             <t:request>
@@ -101,11 +100,36 @@ if exists "Subject" {
             </t:response>
         </t:test>
 
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n = "zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -118,6 +142,7 @@ if exists "Subject" {
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptAfter">${sieve_rule2}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -130,6 +155,7 @@ if exists "Subject" {
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account3.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -142,6 +168,7 @@ if exists "Subject" {
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account4.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -151,17 +178,18 @@ if exists "Subject" {
 
     </t:test_case>
 
-    <t:test_case testcaseid="bug107321_rule1" type="deprecated" bugids="107321">
+    <t:test_case testcaseid="bug107321_rule1" type="smoke" bugids="107321">
         <t:objective>Match variable in test header: if the index is out of range, the empty string should be set</t:objective>
-        <t:test id="modifyaccountrequest1">
+
+        <t:test required="true">
             <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
-                </ModifyAccountRequest>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
             </t:request>
             <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
 
@@ -225,7 +253,7 @@ if exists "Subject" {
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107321_rule2" type="deprecated" bugids="107321">
+    <t:test_case testcaseid="bug107321_rule2" type="smoke" bugids="107321">
         <t:objective>Match variable in test address: if the index is out of range, the empty string should be set</t:objective>
         <t:test required="true">
             <t:request>
@@ -236,17 +264,6 @@ if exists "Subject" {
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-        <t:test id="modifyaccountrequest2">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account2.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -311,7 +328,7 @@ if exists "Subject" {
     </t:test_case>
 
 
-    <t:test_case testcaseid="bug107321_rule3" type="deprecated" bugids="107321">
+    <t:test_case testcaseid="bug107321_rule3" type="smoke" bugids="107321">
         <t:objective>Match variable in test envelope: if the index is out of range, the empty string should be set</t:objective>
         <t:test required="true">
             <t:request>
@@ -322,17 +339,6 @@ if exists "Subject" {
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-        <t:test id="modifyaccountrequest3">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account3.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -396,7 +402,7 @@ if exists "Subject" {
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107321_rule4" type="deprecated" bugids="107321">
+    <t:test_case testcaseid="bug107321_rule4" type="smoke" bugids="107321">
         <t:objective>Match variable should take a value of the most recently evaluated successful match of type ":matches"</t:objective>
         <t:test required="true">
             <t:request>
@@ -407,18 +413,6 @@ if exists "Subject" {
             </t:request>
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-
-        <t:test id="modifyaccountrequest4">
-            <t:request>
-                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
-                    <id>${test_account4.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
-                </ModifyAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
 
@@ -481,4 +475,32 @@ if exists "Subject" {
         </t:test>
     </t:test_case>
 
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>
 </t:tests>

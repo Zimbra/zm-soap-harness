@@ -1,0 +1,610 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<!-- Test accounts declaration -->
+<t:property name="account.name"
+		value="test_${TIME}${COUNTER}@${defaultdomain.name}" />
+<t:property name="account1.name"
+		value="test1_${TIME}${COUNTER}@${defaultdomain.name}" />
+<t:property name="account2.name"
+		value="test2_${TIME}${COUNTER}@${defaultdomain.name}" />
+<t:property name="account3.name"
+		value="test3_${TIME}${COUNTER}@${defaultdomain.name}" />
+<t:property name="account4.name"
+		value="test4_${TIME}${COUNTER}@${defaultdomain.name}" />		
+
+<t:property name="cos1.name" value="mycos1${TIME}${COUNTER}" />
+<!-- Variables declaration -->
+<t:property name="domain.zimbraAdmin" value="${defaultdomain.name}"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="msg01.file" value="${testMailRaw.root}/zcs-1850/mime01.txt" />
+
+<!-- Sieve rules declaration -->
+<t:property name="sieve_rule"
+		value='
+require ["editheader"];
+if header :contains "To" "test" {
+deleteheader :index 1 "X-New-Header" "Test";
+deleteheader :index 1 "X-Header" "Test";
+}
+' />
+
+<t:test_case testcaseid="Ping" type="always">
+	<t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+</t:test_case>
+
+<!-- Create accounts for testing -->
+<t:test_case testcaseid="CreateAccounts" type="smoke">
+	<t:objective>create accounts</t:objective>
+		<t:steps>
+			1. Auth with admin
+			2. create accounts
+		</t:steps>
+		
+		<t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+		</t:test>
+
+        <t:test id="CreateCosRequest1">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name xmlns="">${cos1.name}</name>
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos1.name}" />
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cos1.id}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    	    		
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraCOSId">${cos1.id}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule}</a>
+					<a n="zimbraCOSId">${cos1.id}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			    <t:select
+			        path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraSieveImmutableHeaders"]'
+			        set="defaultzimbraSieveImmutableHeaders" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule}</a>
+					<a n="zimbraCOSId">${cos1.id}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account2.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account3.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule}</a>
+					<a n="zimbraCOSId">${cos1.id}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account3.server" />
+			</t:response>
+		</t:test>
+		
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account4.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_rule}</a>
+					<a n="zimbraCOSId">${cos1.id}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account4.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account4.server" />
+			</t:response>
+		</t:test>		
+</t:test_case>
+
+<!-- Run testcase -->
+<t:test_case testcaseid="ZCS-1850_rule1" type="smoke" bugids="ZCS-1850">
+		<t:objective>Verify header cannot be deleted if any header is added in account's immutable list</t:objective>
+		<t:steps>	
+			1. add header to account's immutable list
+			2. send message to account1
+			3. auth with account1
+			4. find and verify email headers
+		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="service_check" required="true" depends="ping">
+			<t:request>
+				<GetServerRequest xmlns="urn:zimbraAdmin">
+					<server by="name">${server.zimbraAdmin}</server>
+				</GetServerRequest>
+			</t:request>
+			<t:response>
+				<t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
+			</t:response>
+		</t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+	                <id>${account1.id}</id>
+	                <a n = "zimbraSieveImmutableHeaders">${defaultzimbraSieveImmutableHeaders},X-New-Header</a>
+	            </ModifyAccountRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+	        </t:response>
+	    </t:test>
+		
+		<t:mailinjecttest>
+			<t:lmtpInjectRequest>
+				<filename>${msg01.file}</filename>
+				<to>${account1.name}</to>
+				<from>${account.name}</from>
+				<server>${account1.server}</server>
+				<modify>
+					<header a="To">${account1.name}</header>
+				</modify>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message"
+					fetch="1">
+					<query>in:Inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="id"
+					set="msg1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Header" match="Test" />
+				<t:select attr="X-Header" emptyset="1" />
+			</t:restServletResponse>
+		</t:resttest>
+</t:test_case>
+
+<t:test_case testcaseid="ZCS-1850_rule2" type="smoke" bugids="ZCS-1850">
+		<t:objective>Verify header cannot be deleted if any header is added in COS's immutable list</t:objective>
+		<t:steps>			
+			1. add header to COS's immutable list
+			2. send message to account2
+			3. auth with account2
+			4. find and verify email headers
+		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="service_check" required="true" depends="ping">
+			<t:request>
+				<GetServerRequest xmlns="urn:zimbraAdmin">
+					<server by="name">${server.zimbraAdmin}</server>
+				</GetServerRequest>
+			</t:request>
+			<t:response>
+				<t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
+			</t:response>
+		</t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cos1.id}</id>
+	                <a n="zimbraSieveImmutableHeaders">${defaultzimbraSieveImmutableHeaders},X-New-Header</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    		
+		<t:mailinjecttest>
+			<t:lmtpInjectRequest>
+				<filename>${msg01.file}</filename>
+				<to>${account2.name}</to>
+				<from>${account.name}</from>
+				<server>${account2.server}</server>
+				<modify>
+					<header a="To">${account2.name}</header>
+				</modify>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message"
+					fetch="1">
+					<query>in:Inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="id"
+					set="msg1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Header" match="Test" />
+				<t:select attr="X-Header" emptyset="1" />
+			</t:restServletResponse>
+		</t:resttest>
+</t:test_case>
+
+<t:test_case testcaseid="ZCS-1850_rule3" type="smoke" bugids="ZCS-1850">
+		<t:objective>Verify header cannot be deleted if any header is added in domain's immutable list</t:objective>
+		<t:steps>			
+			1. add header to domain's immutable list
+			2. send message to account3
+			3. auth with account3
+			4. find and verify email headers
+		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cos1.id}</id>
+	                <a n="zimbraSieveImmutableHeaders" />
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <GetDomainRequest xmlns="urn:zimbraAdmin">
+	                <domain by="name">${defaultdomain.name}</domain>
+	            </GetDomainRequest>
+	        </t:request>
+	        <t:response>
+		        <t:select path="//admin:GetDomainResponse/admin:domain" attr="id"  set="domain.id"/>
+	        </t:response>
+	    </t:test>
+    
+		<t:test>
+			<t:request>
+				<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+					<id>${domain.id}</id>
+					<a n="zimbraSieveImmutableHeaders">${defaultzimbraSieveImmutableHeaders},X-Header</a>
+				</ModifyDomainRequest>
+			</t:request>
+		</t:test>
+		
+		<t:mailinjecttest>
+			<t:lmtpInjectRequest>
+				<filename>${msg01.file}</filename>
+				<to>${account3.name}</to>
+				<from>${account.name}</from>
+				<server>${account3.server}</server>
+				<modify>
+					<header a="To">${account3.name}</header>
+				</modify>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message"
+					fetch="1">
+					<query>in:Inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="id"
+					set="msg1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Header" emptyset="1" />
+				<t:select attr="X-Header" match="Test" />
+			</t:restServletResponse>
+		</t:resttest>		
+</t:test_case>
+
+<t:test_case testcaseid="ZCS-1850_rule4" type="smoke" bugids="ZCS-1850">
+		<t:objective>Verify headers are treated as case-insensitive and are not deleted if in immutable list</t:objective>
+		<t:steps>	
+			1. add header to account's immutable list
+			2. send message to account1
+			3. auth with account1
+			4. find and verify email headers
+		</t:steps>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test id="service_check" required="true" depends="ping">
+			<t:request>
+				<GetServerRequest xmlns="urn:zimbraAdmin">
+					<server by="name">${server.zimbraAdmin}</server>
+				</GetServerRequest>
+			</t:request>
+			<t:response>
+				<t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
+			</t:response>
+		</t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+	                <id>${account1.id}</id>
+	                <a n = "zimbraSieveImmutableHeaders">${defaultzimbraSieveImmutableHeaders},x-new-header,X-HEADER</a>
+	            </ModifyAccountRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+	        </t:response>
+	    </t:test>
+		
+		<t:mailinjecttest>
+			<t:lmtpInjectRequest>
+				<filename>${msg01.file}</filename>
+				<to>${account1.name}</to>
+				<from>${account.name}</from>
+				<server>${account1.server}</server>
+				<modify>
+					<header a="To">${account1.name}</header>
+				</modify>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message"
+					fetch="1">
+					<query>in:Inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="id"
+					set="msg1.id" />
+			</t:response>
+		</t:test>
+		
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-New-Header" match="Test" emptyset="0"/>
+				<t:select attr="X-Header" match="Test" emptyset="0"/>
+			</t:restServletResponse>
+		</t:resttest>
+</t:test_case>
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cos1.id}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+					<id>${domain.id}</id>
+					<a n="zimbraSieveImmutableHeaders">${defaultzimbraSieveImmutableHeaders}</a>
+				</ModifyDomainRequest>
+			</t:request>
+		</t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cos1.id}</id>
+	                <a n="zimbraSieveImmutableHeaders">${defaultzimbraSieveImmutableHeaders}</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    		
+    </t:finally> 
+</t:tests>

@@ -23,7 +23,6 @@
 	<t:property name="var6" value="$\{var_six}" />
 	<t:property name="var7" value="$\{var_seven}" />
 	<t:property name="var8" value="$\{var_eight}" />
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:property name="sieve_test1"
 		value='require ["log","fileinto","variables","tag"];	
@@ -131,17 +130,6 @@
 			</t:response>
 		</t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -154,7 +142,6 @@
 					attr="id" set="account1.id" />
 				<t:select path="//admin:CreateAccountResponse/admin:account"
 					attr="name" set="account1.name" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 			</t:response>
 		</t:test>
 		
@@ -176,8 +163,6 @@
 		<t:objective>Set a variable with match types of same precedence.
 			Message should not be tagged and filedInto Junk folder
 		</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 		<t:test required="true">
 			<t:request>
@@ -204,7 +189,6 @@
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -223,7 +207,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -300,7 +283,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -334,8 +316,6 @@
 			Message should not be tagged and filedInto Junk folder
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -361,7 +341,6 @@
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -380,7 +359,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -414,8 +392,6 @@
 			Message should be tagged and filedInto Junk folder
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -441,7 +417,6 @@
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -460,7 +435,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -494,8 +468,6 @@
 			Message should be tagged and filedInto Junk folder
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -521,7 +493,6 @@
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -540,7 +511,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -574,8 +544,6 @@
 			Message should not be tagged and filedInto Junk folder
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -601,7 +569,6 @@
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -620,7 +587,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -655,8 +621,6 @@
 			Message should not be tagged and filedInto Junk folder
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -682,7 +646,6 @@
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -701,7 +664,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -736,8 +698,6 @@
 			Message should not be tagged and filedInto Junk folder
 		</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -763,7 +723,6 @@
 			</t:response>
 		</t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 		<t:test>
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
@@ -782,7 +741,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

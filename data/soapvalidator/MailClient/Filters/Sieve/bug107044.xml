@@ -1,6 +1,4 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -61,17 +59,6 @@ tag "end-tag";
             </t:response>
         </t:test>
 
-                <t:test>
-                        <t:request>
-                                <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                        <account by="name">${admin.user}</account>
-                                </GetAccountRequest>
-                        </t:request>
-                        <t:response>
-                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                        </t:response>
-               </t:test>
-
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -81,7 +68,6 @@ tag "end-tag";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
             </t:response>
         </t:test>
 
@@ -94,7 +80,6 @@ tag "end-tag";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
             </t:response>
         </t:test>
 
@@ -107,28 +92,12 @@ tag "end-tag";
             </t:request>
             <t:response>
                 <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
             </t:response>
         </t:test>
     </t:test_case>
 
     <t:test_case testcaseid="bug107044_rule1" type="smoke" bugids="107044">
         <t:objective>comparator "i;ascii-casemap" should be set if it is not specified in Test Address (match-type :matches)</t:objective>
-
-        <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
-        <t:test required="true">
-            <t:request>
-                <AuthRequest xmlns="urn:zimbraAdmin">
-                    <name>${admin.user}</name>
-                    <password>${admin.password}</password>
-                </AuthRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-
         <t:test id="modifyaccountrequest1">
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
@@ -140,8 +109,6 @@ tag "end-tag";
                 <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
 
         <t:test>
             <t:request>
@@ -159,8 +126,6 @@ tag "end-tag";
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
         <t:test>
             <t:request>
@@ -190,9 +155,6 @@ tag "end-tag";
 
     <t:test_case testcaseid="bug107044_rule2" type="smoke" bugids="107044">
         <t:objective>comparator "i;ascii-casemap" should be set if it is not specified in Test Address (match-type :contains)</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -217,8 +179,6 @@ tag "end-tag";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -235,8 +195,6 @@ tag "end-tag";
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg2.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
         <t:test>
             <t:request>
@@ -266,9 +224,6 @@ tag "end-tag";
 
     <t:test_case testcaseid="bug107044_rule3" type="smoke" bugids="107044">
         <t:objective>comparator "i;ascii-casemap" should be set if it is not specified in Test Address (match-type :is)</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -293,8 +248,6 @@ tag "end-tag";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -311,8 +264,6 @@ tag "end-tag";
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg3.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
         <t:test>
             <t:request>

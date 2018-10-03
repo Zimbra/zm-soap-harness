@@ -30,7 +30,6 @@ deleteheader :matches "X-Test-Header-3" "*";
 deleteheader :matches "X-Test-Header" "NOT_MATCHED";
 '/>
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
         <t:test required="true">
@@ -43,7 +42,7 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="GlobalConfigSetup" type="deprecated">
+    <t:test_case testcaseid="GlobalConfigSetup" type="smoke">
         <t:objective>set globalconfig</t:objective>
         <t:test required="true">
             <t:request>
@@ -56,6 +55,31 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
+	    
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	            
         <t:test>
             <t:request>
                 <ModifyConfigRequest xmlns="urn:zimbraAdmin">
@@ -68,7 +92,7 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="AcctSetup1_create_account" type="deprecated">
+    <t:test_case testcaseid="AcctSetup1_create_account" type="smoke">
         <t:objective>create test accounts</t:objective>
         <t:test required="true">
             <t:request>
@@ -159,7 +183,7 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107615_rule1" type="deprecated" bugids="107615">
+    <t:test_case testcaseid="bug107615_rule1" type="smoke" bugids="107615">
         <t:objective>deleteheader should not change the position of headers - no header is deleted</t:objective>
         <t:test id="modifyaccountrequest1">
             <t:request>
@@ -216,7 +240,7 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107615_rule2" type="deprecated" bugids="107615">
+    <t:test_case testcaseid="bug107615_rule2" type="smoke" bugids="107615">
         <t:objective>deleteheader should not change the position of headers - a header is deleted (pattern 1)</t:objective>
         <t:test required="true">
             <t:request>
@@ -285,7 +309,7 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107615_rule3" type="deprecated" bugids="107615">
+    <t:test_case testcaseid="bug107615_rule3" type="smoke" bugids="107615">
         <t:objective>deleteheader should not change the position of headers - a header is deleted (pattern 2)</t:objective>
         <t:test required="true">
             <t:request>
@@ -354,7 +378,7 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107615_rule4" type="deprecated" bugids="107615">
+    <t:test_case testcaseid="bug107615_rule4" type="smoke" bugids="107615">
         <t:objective>deleteheader should not change the position of headers - two headers are deleted </t:objective>
         <t:test required="true">
             <t:request>
@@ -423,7 +447,7 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107615_rule5" type="deprecated" bugids="107615">
+    <t:test_case testcaseid="bug107615_rule5" type="smoke" bugids="107615">
         <t:objective>deleteheader should not change the position of Received headers</t:objective>
         <t:test required="true">
             <t:request>
@@ -501,7 +525,7 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
         </t:resttest>
     </t:test_case>
 
-    <t:test_case testcaseid="bug107615_rule6" type="deprecated" bugids="107615">
+    <t:test_case testcaseid="bug107615_rule6" type="smoke" bugids="107615">
         <t:objective>Check if the order of Received header is the same as case the rule5 when deleteheader is not executed</t:objective>
         <t:test required="true">
             <t:request>
@@ -580,6 +604,19 @@ deleteheader :matches "X-Test-Header" "NOT_MATCHED";
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
         </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	            
         <t:test>
             <t:request>
                 <ModifyConfigRequest xmlns="urn:zimbraAdmin">

@@ -34,6 +34,23 @@
 		elsif anyof (header :contains "subject" ["automation", "nunit"])
 			{ redirect "qa-automation@zqa-380.eng.zimbra.com"; log "Forward message to qa-automation DL"; }'></t:property>
 
+<t:test_case testcaseid="Config setup" type="always">
+    <t:objective>create test account</t:objective>
+    
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
 	<t:test_case testcaseid="acctSetup1" type="always">
 		<t:objective>create test account</t:objective>
 
@@ -59,7 +76,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account"/>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
 			</t:response>
 		</t:test>
 
@@ -73,7 +89,6 @@
 			</t:request>
 			<t:response>
 				<t:select path="//admin:CreateAccountResponse/admin:account"/>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
 			</t:response>
 		</t:test>
 		
@@ -85,8 +100,6 @@
             1. Perform folder operations -- create/rename/move/delete.
             2. Verify all the operations are successful.
     	</t:steps>
-
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -181,8 +194,6 @@
 		<t:steps>
             1. Perform tag operations -- create/delete
     	</t:steps>
-
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -232,8 +243,6 @@
             1. Perform folder operations -- create/rename/move/delete.
             2. Verify all the operations are successful.
     	</t:steps>
-
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -328,8 +337,6 @@
 		<t:steps>
             1. Perform tag operations -- create/delete
     	</t:steps>
-
-		<t:property name="server.zimbraAccount" value="${account2.server}"/>
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">

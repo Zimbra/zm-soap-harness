@@ -1,0 +1,423 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="test_account.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}" />	
+	<t:property name="folder_inbox" value="Inbox" />
+	<t:property name="mime01.file" value="${testMailRaw.root}/zcs-1858/mime01.txt" />
+	
+    <t:property name="sieve_rule1" value='require ["fileinto"];
+if envelope :matches "To" "test1.*@${defaultdomain.name}" {
+	fileinto "bug1858";
+}
+'/>
+    <t:property name="sieve_rule2" value='require ["fileinto"];
+if header :matches "To" "test2.*@${defaultdomain.name}" {
+    if header :comparator "i;ascii-numeric" "to" ["${test_account2.name}"]  {
+		fileinto "bug1858";}
+}
+'/>
+    <t:property name="sieve_rule3" value='require ["fileinto", "comparator-i;ascii-numeric"];
+if header :matches "To" "test3.*@${defaultdomain.name}" {
+    if header :count "gt" :comparator "i;ascii-numeric" "to" ["2"]  {
+		fileinto "bug1858";}
+}
+'/>
+
+    <t:property name="sieve_rule4" value='
+ if header :matches "Subject" "*" {
+  ereject "I no longer accept mail from this address";
+ }
+'/>
+
+    <t:property name="sieve_rule5" value='
+ if header :matches "Subject" "*" {
+  reject "I no longer accept mail from this address";
+ }
+'/>
+
+<t:test_case testcaseid="Config setup" type="always">
+    <t:objective>create test account</t:objective>
+    
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+	<t:test_case testcaseid="acctSetup1" type="always">
+		<t:objective>create test account</t:objective>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+				<t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account.server" />
+            </t:response>
+        </t:test>
+	    
+		<t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraMailSieveScript">${sieve_rule1}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account1.server" />
+            </t:response>
+        </t:test>
+		<t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraMailSieveScript">${sieve_rule2}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account2.server" />
+            </t:response>
+        </t:test>
+		<t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account3.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraMailSieveScript">${sieve_rule3}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account3.server" />
+            </t:response>
+        </t:test>
+		<t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account4.name}</name>
+                    <password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_rule4}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account4.server" />
+            </t:response>
+        </t:test>
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account5.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraMailSieveScript">${sieve_rule5}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_account5.server" />
+            </t:response>
+        </t:test>
+	</t:test_case>
+
+<!-- Verify  some extension test without declare in require-->
+	<t:test_case testcaseid="ZCS-1858_rule1" type="smoke" bugids="ZCS-1858">
+		<t:objective>Verify  envelope test without declare in require</t:objective>
+		<t:steps>
+			1. applied envelope test without declare in require to account1
+			2. inject message to account1
+			3. auth with account1
+			4. find and verify email
+		</t:steps>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:mailinjecttest>
+			<t:lmtpInjectRequest>
+				<filename>${mime01.file}</filename>
+				<to>${test_account1.name}</to>
+				<from>${test_account.name}</from>
+				<server>${test_account1.server}</server>
+				<modify>
+					<header a="To">${test_account1.name}</header>
+				</modify>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message"
+					fetch="1">
+					<query>in:${folder_inbox}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su" match="zcs-1858 test" emptyset="0"/>
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-1858_rule2" type="smoke" bugids="ZCS-1858">
+		<t:objective>Verify comparator test without declare in require</t:objective>
+		<t:steps>
+			1. applied comparator test without declare in require to account2
+			2. inject message to account2
+			3. auth with account2
+			4. find and verify email
+		</t:steps>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:mailinjecttest>
+			<t:lmtpInjectRequest>
+				<filename>${mime01.file}</filename>
+				<to>${test_account2.name}</to>
+				<to>${test_account1.name}</to>
+				<from>${test_account.name}</from>
+				<server>${test_account2.server}</server>
+				<modify>
+					<header a="To">${test_account2.name}</header>
+				</modify>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message"
+					fetch="1">
+					<query>in:${folder_inbox}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su" match="zcs-1858 test" emptyset="0"/>				
+			</t:response>
+		</t:test>
+	</t:test_case>
+  
+ 	<t:test_case testcaseid="ZCS-1858_rule3" type="smoke" bugids="ZCS-1858">
+		<t:objective>Verify relational test without declare in require</t:objective>
+		<t:steps>
+			1. applied relational test without declare in require to account3
+			2. inject message to account3
+			3. auth with account3
+			4. find and verify email
+		</t:steps>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:mailinjecttest>
+			<t:lmtpInjectRequest>
+				<filename>${mime01.file}</filename>
+				<to>${test_account3.name}</to>
+				<to>${test_account2.name}</to>
+				<to>${test_account1.name}</to>
+				<from>${test_account.name}</from>
+				<server>${test_account3.server}</server>
+				<modify>
+					<header a="To">${test_account3.name}</header>
+				</modify>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account3.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message"
+					fetch="1">
+					<query>in:${folder_inbox}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su" match="zcs-1858 test" emptyset="0"/>
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+     <t:test_case testcaseid="zcs-1858_rule4" type="smoke" bugids="zcs-1858">
+        <t:objective>Verify ereject works without require "ereject"</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+     
+        <t:mailinjecttest>
+            <t:lmtpInjectRequest>
+                <filename>${mime01.file}</filename>
+                <to>${test_account4.name}</to>
+                <from>${test_account.name}</from>
+                <server>${test_account4.server}</server>
+            </t:lmtpInjectRequest>
+        </t:mailinjecttest>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account4.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="su" match="zcs-1858 test" emptyset="0"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+     <t:test_case testcaseid="zcs-1858_rule5" type="smoke" bugids="zcs-1858">
+        <t:objective>Verify reject works without require "reject"</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:mailinjecttest>
+            <t:lmtpInjectRequest>
+                <filename>${mime01.file}</filename>
+                <to>${test_account5.name}</to>
+                <from>${test_account.name}</from>
+                <server>${test_account5.server}</server>
+            </t:lmtpInjectRequest>
+        </t:mailinjecttest>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account5.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="su" match="zcs-1858 test" emptyset="0"/>
+            </t:response>
+        </t:test>
+        
+    </t:test_case>
+		
+</t:tests>

@@ -31,7 +31,6 @@
 	<t:property name="tag2_expected" value="e" />
 	<t:property name="tag3_expected" value="e" />
 	<t:property name="tag4_expected" value="Seive Test DeMo To Be Executed 5" />
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	
 	<t:property name="sieve_test1"
 		value='require ["log","fileinto","relational","variables"];	
@@ -113,6 +112,7 @@
 		}   
 ' />
  
+
 	<t:test_case testcaseid="AcctSetup1_zcs876"
 		type="smoke" bugids="zcs876">
 		<t:objective> Create test account and login to first account
@@ -130,17 +130,30 @@
 			</t:response>
 		</t:test>
 
-	        <t:test>
-                <t:request>
-                        <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                <account by="name">${admin.user}</account>
-                        </GetAccountRequest>
-                </t:request>
-                <t:response>
-                   <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                </t:response>
-        	</t:test>
-
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -149,9 +162,13 @@
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
-				<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="account1.name" />
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server" />
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="name" set="account1.name" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
 			</t:response>
 		</t:test>
 		  
@@ -161,8 +178,6 @@
 		bugids="ZCS-876">
 		<t:objective>Set a match variable to 01. Should evaluate to 1 and message should be filed into Junk folder and tagged.
 		</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 	
 		<t:test required="true">
 			<t:request>
@@ -207,8 +222,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -242,8 +255,6 @@
 		bugids="ZCS-876">
 		<t:objective>Set a match variable to 000000002. Should evaluate to 2 and message should be filed into Junk folder and tagged.
 		</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 	
 		<t:test required="true">
 			<t:request>
@@ -288,8 +299,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -321,8 +330,6 @@
 		bugids="ZCS-876">
 		<t:objective>Set a match variable to 9. Should evaluate 9th match and message should be filed into Junk folder and tagged.
 		</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 	
 		<t:test required="true">
 			<t:request>
@@ -367,8 +374,6 @@
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -401,8 +406,6 @@
 		<t:objective>Set a match variable to 100. Should evaluate to error in log  and message should not be filed into Junk folder and tagged.
 		</t:objective>
 	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -445,8 +448,6 @@
 					set="Sent_message4.id" />
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -494,8 +495,6 @@
 		<t:objective>Set a match variable to -2. Should evaluate to error in log  and message should not be filed into Junk folder and tagged.
 		</t:objective>
 	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -538,8 +537,6 @@
 					set="Sent_message5.id" />
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -587,8 +584,6 @@
 		<t:objective>Set a match variable to 00010. Should evaluate to 10 and should give error in log  and message should not be filed into Junk folder and tagged.
 		</t:objective>
 	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -631,8 +626,6 @@
 					set="Sent_message6.id" />
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -680,8 +673,6 @@
 		<t:objective>Set a match variable to -0001. Should evaluate to error in log  and message should not be filed into Junk folder and tagged.
 		</t:objective>
 	
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -724,8 +715,6 @@
 					set="Sent_message7.id" />
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -772,8 +761,6 @@
 		bugids="ZCS-876">
 		<t:objective>Set a match variable to 0. Should store entire string in variable and message should be filed into Junk folder and tagged.
 		</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
 	
 		<t:test required="true">
 			<t:request>
@@ -817,8 +804,6 @@
 					set="Sent_message8.id" />
 			</t:response>
 		</t:test>
-
-		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
 		<t:test>
 			<t:request>
@@ -965,8 +950,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 }
 '/> 
  
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
     <t:test_case testcaseid="Ping" type="always">
         <t:objective>basic system check</t:objective>
         <t:test required="true">
@@ -1003,7 +986,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
 
@@ -1016,7 +999,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
                 
@@ -1029,7 +1012,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
 
@@ -1042,7 +1025,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
         
@@ -1055,7 +1038,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
         
@@ -1068,7 +1051,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
         
@@ -1081,7 +1064,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
         
@@ -1094,7 +1077,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account8.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test> 
         
@@ -1107,7 +1090,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account9.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
         
@@ -1120,7 +1103,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account10.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>                  
 
@@ -1133,7 +1116,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account11.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
 
@@ -1146,7 +1129,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account12.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>
         
@@ -1159,7 +1142,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 </CreateAccountRequest>
             </t:request>
             <t:response>
-		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account13.server"/>
+                <t:select path="//admin:CreateAccountResponse/admin:account" />
             </t:response>
         </t:test>                                                   
     </t:test_case>
@@ -1168,9 +1151,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     <t:test_case testcaseid="zcs-616_rule1" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sieve\test" and "sieve\\test in rule". Message should be tagged </t:objective>
         <t:test required="true">
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
                     <name>${admin.user}</name>
@@ -1198,8 +1178,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
         <t:test>
             <t:request>
@@ -1229,9 +1207,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule2" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sieve\\test" and "sieve\\\\test in rule". Message should be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1261,8 +1236,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account2.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1291,9 +1264,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule3" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sieve\test" and "sieve\\test in rule". Message should be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1323,8 +1293,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account3.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1353,9 +1321,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule4" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sieve\\test\abc\xyz" and "sieve\\\\test\\abc\\xyz" in rule. Message should be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1385,8 +1350,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account4.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1415,9 +1378,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule5" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sieve\\\test" and "i;ascii-casemap" "sieve\\\\\\test" in rule. Message should be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1447,8 +1407,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account5.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1477,9 +1435,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule6" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sieve\\test" and "i;ascii-casemap" "sieve\\\\\\test" in rule. Message should not be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1509,8 +1464,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account6.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1539,9 +1492,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule7" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sieve\\\\test" with "i;octet" "sieve\\\\\\\\test" in rule. Message should be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1571,8 +1521,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account7.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1601,9 +1549,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule8" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sieve\\\test" with "i;octet" "sieve\\\\\\\\test" in rule. Message should not be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1633,8 +1578,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account8.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1663,9 +1606,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule9" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sieve\\test" and specify various non-matching subject and only one matching subject in rule. Message should not be tagged for non-matching subjects </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1694,8 +1634,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account9.server}"/>
 
         <t:test>
             <t:request>
@@ -1726,9 +1664,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule10" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "\\\\sievetest" and "\\\\\\\\sievetest" in rule. Message should be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1758,8 +1693,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account10.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1788,9 +1721,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule11" type="smoke" bugids="zcs-616">
         <t:objective>Specify subject as "sievetest\\\\\\\\" and "sievetest\\\\\\\\" in rule. Message should be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1820,8 +1750,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${account11.server}"/>
-
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1850,9 +1778,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule12" type="smoke" bugids="zcs-616">
         <t:objective>Variable and nested loop test. Message should be tagged </t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1881,8 +1806,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account12.server}"/>
 
         <t:test>
             <t:request>
@@ -1913,9 +1836,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
     
     <t:test_case testcaseid="zcs-616_rule13" type="smoke" bugids="zcs-616">
         <t:objective>Negative tes for Variable and nested loop. Message should be tagged for ":matches *" only and not for :is and contains</t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1944,8 +1864,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
             </t:response>
         </t:test>
-
-	<t:property name="server.zimbraAccount" value="${account13.server}"/>
 
         <t:test>
             <t:request>
@@ -2002,7 +1920,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 		}
 ' />
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:test_case testcaseid="AcctSetup1_create_account" type="always">
 		<t:objective>create test accounts</t:objective>
 		<t:test required="true">
@@ -2021,11 +1938,11 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${account14.name}</name>
 					<password>${defaultpassword.value}</password>
-					<a n="zimbraMailSieveScript">${sieve_test14}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_test14}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account14.server"/>
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 		<t:test required="true">
@@ -2033,11 +1950,11 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${account15.name}</name>
 					<password>${defaultpassword.value}</password>
-					<a n="zimbraMailSieveScript">${sieve_test15}</a>
+					<a n="zimbraAdminSieveScriptBefore">${sieve_test15}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
-				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account15.server"/>
+				<t:select path="//admin:CreateAccountResponse/admin:account" />
 			</t:response>
 		</t:test>
 	</t:test_case>
@@ -2048,9 +1965,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 			Set a match variable to 00009. It should be parsed to empty string since
 			the match variables don't exist.
 		</t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -2081,8 +1995,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account14.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -2108,9 +2020,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 			</t:response>
 		</t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-
-	<!-- 	<t:resttest>
+	<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
 			</t:restServletRequest>
@@ -2118,7 +2028,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 				<t:select attr="X-New-Header1" match="" />
 				<t:select attr="X-New-Header2" match="123" />
 			</t:restServletResponse>
-		</t:resttest> -->
+		</t:resttest> 
 	</t:test_case>
 
 	<t:test_case testcaseid="zcs-616_rule15" type="smoke"
@@ -2127,9 +2037,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 			Set a match variable to 0000005. It should be parsed to empty string
 			since the match variables don't exist.
 		</t:objective>
-
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -2160,8 +2067,6 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${account15.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -2187,8 +2092,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 			</t:response>
 		</t:test>
 
-<!-- This request should be enabled again once zcs-1254 is fixed and above editheader rules are enabled -->
-	<!-- <t:resttest>
+		<t:resttest>
 			<t:restServletRequest>
 				<id>${msg1.id}</id>
 			</t:restServletRequest>
@@ -2196,7 +2100,35 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 				<t:select attr="X-New-Header1" match="" />
 				<t:select attr="X-New-Header2" match="3" />
 			</t:restServletResponse>
-		</t:resttest> -->
+		</t:resttest>
 	</t:test_case>
-	
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>	
 </t:tests>

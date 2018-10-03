@@ -19,7 +19,6 @@
 <t:property name="backslash" value="\\\\" />
 <t:property name="msg01.file" value="${testMailRaw.root}/zcs-869/msg01.txt" />
 <t:property name="dollar" value="$"/>
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:property name="sieve_rule1" value='require ["tag", "variables"];
 	set :quotewildcard "var_one" "sieve${backslash}${backslash}test";
@@ -67,7 +66,7 @@
 	if header :matches "subject" "${dollar}{var_one}" {tag "matchestag";}
 	'/>
 
-<t:property name="sieve_rule8" value='require ["tag", "variables"];
+<t:property name="sieve_rule8" value='require ["tag", "variables", "editheader"];
 	set :quotewildcard "var_one" "sieve*test";
 	set :quotewildcard "var_two" "sieve?test";
 	replaceheader :newvalue "REPLACED" :contains "X-Test-Header-1" "${dollar}{var_one}";
@@ -126,17 +125,30 @@
             </t:response>
         </t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -309,8 +321,6 @@
 
   	 <t:test_case testcaseid="zcs-869_rule1" type="smoke" bugids="zcs-869">
         <t:objective>\\ should be retained and should not be escaped</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -335,7 +345,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -353,7 +362,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -384,8 +392,6 @@
     
     <t:test_case testcaseid="zcs-869_rule2" type="smoke" bugids="zcs-869">
         <t:objective>* should be retained and should not be escaped</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -409,7 +415,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -427,7 +432,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account2.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -458,8 +462,6 @@
 
     <t:test_case testcaseid="zcs-869_rule3" type="smoke" bugids="zcs-869">
         <t:objective>? should be retained and should not be escaped</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -484,7 +486,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -502,7 +503,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account3.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -533,8 +533,6 @@
     
     <t:test_case testcaseid="zcs-869_rule4" type="smoke" bugids="zcs-869">
         <t:objective>**** should be retained after adding \ for each *</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -559,7 +557,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -577,7 +574,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account4.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -608,8 +604,6 @@
     
     <t:test_case testcaseid="zcs-869_rule5" type="smoke" bugids="zcs-869">
         <t:objective>???? should be retained after adding \ for each ?</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -634,7 +628,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -652,7 +645,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account5.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -683,8 +675,6 @@
     
     <t:test_case testcaseid="zcs-869_rule6" type="smoke" bugids="zcs-869">
         <t:objective>Combination of multiple \*? characters. They should be quoted correctly -- sieve\****????\\\test --> sieve\*\*\*\*\?\?\?\?\\test</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -701,7 +691,7 @@
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account6.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule6}</a>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule6}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -709,7 +699,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -727,7 +716,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account6.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -758,8 +746,6 @@
     
     <t:test_case testcaseid="zcs-869_rule7" type="smoke" bugids="zcs-869">
         <t:objective>The subject should be retained as is even if :quotewildcard is used and no characters are present in subject</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -784,7 +770,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -802,7 +787,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account7.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -829,13 +813,9 @@
         </t:test>
 
     </t:test_case>
-
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
     
-    <t:test_case testcaseid="zcs-869_rule8" type="deprecated" bugids="zcs-869">
+    <t:test_case testcaseid="zcs-869_rule8" type="smoke" bugids="zcs-869">
         <t:objective>Case for delete and replaceheader matching * and ?</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -852,7 +832,7 @@
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account8.id}</id>
-                    <a n="zimbraMailSieveScript">${sieve_rule8}</a>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule8}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -860,7 +840,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:mailinjecttest>
             <t:lmtpInjectRequest>
                 <filename>${msg01.file}</filename>
@@ -870,7 +849,6 @@
             </t:lmtpInjectRequest>
         </t:mailinjecttest>
 
-	<t:property name="server.zimbraAccount" value="${test_account8.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -909,8 +887,6 @@
 
   	 <t:test_case testcaseid="zcs-869_rule9" type="smoke" bugids="zcs-869">
         <t:objective>\\ should be retained and should not be escaped</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -935,7 +911,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -953,7 +928,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account9.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -984,8 +958,6 @@
 
   	 <t:test_case testcaseid="zcs-869_matchesrule1" type="smoke" bugids="zcs-869">
         <t:objective>matches with * should be treated as a character</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1010,7 +982,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1028,7 +999,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account10.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1058,8 +1028,6 @@
     
   	 <t:test_case testcaseid="zcs-869_matchesrule2" type="smoke" bugids="zcs-869">
         <t:objective>matches with ? should be treated as a character</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1084,7 +1052,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1102,7 +1069,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account11.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1132,8 +1098,6 @@
 
   	 <t:test_case testcaseid="zcs-869_matchesrule3" type="smoke" bugids="zcs-869">
         <t:objective>matches with * should be treated as a character. So anything specified in subject like # should return false</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1158,7 +1122,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1176,7 +1139,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account12.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1206,8 +1168,6 @@
     
  	 <t:test_case testcaseid="zcs-869_matchesrule4" type="smoke" bugids="zcs-869">
         <t:objective>matches with ? should be treated as a character. So anything specified in subject like * should return false</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1232,7 +1192,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1250,7 +1209,6 @@
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_account13.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1276,6 +1234,35 @@
             </t:response>
         </t:test>
 
-    </t:test_case>                                   
+    </t:test_case>
+    
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>
 
 </t:tests>

@@ -1,6 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:property name="test_account1.name"
 		value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="test_account2.name"
@@ -17,6 +16,23 @@ require ["enotify", "variables"];
 set "body_text" "Hi, You have got a mail!";
 notify :message "Notification mail." "mailto:${test_account3.name}?Importance=High&#038;X-Priority=1&#038;body=${variable_body_text}";'></t:property>
 
+<t:test_case testcaseid="Config setup" type="always">
+    <t:objective>create test account</t:objective>
+    
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
 	<t:test_case testcaseid="acctSetup1" type="always">
 		<t:objective>create test account</t:objective>
 
@@ -31,17 +47,6 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
-
-                <t:test>
-                        <t:request>
-                                <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                        <account by="name">${admin.user}</account>
-                                </GetAccountRequest>
-                        </t:request>
-                        <t:response>
-                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                        </t:response>
-               </t:test>
 
 	    <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
@@ -79,7 +84,7 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 					attr="id" set="test_account1.id" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="test_acct1.server" />
+					set="test_acct.server" />
 			</t:response>
 		</t:test>
 
@@ -95,7 +100,7 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 					attr="id" set="test_account2.id" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="test_acct2.server" />
+					set="test_acct.server" />
 			</t:response>
 		</t:test>
 		<t:test required="true">
@@ -110,7 +115,7 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 					attr="id" set="test_account3.id" />
 				<t:select
 					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
-					set="test_acct3.server" />
+					set="test_acct.server" />
 			</t:response>
 		</t:test>
 	</t:test_case>
@@ -119,9 +124,6 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 		bugids="106838">
 		<t:objective>Test notify action with variable
 		</t:objective>
-
-		<t:property name="server.zimbraAccount" value="${admin.server}"/>
-
 		<t:test required="true">
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAdmin">
@@ -162,8 +164,6 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 			</t:response>
 		</t:test>
 
-		<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
-
 		<t:test>
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount">
@@ -192,9 +192,7 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 
     <t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
-
-       <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
- 
+        
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">

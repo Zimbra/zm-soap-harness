@@ -1,6 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
@@ -91,17 +90,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		</t:response>
 	</t:test>
 
-                <t:test>
-                        <t:request>
-                                <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                        <account by="name">${admin.user}</account>
-                                </GetAccountRequest>
-                        </t:request>
-                        <t:response>
-                           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-                        </t:response>
-               </t:test>
-
 	    <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
@@ -161,7 +149,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
-            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>  
 
@@ -174,7 +162,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
-            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test> 
 
@@ -256,7 +244,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct10.server"/>
         </t:response>
     </t:test>                         
-
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -305,8 +292,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
     </steps>	
 
-	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
-
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -335,8 +320,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
         	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
    		</t:response>
 	</t:test>
-
-	<t:delay sec="15"/>
 
      <t:test>
 			<t:request>
@@ -370,8 +353,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
     </steps>	
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -396,8 +377,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
         </t:response>
     </t:test> 
 	
-	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
-
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -459,8 +438,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
     </steps>	
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -485,8 +462,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
         </t:response>
     </t:test> 
 	
-	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
-
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -546,8 +521,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		2. Send email to that user. Verify mail is rejected with expected subject and contents.
     </steps>	
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -572,8 +545,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
         </t:response>
     </t:test> 
 	
-	<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
-
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -637,8 +608,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		3. Send email to dl. Verify sieve enabled user dont get the email. Others get it.
     </steps>	
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -691,8 +660,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
         </t:response>
     </t:test> 
     	
-	<t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
-
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -733,8 +700,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 			</t:response>
     </t:test> 
 
-	<t:property name="server.zimbraAccount" value="${dl_member1.server}"/>
-
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -767,8 +732,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		3. Verify only email for user with sieve rule is rejected.
     </steps>	
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -792,8 +755,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test> 
-
-	<t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
 
 	<t:test required="true">
 	<t:request>
@@ -836,8 +797,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 			</t:response>
     </t:test> 
 
-	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
-
 	<t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -871,8 +830,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		3. Verify rejected email is according the local of sender and is received correctly.
     </steps>	
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -896,8 +853,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test> 
-
-	<t:property name="server.zimbraAccount" value="${test_acct9.server}"/>
 
 	<t:test required="true">
 	<t:request>
@@ -949,8 +904,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		3. Verify emails are not rejected.
     </steps>	
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
 	<t:test required="true">
 		<t:request>
 			<AuthRequest xmlns="urn:zimbraAdmin">
@@ -986,8 +939,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
 	    </t:test>
-
-	<t:property name="server.zimbraAccount" value="${test_acct10.server}"/>
                    
 	<t:test required="true">
 	<t:request>
@@ -1028,8 +979,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${mail_subject}" emptyset="0"/>
 			</t:response>
     </t:test> 
-	
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 	<t:test required="true">
 	<t:request>
@@ -1057,8 +1006,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 </t:test_case> 
 
 <t:finally>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 	<t:test required="true">
 		<t:request>

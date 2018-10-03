@@ -1,0 +1,394 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+	<t:property name="test_account1.name"
+		value="test${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	<t:property name="subject" value="subject${TIME}" />
+	<t:property name="message.content" value="content${TIME}" />
+	<t:property name="subject1" value="subject1${TIME}" />
+	<t:property name="message.content1" value="content1${TIME}" />
+
+	<t:property name="folder.name" value="folder1.${TIME}" />
+	<t:property name="folder2.name" value="folder2.${TIME}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="acct1_setup" type="always">
+		<t:objective>create test account</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="test_account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="test_acct2.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject}</su>
+						<mp ct="text/plain">
+							<content>${message.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message.id1" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+
+	<t:test_case testcaseid="SearchActionRequest_test1" type="smoke">
+		<t:objective> Verify SearchAction Request with move action for new
+			folder for single mail</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder.name}" l="1" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder">
+					<t:select attr="id" set="folder.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder2.name}" l="2" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder">
+					<t:select attr="id" set="folder2.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user}</query>
+					</SearchRequest>
+					<BulkAction op="move" l="${folder.name}" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+					sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${folder.name}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:su" match="${subject}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="SearchActionRequest_test2" type="smoke">
+		<t:objective> Verify SearchAction Request with move action for new
+			folder for multiple mails</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${test_account1.name}" />
+						<su>${subject1}</su>
+						<mp ct="text/plain">
+							<content>${message.content1}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="message.id1" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user}</query>
+					</SearchRequest>
+					<BulkAction op="move" l="${folder.name}" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+					sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${folder.name}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:su" match="${subject}" />
+				<t:select path="//mail:SearchResponse//mail:su" match="${subject1}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="SearchActionRequest_test3" type="smoke">
+		<t:objective> Verify SearchAction Request with move action for inbox
+			folder with subject as query</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:(${subject})</query>
+					</SearchRequest>
+					<BulkAction op="move" l="Inbox" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+					sortBy="dateDesc" offset="0" limit="25">
+					<query>in:inbox</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:su" match="${subject}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="SearchActionRequest_test4" type="smoke">
+		<t:objective> Verify SearchAction Request with move action for new
+			folder with query having multiple params</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>subject:(${subject}) from:${admin.user}</query>
+					</SearchRequest>
+					<BulkAction op="move" l="${folder.name}" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+					sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${folder.name}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:su" match="${subject}" />
+				<t:select path="//mail:SearchResponse//mail:su" match="${subject1}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="SearchActionRequest_test5" type="smoke">
+		<t:objective> Verify SearchActionRequest for move to invalid folder
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user}</query>
+					</SearchRequest>
+					<BulkAction op="move" l="Invalid_folder" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+	<t:test_case testcaseid="SearchActionRequest_test6" type="smoke">
+		<t:objective> Verify SearchActionRequest for move to subfolders
+		</t:objective>
+
+		<t:test>
+			<t:request>
+				<SearchActionRequest xmlns="urn:zimbraMail">
+					<SearchRequest xmlns="urn:zimbraMail" types="message">
+						<query>from:${admin.user}</query>
+					</SearchRequest>
+					<BulkAction op="move" l="/Inbox/${folder2.name}" />
+				</SearchActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchActionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
+					sortBy="dateDesc" offset="0" limit="25">
+					<query>in:/inbox/${folder2.name}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse//mail:su" match="${subject}" />
+				<t:select path="//mail:SearchResponse//mail:su" match="${subject1}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+</t:tests>

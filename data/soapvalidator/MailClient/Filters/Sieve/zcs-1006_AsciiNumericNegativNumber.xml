@@ -7,7 +7,6 @@
     <t:property name="positive"   value="$\{positive}"/>
     <t:property name="negative"   value="$\{negative}"/>
     <t:property name="undefined"  value="$\{undefined}"/>
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test_case testcaseid="acctSetup1" type="always">
         <t:objective>create test account</t:objective>
@@ -24,17 +23,30 @@
             </t:response>
         </t:test>
 
-	<t:test>
-		<t:request>
-			<GetAccountRequest xmlns="urn:zimbraAdmin">
-				<account by="name">${admin.user}</account>
-			</GetAccountRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin.server"/>
-		</t:response>
-	</t:test>
-
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -110,8 +122,6 @@ tag "always-${labe_string_is_rule0101}";
             5. find and verify no email tag
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -128,7 +138,7 @@ tag "always-${labe_string_is_rule0101}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_is_rule0101}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0101}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -136,7 +146,6 @@ tag "always-${labe_string_is_rule0101}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>	
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -154,7 +163,6 @@ tag "always-${labe_string_is_rule0101}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -207,7 +215,7 @@ tag "always-${labe_string_is_rule0102}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_is_rule0102}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0102}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -232,7 +240,6 @@ tag "always-${labe_string_is_rule0102}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -287,7 +294,7 @@ tag "always-${labe_string_is_rule0103}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_is_rule0103}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0103}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -312,7 +319,6 @@ tag "always-${labe_string_is_rule0103}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -367,7 +373,7 @@ tag "always-${labe_string_is_rule0104}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_is_rule0104}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0104}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -392,7 +398,6 @@ tag "always-${labe_string_is_rule0104}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -446,7 +451,7 @@ tag "always-${labe_string_is_rule0105}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_is_rule0105}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0105}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -471,7 +476,6 @@ tag "always-${labe_string_is_rule0105}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -509,7 +513,7 @@ if not string :is :comparator "i;ascii-numeric" "-9" "${negative}" {
 tag "always-${labe_string_is_rule0106}";
 '/>
 
-<t:test required="true">
+        <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
                     <name>${admin.user}</name>
@@ -525,7 +529,7 @@ tag "always-${labe_string_is_rule0106}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_is_rule0106}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0106}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -550,7 +554,6 @@ tag "always-${labe_string_is_rule0106}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -605,7 +608,7 @@ tag "always-${labe_string_is_rule0107}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_is_rule0107}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0107}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -630,7 +633,6 @@ tag "always-${labe_string_is_rule0107}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -685,7 +687,7 @@ tag "always-${labe_string_is_rule0108}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_is_rule0108}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0108}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -710,7 +712,6 @@ tag "always-${labe_string_is_rule0108}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -764,7 +765,7 @@ tag "always-${labe_string_is_rule0109}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_is_rule0109}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0109}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -789,7 +790,6 @@ tag "always-${labe_string_is_rule0109}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -844,8 +844,6 @@ tag "always-${labe_string_value_rule0201}";
             5. find and verify no email tag
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -862,7 +860,7 @@ tag "always-${labe_string_value_rule0201}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_value_rule0201}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_value_rule0201}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -870,7 +868,6 @@ tag "always-${labe_string_value_rule0201}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -889,7 +886,6 @@ tag "always-${labe_string_value_rule0201}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -935,8 +931,6 @@ tag "always-${labe_string_value_rule0202}";
             5. find and verify no email tag
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -953,7 +947,7 @@ tag "always-${labe_string_value_rule0202}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_value_rule0202}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_value_rule0202}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -961,7 +955,6 @@ tag "always-${labe_string_value_rule0202}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -979,7 +972,6 @@ tag "always-${labe_string_value_rule0202}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1034,8 +1026,6 @@ tag "always-${labe_string_count_rule0301}";
             5. find and verify no email tag
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1052,7 +1042,7 @@ tag "always-${labe_string_count_rule0301}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_count_rule0301}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_count_rule0301}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -1060,7 +1050,6 @@ tag "always-${labe_string_count_rule0301}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1079,7 +1068,6 @@ tag "always-${labe_string_count_rule0301}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1125,8 +1113,6 @@ tag "always-${labe_string_count_rule0302}";
             5. find and verify no email tag
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1143,7 +1129,7 @@ tag "always-${labe_string_count_rule0302}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_string_count_rule0302}</a>
+                    <a n="zimbraMailSieveScript">${sieve_string_count_rule0302}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -1151,7 +1137,6 @@ tag "always-${labe_string_count_rule0302}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1170,7 +1155,6 @@ tag "always-${labe_string_count_rule0302}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1227,8 +1211,6 @@ tag "always-${labe_header_is_rule0401}";
             5. find and verify no email tag
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1245,7 +1227,7 @@ tag "always-${labe_header_is_rule0401}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_header_is_rule0401}</a>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0401}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -1253,7 +1235,6 @@ tag "always-${labe_header_is_rule0401}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1272,7 +1253,6 @@ tag "always-${labe_header_is_rule0401}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1324,7 +1304,7 @@ tag "always-${labe_header_is_rule0402}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_header_is_rule0402}</a>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0402}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -1350,7 +1330,6 @@ tag "always-${labe_header_is_rule0402}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1403,7 +1382,7 @@ tag "always-${labe_header_is_rule0403}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_header_is_rule0403}</a>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0403}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -1429,7 +1408,6 @@ tag "always-${labe_header_is_rule0403}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1482,7 +1460,7 @@ tag "always-${labe_header_is_rule0404}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_header_is_rule0404}</a>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0404}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -1508,7 +1486,6 @@ tag "always-${labe_header_is_rule0404}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1561,7 +1538,7 @@ tag "always-${labe_header_is_rule0405}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_header_is_rule0405}</a>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0405}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -1587,7 +1564,6 @@ tag "always-${labe_header_is_rule0405}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1639,8 +1615,6 @@ tag "always-${labe_address_count_rule0501}";
             5. find and verify no email tag
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1657,7 +1631,7 @@ tag "always-${labe_address_count_rule0501}";
             <t:request>
                 <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                     <id>${test_account1.id}</id>
-                    <a n="zimbraAdminSieveScriptBefore">${sieve_address_count_rule0501}</a>
+                    <a n="zimbraMailSieveScript">${sieve_address_count_rule0501}</a>
                 </ModifyAccountRequest>
             </t:request>
             <t:response>
@@ -1665,7 +1639,6 @@ tag "always-${labe_address_count_rule0501}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1684,7 +1657,6 @@ tag "always-${labe_address_count_rule0501}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1713,8 +1685,7 @@ tag "always-${labe_address_count_rule0501}";
     </t:test_case>
 
 
-<!-- Marking EditHeader tests as deprecated. They should be enabled once zcs-1254 is fixed -->
-    <t:test_case testcaseid="ZCS-1006_deleteheader-value" type="deprecated" bugids="ZCS-1006">
+    <t:test_case testcaseid="ZCS-1006_deleteheader-value" type="smoke" bugids="ZCS-1006">
         <t:objective>Verify that the execution of the 'deleteheader ... :value' test with i;ascii-numeric negative value is failed.
            Verify that the execution of tag is cancelled due to the exception.
       # : command     | type   | comparator      | l.h.s                  | r.h.s
@@ -1737,8 +1708,6 @@ tag "always-${labe_deleteheader_value_rule0601}";
             5. find and verify no email tag
             6. verify X-priority header is not deleted
         </t:steps>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
         <t:test required="true">
             <t:request>
@@ -1764,7 +1733,6 @@ tag "always-${labe_deleteheader_value_rule0601}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1783,7 +1751,6 @@ tag "always-${labe_deleteheader_value_rule0601}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1834,8 +1801,6 @@ tag "always-${labe_deleteheader_value_rule0602}";
             6. verify X-Priority header is not deleted
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1860,7 +1825,6 @@ tag "always-${labe_deleteheader_value_rule0602}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1879,7 +1843,6 @@ tag "always-${labe_deleteheader_value_rule0602}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -1930,8 +1893,6 @@ tag "always-${labe_deleteheader_value_rule0603}";
             6. verify the X-Priority header is not deleted
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -1956,7 +1917,6 @@ tag "always-${labe_deleteheader_value_rule0603}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -1975,7 +1935,6 @@ tag "always-${labe_deleteheader_value_rule0603}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -2012,7 +1971,7 @@ tag "always-${labe_deleteheader_value_rule0603}";
     </t:test_case>
 
 
-    <t:test_case testcaseid="ZCS-1006_replaceheader-value" type="deprecated" bugids="ZCS-1006">
+    <t:test_case testcaseid="ZCS-1006_replaceheader-value" type="smoke" bugids="ZCS-1006">
         <t:objective>Verify that the execution of the 'replaceheader ... :value' test with i;ascii-numeric negative value is failed.
            Verify that the execution of tag is cancelled due to the exception.
       # : command      | type   | comparator      | old header value       | old comparing value        | new header value
@@ -2036,8 +1995,6 @@ tag "always-${labe_replaceheader_value_rule0701}";
             5. find and verify no email tag
             6. verify the X-OldHeader is not replaced by X-NewHeader
         </t:steps>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
         <t:test required="true">
             <t:request>
@@ -2063,7 +2020,6 @@ tag "always-${labe_replaceheader_value_rule0701}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -2082,7 +2038,6 @@ tag "always-${labe_replaceheader_value_rule0701}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -2134,8 +2089,6 @@ tag "always-${labe_replaceheader_value_rule0702}";
             6. verify the X-OldHeader is not replaced by X-NewHeader
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -2160,7 +2113,6 @@ tag "always-${labe_replaceheader_value_rule0702}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -2179,7 +2131,6 @@ tag "always-${labe_replaceheader_value_rule0702}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -2231,8 +2182,6 @@ tag "always-${labe_replaceheader_value_rule0703}";
             6. verify the X-OldHeader is not replaced by X-NewHeader
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -2257,7 +2206,6 @@ tag "always-${labe_replaceheader_value_rule0703}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -2276,7 +2224,6 @@ tag "always-${labe_replaceheader_value_rule0703}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -2328,8 +2275,6 @@ tag "always-${labe_replaceheader_value_rule0704}";
             6. verify the X-OldHeader is replaced by X-NewHeader
         </t:steps>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-
         <t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
@@ -2354,7 +2299,6 @@ tag "always-${labe_replaceheader_value_rule0704}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${admin.server}"/>
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">
@@ -2373,7 +2317,6 @@ tag "always-${labe_replaceheader_value_rule0704}";
             </t:response>
         </t:test>
 
-	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
         <t:test>
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAccount">
@@ -2409,4 +2352,33 @@ tag "always-${labe_replaceheader_value_rule0704}";
 			</t:restServletResponse>
 		</t:resttest>
     </t:test_case>
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>    
 </t:tests>
