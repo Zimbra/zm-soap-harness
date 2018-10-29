@@ -307,14 +307,21 @@
 			<copy todir="${build.staf.classes.dir}">
 				<fileset dir="${build.classes.dir}"/>
 			</copy>
+            <ivy:install organisation="com.google.guava" module="guava" revision="23.0" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+            <ivy:install organisation="ical4j" module="ical4j" revision="0.9.16-patched" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+            <ivy:install organisation="com.unboundid" module="unboundid-ldapsdk" revision="2.3.5" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+            <ivy:install organisation="org.apache.httpcomponents" module="httpclient" revision="4.5.2" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+            <ivy:install organisation="org.apache.httpcomponents" module="httpasyncclient" revision="4.1.2" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+            <ivy:install organisation="org.apache.httpcomponents" module="httpcore" revision="4.4.5" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+            <ivy:install organisation="org.apache.httpcomponents" module="httpcore-nio" revision="4.4.5" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 
-			<ivy:install organisation="ant-contrib" module="ant-contrib" revision="1.0b3" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+<!--			<ivy:install organisation="ant-contrib" module="ant-contrib" revision="1.0b3" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="org.bouncycastle" module="bcprov-jdk15" revision="1.46" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="commons-dbcp" module="commons-dbcp" revision="1.1" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="commons-fileupload" module="commons-fileupload" revision="1.2.2" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="commons-pool" module="commons-pool" revision="1.1" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="ch.ethz.ganymed" module="ganymed-ssh2" revision="build210" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
-			<ivy:install organisation="com.google.guava" module="guava" revision="13.0.1" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+			<ivy:install organisation="com.google.guava" module="guava" revision="23.0" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="ical4j" module="ical4j" revision="0.9.16-patched" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="org.apache.james" module="apache-jsieve-core" revision="0.5" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="com.jcraft" module="jzlib" revision="1.0.7" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
@@ -325,7 +332,7 @@
 			<ivy:install organisation="net.sourceforge.nekohtml" module="nekohtml" revision="1.9.13.1z" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="org.igniterealtime.whack" module="core" revision="2.0.0" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 			<ivy:install organisation="xerces" module="xercesImpl" revision="2.9.1-patch-01" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
-			<ivy:install organisation="xpp3" module="xpp3" revision="1.1.3.4.O" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+			<ivy:install organisation="xpp3" module="xpp3" revision="1.1.3.4.O" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/> -->
 			<copy todir="${build.staf.jars.dir}">
       	<fileset dir="${build.dir}">
          	<include name="ExtensionCustomAuthQA.jar"/>
@@ -349,7 +356,7 @@
 					<include name="commons-pool-1.1.jar"/>
 					<include name="dom4j-1.5.2.jar"/>
 					<include name="ganymed-ssh2-build209.jar"/>
-					<include name="guava-13.0.1.jar"/>
+					<include name="guava-23.0.jar"/>
 					<include name="ical4j-0.9.16-patched.jar"/>
 					<include name="apache-jsieve-core-0.5.jar"/>
 					<include name="jzlib-1.0.7.jar"/>
@@ -376,7 +383,7 @@
 					<attribute name="Main-Class" value="com.zimbra.qa.soap.SoapTestMain"/>
 					<section name="staf/service/info">
 						<attribute name="Service-Class" value="com.zimbra.qa.soap.StafIntegration"/>
-						<attribute name="Packaged-Jars" value="webservices-api webservices-rt metro-zcs-soapservice testng-6.8 guava-13.0.1 json-20160810 commons-codec-1.7 zimbrastore activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 unboundid-ldapsdk-2.3.5* log4j-1.2.16 jaxen-1.1.3 commons-logging-1.0.3 httpclient-4.5.2 httpasyncclient-4.1.2 httpcore-4.4.5 httpcore-nio-4.4.5 ${zimbraJarPath}"/>
+						<attribute name="Packaged-Jars" value="websrm ervices-api webservices-rt metro-zcs-soapservice testng-6.8 guava-23.0 json-20160810 commons-codec-1.7 zimbrastore activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 unboundid-ldapsdk-2.3.5 commons-logging-1.0.3 log4j-1.2.16 jaxen-1.1.3 httpclient-4.5.2 httpasyncclient-4.1.2 httpcore-4.4.5 httpcore-nio-4.4.5 ${zimbraJarPath}"/>
 					</section>
 				</manifest>
 			</jar>
