@@ -22,20 +22,6 @@ jobs:
     
     steps:
       - checkout
-
-      # Download and cache dependencies
-      #- restore_cache:
-          #keys:
-          #- v1-dependencies-{{ checksum "pom.xml" }}
-          # fallback to using the latest cache if no exact match is found
-          #- v1-dependencies-
-
-      #- run: mvn dependency:go-offline
-
-      #- save_cache:
-          #paths:
-          #  - ~/.m2
-          #key: v1-dependencies-{{ checksum "pom.xml" }}
         
       # run tests!
       #- run: mvn integration-test
@@ -45,6 +31,6 @@ jobs:
       - run : mkdir -p /home/circleci/.ivy/cache/
       - run : git clone https://github.com/Zimbra/zm-mailbox.git /home/circleci/repo/zm-mailbox
       - run : cd /home/circleci/repo/zm-mailbox && ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
-      - run : cd /home/circleci/repo/.zcs-deps && wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
+      - run : cd /home/circleci/.zcs-deps && wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
       - run : cd /home/circleci/repo/zm-soap-harness
       - run : ant clean, zm-network-soap-content, staf-jar, build-soap-data-file
