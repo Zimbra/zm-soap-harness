@@ -29,8 +29,8 @@ jobs:
       - run : git clone https://github.com/Zimbra/zimbra-package-stub.git /home/circleci/repo/zimbra-package-stub
       - run : mkdir /home/circleci/.zcs-deps
       - run : mkdir -p /home/circleci/.ivy/cache/
+      - run : cd /home/circleci/.zcs-deps && wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
       - run : git clone https://github.com/Zimbra/zm-mailbox.git /home/circleci/repo/zm-mailbox
       - run : cd /home/circleci/repo/zm-mailbox && ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
-      - run : cd /home/circleci/.zcs-deps && wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
       - run : cd /home/circleci/repo/zm-soap-harness
       - run : ant clean, zm-network-soap-content, staf-jar, build-soap-data-file
