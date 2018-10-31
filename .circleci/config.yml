@@ -23,12 +23,12 @@ jobs:
           name: checkout zm-zcs, zimbra-package-stub, zm-mailbox
           working_directory: ~/repo
           command: |
-            git clone https://github.com/Zimbra/zm-zcs.git /home/circleci/repo/zm-zcs
-            git clone https://github.com/Zimbra/zimbra-package-stub.git /home/circleci/repo/zimbra-package-stub
-            git clone https://github.com/Zimbra/zm-mailbox.git /home/circleci/repo/zm-mailbox          
+            git clone https://github.com/Zimbra/zm-zcs.git ~/repo/zm-zcs
+            git clone https://github.com/Zimbra/zimbra-package-stub.git ~/repo/zimbra-package-stub
+            git clone https://github.com/Zimbra/zm-mailbox.git ~/repo/zm-mailbox          
       - run:
           name: create required folders and download ant-contrib jar
-          working_directory: ~/repo
+          working_directory: ~/repo/.zcs-deps
           command: |
             mkdir -p ~/.zcs-deps
             mkdir -p ~/.ivy2/cache
