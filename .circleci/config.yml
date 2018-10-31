@@ -33,4 +33,5 @@ jobs:
       - run : git clone https://github.com/Zimbra/zm-mailbox.git /home/circleci/repo/zm-mailbox
       - run : cd /home/circleci/repo/zm-mailbox && ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
       - run : cd /home/circleci/repo/zm-soap-harness
+      - run : sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' /home/circleci/repo/zm-soap-harness/conf/global.properties
       - run : ant clean zm-network-soap-content build-soap-data-file Run-SoapTestCore
