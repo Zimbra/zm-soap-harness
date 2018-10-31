@@ -13,9 +13,6 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/postgres:9.4
-
-    working_directory: ~/repo/zm-soap-harness
-
     environment:
       # Customize the JVM maximum heap limit
       #MAVEN_OPTS: -Xmx3200m
@@ -24,25 +21,26 @@ jobs:
       - checkout
       - run:
           name: checkout zm-zcs, zimbra-package-stub, zm-mailbox
-          working_directory: /home/circleci/repo
+          working_directory: ~/repo
           command: |
             git clone https://github.com/Zimbra/zm-zcs.git /home/circleci/repo/zm-zcs
             git clone https://github.com/Zimbra/zimbra-package-stub.git /home/circleci/repo/zimbra-package-stub
             git clone https://github.com/Zimbra/zm-mailbox.git /home/circleci/repo/zm-mailbox          
       - run:
           name: create required folders and download ant-contrib jar
+          working_directory: ~/repo
           command: |
-            mkdir -p /home/circleci/.zcs-deps
-            mkdir -p /home/circleci/.ivy2/cache
-            cd /home/circleci/.zcs-deps && wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
+            mkdir -p ~/.zcs-deps
+            mkdir -p ~/.ivy2/cache
+            wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
 
       - run : 
             name: build mailbox 
-            working_directory: /home/circleci/repo/zm-mailbox
+            working_directory:~/repo/zm-mailbox
             command: ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
       - run : 
             name: set test execution server and execute tests
-            working_directory: /home/circleci/repo/zm-soap-harness
+            working_directory: ~/repo/zm-soap-harness
             command: |
-              sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' /home/circleci/repo/zm-soap-harness/conf/global.properties
+              sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' ~/repo/zm-soap-harness/conf/global.properties
               ant clean zm-network-soap-content build-soap-data-file Run-SoapTestCore
