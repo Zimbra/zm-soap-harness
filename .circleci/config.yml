@@ -22,16 +22,24 @@ jobs:
     
     steps:
       - checkout
-        
-      # run tests!
-      #- run: mvn integration-test
-      - run : git clone https://github.com/Zimbra/zm-zcs.git /home/circleci/repo/zm-zcs
-      - run : git clone https://github.com/Zimbra/zimbra-package-stub.git /home/circleci/repo/zimbra-package-stub
-      - run : mkdir /home/circleci/.zcs-deps
-      - run : mkdir -p /home/circleci/.ivy2/cache/
-      - run : cd /home/circleci/.zcs-deps && wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
-      - run : git clone https://github.com/Zimbra/zm-mailbox.git /home/circleci/repo/zm-mailbox
-      - run : cd /home/circleci/repo/zm-mailbox && ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
-      - run : cd /home/circleci/repo/zm-soap-harness
-      - run : sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' /home/circleci/repo/zm-soap-harness/conf/global.properties
-      - run : ant clean zm-network-soap-content build-soap-data-file Run-SoapTestCore
+      -run:
+          name: checkout zm-zcs, zimbra-package-stub, zm-mailbox
+          working_directory: /home/circleci/repo
+          command: git clone https://github.com/Zimbra/zm-zcs.git /home/circleci/repo/zm-zcs
+          command: git clone https://github.com/Zimbra/zimbra-package-stub.git /home/circleci/repo/zimbra-package-stub
+          command: git clone https://github.com/Zimbra/zm-mailbox.git /home/circleci/repo/zm-mailbox          
+      -run:
+          name: create required folders and download ant-contrib jar
+          command: mkdir -p /home/circleci/.zcs-deps
+          command: mkdir -p /home/circleci/.ivy2/cache
+          command: cd /home/circleci/.zcs-deps && wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
+
+      - run : 
+            name: build mailbox 
+            working_directory: /home/circleci/repo/zm-mailbox
+            command: ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
+      - run : 
+            name: set test execution server and execute tests
+            working_directory: /home/circleci/repo/zm-soap-harness
+            command: sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' /home/circleci/repo/zm-soap-harness/conf/global.properties
+            command: ant clean zm-network-soap-content build-soap-data-file Run-SoapTestCore
