@@ -19,14 +19,13 @@ jobs:
     
     steps:
       - run:
-          name: checkout zm-zcs, zimbra-package-stub, zm-mailbox
+          name: checkout zm-zcs, zimbra-package-stub, zm-mailbox, zm-soap-harness
           working_directory: ~/repo
           command: |
             git clone https://github.com/Zimbra/zm-zcs.git ~/repo/zm-zcs
             git clone https://github.com/Zimbra/zimbra-package-stub.git ~/repo/zimbra-package-stub
             git clone https://github.com/Zimbra/zm-mailbox.git ~/repo/zm-mailbox       
             git clone https://github.com/Zimbra/zm-soap-harness.git ~/repo/zm-soap-harness
-            git clone https://github.com/Zimbra/zm-network-soap-harness.git ~/repo/zm-network-soap-harness
       - run:
           name: create required folders and download ant-contrib jar
           working_directory: ~/.zcs-deps
@@ -44,4 +43,4 @@ jobs:
             working_directory: ~/repo/zm-soap-harness
             command: |
               sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' ~/repo/zm-soap-harness/conf/global.properties
-              ant clean zm-network-soap-content build-soap-data-file Run-SoapTestCore
+              ant clean build-soap-data-file Run-SoapTestCore
