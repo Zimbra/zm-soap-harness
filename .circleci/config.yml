@@ -44,3 +44,9 @@ jobs:
             command: |
               sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' ~/repo/zm-soap-harness/conf/global.properties
               ant clean build-soap-data-file Run-SoapTestCore
+      - store_artifacts:
+              name: Store artifacts
+              path: ~/zm-soap-harness/soapvalidator
+      - store_test_results:
+              name: Store rest results
+              path: ~/zm-soap-harness/soapvalidator
