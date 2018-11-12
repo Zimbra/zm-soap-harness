@@ -2,14 +2,13 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 # 
-version: 2.1
-executors:
-  my-executor:
+version: 2
     docker:
       - image: circleci/openjdk:8-jdk
 jobs:
   build: 
-    executor: my-executor
+    docker:
+      - image: circleci/openjdk:8-jdk
     steps:
       - run:
           name: checkout zm-zcs, zimbra-package-stub, zm-mailbox, zm-soap-harness repo
@@ -32,7 +31,8 @@ jobs:
           command: ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
   
   test: 
-    executor: my-executor
+    docker:
+      - image: circleci/openjdk:8-jdk
     steps:
       - run: 
           name: set test execution server and execute tests
@@ -49,7 +49,7 @@ jobs:
 
 ######################################################################################
 workflows:
-   version: 2.1
+   version: 2
    main:
     jobs:
       - build
