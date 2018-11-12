@@ -23,30 +23,31 @@ jobs:
             mkdir -p ~/.zcs-deps
             mkdir -p ~/.ivy2/cache
             wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
-
-      - run : 
-            name: build mailbox 
-            working_directory: ~/repo/zm-mailbox
-            command: ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
+      - run: 
+          name: build mailbox 
+          working_directory: ~/repo/zm-mailbox
+          command: ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
+  
   test: &test
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
-      - run : 
-            name: set test execution server and execute tests
-            working_directory: ~/repo/zm-soap-harness
-            command: |
-              sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' ~/repo/zm-soap-harness/conf/global.properties
-              ant clean build-soap-data-file Run-SoapTestCore
+      - run: 
+          name: set test execution server and execute tests
+          working_directory: ~/repo/zm-soap-harness
+          command: |
+            sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' ~/repo/zm-soap-harness/conf/global.properties
+            ant clean build-soap-data-file Run-SoapTestCore
       - store_artifacts:
-              name: Store artifacts
-              path: ~/zm-soap-harness/soapvalidator
+            name: Store artifacts
+            path: ~/zm-soap-harness/soapvalidator
       - store_test_results:
-              name: Store rest results
-              path: ~/zm-soap-harness/soapvalidator
+            name: Store rest results
+            path: ~/zm-soap-harness/soapvalidator
 
 ######################################################################################
-workflows:
+
+  workflows:
    version: 2
    main:
     jobs:
@@ -54,4 +55,3 @@ workflows:
       - test
           requires:
             - build
-
