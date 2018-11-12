@@ -4,12 +4,12 @@
 # 
 version: 2
 executors:
-  test-executor:
+  my-executor:
     docker:
       - image: circleci/openjdk:8-jdk
 jobs:
   build: 
-    executor: test-executor
+    executor: my-executor
     steps:
       - run:
           name: checkout zm-zcs, zimbra-package-stub, zm-mailbox, zm-soap-harness
@@ -32,7 +32,7 @@ jobs:
           command: ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
   
   test: 
-    executor: test-executor
+    executor: my-executor
     steps:
       - run: 
           name: set test execution server and execute tests
