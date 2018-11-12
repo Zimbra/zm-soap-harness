@@ -29,6 +29,8 @@ jobs:
             working_directory: ~/repo/zm-mailbox
             command: ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
   test:
+    docker:
+      - image: circleci/openjdk:8-jdk
     steps:
       - run : 
             name: set test execution server and execute tests
