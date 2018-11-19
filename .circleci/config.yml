@@ -4,7 +4,7 @@
 # 
 version: 2
 jobs:
-  build: 
+  test: 
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
@@ -27,30 +27,23 @@ jobs:
           name: build mailbox 
           working_directory: ~/repo/zm-mailbox
           command: ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
-  
-  test: 
-    docker:
-      - image: circleci/openjdk:8-jdk
-    steps:
       - run: 
           name: set test execution server and execute tests
           working_directory: ~/repo/zm-soap-harness
           command: |
-            sed -i 's/localhost/zdev-vm011.eng.zimbra.com/g' ~/repo/zm-soap-harness/conf/global.properties
+            sed -i 's/localhost/ec2-13-127-151-6.ap-south-1.compute.amazonaws.com/g' ~/repo/zm-soap-harness/conf/global.properties
+            sed -i 's/zimbra.com/ec2-13-127-151-6.ap-south-1.compute.amazonaws.com/g' ~/repo/zm-soap-harness/conf/global.properties
             ant clean build-soap-data-file Run-SoapTestCore
       - store_artifacts:
             name: Store artifacts
-            path: ~/zm-soap-harness/soapvalidator
+            path: ~/repo/zm-soap-harness/soapvalidator
       - store_test_results:
             name: Store rest results
-            path: ~/zm-soap-harness/soapvalidator
+            path: ~/repo/zm-soap-harness/soapvalidator
 
 ######################################################################################
 workflows:
    version: 2
    main:
     jobs:
-      - build
       - test:
-          requires:
-            - build
