@@ -126,6 +126,7 @@ public class ProxySoapHttpTransport extends com.zimbra.common.soap.SoapTransport
         commonInit(uri);
 
         if (proxyHost != null && proxyHost.length() > 0 && proxyPort > 0) {
+            System.out.println(String.format("Creating %s with proxyHost=%s proxyPort=%s proxyUser=%s", this, proxyHost, proxyPort, proxyUser));
             mClient.getHostConfiguration().setProxy(proxyHost, proxyPort);
             if (proxyUser != null && proxyUser.length() > 0 && proxyPass != null && proxyPass.length() > 0) {
                 mClient.getState().setProxyCredentials(new AuthScope(proxyHost, proxyPort), new UsernamePasswordCredentials(proxyUser, proxyPass));
@@ -141,6 +142,7 @@ public class ProxySoapHttpTransport extends com.zimbra.common.soap.SoapTransport
             new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT,
                 AuthScope.ANY_REALM, AuthPolicy.BASIC),
         new UsernamePasswordCredentials(proxyUser, proxyPass));
+        System.out.println(String.format("Creating %s with proxyUser=%s", this, proxyUser));
     }
 
 
@@ -284,7 +286,10 @@ public class ProxySoapHttpTransport extends com.zimbra.common.soap.SoapTransport
                 } catch (HttpRecoverableException e) {
                     if (attempt == mRetryCount - 1)
                         throw e;
-                    System.err.println("A recoverable exception occurred, retrying." + e.getMessage());
+                    System.err.println(String.format("A non-recoverable exception occurred, retrying. %s (%s)", e.getMessage(), this));
+                } catch (Exception e) {
+                    System.err.println(String.format("A non-recoverable exception occurred. %s (%s)", e.getMessage(), this));
+                    throw e;
                 }
             }
 
