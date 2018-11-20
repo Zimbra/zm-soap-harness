@@ -55,6 +55,17 @@
     
     <t:test>
         <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <alias>${alias.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
                 <password>${defaultpassword.value}</password>
@@ -73,17 +84,6 @@
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
 	
-	<t:staftask >
-		<t:request>
-			<server>${zimbraServer.name}</server>
-			<service>PROCESS</service>
-			<params>START SHELL COMMAND "/opt/zimbra/bin/zmprov aaa ${account1.name} ${alias.name}"  RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
-		</t:request>
-	</t:staftask>
-	
-	<!-- Sleep for 2 minutes to wait for mbox to come up -->
-	<t:delay sec="10"/>
-
 </t:test_case>
 
 <t:test_case testcaseid="bug89672" type="smoke" bugids="89672">
@@ -177,7 +177,7 @@
 		</t:restServletRequest>
 		<t:restServletResponse>
 			<t:select attr="StatusCode" match="200"/>
-			<t:select attr="Return-Path" match="${alias.name}"/>
+			<t:select attr="Return-Path" contains="${alias.name}"/>
 		</t:restServletResponse>
 	</t:resttest>
 	
