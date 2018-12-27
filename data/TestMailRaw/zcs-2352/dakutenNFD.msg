@@ -1,5 +1,5 @@
-From: admin@synacorjapan.com
-To: user1 <user1@synacorjapan.com>
+From: admin@examplejapan.com
+To: user1 <user1@examplejapan.com>
 Subject: Mail_Attachments_Japanese_Filename_NFD
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
