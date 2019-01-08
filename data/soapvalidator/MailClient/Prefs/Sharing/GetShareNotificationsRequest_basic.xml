@@ -316,13 +316,21 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Created: Calendar shared by ${account2.name}"/>
-			<!--<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="The following share has been created.*"/>-->
-			<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="${account2.name} has shared &quot;Calendar&quot; with ${account1.name} Shared item: Calendar.*"/>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="m1.id"/>
 			
 		</t:response>
-	</t:test>	
-
-	<t:test >
+	</t:test>
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${m1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse//mail:mp//mail:mp//mail:content"  matches="${account2.name} has shared &quot;Calendar&quot; with ${account1.name}"/>
+        </t:response>
+	</t:test>
+	<t:test>
         <t:request>
             <GetShareNotificationsRequest xmlns="urn:zimbraMail">
             </GetShareNotificationsRequest>
@@ -470,12 +478,20 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Created: Calendar shared by ${account3.name}"/>
-			<!--<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="The following share has been created.*"/>-->
-			<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="${account2.name} has shared &quot;Calendar&quot; with ${account1.name} Shared item: Calendar.*"/>			
 			<t:select path='//mail:SearchResponse/mail:m/mail:e[@t="f"]' attr="a" match="${account3.name}"/>
+			<t:select path='//mail:SearchResponse/mail:m' attr="id" set="m2.id"/>
 		</t:response>
-	</t:test>	
-
+	</t:test>
+	<t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${m1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse//mail:mp//mail:mp//mail:content"  matches="${account2.name} has shared &quot;Calendar&quot; with ${account1.name}"/>
+        </t:response>
+    </t:test>
 	<!--  Send share GetShareNotificationsRequest to Account1 -->
      <t:test >
         <t:request>
@@ -511,12 +527,20 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Created: Calendar shared by ${account3.name}"/>
-			<!--<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="The following share has been created.*"/>-->
-			<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="${account3.name} has shared &quot;Calendar&quot; with ${dl1.name} Shared item: Calendar.*"/>			
 			<t:select path='//mail:SearchResponse/mail:m/mail:e[@t="f"]' attr="a" match="${account3.name}"/>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="m3.id"/>
 		</t:response>
 	</t:test>	
-
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${m3.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse//mail:mp//mail:mp//mail:content"  matches="${account3.name} has shared &quot;Calendar&quot; with ${dl1.name}"/>
+        </t:response>
+    </t:test>
 	<!--  Send GetShareNotificationsRequest to Account2 -->
      <t:test >
         <t:request>
@@ -621,12 +645,20 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Created: Briefcase shared by ${account3.name}"/>
-			<!--<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="The following share has been created.*"/>-->
-			<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="${account3.name} has shared &quot;Calendar&quot; with ${dl1.name} Shared item: Calendar.*"/>			
 			<t:select path='//mail:SearchResponse/mail:m/mail:e[@t="f"]' attr="a" match="${account3.name}"/>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="m4.id"/>
 		</t:response>
 	</t:test>	
-	
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${m4.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse//mail:mp//mail:mp//mail:content"  matches="${account3.name} has shared &quot;Briefcase&quot; with ${dl1.name}"/>
+        </t:response>
+    </t:test>
 	<t:test >
         <t:request>
             <GetShareNotificationsRequest xmlns="urn:zimbraMail">
@@ -716,11 +748,20 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Created: Briefcase shared by ${account3.name}"/>
-<!--			<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="The following share has been created.*"/> -->
-			<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="You have been added to distribution list ${dl1.name}.*"/>			
 			<t:select path='//mail:SearchResponse/mail:m/mail:e[@t="f"]' attr="a" match="${account3.name}"/>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="m5.id"/>
 		</t:response>
 	</t:test>	
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${m5.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse//mail:mp//mail:mp//mail:content"  matches="${account3.name} has shared &quot;Briefcase&quot; with ${dl1.name}"/>
+        </t:response>
+    </t:test>
 	
 	<t:test >
         <t:request>
