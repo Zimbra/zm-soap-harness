@@ -81,17 +81,14 @@
         <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test> 
-    
-    <t:staftask>
-		<t:request>
-			<server>${zimbraServer.name}</server>
-			<service>PROCESS</service>
-			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
-		</t:request>
-	</t:staftask>
-	
-	<!-- Sleep for 5 minutes to wait for mbox to come up -->
-	<t:delay sec="300"/>
+    <t:schTest>
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <command>su - zimbra -c 'zmmailboxdctl restart'</command>
+        </t:request>
+    </t:schTest>
+	<!-- Sleep for 2 minutes to wait for mbox to come up -->
+	<t:delay sec="120"/>
 	
 	
     <t:test  id="create_test_account1" required="false" depends="admin_login">
@@ -248,16 +245,15 @@
         </t:response>
     </t:test> 
     
-    <t:staftask>
-		<t:request>
-			<server>${zimbraServer.name}</server>
-			<service>PROCESS</service>
-			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
-		</t:request>
-	</t:staftask>
+	<t:schTest>
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <command>su - zimbra -c 'zmcontrol restart'</command>
+        </t:request>
+    </t:schTest>
 	
-	<!-- Sleep for 5 minutes to wait for mbox to come up -->
-	<t:delay sec="300"/>
+	<!-- Sleep for 2 minutes to wait for mbox to come up -->
+	<t:delay sec="120"/>
 	
 	
 </t:finally>
