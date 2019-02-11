@@ -1,6 +1,7 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
 
-<t:property name="cert1.issuer" value="Digicert"/>
+<t:property name="cert1.issuer" value="Zimbra Collaboration Server"/>
+<t:property name="cert2.issuer" value="DigiCert"/>
 
 
 <t:test_case testcaseid="GetCertRequest_setup" type="always" >
@@ -103,7 +104,7 @@
         </t:request>
         <t:response>
 			<!-- No server name and issuer should be returned as commercial cert is not installed. -->
-            <t:select path="//admin:GetCertResponse/admin:cert/admin:issuer" match=".*${cert1.issuer}.*"/>
+            <t:select path="//admin:GetCertResponse/admin:cert/admin:issuer" match=".*${cert2.issuer}.*"/>
         </t:response>
     </t:test>
 
