@@ -90,8 +90,8 @@ public class TestFactory {
 			theTestObjectMap.put(zDesktopAcctTest.E_ZDESKTOPACCT, "com.zimbra.qa.soap.zDesktopAcctTest");
 			theTestObjectMap.put(zDesktopExternalTest.E_ZEXTERNALTEST, "com.zimbra.qa.soap.zDesktopExternalTest");
 			theTestObjectMap.put(zDesktopTest.E_ZDESKTOPTEST, "com.zimbra.qa.soap.zDesktopTest");
+
   			theTestObjectMap.put(CalDavTest.E_CALDAVTEST, "com.zimbra.qa.soap.CalDavTest");
-  			theTestObjectMap.put(SecureChannelTest.E_SECURECHANNELTEST, "com.zimbra.qa.soap.SecureChannelTest");
 
 		}
 	}
