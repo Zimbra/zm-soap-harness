@@ -314,7 +314,7 @@ public class SoapTestCore {
             fr = new FileReader(SoapTestCore.rootZimbraQA +"\\conf\\ListOfTestCases.txt");
             BufferedReader bufferedReader = new BufferedReader(fr);
             while ((line = bufferedReader.readLine()) != null) {
-                File enlistedTestCases = new File(SoapTestCore.rootZimbraQA + File.separatorChar + line);
+                File enlistedTestCases = new File(line);
                 if (!enlistedTestCases.isDirectory()) {
                     toBeIgnored.add(enlistedTestCases);
                 } else {
