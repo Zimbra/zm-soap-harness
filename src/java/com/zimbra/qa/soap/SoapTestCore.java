@@ -311,7 +311,7 @@ public class SoapTestCore {
         String line = null;
         FileReader fr;
         try {
-            fr = new FileReader(SoapTestCore.rootZimbraQA +"\\conf\\ListOfTestCases.txt");
+            fr = new FileReader(SoapTestCore.rootZimbraQA +"/conf/ListOfTestCases.txt");
             BufferedReader bufferedReader = new BufferedReader(fr);
             while ((line = bufferedReader.readLine()) != null) {
                 File enlistedTestCases = new File(line);
