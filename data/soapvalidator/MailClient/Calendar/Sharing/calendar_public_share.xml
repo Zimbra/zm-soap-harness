@@ -61,6 +61,24 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
+    
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e zimbra_feed_manager_blacklist=172.16.0.0/12,192.168.0.0/16,fd00::/8'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+    
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
 
     <t:test required="true">
         <t:request>
@@ -585,10 +603,36 @@
     </t:test>
     
  </t:test_case>
- 
-</t:tests>
-	
-	
-    
-    
 
+<t:finally>
+        <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e zimbra_feed_manager_blacklist=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,fd00::/8'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+    
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+</t:finally>
+</t:tests>
