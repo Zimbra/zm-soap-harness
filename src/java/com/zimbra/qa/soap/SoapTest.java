@@ -84,6 +84,14 @@ public class SoapTest extends Test {
     /** the soap response envelope */
     public Element mSoapResponse;
 
+    /** to save soap request for current session */
+    public Element tSoapRequest;
+
+    int lengthretry = 0;
+    int maxretrycount = 0;
+    boolean msuccess;
+    int delay=10000;
+
 
     protected SoapProtocol mSoapProto = null;
     protected String mCurrentProtocol = "soap";
