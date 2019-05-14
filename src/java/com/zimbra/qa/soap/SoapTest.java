@@ -87,10 +87,10 @@ public class SoapTest extends Test {
     /** to save soap request for current session */
     public Element tSoapRequest;
 
-    int lengthretry = 0;
-    int maxretrycount = 0;
-    boolean msuccess;
-    int delay=10000;
+    int LengthRetryCount = 0;
+    int MaxRetryCount = 0;
+    boolean mSuccess;
+    int Delay=10000;
 
 
     protected SoapProtocol mSoapProto = null;
@@ -275,9 +275,8 @@ public class SoapTest extends Test {
     }
 
     protected void doRequest(Element request) throws DocumentException, IOException, HarnessException, ServiceException {
-
-
-        boolean isEws = request.getAttributeBool("ews", false);
+		tSoapRequest = request;
+		boolean isEws = request.getAttributeBool("ews", false);
 
         // Skip <t:test>???
         Element testElement = request.elementIterator().next();
@@ -638,11 +637,36 @@ public class SoapTest extends Test {
                 return;
             }
             tests = Utilities.getElementsFromPath(context, path);
-            if (!negativeTest && tests.length == 0) {
-                check(false, "path '" + path + "' did not match any elements");
-                return;
-            }
-        } else {
+			if (!negativeTest && tests.length == 0) {
+				/*
+				 * Retrying failed search related soap tests by waiting 10 to 60
+				 * second
+				 */
+				if (mDocResponse.getQualifiedName().contains("Search")) {
+					if (LengthRetryCount > 6) {
+						check(false, "path '" + path + "' did not match any elements");
+						return;
+					}
+					try {
+						LengthRetryCount++;
+						Thread.sleep(Delay);
+						doRequest(tSoapRequest);
+						Element recontext = mSoapProto.getBodyElement(mSoapResponse);
+						doSelect(recontext, select);
+					} catch (InterruptedException e) {
+						mLog.info("Waited 60 second", e);
+					} catch (DocumentException e) {
+						mLog.info("doRequest throws an exception", e);
+					} catch (ServiceException e) {
+						mLog.info("Couldn't find tSoaprequest", e);
+					}
+				} else {
+					check(false, "path '" + path + "' did not match any elements");
+					return;
+				}
+			}
+
+		} else {
             tests = new Element[1];
             tests[0] = context;
         }
@@ -792,10 +816,32 @@ public class SoapTest extends Test {
         if (negativeTest) {
             // If emptyset=1, then negative results are PASS (positive results are FAIL)
             check(!success, resultMessage);
-        }
-        else {
-            check(success, resultMessage);
-        }
+		} else {
+			/*
+			 * Retrying failed search related soap tests by waiting 10 to 60
+			 * second
+			 */
+			mSuccess = success;
+			if (!success && mDocResponse.getQualifiedName().contains("Search")) {
+				if (MaxRetryCount < 6) {
+					MaxRetryCount++;
+					try {
+						Thread.sleep(Delay);
+						doRequest(tSoapRequest);
+						Element reContext = mSoapProto.getBodyElement(mSoapResponse);
+						doSelect(reContext, select);
+						success = mSuccess;
+					} catch (InterruptedException e) {
+						mLog.info("Waited 60 second", e);
+					} catch (DocumentException e) {
+						mLog.info("doRequest throws an exception", e);
+					} catch (ServiceException e) {
+						mLog.info("Couldn't find tSoaprequest", e);
+					}
+				}
+			}
+			check(success, resultMessage);
+		}
 
         // Handle sub-selects
         for (Iterator it = select.elementIterator(); it.hasNext();) {
