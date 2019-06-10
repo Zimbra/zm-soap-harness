@@ -1,0 +1,73 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.name" value="testserver${TIME}${COUNTER}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ver_check" type="always" >
+    <t:objective>Login as admin and validate VersionCheck</t:objective>
+    <t:steps>1.Login as admin
+             2. Send version check request with action = "check"    
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="createserverrequest1" required="true">
+        <t:request>
+            <VersionCheckRequest xmlns="urn:zimbraAdmin" action="check">
+              
+            </VersionCheckRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:VersionCheckResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ver_check_status" type="always" >
+    <t:objective>Login as admin and validate VersionCheck</t:objective>
+    <t:steps>1.Login as admin
+             2. Send version check request with action = "status"    
+    </t:steps>
+    
+
+
+    <t:test id="createserverrequest1" required="true">
+        <t:request>
+            <VersionCheckRequest xmlns="urn:zimbraAdmin" action="status">
+              
+            </VersionCheckRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:VersionCheckResponse/admin:versionCheck" attr="status"  match="0" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
