@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import com.zimbra.common.net.SocketFactories;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -32,6 +31,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.PropertyConfigurator;
 
 import com.zimbra.common.localconfig.LC;
+import com.zimbra.common.net.SocketFactories;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.ByteUtil;

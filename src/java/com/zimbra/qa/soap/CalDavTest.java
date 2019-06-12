@@ -14,7 +14,7 @@ import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.dom4j.DocumentException;
+import org.apache.http.HttpException;
 import org.dom4j.QName;
 
 import com.zimbra.common.mime.MimeConstants;
@@ -23,8 +23,8 @@ import com.zimbra.common.soap.DomUtil;
 import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.soap.XmlParseException;
-import com.zimbra.cs.dav.DavException;
 import com.zimbra.cs.dav.DavContext.Depth;
+import com.zimbra.cs.dav.DavException;
 import com.zimbra.cs.dav.client.CalDavClient;
 import com.zimbra.cs.dav.client.DavRequest;
 import com.zimbra.cs.dav.client.WebDavClient;
@@ -101,7 +101,7 @@ public class CalDavTest extends Test {
 		return false;
 	}
 
-	protected boolean doRequestPut(Element element) throws ServiceException, HarnessException, IOException
+	protected boolean doRequestPut(Element element) throws ServiceException, HarnessException, IOException, HttpException
 	{
 		mCalDavRequestUri = element.getAttribute(A_URI);
 		String sDepth = element.getAttribute(A_DEPTH, "0");
@@ -133,7 +133,7 @@ public class CalDavTest extends Test {
 		return (true);
 	}
 
-	protected boolean doRequestDelete(Element element) throws HarnessException, IOException, ServiceException
+	protected boolean doRequestDelete(Element element) throws HarnessException, IOException, ServiceException, HttpException
 	{
 
 
@@ -179,7 +179,7 @@ public class CalDavTest extends Test {
 	}
 
 
-	protected boolean doRequest(Element element) throws HarnessException, IOException, ServiceException
+	protected boolean doRequest(Element element) throws HarnessException, IOException, ServiceException, HttpException
 	{
 
 
@@ -291,7 +291,8 @@ public class CalDavTest extends Test {
 		return (true);
 	}
 
-	protected boolean executeTest() throws HarnessException {
+	@Override
+    protected boolean executeTest() throws HarnessException {
 
 		mLog.debug("CalDavTest execute");
 
@@ -363,7 +364,7 @@ public class CalDavTest extends Test {
 		mCalDavClient = new CalDavClient(mUri);
 //		mCalDavClient.setDebugEnabled(true);
 		if ( (mUser != null) && (mPassword != null) )
-			mCalDavClient.setCredential(user, password);
+			mCalDavClient.setCredential(user, password, mUri);
 
 		return (mCalDavClient);
 
