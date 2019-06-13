@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -92,21 +93,24 @@ public class ScalityHttpStoreManager extends HttpStoreManager implements
 		super.startup();
 	}
 
-	protected String getPostUrl(Mailbox paramMailbox) {
+	@Override
+    protected String getPostUrl(Mailbox paramMailbox) {
 	    ZimbraLog.store.info("ScalityHttpStoreManager: getPostUrl: accountId " + paramMailbox.getAccountId());
 	    String res=this.baseUrl + "?type=zimbra&" + "accountId=" + paramMailbox.getAccountId() + "&startTime=" + this.startTime + "&lastChangeID=" + paramMailbox.getLastChangeID() + "&lastChangeDate=" + paramMailbox.getLastChangeDate() + "&requestTime=" + System.currentTimeMillis();
 	    ZimbraLog.store.debug("Scality Http store PostURL: "+res);
 	    return res;
 	  }
 
-	  protected String getGetUrl(Mailbox paramMailbox, String paramString) {
+	  @Override
+    protected String getGetUrl(Mailbox paramMailbox, String paramString) {
 	    ZimbraLog.store.info("ScalityHttpStoreManager: getGetUrl: locator " + paramString);
 	    String res=this.baseUrl + "?" + paramString;
 	    ZimbraLog.store.debug("Scality Http store GetURL: "+res);
 	    return res;
 	  }
 
-	  protected String getDeleteUrl(Mailbox paramMailbox, String paramString) {
+	  @Override
+    protected String getDeleteUrl(Mailbox paramMailbox, String paramString) {
 	    ZimbraLog.store.info("ScalityHttpStoreManager: getDeleteUrl: locator " + paramString);
 	    String res=this.baseUrl + "?" + paramString;
 	    ZimbraLog.store.debug("Scality Http store Delete URL: "+res);
@@ -128,10 +132,10 @@ public class ScalityHttpStoreManager extends HttpStoreManager implements
 		}
 
 		@Override
-		protected String getLocator(PostMethod post, String postDigest,
-				long postSize, Mailbox mbox) throws ServiceException,
+		protected String getLocator(HttpPost post, String postDigest,
+				long postSize, Mailbox mbox, HttpResponse httpResp) throws ServiceException,
 				IOException {
-		    String str = post.getResponseHeader("x-scality-id").getValue();
+		    String str = httpResp.getFirstHeader("x-scality-id").getValue();
 		    ZimbraLog.store.info("Scality Http store locator id" + str);
 		    return str;
 		}
