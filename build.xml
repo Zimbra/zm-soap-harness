@@ -524,5 +524,44 @@
 				<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none"/>
 			</java>
 		</target>
-	
+        <target name="Run-SanitySuite" depends="compile" description="Run Sanity Suite in non-STAF environment">
+                <property name="testRoot" value="data/soapvalidator/SanityTest/"/>
+                <echo>STAF: Executing ${testRoot}</echo>
+                <java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
+                        <arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none"/>
+                </java>
+        </target>
+
+        <target name="Run-SmokeSuite" depends="compile" description="Run Smoke Suite in non-STAF environment">
+                <property name="testRoot" value="data/soapvalidator/"/>
+                <echo>STAF: Executing ${testRoot}</echo>
+                <java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
+                        <arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none -t SMOKE"/>
+                </java>
+        </target>
+
+        <target name="Run-FunctionalSuite" depends="compile" description="Run Functional Suite in non-STAF environment">
+                <property name="testRoot" value="data/soapvalidator/"/>
+                <echo>STAF: Executing ${testRoot}</echo>
+                <java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
+                        <arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none -t FUNCTIONAL"/>
+                </java>
+        </target>
+
+        <target name="Run-FeatureSuite" depends="compile" description="Run Feature Suite in non-STAF environment">
+                <property name="testRoot" value="data/soapvalidator/"/>
+                <echo>STAF: Executing ${testRoot}</echo>
+                <java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
+                        <arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none -t FEATURE"/>
+                </java>
+        </target>
+
+        <target name="Run-NegativeSuite" depends="compile" description="Run Negative Suite in non-STAF environment">
+                <property name="testRoot" value="data/soapvalidator/"/>
+                <echo>STAF: Executing ${testRoot}</echo>
+                <java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
+                        <arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none -t NEGATIVE"/>
+                </java>
+        </target>
+
 </project>
