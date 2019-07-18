@@ -4742,6 +4742,24 @@ TODO
 
 </t:test_case>
 
+
+<!-- ZCS-7488: Add attribute to account object LDAP for SAN -->
+<t:test_case testcaseid="ModifyAccountRequest129" type = "smoke">
+    <t:objective>Modify an account and set zimbraSAN</t:objective>
+
+    <t:test id = "modifyaccountrequest128a">
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_accountid.id}</id>
+                <a n="zimbraServiceAccountNumber">H123456</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
 <t:test_case testcaseid="AccountModify_AccountStatus_01" type="functional" >
 	<t:objective> Admin Modifies the Account Status of a normal user account </t:objective>
 
