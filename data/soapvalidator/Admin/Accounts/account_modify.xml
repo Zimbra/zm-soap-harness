@@ -40,6 +40,7 @@
 <t:property name = "sent" value = "in:sent"/>
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:property name = "password.new" value = "test1234"/>
+<t:property name="account.san" value="H123456"/>
 
 <t:property name="server.name" value="testserver${TIME}${COUNTER}"/>
 
@@ -4750,11 +4751,11 @@ TODO
         <t:request>
             <ModifyAccountRequest xmlns="urn:zimbraAdmin">
                 <id>${test_accountid.id}</id>
-                <a n="zimbraServiceAccountNumber">H123456</a>
+                <a n="zimbraServiceAccountNumber">${account.san}</a>
             </ModifyAccountRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:ModifyAccountResponse/admin:account/admin:a[@n='zimbraServiceAccountNumber']" match="H123456"/>
+            <t:select path="//admin:ModifyAccountResponse/admin:account/admin:a[@n='zimbraServiceAccountNumber']" match="${account.san}"/>
         </t:response>
     </t:test>
 </t:test_case>
