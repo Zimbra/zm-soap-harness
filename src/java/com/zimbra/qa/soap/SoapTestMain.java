@@ -213,7 +213,7 @@ public class SoapTestMain {
         		{
         			String type = iterator.next();
         			
-        			if (type.equalsIgnoreCase("sanity")) {
+				if (type.equalsIgnoreCase("sanity") && !globalProperties.getProperty("ignoreFiles").toString().equalsIgnoreCase("true")) {
         				SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
         			}
         		}
