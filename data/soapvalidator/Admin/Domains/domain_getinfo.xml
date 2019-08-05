@@ -19,7 +19,7 @@
 <t:test_case testcaseid="Ping" type="always" >
 	<t:objective>basic system check</t:objective>
     
-	<t:test id="ping" required="true">
+	<t:test id="ping" required="false">
 		<t:request>
 			<PingRequest xmlns="urn:zimbraAdmin"/>
 		</t:request>
@@ -79,6 +79,7 @@
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>${domain1.name}</name>
                 <a n="zimbraNotes">test of adding via SOAP</a>
+                <a n="zimbraFeatureResetPasswordStatus">enabled</a>
             </CreateDomainRequest>
         </t:request>
         <t:response>
@@ -114,7 +115,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetDomainInfoRequest02" type="smoke" bugids="10969">
+<t:test_case testcaseid="GetDomainInfoRequest02" type="smoke" bugids="10969,zcs-7675">
 	<t:objective> Get domaininfo by id/name/virtualHostname</t:objective>
   
     <t:test>
@@ -125,6 +126,7 @@
         </t:request>
         <t:response>
 	        <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id"  match="^${domain1.id}$"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain/admin:a[@n='zimbraFeatureResetPasswordStatus']" match="enabled"/>
         </t:response>
     </t:test>
 
