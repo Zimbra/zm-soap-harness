@@ -1,4 +1,5 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="zimbraServer.name" value="zmc-mailbox"/>
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
 	<t:property name="test_account1.name" value="test1_${TIME}@${defaultdomain.name}" />
 	<t:property name="test_account1.password" value="test123" />
@@ -323,15 +324,11 @@
 			</t:request>
 		</t:test>
 	</t:test_case>
-	
+
 	<t:test_case testcaseid = "move_testMessages" type = "always" >
-	
 		<t:objective> Move test messages to other location </t:objective>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Move_mail3">
-	
-			<t:delay msec="5000"/>
-		
 			<t:request>
 				<SearchActionRequest xmlns  =  "urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types = "message">
@@ -343,13 +340,9 @@
 			<t:response>
 				<t:select path = "//mail:SearchActionResponse" />
 			</t:response>
-	
 		</t:test>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Move_mail5">
-			
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns = "urn:zimbraMail">
 					<SearchRequest xmlns = "urn:zimbraMail" types = "message">
@@ -361,19 +354,13 @@
 			<t:response>
 				<t:select path = "//mail:SearchActionResponse" />
 			</t:response>
-	
 		</t:test>
 
 	</t:test_case>
-	
  	<t:test_case testcaseid = "searchAction_SingleSearchtest" type = "always" >
-		
 		<t:objective> Search message from admin and mark them as unread/read in bulk action </t:objective>
-
+		<t:delay msec="5000"/>
 		<t:test id = "Mark message from admin as unread" >
-		
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns="urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -386,11 +373,8 @@
 				<t:select path="//mail:SearchActionResponse" />
 			</t:response>
 		</t:test>
-
+		<t:delay msec="5000"/>
 		<t:test id = "Verify messages have been marked unread " >
-			
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 					sortBy="dateDesc" offset="0" limit="25">
@@ -403,11 +387,8 @@
 				<t:select path="//mail:SearchResponse//mail:c[3]" attr="f" match="u"/>
 			</t:response>
 		</t:test>
-
+		<t:delay msec="5000"/>
 		<t:test id = "Mark message from admin as read" >
-		
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns="urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -420,11 +401,8 @@
 				<t:select path="//mail:SearchActionResponse" />
 			</t:response>
 		</t:test>
-
+		<t:delay msec="5000"/>
 		<t:test id = "Verify messages have been marked read " >
-			
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 					sortBy="dateDesc" offset="0" limit="25">
@@ -437,11 +415,8 @@
 				<t:select path="//mail:SearchResponse//mail:c[3]" attr="f" emptyset="1"/>
 			</t:response>
 		</t:test>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Mark message from admin as unread to reset test data" >
-		
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns="urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -454,17 +429,13 @@
 				<t:select path="//mail:SearchActionResponse" />
 			</t:response>
 		</t:test>
-		
 	</t:test_case>
  
 	<t:test_case testcaseid = "searchAction_MultipleSearchtest" type = "always" >
 		
 		<t:objective> Search message from admin in inbox and mark them as unread/read in bulk action </t:objective>
-
+		<t:delay msec="5000"/>
 		<t:test id = "Mark message from admin in inbox as unread" >
-		
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns="urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -477,11 +448,8 @@
 				<t:select path="//mail:SearchActionResponse" />
 			</t:response>
 		</t:test>
-
+		<t:delay msec="5000"/>
 		<t:test id = "Verify messages have been marked unread " >
-			
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 					sortBy="dateDesc" offset="0" limit="25">
@@ -493,11 +461,8 @@
 				<t:select path="//mail:SearchResponse//mail:c[2]" attr="f" match="u"/>
 			</t:response>
 		</t:test>
-
+		<t:delay msec="5000"/>
 		<t:test id = "Mark message from admin as read" >
-		
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns="urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -510,11 +475,8 @@
 				<t:select path="//mail:SearchActionResponse" />
 			</t:response>
 		</t:test>
-
+		<t:delay msec="5000"/>
 		<t:test id = "Verify messages have been marked read " >
-			
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="conversation"
 					sortBy="dateDesc" offset="0" limit="25">
@@ -526,11 +488,8 @@
 				<t:select path="//mail:SearchResponse//mail:c[2]" attr="f" emptyset="1"/>
 			</t:response>
 		</t:test>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Mark message from admin as unread to reset test data" >
-		
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns="urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -543,16 +502,13 @@
 				<t:select path="//mail:SearchActionResponse" />
 			</t:response>
 		</t:test>
-		
 	</t:test_case>
-	
+
 	<!-- Following test case has been added to make sure bulk action works on draft folder as well. Because this is blocked on UI level and should work through API to comply with MsgActionRequest -->
 	<t:test_case testcaseid = "searchAction_DraftMessages" type = "always" >
 		<t:objective> Verify that bulk action does not alter status of draft messages </t:objective>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Mark Draft Messages as Read">
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns="urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -565,10 +521,8 @@
 				<t:select path="//mail:SearchActionResponse" />
 			</t:response>
 		</t:test>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Verify Draft Messages is not marked as read ">
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>In:Drafts</query>
@@ -579,7 +533,6 @@
 				<t:select path="//mail:SearchResponse//mail:m[2]" attr="f" match="sdu"/>
 			</t:response>
 		</t:test>
-
 	</t:test_case>
 
 	<t:test_case testcaseid = "share_Folder_Search_Action" type = "always" >
@@ -590,8 +543,6 @@
 		<t:property name="test_account2.inbox.folder.id" value = "" />
 		<t:property name="test_account2.folder.shared.name" value = "Shared_Folder" />
 		<t:property name="view.message" value = "message" />
-		
-		
 		<t:test id = "Auth_testAccount2" required = "true">
 			<t:request>
 				<AuthRequest xmlns = "urn:zimbraAccount">
@@ -603,7 +554,6 @@
 				<t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken" />
 			</t:response>
 		</t:test>
-
 		<t:test id = "Get_Folder_Ids"  required="true" >
 			<t:request>
 				<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -614,7 +564,6 @@
 				</t:select>
 			</t:response>
 		</t:test>
-		
 		<t:test id = "Share_user2_inbox_with_user1"  required="true" >
 			<t:request>
 				<FolderActionRequest xmlns="urn:zimbraMail">
@@ -661,10 +610,8 @@
 				<t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
 			</t:response>
 		</t:test>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Mark Shared Folder Messages as unread">
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns="urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -677,10 +624,8 @@
 				<t:select path="//mail:SearchActionResponse" />
 			</t:response>
 		</t:test>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Verify Shared Messages is not marked as unread ">
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>In:${test_account2.folder.shared.name}</query>
@@ -691,10 +636,8 @@
 				<t:select path="//mail:SearchResponse//mail:m[2]" attr="f" match="u"/>
 			</t:response>
 		</t:test>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Mark Shared Folder Messages as Read">
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchActionRequest xmlns="urn:zimbraMail">
 					<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -707,10 +650,8 @@
 				<t:select path="//mail:SearchActionResponse" />
 			</t:response>
 		</t:test>
-		
+		<t:delay msec="5000"/>
 		<t:test id = "Verify Shared Messages is not marked as read ">
-			<t:delay msec="5000"/>
-			
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
 					<query>In:${test_account2.folder.shared.name}</query>
@@ -721,6 +662,5 @@
 				<t:select path="//mail:SearchResponse//mail:c[2]" attr="f" emptyset="1"/>
 			</t:response>
 		</t:test>
-		
 	</t:test_case>
 </t:tests>
