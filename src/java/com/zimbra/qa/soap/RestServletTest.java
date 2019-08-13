@@ -87,7 +87,7 @@ public class RestServletTest extends Test {
 	public static final String A_REST_PREAUTH_EXPIRES = "expires";
 	public static final String A_REST_PREAUTH_ADMIN = "admin";
 	public static final String E_REST_PREAUTH_PREAUTH = "preauth";
-
+	public static final String A_REST_PROXY_TARGET = "target";
 
 	// POST attributes
 	public static final String A_REST_FILENAME = "filename";
@@ -1066,6 +1066,11 @@ public class RestServletTest extends Test {
 		String freebusyEnd = e.getAttribute(A_REST_FB_END, null);
 		if ( freebusyEnd != null ) {
 			queryMap.put("e", freebusyEnd);
+		}
+
+		String proxyTarget = e.getAttribute(A_REST_PROXY_TARGET, null);
+		if (proxyTarget != null) {
+			queryMap.put("target", proxyTarget);
 		}
 
 		Element preauth = e.getOptionalElement(E_REST_PREAUTH_PREAUTH);
