@@ -70,7 +70,7 @@
     </t:test>
      
       
-	<t:property name="server.zimbraAccount" value="${acct1.server}"/>
+    <t:property name="server.zimbraAccount" value="${acct1.server}"/>
 
     <t:test depends="create_test_account1" required="true">
         <t:request>
@@ -102,7 +102,7 @@
 
     <t:property name="acct1.authToken" value="${authToken}"/>  
 
-	<t:property name="server.zimbraAccount" value="${acct2.server}"/>
+    <t:property name="server.zimbraAccount" value="${acct2.server}"/>
      
     
     <t:test depends="create_test_account2" required="true">
@@ -147,7 +147,7 @@
             3. Give permissions.
     </t:steps>
      
-	<t:property name="server.zimbraAccount" value="${acct1.server}"/>
+    <t:property name="server.zimbraAccount" value="${acct1.server}"/>
 
     <t:property name="authToken" value="${acct1.authToken}"/>  
 
@@ -179,15 +179,15 @@
 </t:test_case>
   
 
-<t:test_case testcaseid="Get_MountFolder01" type="functional" bugids="26306">
+<t:test_case testcaseid="Get_MountFolder01" type="smoke" bugids="26306,ZCS-7686">
     <t:objective>Verify GetFolder by path of the shared folder works </t:objective>
     <t:steps>
             1. Login to second account.
             2. Give CreateMountpointRequest to mount the delegated folder .
-			3. Get that mounted folder
+            3. Get that mounted folder
     </t:steps>
 
-	<t:property name="server.zimbraAccount" value="${acct2.server}"/>
+    <t:property name="server.zimbraAccount" value="${acct2.server}"/>
 
     <t:property name="authToken" value="${acct2.authToken}"/>  
 
@@ -207,27 +207,28 @@
     <t:test>
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail">
-			     <folder path="${mount1.name}"/>
-			 </GetFolderRequest>
+                 <folder path="${mount1.name}"/>
+             </GetFolderRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:GetFolderResponse"/>
+            <t:select path="//mail:GetFolderResponse/mail:link" attr="perm" emptyset="0"/>
         </t:response>
     </t:test>
 
 </t:test_case>
    
-<t:test_case testcaseid="Get_MountFolder02" type="functional" bugids="26306">
+<t:test_case testcaseid="Get_MountFolder02" type="smoke" bugids="26306,ZCS-7686">
     <t:objective>Verify GetFolder by path of the shared sub-folder works </t:objective>
     <t:steps>
             1. Login to first account.
             2. Create a sub-folder of Inbox.
-			3. Share that Inbox
+            3. Share that Inbox
             4. Create mountpoint
             5. Fire GetFolder for the mounted sub-folder
     </t:steps>
 
-	<t:property name="server.zimbraAccount" value="${acct1.server}"/>
+    <t:property name="server.zimbraAccount" value="${acct1.server}"/>
     <t:property name="authToken" value="${acct1.authToken}"/>  
 
     
@@ -255,7 +256,7 @@
         </t:response>
     </t:test>
 
-	<t:property name="server.zimbraAccount" value="${acct2.server}"/>
+    <t:property name="server.zimbraAccount" value="${acct2.server}"/>
     <t:property name="authToken" value="${acct2.authToken}"/>  
 
 
@@ -274,14 +275,14 @@
     <t:test>
         <t:request>
              <GetFolderRequest xmlns = "urn:zimbraMail">
-			     <folder path="acct2.inbox/${sub-folder.name}"/>
-			 </GetFolderRequest>
+                 <folder path="acct2.inbox/${sub-folder.name}"/>
+             </GetFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetFolderResponse"/>
+            <t:select path="//mail:GetFolderResponse" />
+            <t:select path="//mail:GetFolderResponse/mail:folder" attr="perm" match="rwidxac" />
         </t:response>
     </t:test>
-
 </t:test_case>
 
 </t:tests>
