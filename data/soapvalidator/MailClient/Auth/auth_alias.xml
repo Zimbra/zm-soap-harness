@@ -186,21 +186,24 @@
 		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
 	</t:response>
 	</t:test>
-	   <t:staftask>
-			<t:request>
-				<server>${zimbraServer.name}</server>
-				<service>PROCESS</service>
-				<params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e alias_login_enabled=true'" RETURNSTDOUT RETURNSTDERR WAIT
-					${staf.process.timeout.default}</params>
-			</t:request>
+</t:test_case>
+<t:finally type="always">
+	<t:objective>reset localconfig</t:objective>
+	<t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e alias_login_enabled=true'" RETURNSTDOUT RETURNSTDERR WAIT
+				${staf.process.timeout.default}</params>
+		</t:request>
 	</t:staftask>
 	<t:staftask>
-			<t:request>
-				<server>${zimbraServer.name}</server>
-				<service>PROCESS</service>
-				<params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
-					${staf.process.timeout.default}</params>
-			</t:request>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
+				${staf.process.timeout.default}</params>
+		</t:request>
 	</t:staftask>
-</t:test_case>
+</t:finally>
 </t:tests>
