@@ -1,49 +1,124 @@
-# Java Maven CircleCI 2.1 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-java/ for more details
-# 
-version: 2
-jobs:
-  test: 
-    docker:
+version: 2.1
+executors:
+   default-executor:
+      working_directory: ~/
+      shell: /bin/bash
+      docker:
       - image: circleci/openjdk:8-jdk
-    steps:
-      - run:
-          name: checkout zm-zcs, zimbra-package-stub, zm-mailbox, zm-soap-harness repo
-          working_directory: ~/repo
-          command: |
-            git clone https://github.com/Zimbra/zm-zcs.git ~/repo/zm-zcs
-            git clone https://github.com/Zimbra/zimbra-package-stub.git ~/repo/zimbra-package-stub
-            git clone https://github.com/Zimbra/zm-mailbox.git ~/repo/zm-mailbox       
-            git clone https://github.com/Zimbra/zm-soap-harness.git ~/repo/zm-soap-harness
-      - run:
-          name: create required folders and download ant-contrib jar
-          working_directory: ~/.zcs-deps
-          command: |
-            mkdir -p ~/.zcs-deps
-            mkdir -p ~/.ivy2/cache
-            wget https://files.zimbra.com/repository/ant-contrib/ant-contrib-1.0b1.jar
-      - run: 
-          name: build mailbox 
-          working_directory: ~/repo/zm-mailbox
-          command: ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
-      - run: 
-          name: set test execution server and execute tests
-          working_directory: ~/repo/zm-soap-harness
-          command: |
-            sed -i 's/localhost/ec2-13-127-151-6.ap-south-1.compute.amazonaws.com/g' ~/repo/zm-soap-harness/conf/global.properties
-            sed -i 's/zimbra.com/ec2-13-127-151-6.ap-south-1.compute.amazonaws.com/g' ~/repo/zm-soap-harness/conf/global.properties
-            ant clean build-soap-data-file Run-SoapTestCore
-      - store_artifacts:
-            name: Store artifacts
-            path: ~/repo/zm-soap-harness/soapvalidator
-      - store_test_results:
-            name: Store rest results
-            path: ~/repo/zm-soap-harness/soapvalidator
-
-######################################################################################
+#######################################################
+persist-workspace: &persist-workspace
+   persist_to_workspace:
+      root: ~/
+      paths:
+         - repo
+attach-workspace: &attach_workspace
+   attach_workspace:
+      at: ~/
+store-artifacts: &store-artifacts
+  store_artifacts:
+    path: /home/circleci/repo/zm-soap-harness/soapvalidator
+#######################################################
+commands:
+   setup_env:
+      description: Execute tests based on provided parameters
+      parameters :
+         BRANCH:
+            type: string
+            default: develop
+         HOST:
+            type: string
+            default: ec2-35-154-223-151.ap-south-1.compute.amazonaws.com
+      steps :
+         - run:
+            name: Prepare setup
+            command: |
+               mkdir -p ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+               mkdir -p /home/circleci/repo/.zcs-deps
+               git clone -b << parameters.BRANCH >> git@github.com:Zimbra/zm-soap-harness.git ~/repo/zm-soap-harness
+               git clone -b develop https://github.com/Zimbra/zm-zcs.git ~/repo/zm-zcs
+               git clone -b develop https://github.com/Zimbra/zimbra-package-stub.git ~/repo/zimbra-package-stub
+               git clone -b develop https://github.com/Zimbra/zm-mailbox.git ~/repo/zm-mailbox
+               sudo apt-get update; sudo apt-get install ant-contrib;
+               sed -i 's,${dev.home},/home/circleci/repo,g' ~/repo/zm-zcs/ivysettings.xml
+               sed -i 's,${dev.home},/home/circleci/repo,g' ~/repo/zm-mailbox/build-ivysettings.xml
+               sed -i 's/localhost/<< parameters.HOST >>/g' ~/repo/zm-soap-harness/conf/global.properties
+               sed -i 's/zimbra.com/<< parameters.HOST >>/g' ~/repo/zm-soap-harness/conf/global.properties
+               cd ./zm-mailbox
+               sudo ant publish-local-all -Dzimbra.buildinfo.version=8.8.0_GA
+               cd ~/repo/zm-soap-harness
+               sudo ant clean build-soap-data-file
+         - *persist-workspace
+   execute_tests:
+      description : execute tests based on provided parameters
+      parameters:
+         TYPE:
+            type: string
+            default: smoke
+         TESTROOT:
+            type: string
+            default: data/soapvalidator/
+      steps:
+         - *attach_workspace
+         - run:
+            name: Start test execution
+            command: |
+               sudo apt-get update; sudo apt-get install ant-contrib;
+               sudo ant Execute_Tests -DtestRoot=<< parameters.TESTROOT >> -Dsuite=<< parameters.TYPE >>
+         - *store-artifacts
+###############################################################################################################
+jobs:
+   setup_prerequisites:
+      executor: default-executor
+      working_directory: ~/repo
+      steps:
+         - add_ssh_keys:
+            fingerprints: 2d:35:2b:4d:d6:b2:06:00:46:c2:87:b7:71:81:32:4e
+         - setup_env:
+            BRANCH: develop
+            HOST: ec2-35-154-223-151.ap-south-1.compute.amazonaws.com
+   smoke_tests:
+      executor: default-executor 
+      working_directory : ~/repo/zm-soap-harness
+      steps:
+         - execute_tests:
+            TYPE: smoke
+            TESTROOT: data/soapvalidator/
+   sanity_tests:
+      executor: default-executor 
+      working_directory : ~/repo/zm-soap-harness
+      steps:
+         - execute_tests:
+            TYPE: sanity
+            TESTROOT: data/soapvalidator/
+#############################################################################################
 workflows:
    version: 2
-   main:
-    jobs:
-      - test:
+
+   commit_branch_workflow: 
+      jobs: 
+      - setup_prerequisites
+      - sanity-test-approval: 
+          type: approval
+          requires:
+            - setup_prerequisites
+      - sanity_tests: 
+         requires: 
+            - sanity-test-approval
+      - smoke-test-approval: 
+          type: approval
+          requires:
+            - setup_prerequisites
+      - smoke_tests: 
+         requires: 
+            - smoke-test-approval
+
+   develop_workflow: 
+      jobs: 
+      - setup_prerequisites
+      - smoke-test-approval: 
+          type: approval
+          requires:
+            - setup_prerequisites
+      - smoke_tests: 
+         requires: 
+            - smoke-test-approval
