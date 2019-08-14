@@ -139,7 +139,68 @@
 	</t:test>
 
 </t:test_case>
-
-
-
+<t:test_case testcaseid="AuthRequest_Alias_Blocked" type="smoke" bugids="ZCS-7680">
+	<t:objective>
+	  Verify below points when "alias_login_enabled" local config value is set to false -
+		1. Alias login will blocked
+		2. Login with email address would work.
+	</t:objective>
+	<t:staftask>
+			<t:request>
+				<server>${zimbraServer.name}</server>
+				<service>PROCESS</service>
+				<params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e alias_login_enabled=false'" RETURNSTDOUT RETURNSTDERR WAIT
+					${staf.process.timeout.default}</params>
+			</t:request>
+	</t:staftask>
+	<t:staftask>
+			<t:request>
+				<server>${zimbraServer.name}</server>
+				<service>PROCESS</service>
+				<params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
+					${staf.process.timeout.default}</params>
+			</t:request>
+	</t:staftask>
+	<t:property name="authToken" value=""/>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.alias}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^account.AUTH_FAILED$"/>
+		</t:response>
+	</t:test>
+	<t:test >
+	<t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+		<account by="name">${account1.name}</account>
+		<password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+	</t:response>
+	</t:test>
+	   <t:staftask>
+			<t:request>
+				<server>${zimbraServer.name}</server>
+				<service>PROCESS</service>
+				<params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e alias_login_enabled=true'" RETURNSTDOUT RETURNSTDERR WAIT
+					${staf.process.timeout.default}</params>
+			</t:request>
+	</t:staftask>
+	<t:staftask>
+			<t:request>
+				<server>${zimbraServer.name}</server>
+				<service>PROCESS</service>
+				<params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
+					${staf.process.timeout.default}</params>
+			</t:request>
+	</t:staftask>
+</t:test_case>
 </t:tests>
