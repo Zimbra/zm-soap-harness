@@ -8,7 +8,6 @@
     <t:property name="account2" value="syncgal.${COUNTER}.${TIME}" />
     <t:property name="account3" value="syncgal.${COUNTER}.${TIME}" />
 
-    <t:property name="zimbraServer.name" value="zmc-mailbox"/>
     <t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
 
     <t:test_case testcaseid="Ping" type="always">
@@ -62,7 +61,7 @@
         <t:test>
             <t:request>
                 <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${galdatasource}" type="zimbra"
-                    domain="${domain}" server="${zimbraServer.name}">
+                    domain="${domain}" server="${zimbraMailHost.name}">
                     <account by="name">${galaccount}@${domain}</account>
                 </CreateGalSyncAccountRequest>
             </t:request>
