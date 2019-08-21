@@ -85,7 +85,7 @@
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>"to:kevinh"</query>
+					<query>to:"kevinh"</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
@@ -97,7 +97,7 @@
 	 <t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>"to:afregoso"</query>
+					<query>to:"afregoso"</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
@@ -110,7 +110,7 @@
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>"to:kevinh" or "to:afregoso"</query>
+					<query>to:"kevinh" or to:"afregoso"</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
@@ -122,7 +122,7 @@
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>"from:Kathy Duran" or "to:afregoso"</query>
+					<query>from:"Kathy Duran" or to:"afregoso"</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
@@ -134,7 +134,7 @@
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>"to:mlo"</query>
+					<query>to:"mlo"</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
@@ -146,7 +146,7 @@
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>"to:matt"</query>
+					<query>to:"matt"</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
@@ -158,7 +158,7 @@
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>"to:mlo" or "to:matt"</query>
+					<query>to:"mlo" or to:"matt"</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
@@ -170,7 +170,7 @@
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>"from:Kathy Duran" or "to:mlo"</query>
+					<query>from:"Kathy Duran" or to:"mlo"</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
@@ -181,15 +181,12 @@
 		<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>"from:Kathy Duran" or "to:mlo" or "to:matt"</query>
+					<query>from:"Kathy Duran" or to:"mlo" or to:"matt"</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
 				<t:select path="//mail:SearchResponse/mail:m/mail:su" equal="${subject.match}" />			
 			</t:response>
 		</t:test> 
-		
-		
- </t:test_case>
- 
+    </t:test_case>
 </t:tests>
