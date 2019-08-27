@@ -164,7 +164,7 @@ public class CalDavTest extends Test {
 			HttpResponse response = mCalDavClient.sendCustomRequest(davRequest);
 			mResponseCode = response.getStatusLine().getStatusCode();
 			mTeardownDetails = "Response Code: "+ mResponseCode;
-			mResponseDetails = "";g
+			mResponseDetails = "";
 		} catch (DavException ex) {
 			throw new HarnessException("WebDavClient threw exception", ex);
 		}
