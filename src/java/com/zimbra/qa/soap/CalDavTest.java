@@ -46,6 +46,9 @@ public class CalDavTest extends Test {
 	public static final String A_METHOD = "method";
 	public static final String A_URI = "uri";
 	public static final String A_DEPTH = "depth";
+
+	public static final String A_DEPTH_ZERO = "0";
+	public static final String A_DEPTH_ONE = "1";
 	public static final String A_ETAG = "etag";
 	public static final String E_ICAL = "ical";
 	public static final String A_HEADERS = "headers";
@@ -191,9 +194,9 @@ public class CalDavTest extends Test {
             mCalDavRequest = element.elementIterator().next();
             davRequest.setRequestMessage(mCalDavRequest.toXML().createCopy());
         }
-        if ( sDepth.equals("0") )
+        if (sDepth.equals(A_DEPTH_ZERO))
             davRequest.setDepth(Depth.zero);
-        else if ( sDepth.equals("1") )
+        else if (sDepth.equals(A_DEPTH_ONE) )
             davRequest.setDepth(Depth.one);
         else
             davRequest.setDepth(Depth.infinity);
