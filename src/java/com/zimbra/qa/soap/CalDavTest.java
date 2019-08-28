@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.http.HttpResponse;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpException;
@@ -44,6 +46,9 @@ public class CalDavTest extends Test {
 	public static final String A_METHOD = "method";
 	public static final String A_URI = "uri";
 	public static final String A_DEPTH = "depth";
+
+	public static final String A_DEPTH_ZERO = "0";
+	public static final String A_DEPTH_ONE = "1";
 	public static final String A_ETAG = "etag";
 	public static final String E_ICAL = "ical";
 	public static final String A_HEADERS = "headers";
@@ -135,11 +140,8 @@ public class CalDavTest extends Test {
 
 	protected boolean doRequestDelete(Element element) throws HarnessException, IOException, ServiceException, HttpException
 	{
-
-
 		// Strip the <t:request> part
 		mCalDavRequestMethod = element.getAttribute(A_METHOD);
-
 
 		mCalDavRequestUri = element.getAttribute(A_URI);
 		String sDepth = element.getAttribute(A_DEPTH, "0");
@@ -157,41 +159,90 @@ public class CalDavTest extends Test {
 		else
 			davRequest.setDepth(Depth.infinity);
 
-
 		// For logging
 		mReference = mCalDavRequestMethod +" "+ mUri + davRequest.getUri() +" Depth("+ sDepth +")";
 		mRequestDetails = davRequest.getRequestMessageString();
 
 		try {
-
-			HttpInputStream stream = mCalDavClient.sendRequest(davRequest);
-			mResponseCode = stream.getStatusCode();
+			HttpResponse response = mCalDavClient.sendCustomRequest(davRequest);
+			mResponseCode = response.getStatusLine().getStatusCode();
 			mTeardownDetails = "Response Code: "+ mResponseCode;
-
 			mResponseDetails = "";
-
 		} catch (DavException ex) {
 			throw new HarnessException("WebDavClient threw exception", ex);
 		}
 
-
 		return (true);
 	}
 
+    protected boolean doCustomRequest(Element element) throws HarnessException, IOException, ServiceException, HttpException
+    {
+        // Strip the <t:request> part
+        mCalDavRequestMethod = element.getAttribute(A_METHOD);
+
+
+        mCalDavRequestUri = element.getAttribute(A_URI);
+        String sDepth = element.getAttribute(A_DEPTH, "0");
+
+        // Create a WebDavClient
+        // Reuse the existing client if none of the settings have changed
+        setWebDavClient();
+
+        DavRequest davRequest = null;
+        davRequest = new DavRequest(mCalDavRequestUri, mCalDavRequestMethod);
+        if (element.elementIterator().hasNext()) {
+            mCalDavRequest = element.elementIterator().next();
+            davRequest.setRequestMessage(mCalDavRequest.toXML().createCopy());
+        }
+        if (sDepth.equals(A_DEPTH_ZERO))
+            davRequest.setDepth(Depth.zero);
+        else if (sDepth.equals(A_DEPTH_ONE) )
+            davRequest.setDepth(Depth.one);
+        else
+            davRequest.setDepth(Depth.infinity);
+
+        String headers = element.getAttribute(A_HEADERS, null);
+        if (headers != null) {
+            for (String h : headers.split(",")) {
+                int i = h.indexOf(':');
+                if (i <= 0)
+                    continue;
+                davRequest.addRequestHeader(h.substring(0,i), h.substring(i+1));
+            }
+        }
+
+        // For logging
+        mReference = mCalDavRequestMethod +" "+ mUri + davRequest.getUri() +" Depth("+ sDepth +")";
+        mRequestDetails = davRequest.getRequestMessageString();
+
+        try {
+
+            HttpResponse response = mCalDavClient.sendCustomRequest(davRequest);
+
+            mResponseCode = response.getStatusLine().getStatusCode();
+            mTeardownDetails = "Response Code: " + mResponseCode;
+            mResponseDetails = "";
+
+        } catch (DavException ex) {
+            throw new HarnessException("WebDavClient threw exception", ex);
+        }
+
+        return (true);
+    }
 
 	protected boolean doRequest(Element element) throws HarnessException, IOException, ServiceException, HttpException
 	{
-
-
 		// Strip the <t:request> part
 		mCalDavRequestMethod = element.getAttribute(A_METHOD);
 
 		if ( mCalDavRequestMethod.equalsIgnoreCase("PUT") )
 			return (doRequestPut(element));
 
-		if ( mCalDavRequestMethod.equalsIgnoreCase("DELETE") )
-			return (doRequestDelete(element));
-
+		if ( mCalDavRequestMethod.equalsIgnoreCase("DELETE") ||
+		        mCalDavRequestMethod.equalsIgnoreCase("COPY") ||
+		        mCalDavRequestMethod.equalsIgnoreCase("UNLOCK") ||
+		        mCalDavRequestMethod.equalsIgnoreCase("MOVE"))
+		    return (doCustomRequest(element));
 
 		mCalDavRequestUri = element.getAttribute(A_URI);
 		String sDepth = element.getAttribute(A_DEPTH, "0");
@@ -227,7 +278,7 @@ public class CalDavTest extends Test {
 		    mCalDavClient.setUserAgent(userAgent);
 
 		// For logging
-		mReference = mCalDavRequestMethod +" "+ mUri + davRequest.getUri() +" Depth("+ sDepth +")";
+		mReference = mCalDavRequestMethod + " " + mUri + davRequest.getUri() +" Depth("+ sDepth +")";
 		mRequestDetails = davRequest.getRequestMessageString();
 
 		try {
@@ -235,7 +286,6 @@ public class CalDavTest extends Test {
 			mResponseStream = mCalDavClient.sendRequest(davRequest);
 			mResponseCode = mResponseStream.getStatusCode();
 			mTeardownDetails = "Response Code: "+ mResponseCode;
-
 			if (mResponseCode != HttpServletResponse.SC_NO_CONTENT) {
 	            BufferedReader br = new BufferedReader(new InputStreamReader(mResponseStream));
 	            StringBuilder sb = new StringBuilder();
