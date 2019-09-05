@@ -50,13 +50,10 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
 </t:test_case>
-
 
 <t:test_case testcaseid="admin_login" type="always">
     <t:objective>Login to Admin account</t:objective>
-
     <t:test id="admin_login" required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -68,16 +65,12 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-
-
 <t:test_case testcaseid="DeleteDomainRequest1" type="smoke" areas="dev_sanity">
     <t:objective>Delete the existing domain </t:objective>
     <t:steps> 1. Create a new Domain 
               2. Delete that domain
     </t:steps>
-    
     <t:test id="DeleteDomainRequest1a">
         <t:request> 
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -88,7 +81,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
         </t:response>
     </t:test>
-    
     <t:test depends="DeleteDomainRequest1a">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -99,17 +91,13 @@
             <t:select path="//admin:DeleteDomainResponse"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-
-
 <t:test_case testcaseid="DeleteDomainRequest2" type="functional" bugids="7869">
     <t:objective>Delete the non existing domain </t:objective>
     <t:steps> 1. Create a new Domain 
               2. Delete that domain 
               3. Delete the same domain again
     </t:steps>
-
     <t:test id="DeleteDomainRequest2a">
         <t:request> 
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -121,7 +109,6 @@
         </t:select>
         </t:response>
     </t:test>
-    
     <t:test id="DeleteDomainRequest2b" depends="DeleteDomainRequest2a">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -132,7 +119,6 @@
             <t:select path="//admin:DeleteDomainResponse"/>
         </t:response>
     </t:test>
-    
     <t:test depends="DeleteDomainRequest2b">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -143,13 +129,10 @@
             <t:select path="//zimbra:Code" match="account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-
 
 <t:test_case testcaseid="DeleteDomainRequest3" type="functional" >
     <t:objective>Delete the domain with blank id</t:objective>
-    
     <t:test>
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -160,13 +143,9 @@
             <t:select path="//zimbra:Code" match="account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-
-
 <t:test_case testcaseid="DeleteDomainRequest4" type="functional" >
     <t:objective> Delete a domain with valid id with leading space </t:objective>
-    
     <t:test id="DeleteDomainRequest4a" >
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -177,7 +156,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
         </t:response>
     </t:test>
-    
     <t:test depends="DeleteDomainRequest4a">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -188,13 +166,10 @@
             <t:select path="//admin:DeleteDomainResponse"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-
 
 <t:test_case testcaseid="DeleteDomainRequest5" type="functional" bugids="7869">
     <t:objective>Delete a domain with valid id with trailing space </t:objective>
-
     <t:test id="DeleteDomainRequest5a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -205,7 +180,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>        
         </t:response>
     </t:test>
-    
     <t:test depends="DeleteDomainRequest5a">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -216,13 +190,9 @@
             <t:select path="//admin:DeleteDomainResponse"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-    
-    
 <t:test_case testcaseid="DeleteDomainRequest6" type="negative" >
     <t:objective>Delete a domain with invalid non-numeric value for id </t:objective>
-    
     <t:test>
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -233,7 +203,6 @@
             <t:select path="//zimbra:Code" match="account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
-
     <t:test>
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -244,7 +213,6 @@
             <t:select path="//zimbra:Code" match="account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
-
     <t:test>
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -255,13 +223,9 @@
             <t:select path="//zimbra:Code" match="account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
-
-</t:test_case>    
-    
-    
+</t:test_case>
 <t:test_case testcaseid="DeleteDomainRequest7" type="negative" >
     <t:objective>Delete a domain with invalid non-numeric value for id </t:objective>
-    
     <t:test>
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -272,7 +236,6 @@
             <t:select path="//zimbra:Code" match="account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
-
     <t:test>
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -283,7 +246,6 @@
             <t:select path="//zimbra:Code" match="account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
-
     <t:test>
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -294,13 +256,9 @@
             <t:select path="//zimbra:Code" match="account.NO_SUCH_DOMAIN"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-    
-  
 <t:test_case testcaseid="DeleteDomainRequest8" type="negative" >
     <t:objective>Delete a domain without id element </t:objective>
-    
     <t:test>
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">                
@@ -310,10 +268,7 @@
             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-
-
 <t:test_case testcaseid="DeleteDomainRequest9" type="functional">
     <t:objective>Delete a domain with active accounts.</t:objective>
     <t:steps> 
@@ -321,7 +276,6 @@
             2. Create an active account in that domain.
             3. Delete that domain
     </t:steps>
-    
     <t:test id="DeleteDomainRequest9a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -332,7 +286,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id2" />
         </t:response>
     </t:test>
-    
     <t:test id="DeleteDomainRequest9b" depends="DeleteDomainRequest9a">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -346,7 +299,6 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
-    
     <t:test depends="DeleteDomainRequest9a,DeleteDomainRequest9b">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -357,10 +309,7 @@
             <t:select path="//zimbra:Code" match="account.DOMAIN_NOT_EMPTY"/>
         </t:response>
     </t:test>
-    
 </t:test_case>
-
-
 <t:test_case testcaseid="DeleteDomainRequest10" type="functional">
     <t:objective>Delete a domain with a maintainance accounts.</t:objective>
     <t:steps> 
@@ -368,7 +317,6 @@
             2. Create a maintainance account in that domain.
             3. Delete that domain
     </t:steps>
-    
     <t:test id="DeleteDomainRequest10a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -379,7 +327,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id3" />
         </t:response>
     </t:test>
-    
     <t:test id="DeleteDomainRequest10b" depends="DeleteDomainRequest10a">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -393,7 +340,6 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
         </t:response>
     </t:test>
-    
     <t:test depends="DeleteDomainRequest10a,DeleteDomainRequest10b">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -404,10 +350,7 @@
             <t:select path="//zimbra:Code" match="account.DOMAIN_NOT_EMPTY"/>
         </t:response>
     </t:test>
-    
 </t:test_case>
-
-
 <t:test_case testcaseid="DeleteDomainRequest11" type="functional">
     <t:objective>Delete a domain with a locked accounts.</t:objective>
     <t:steps> 
@@ -415,7 +358,6 @@
             2. Create a locked account in that domain.
             3. Delete that domain
     </t:steps>
-    
     <t:test id="DeleteDomainRequest11a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -426,7 +368,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id4" />
         </t:response>
     </t:test>
-    
     <t:test id="DeleteDomainRequest11b" depends="DeleteDomainRequest11a">
        <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -440,7 +381,6 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
         </t:response>
     </t:test>
-    
     <t:test depends="DeleteDomainRequest11a,DeleteDomainRequest11b">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -451,10 +391,7 @@
             <t:select path="//zimbra:Code" match="account.DOMAIN_NOT_EMPTY"/>
         </t:response>
     </t:test>
-    
 </t:test_case>
-
-
 <t:test_case testcaseid="DeleteDomainRequest12" type="functional">
     <t:objective>Delete a domain with a closed accounts.</t:objective>
     <t:steps> 
@@ -462,7 +399,6 @@
             2. Create a closed account in that domain.
             3. Delete that domain
     </t:steps>
-    
     <t:test id="DeleteDomainRequest12a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -473,7 +409,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id5" />
         </t:response>
     </t:test>
-    
     <t:test id="DeleteDomainRequest12b" depends="DeleteDomainRequest12a">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -487,7 +422,6 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
     </t:test>
-    
     <t:test depends="DeleteDomainRequest12a,DeleteDomainRequest12b">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -498,9 +432,7 @@
             <t:select path="//zimbra:Code" match="account.DOMAIN_NOT_EMPTY"/>
         </t:response>
     </t:test>
-    
 </t:test_case>
- 
 
 <t:test_case testcaseid="DeleteDomainRequest13" type="functional">
     <t:objective>Delete a domain having an account that is deleted but the alias of that account is not deleted.</t:objective>
@@ -522,7 +454,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id6" />
         </t:response>
     </t:test>
-    
     <t:test id="DeleteDomainRequest13b" depends="DeleteDomainRequest13a">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -535,7 +466,6 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
         </t:response>
     </t:test>
-       
     <t:test depends="DeleteDomainRequest13b">
         <t:request>
             <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
@@ -546,8 +476,7 @@
         <t:response>
             <t:select path="//admin:AddAccountAliasResponse"/>
         </t:response>
-    </t:test> 
-
+    </t:test>
 <t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
     <t:test depends="DeleteDomainRequest13b">
         <t:request>
@@ -559,7 +488,6 @@
             <t:select path="//admin:DeleteAccountResponse"/>
         </t:response>
     </t:test>
-    
     <t:test depends="DeleteDomainRequest13a">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -570,10 +498,7 @@
             <t:select path="//admin:DeleteDomainResponse"/>
         </t:response>
     </t:test>
-    
 </t:test_case>
-
-
  <t:test_case testcaseid="DeleteDomainRequest14" type="functional" bugids="7869">
     <t:objective>Delete a domain with distribution list.</t:objective>
     <t:steps> 
@@ -581,7 +506,6 @@
             2. Create a distribution list in that domain.
             3. Delete that domain
     </t:steps>
-    
     <t:test id="DeleteDomainRequest14a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -591,8 +515,7 @@
         <t:response>
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id6" />
         </t:response>
-    </t:test> 
-       
+    </t:test>
     <t:test id="DeleteDomainRequest14b" depends="DeleteDomainRequest14a">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -614,10 +537,7 @@
             <t:select path="//zimbra:Code" match="account.DOMAIN_NOT_EMPTY"/>
         </t:response>
     </t:test>
-    
 </t:test_case>
-
-
 <t:test_case testcaseid="DeleteDomainRequest15" type="functional">
     <t:objective>Delete a domain with enabled distribution list </t:objective>
     <t:steps> 
@@ -625,7 +545,6 @@
             2. Create a distribution list in that domain.
             3. Delete that domain
     </t:steps>
-    
     <t:test id="DeleteDomainRequest15a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -636,7 +555,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id7" />
         </t:response>
     </t:test> 
-       
     <t:test id="DeleteDomainRequest15b" depends="DeleteDomainRequest15a">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -648,7 +566,6 @@
             <t:select path="//admin:CreateDistributionListResponse"/>
         </t:response>
     </t:test> 
-    
     <t:test depends="DeleteDomainRequest15a,DeleteDomainRequest15b">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -659,10 +576,7 @@
             <t:select path="//zimbra:Code" match="account.DOMAIN_NOT_EMPTY"/>
         </t:response>
     </t:test>
-    
 </t:test_case>
-
-
 <t:test_case testcaseid="DeleteDomainRequest16" type="functional" bugids="4257">
     <t:objective>Delete a domain which is default domain.</t:objective>
     <t:steps> 
@@ -682,7 +596,6 @@
             <t:select path="//admin:GetConfigResponse/admin:a[@n='zimbraDefaultDomainName']" set="defaultdomain.name"/>
         </t:response>
     </t:test>
-
     <t:test id="DeleteDomainRequest16a">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -693,7 +606,6 @@
             <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id8" />
         </t:response>
     </t:test> 
-       
     <t:test id="DeleteDomainRequest16b" depends="DeleteDomainRequest16a">
         <t:request>
             <ModifyConfigRequest xmlns="urn:zimbraAdmin">
@@ -703,8 +615,7 @@
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
     <t:test depends="DeleteDomainRequest16a,DeleteDomainRequest16b">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
@@ -737,8 +648,85 @@
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test> 
-    
 </t:test_case>
-
-
+<t:test_case testcaseid="DeleteDomainRequest17" type="smoke" bugids="ZCS-7443">
+    <t:objective>Delete the domain having sub-domains and create same domain</t:objective>
+    <t:steps> 1. Create a new domain
+              2. Create a sub domain
+              3. Add DKIM object class and DKIM* attributes
+              4. Set amavisBypassSpamChecks attribute TRUE
+              5. Delete that domain
+              6. Create the same domain again
+              7. Delete the domain.
+    </t:steps>
+    <t:test id="DeleteDomainRequest17a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${domain.name1}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1">
+        </t:select>
+        </t:response>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>sub.domain${domain.name1}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="subdomain.id1">
+        </t:select>
+        </t:response>
+    </t:test>
+    <t:staftask>
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/libexec/zmdkimkeyutil -a -b 4096 -d domain${domain.name1}'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+        </t:request>
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'zmprov md domain${domain.name1} amavisBypassSpamChecks TRUE'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+        </t:request>
+    </t:staftask>
+    <t:test id="DeleteDomainRequest17b" depends="DeleteDomainRequest17a">
+        <t:request>
+            <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain.id1}</id>
+            </DeleteDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDomainResponse"/>
+        </t:response>
+    </t:test>
+	<t:staftask>
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'zmprov fc all'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+        </t:request>
+    </t:staftask>
+    <t:test id="DeleteDomainRequest17c" depends="DeleteDomainRequest17b">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${domain.name1}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+	   <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1" />
+        </t:response>
+    </t:test>
+	<t:test id="DeleteDomainRequest17d" depends="DeleteDomainRequest17c" >
+        <t:request>
+            <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain.id1}</id>
+            </DeleteDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDomainResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
 </t:tests>
