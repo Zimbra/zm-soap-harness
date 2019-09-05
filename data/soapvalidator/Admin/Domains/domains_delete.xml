@@ -656,8 +656,9 @@
               3. Add DKIM object class and DKIM* attributes
               4. Set amavisBypassSpamChecks attribute TRUE
               5. Delete that domain
-              6. Create the same domain again
-              7. Delete the domain.
+              6. Flush Cache
+              7. Create the same domain again
+              8. Delete the domain.
     </t:steps>
     <t:test id="DeleteDomainRequest17a">
         <t:request>
@@ -685,13 +686,19 @@
             <service>PROCESS</service>
             <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/libexec/zmdkimkeyutil -a -b 4096 -d domain${domain.name1}'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
         </t:request>
-        <t:request>
-            <server>${zimbraServer.name}</server>
-            <service>PROCESS</service>
-            <params>START SHELL COMMAND "su - zimbra -c \'zmprov md domain${domain.name1} amavisBypassSpamChecks TRUE'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
-        </t:request>
     </t:staftask>
     <t:test id="DeleteDomainRequest17b" depends="DeleteDomainRequest17a">
+        <t:request>
+            <ModifyDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain.id1}</id>
+                <a n="amavisBypassSpamChecks">TRUE</a>
+            </ModifyDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+        </t:response>
+    </t:test>
+    <t:test id="DeleteDomainRequest17c" depends="DeleteDomainRequest17b">
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
                 <id>${domain.id1}</id>
@@ -701,14 +708,18 @@
             <t:select path="//admin:DeleteDomainResponse"/>
         </t:response>
     </t:test>
-	<t:staftask>
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test  id="DeleteDomainRequest17d" depends="DeleteDomainRequest17c">
         <t:request>
-            <server>${zimbraServer.name}</server>
-            <service>PROCESS</service>
-            <params>START SHELL COMMAND "su - zimbra -c \'zmprov fc all'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+            <FlushCacheRequest xmlns="urn:zimbraAdmin">
+                <cache type="all"/>
+            </FlushCacheRequest>
         </t:request>
-    </t:staftask>
-    <t:test id="DeleteDomainRequest17c" depends="DeleteDomainRequest17b">
+        <t:response>
+            <t:select path="//admin:FlushCacheResponse"/>
+        </t:response>
+    </t:test>
+    <t:test id="DeleteDomainRequest17e" depends="DeleteDomainRequest17d">
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
                 <name>domain${domain.name1}</name>
@@ -718,7 +729,7 @@
 	   <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1" />
         </t:response>
     </t:test>
-	<t:test id="DeleteDomainRequest17d" depends="DeleteDomainRequest17c" >
+	<t:test id="DeleteDomainRequest17f" depends="DeleteDomainRequest17e" >
         <t:request>
             <DeleteDomainRequest xmlns="urn:zimbraAdmin">
                 <id>${domain.id1}</id>
