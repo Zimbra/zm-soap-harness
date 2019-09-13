@@ -9495,7 +9495,25 @@ ZimbraMailDelivery is no longer used
     </t:test>  
     
 </t:test_case>
-    
+
+<t:test_case testcaseid="CreateAccountRequest161" type="smoke" bugids="ZCS-7788">
+    <t:objective>Create an account with valid values of zimbraAccountStatus along with Account suspension reason.</t:objective>
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>test.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraAccountStatus">locked</a>
+                <a n="zimbraAccountSuspensionReason">Account is locked due multiple failure attempts.</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraAccountStatus']" match="locked"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraAccountSuspensionReason']" match="Account is locked due multiple failure attempts."/>
+        </t:response>
+    </t:test>
+</t:test_case>
 </t:tests>
 
 
