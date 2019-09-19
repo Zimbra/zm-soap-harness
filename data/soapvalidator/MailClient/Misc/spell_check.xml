@@ -23,7 +23,7 @@
 <t:property name="check.blank" value=""/>
 <t:property name="check.spaces" value="     "/>
 <t:property name="check.spchar" value=":/\\.;&lt;*''"/>
-
+<t:property name="check.utf8char" value="grüße"/>
 <t:property name="check.digit" value="1"/>
 <t:property name="check.decimal" value="12.34"/>
 <t:property name="check.negative" value="-1"/>
@@ -380,9 +380,7 @@
             </t:select>
         </t:response>
     </t:test>
-
 </t:test_case> 
-
 
 <t:test_case testcaseid="CheckSpellingRequest13" type="functional" >
     <t:objective>CheckSpelling of a multi line statement that contains special characters, symbols, digits and spaces.</t:objective>
@@ -397,11 +395,7 @@
             </t:select>
         </t:response>
     </t:test>
-
 </t:test_case>
-    
-
-
 <t:test_case testcaseid="CheckSpellingRequest14" type="functional" bugids="4493">
     <t:objective>Verify the word zimbra is correct</t:objective>
 <!--        
@@ -415,7 +409,6 @@
             </t:select>
         </t:response>
     </t:test>
-
 -->
     <t:test>
         <t:request>
@@ -427,7 +420,6 @@
             </t:select>
         </t:response>
     </t:test>
-
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.zimbra3}</CheckSpellingRequest>
@@ -438,9 +430,7 @@
             </t:select>
         </t:response>
     </t:test>
-
 </t:test_case>     
-
 <t:test_case testcaseid="CheckSpellingRequest15" type="functional" areas="comcast" bugids="18186">
     <t:objective>Verify the word comcast is correct</t:objective>
 <!--        
@@ -455,7 +445,6 @@
         </t:response>
     </t:test>
 -->
-
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.comcast2}</CheckSpellingRequest>
@@ -466,7 +455,6 @@
             </t:select>
         </t:response>
     </t:test>
-
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">${check.comcast3}</CheckSpellingRequest>
@@ -477,26 +465,29 @@
             </t:select>
         </t:response>
     </t:test>
-
 </t:test_case>     
-    
-<t:test_case testcaseid="CheckSpellingRequest16" type="functional" bugids="41760">
+<t:test_case testcaseid="CheckSpellingRequest16" type="smoke" bugids="41760,ZBUG-1109">
     <t:objective>Verify various characters does not throw exception</t:objective>
-        
     <t:test>
         <t:request>
             <CheckSpellingRequest xmlns="urn:zimbraMail">
-            úó 
+            úó
             amed “atlas GMV”.
-            RIM’s 
+            RIM’s
+            sehr geehrte damen und herren
+            herzliche grüße
+	    读写汉字 - 学中文
+	    Wǒ xiān zǒu le
             </CheckSpellingRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CheckSpellingResponse"/>
+            <t:select path="//mail:CheckSpellingResponse">
+                 <t:select path="//mail:misspelled" emptyset="0"/>
+                 <t:select path="//mail:misspelled" attr="word"  match="${check.utf8char}"/>
+                 <t:select path='//mail:misspelled[@word="${check.utf8char}"]' attr="suggestions" match=".*grue,Gere,Gore,Grey,gore,grew,guru,gruel,grues.*"/>
+            </t:select>
         </t:response>
     </t:test>
-
-
-</t:test_case>     
-    
+</t:test_case>
 </t:tests>
+
