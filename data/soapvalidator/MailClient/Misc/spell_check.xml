@@ -23,7 +23,7 @@
 <t:property name="check.blank" value=""/>
 <t:property name="check.spaces" value="     "/>
 <t:property name="check.spchar" value=":/\\.;&lt;*''"/>
-
+<t:property name="check.utf8char" value="grüße"/>
 <t:property name="check.digit" value="1"/>
 <t:property name="check.decimal" value="12.34"/>
 <t:property name="check.negative" value="-1"/>
@@ -476,11 +476,15 @@
             RIM’s
             sehr geehrte damen und herren
             herzliche grüße
+	    读写汉字 - 学中文
+	    Wǒ xiān zǒu le
             </CheckSpellingRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:CheckSpellingResponse">
                  <t:select path="//mail:misspelled" emptyset="0"/>
+                 <t:select path="//mail:misspelled" attr="word"  match="${check.utf8char}"/>
+                 <t:select path='//mail:misspelled[@word="${check.utf8char}"]' attr="suggestions" match=".*grue,Gere,Gore,Grey,gore,grew,guru,gruel,grues.*"/>
             </t:select>
         </t:response>
     </t:test>
