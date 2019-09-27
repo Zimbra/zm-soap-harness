@@ -1,0 +1,84 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="value.true" value="true"/>
+<t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+<t:test_case testcaseid="GetLicense01" type="smoke" bugids="ZCS-7809">
+    <t:objective>
+    	 1. Get Admin Auth token
+     	 2. Create Test Account
+         3. Get License request, Verify ZimbraX attributes are returned in the response
+    </t:objective>
+    <t:test id="adminAuth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test id="createAccount" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+        </t:response>
+    </t:test>
+    <t:test id="getLicense">
+        <t:request>
+            <GetLicenseRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXAccountsLimit']" emptyset="0"/>
+            <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXDesktopAccountsLimit']" emptyset="0"/>
+            <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXDesktopAccountsLimit']" emptyset="0"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+<t:test_case testcaseid="GetInfo01" type="smoke" bugids="ZCS-7809">
+    <t:objective>
+	1. Login to the test account
+	2. GetInfoRequest, Verify ZIMBRAXWEB, ZIMBRAXDESKTOP attributes are returned in response
+    </t:objective>
+    <t:test id="accountAuth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test id="getInfo">
+        <t:request>
+            <GetInfoRequest xmlns="urn:zimbraAccount">
+              <account by="name">${test_account1.name}</account>
+        </GetInfoRequest>
+        </t:request>
+        <t:response> 
+	    <t:select path="//acct:GetInfoResponse/acct:license/acct:attr" attr="name" match="ZIMBRAXWEB"/>
+	    <t:select path="//acct:GetInfoResponse/acct:license/acct:attr" attr="name" match="ZIMBRAXDESKTOP"/>
+        </t:response>
+        </t:test>
+</t:test_case>
+</t:tests>
