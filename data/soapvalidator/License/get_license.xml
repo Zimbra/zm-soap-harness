@@ -3,6 +3,9 @@
 <t:property name="value.true" value="true"/>
 <t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account2.name" value="test2${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property  name="total_zimbrax_accounts_plus_one" value="0" />
+<t:property  name="total_zimbrax_accounts_minus_one" value="0" />
+
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
     <t:test required="true">
@@ -50,10 +53,10 @@
             <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXAccountsLimit']" emptyset="0"/>
             <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXDesktopAccountsLimit']" emptyset="0"/>
             <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXDesktopAccountsLimit']" emptyset="0"/>
-            <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='TotalZimbraXAccounts']" emptyset="0" set="${total_zimbrax_accounts}" incr="${total_zimbrax_accounts_plus_one}" decr="${total_zimbrax_accounts_minus_one}"/>
+            <t:select path="//admin:GetLicenseResponse/admin:info/admin:attr[@name='TotalZimbraXAccounts']" emptyset="0" incr="total_zimbrax_accounts_plus_one" />
         </t:response>
     </t:test>
-        <t:test id="createAccount" required="true">
+    <t:test id="createAccount" required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
@@ -72,7 +75,7 @@
             <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXAccountsLimit']" emptyset="0"/>
             <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXDesktopAccountsLimit']" emptyset="0"/>
             <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXDesktopAccountsLimit']" emptyset="0"/>
-            <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='TotalZimbraXAccounts']" emptyset="0" match="${total_zimbrax_accounts_plus_one}"/>
+            <t:select path="//admin:GetLicenseResponse/admin:info/admin:attr[@name='TotalZimbraXAccounts']" emptyset="0" match="${total_zimbrax_accounts_plus_one}" decr="total_zimbrax_accounts_minus_one"/>
         </t:response>
     </t:test>
     <t:test>
@@ -93,7 +96,7 @@
             <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXAccountsLimit']" emptyset="0"/>
             <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXDesktopAccountsLimit']" emptyset="0"/>
             <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='ZXDesktopAccountsLimit']" emptyset="0"/>
-            <t:select path="//admin:GetLicenseResponse/admin:license/admin:attr[@name='TotalZimbraXAccounts']" emptyset="0" match="${total_zimbrax_accounts_minus_one}"/>
+            <t:select path="//admin:GetLicenseResponse/admin:info/admin:attr[@name='TotalZimbraXAccounts']" emptyset="0" match="${total_zimbrax_accounts_minus_one}"/>
         </t:response>
     </t:test>
 </t:test_case>
@@ -124,6 +127,6 @@
 	    <t:select path="//acct:GetInfoResponse/acct:license/acct:attr[@name='ZIMBRAXWEB']" emptyset="0"/>
 	    <t:select path="//acct:GetInfoResponse/acct:license/acct:attr[@name='ZIMBRAXDESKTOP']"  emptyset="0"/>
         </t:response>
-        </t:test>
+    </t:test>
 </t:test_case>
 </t:tests>
