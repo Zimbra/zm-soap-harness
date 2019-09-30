@@ -58,6 +58,8 @@ public class SoapTest extends Test {
     public static final String A_PATH = "path";
     public static final String A_EMPTYSET = "emptyset";
     public static final String A_SET = "set";
+    public static final String A_SET_INCR = "incr";
+    public static final String A_SET_DECR = "decr";
     public static final String A_QUERY = "query";
     public static final String A_MATCH = "match";
     public static final String A_AID = "aid";
@@ -600,6 +602,9 @@ public class SoapTest extends Test {
         String attr = select.getAttribute(A_ATTR, null);
         String match = select.getAttribute(A_MATCH, null);
         String property = select.getAttribute(A_SET, null);
+
+        String incr_property = select.getAttribute(A_SET_INCR, null);
+        String decr_property = select.getAttribute(A_SET_DECR, null);
         String query = select.getAttribute(A_QUERY, null);
         String emptyset = select.getAttribute(A_EMPTYSET, "0");
         String value; // TBD below
@@ -623,6 +628,11 @@ public class SoapTest extends Test {
         if ( iid != null )
             TestProperties.testProperties.setProperty(iid, "UNSET");
 
+        if ( incr_property != null )
+            TestProperties.testProperties.setProperty(incr_property, "UNSET");
+
+        if ( decr_property != null )
+            TestProperties.testProperties.setProperty(decr_property, "UNSET");
 
         // Get elements from path or use the context
         Element[] tests = null;
@@ -760,8 +770,21 @@ public class SoapTest extends Test {
 
             // Handle setting a property
             if (property != null && elementHasValue) {
-                // Properties can only be set to null using the <t:property ...> mechanism
                 TestProperties.testProperties.setProperty(property, value);
+            }
+
+            // Handle setting a property
+            if (incr_property != null && elementHasValue) {
+                String incr_value = (Integer.parseInt(value) + 1 ).toString();
+                TestProperties.testProperties.setProperty(incr_property, incr_value);
+            }
+
+            // Handle setting a property
+            if (decr_property != null && elementHasValue) {
+                // Properties can only be set to null using the <t:property ...> mechanism
+
+                String decr_value = (Integer.parseInt(value) - 1 ).toString();
+                TestProperties.testProperties.setProperty(decr_property, decr_value);
             }
 
             if ( query != null ) {
