@@ -775,7 +775,7 @@ public class SoapTest extends Test {
 
             // Handle setting a property
             if (incr_property != null && elementHasValue) {
-                String incr_value = (Integer.parseInt(value) + 1 ).toString();
+                String incr_value = String.valueOf((Integer.parseInt(value) + 1 ));
                 TestProperties.testProperties.setProperty(incr_property, incr_value);
             }
 
@@ -783,7 +783,7 @@ public class SoapTest extends Test {
             if (decr_property != null && elementHasValue) {
                 // Properties can only be set to null using the <t:property ...> mechanism
 
-                String decr_value = (Integer.parseInt(value) - 1 ).toString();
+                String decr_value = String.valueOf((Integer.parseInt(value) - 1 ));
                 TestProperties.testProperties.setProperty(decr_property, decr_value);
             }
 
