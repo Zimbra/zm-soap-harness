@@ -2,11 +2,6 @@ if [ "$(whoami)" != "root" ]; then
         echo "Script must be run as user: root"
         exit -1
 fi
-echo "NOTE : Commercial certificate is only applicable for domain '*.eng.zimbra.com'"
-echo "Copying commercial cert for installation"
-mkdir /tmp/commercial
-cp /opt/qa/soapvalidator/conf/commercial/* /opt/zimbra/ssl/zimbra/commercial/
-cp /opt/qa/soapvalidator/conf/commercial/* /tmp/commercial/
 echo "Enabling unauth pings"
 su - zimbra -c "zmlocalconfig -e allow_unauthed_ping=true"
 echo "Installing and activating license"
