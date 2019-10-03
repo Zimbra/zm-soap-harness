@@ -16,13 +16,6 @@ if  [ $? != 0 ]; then
         echo "Error occured while installing/activating license. Kindly install/activate the license manually. "
         exit -1
 fi
-echo "Verifying commercial cert"
-su - zimbra -c "/opt/zimbra/bin/zmcertmgr verifycrt comm /opt/zimbra/ssl/zimbra/commercial/commercial.key /tmp/commercial/commercial.crt /tmp/commercial/commercial_ca.crt"
-if  [ $? != 0 ]; then
-        echo "Commercial certificate verification failed. Kindly check your certificates "
-        exit -1
-fi
-echo "Deploying commercial cert"
-su - zimbra -c "/opt/zimbra/bin/zmcertmgr deploycrt comm /tmp/commercial/commercial.crt /tmp/commercial/commercial_ca.crt"
+su - zimbra -c "zmldappasswd -a test123; zmldappasswd -b test123; zmldappasswd -l test123; zmldappasswd -n test123; zmldappasswd -p test123; zmldappasswd -r test123; zmldappasswd zimbra"
 echo "Restarting mailbox"
 su - zimbra -c "zmmailboxdctl restart"
