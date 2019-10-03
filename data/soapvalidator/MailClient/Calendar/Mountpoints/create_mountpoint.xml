@@ -273,7 +273,7 @@
 		</t:response>
 	</t:test>
 	
-	<t:property name="error.text" value="invalid request: invalid url for feed:"/>
+	<t:property name="error.text" value="resource unreachable: HTTP/1.1 401 must authenticate"/>
 
     <t:test>
         <t:request>
@@ -282,7 +282,7 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+            <t:select path="//zimbra:Code" match="^service.RESOURCE_UNREACHABLE$"/>
             <t:select path="//soap:Reason/soap:Text" contains="${error.text}"/>
         </t:response>
     </t:test>
@@ -294,7 +294,7 @@
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST$"/>
+            <t:select path="//zimbra:Code" match="service.RESOURCE_UNREACHABLE$"/>
             <t:select path="//soap:Reason/soap:Text" contains="${error.text}"/>
         </t:response>
     </t:test>
