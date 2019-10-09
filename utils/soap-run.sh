@@ -1,5 +1,6 @@
 #!/bin/bash -e
 # This bash utility executes soap automation suite for Zimbra. It optionally accepts four arguments in order - ZCS_VERSION(ZIMBRAX/ZIMBRA8), BRANCH(DEVELOP/FEATURE), TESTS_SUITE(SMOKE/SANITY/FUNCTIONAL), TESTROOT_DIR, SOAP_REPORT_PATH  
+# The script assumes zimbra setup is completed and running. 
 
 #HOSTNAME - zimbra server hostname
 #TESTROOT_DIR - /opt/qa/soapvalidator/data/soapvalidator/
@@ -167,9 +168,10 @@ failure_br=`echo ${failures_list} | sed 's/\n/\<br\>/g'`;
 SOAP_REPORT_URL="http://${APACHE_HOSTNAME_IP}:${APACHE_PORT}/soap-reports/${SOAP_REPORT_DIR_NAME}"
 # Script expects pre-defined environment variables like EXTERNAL_PASSWORD and Gmail SMTP related settings for sending the job and automation result email.
 # result notificatiosn
-MAIL_FROM_ACCOUNT=""
+
+#MAIL_FROM_ACCOUNT="" This is picked up from ENV Variable
 MAIL_TO_ACCOUNT=""
-EXTERNAL_PASSWORD=""
+#EXTERNAL_PASSWORD="" - this is picked from ENV variable
 MAIL_SUBJECT="SOAP: Smoke tests execution started | Total Tests: 5186"
 MAIL_BODY="$(echo ${MAIL_SUBJECT}) \n\n
 Soap Auotmation Report:\n ${SOAP_REPORT_URL} \n\n\n
@@ -190,4 +192,3 @@ sendemail -f "${MAIL_FROM_ACCOUNT}" \
 	-xu "${MAIL_FROM_ACCOUNT}" \
 	-xp "${EXTERNAL_PASSWORD}" \
 	-m  "${MAIL_BODY}"
-
