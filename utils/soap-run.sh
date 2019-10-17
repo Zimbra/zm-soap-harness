@@ -1,13 +1,16 @@
 #!/bin/bash -e
-# This bash utility executes soap automation suite for Zimbra. It optionally accepts four arguments in order - ZCS_VERSION(ZIMBRAX/ZIMBRA8), BRANCH(DEVELOP/FEATURE), TESTS_SUITE(SMOKE/SANITY/FUNCTIONAL), TESTROOT_DIR, SOAP_REPORT_PATH  
+# This bash utility executes soap automation suite for Zimbra. 
+# It optionally accepts these arguments in order - HOSTNAME, TESTROOT_DIR, TESTS_SUITE(SMOKE/SANITY/FUNCTIONAL), BRANCH(DEVELOP/FEATURE), SOAP_HARNESS_BRANCH, SOAP_REPORT_PATH  
+# 
 # The script assumes zimbra setup is completed and running. 
+# The script needs MAIL_FROM_ACCOUNT & EXTERNAL_PASSWORD set as environment variables and sendemail package installed. 
+#
 
 #HOSTNAME - zimbra server hostname
 #TESTROOT_DIR - /opt/qa/soapvalidator/data/soapvalidator/
 #TESTS_SUITE - SMOKE/FUNCTIONAL/SANITY
 #BRANCH - develop / feature / bugfix
 #SOAP_HARNESS_BRANCH - develop / feature / bugfix
-#ZCS_VERSION - ZIMBRA8 / ZIMBRAX
 #SOAP_REPORT_PATH - /var/www/html/soap-reports/datatimefield
 
 # PART 1
@@ -39,9 +42,9 @@ staf_func() {
         pid=`ps -aux | grep -i staf  |  grep -v grep | awk '{print $2}'`
         if [[ $pid != "" ]]; then kill $pid; fi;
         /usr/local/staf/startSTAFProc.sh > /opt/zimbra/log/staf.log 2> /dev/null
-	sleep 10
-        staf local service add service SOAP LIBRARY JSTAF EXECUTE /opt/qa/soapvalidator/bin/zimbrastaf.jar && sleep 5 && staf local service add service LOG LIBRARY STAFLog && staf local service add service INJECT LIBRARY JSTAF EXECUTE /opt/qa/soapvalidator/bin/zimbrainject.jar 
-        sleep 5
+	sleep 15
+        staf local service add service SOAP LIBRARY JSTAF EXECUTE /opt/qa/soapvalidator/bin/zimbrastaf.jar && sleep 15 && staf local service add service LOG LIBRARY STAFLog && staf local service add service INJECT LIBRARY JSTAF EXECUTE /opt/qa/soapvalidator/bin/zimbrainject.jar 
+        sleep 15
 }
 
 SOAP_REPORT_PATH="${apache_dir}/soap-reports/${SOAP_REPORT_DIR_NAME}"
@@ -60,15 +63,12 @@ for argument in "$@"; do
 		TESTS_SUITE) TESTS_SUITE=${value};;
 		BRANCH) BRANCH=${value};;
 		SOAP_HARNESS_BRANCH) SOAP_HARNESS_BRANCH=${value};;
-		ZCS_VERSION) ZCS_VERSION=${value};;
 		SOAP_REPORT_PATH) SOAP_REPORT_PATH=${value};;
 	esac
 done
 
 SOAP_COMMAND="STAF LOCAL soap EXECUTE ${HOSTNAME} ZIMBRAQAROOT ${ZIMBRAQAROOT} DIRECTORY ${TESTROOT_DIR} LOG ${SOAP_REPORT_PATH} SUITE ${TESTS_SUITE}"
-
 echo $SOAP_COMMAND;
-
 mkdir -p /opt/qa/
 mkdir -p $SOAP_REPORT_PATH
 
@@ -85,12 +85,10 @@ if [ "$STAF_SOAP_SETUP" = true ]; then
 fi;
 
 cd $SOAP_REPORT_PATH;
-
 echo "STARTING SOAP RUN - ";
 nohup $SOAP_COMMAND; # Start Soap Test Execution
 
 # Code to send email.
-
 
 # PART 2 -- Once soap run is completed, parse nohup.out for soap results - executed, passed, failed and send an email to all stakeholders for same.
 #staf local soap query
@@ -158,20 +156,13 @@ do
 	break; 
 done;
 
-#echo $executed_count;
-#echo $passed_count;
-#echo $failed_count;
-#echo $script_errors_count;
-
 failure_br=`echo ${failures_list} | sed 's/\n/\<br\>/g'`;
 
 SOAP_REPORT_URL="http://${APACHE_HOSTNAME_IP}:${APACHE_PORT}/soap-reports/${SOAP_REPORT_DIR_NAME}"
 # Script expects pre-defined environment variables like EXTERNAL_PASSWORD and Gmail SMTP related settings for sending the job and automation result email.
 # result notificatiosn
 
-#MAIL_FROM_ACCOUNT="" This is picked up from ENV Variable
 MAIL_TO_ACCOUNT=""
-#EXTERNAL_PASSWORD="" - this is picked from ENV variable
 MAIL_SUBJECT="SOAP: Smoke tests execution started | Total Tests: 5186"
 MAIL_BODY="$(echo ${MAIL_SUBJECT}) \n\n
 Soap Auotmation Report:\n ${SOAP_REPORT_URL} \n\n\n
