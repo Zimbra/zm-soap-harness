@@ -59,7 +59,7 @@ for argument in "$@"; do
 	value=$(echo ${argument} | cut -f2 -d=)
 	case "${key}" in
 		HOSTNAME) HOSTNAME=${value};;
-	    TESTROOT_DIR) TESTROOT_DIR=${value};;
+		TESTROOT_DIR) TESTROOT_DIR=${value};;
 		TESTS_SUITE) TESTS_SUITE=${value};;
 		BRANCH) BRANCH=${value};;
 		SOAP_HARNESS_BRANCH) SOAP_HARNESS_BRANCH=${value};;
