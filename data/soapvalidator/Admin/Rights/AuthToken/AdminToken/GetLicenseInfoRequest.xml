@@ -145,7 +145,35 @@
     </t:test>
 
 </t:test_case>
+<t:test_case testcaseid="AuthToken_Admin_GetLicenseRequest_Basic01" type="deprecated" >
+    <t:objective>Use an admin token to GetLicenseRequest</t:objective>
+    <t:steps>
+    1. Login as admin
+    2. Use admin authtoken to GetLicenseRequest
+    3. Validate expiry value for 2fa feature
+    </t:steps>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetLicenseRequest  xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetLicenseResponse/admin:license//admin:attr[@name='TwoFactorAuthAccountsLimit']" attr="expiry" emptyset="0"/>
+        </t:response>
+    </t:test>
+</t:test_case>
 
 
 </t:tests>
