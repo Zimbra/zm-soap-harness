@@ -360,7 +360,7 @@ public class RestServletTest extends Test {
 	}
 
 	private boolean isBinary(String contentType) {
-		if (contentType.equalsIgnoreCase("application/zip")) {
+		if (contentType.equalsIgnoreCase("application/zip") || contentType.equalsIgnoreCase("application/x-compressed-tar")) {
 			return true;
 		}
 		return false;
