@@ -4,8 +4,10 @@
 <t:property name="account1.password" value="${defaultpassword.value}"/>
 <t:property name="root" value="${soapxml.root}/MailClient/Mail/lmtp/Owasp/zbug_1174"/>
 <t:property name="msg01.file" value="${root}/zbug_1174_message.txt"/>
-<t:property name="subject1.valid" value="owasp with rgb having percent test"/>
+<t:property name="subject1.valid" value="Re Přání"/>
 <t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="account2.name" value="lmtp${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.password" value="${defaultpassword.value}"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -47,6 +49,19 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
         </t:response>
     </t:test>
+    <t:test id="create_test_account2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${account2.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
 </t:test_case>
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 <t:test_case testcaseid="acctSetup2_Owasp_zbug_1174_Mime" type="always">
@@ -77,7 +92,7 @@
         <t:lmtpInjectRequest>
             <filename>${msg01.file}</filename>
             <to>${account1.name}</to>
-            <from>${nonZimbraUser.name}</from>
+            <from>${account2.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>  
