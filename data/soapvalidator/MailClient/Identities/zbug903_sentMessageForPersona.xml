@@ -1,0 +1,193 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <t:property name="account1.name" value="userA${COUNTER}${TIME}@${defaultdomain.name}"/>
+    <t:property name="account2.name" value="userB${COUNTER}${TIME}@${defaultdomain.name}"/>
+    <t:property name="account3.name" value="userC${COUNTER}${TIME}@${defaultdomain.name}"/>
+    <t:property name="subject1" value="zbug903"/>
+    <t:property name="content1" value="zbug903_body"/>
+    <t:test_case testcaseid="Ping" type="always" >
+        <t:objective>basic system check</t:objective>
+        <t:test>
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin"/>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+    <t:test_case testcaseid="CreateAccounts" type="always">
+        <t:objective>Create test account</t:objective>
+        <steps> 1. Login to admin account 
+        2. Create a mail account 
+        </steps>
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="create_test_account1" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+            </t:response>
+        </t:test>
+        <t:test id="create_test_account2" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
+            </t:response>
+        </t:test>
+        <t:test id="create_test_account3" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account3.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    <t:test_case testcaseid="Setup userA" type="smoke" bugids="zbug903">
+        <t:objective>Set delegated account for userA</t:objective>
+        <steps> 1. Login to userA
+        2. add userB as delegate with "sendOnBehalfOf" 
+        3. select 'Save a copy of sent messages to my Sent folder' and save preference 
+        </steps>
+        <t:test >
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:test id="Set_delegated">
+            <t:request>
+                <GrantRightsRequest xmlns="urn:zimbraAccount">
+                    <ace d="${account2.name}" right="sendOnBehalfOf" gt="usr"/>
+                </GrantRightsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:GrantRightsResponse"/>
+            </t:response>
+        </t:test>
+        <t:test id="Set_pref">
+            <t:request>
+                <ModifyPrefsRequest requestId="1" xmlns="urn:zimbraAccount">
+                    <pref name="zimbraPrefDelegatedSendSaveTarget">owner</pref>
+                </ModifyPrefsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:ModifyPrefsResponse"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+    <t:test_case testcaseid="Setup userB" type="smoke" bugids="zbug903">
+        <t:objective>Set delegated account for userA</t:objective>
+        <steps> 1. Login to userA
+        2. add userB as delegate with "Send As" 
+        3. select 'Save a copy of sent messages to my Sent folder' and save preference 
+        </steps>
+        <t:test >
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:test id="Create_Persona">
+            <t:request>
+                <CreateIdentityRequest requestId="0" xmlns="urn:zimbraAccount">
+                    <identity name="userApersona">
+                      <a name="zimbraPrefIdentityName">userApersona</a>
+                      <a name="zimbraPrefFromDisplay"/>
+                      <a name="zimbraPrefFromAddress">${account1.name}</a>
+                      <a name="zimbraPrefFromAddressType">sendOnBehalfOf</a>
+                      <a name="zimbraPrefReplyToEnabled">FALSE</a>
+                      <a name="zimbraPrefReplyToDisplay"/>
+                      <a name="zimbraPrefReplyToAddress"/>
+                      <a name="zimbraPrefDefaultSignatureId"/>
+                      <a name="zimbraPrefForwardReplySignatureId"/>
+                      <a name="zimbraPrefWhenSentToEnabled">FALSE</a>
+                      <a name="zimbraPrefWhenInFoldersEnabled">FALSE</a>
+                    </identity>
+                </CreateIdentityRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:CreateIdentityResponse//acct:identity" attr="id" set="userA.personaId"/>
+            </t:response>
+        </t:test>
+        <t:test id="send_msg">
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail" >
+                    <m>
+                        <id>${account2.id}</id>
+                        <idnt>${userA.personaId}</idnt>
+                        <e t="t" a='${account3.name}' />
+                        <e t="f" a='${account1.name}' />
+                        <e t="s" a='${account2.name}' />
+                        <su>${subject1}</su>
+                        <mp ct="text/plain">
+                            <content>${content1}</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    <t:test_case testcaseid="Validate_Sent_folder" type="smoke" bugids="zbug903">
+        <t:objective>Validate Sent folder for userA</t:objective>
+        <steps> 1. Login to userA
+        2. Validate that sent email is present in the sent folder 
+        </steps>
+        <t:test >
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        <t:test >
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:Sent</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse//mail:m/mail:su" match="${subject1}" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+</t:tests>
