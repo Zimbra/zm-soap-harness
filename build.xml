@@ -423,12 +423,12 @@
 		<target name="zm-network-soap-content" description="Copies network related soap data and tests">
 			<mkdir dir="${build.temp.dir}"/>
     		<echo message="Copying network related data and tests..."/>
-			<if><available file="${zm-network-soap-harness.dir}/conf/setup.sh" type="file"/>
+			<!--<if><available file="${zm-network-soap-harness.dir}/conf/setup.sh" type="file"/>
 				<then><delete file="./conf/setup.sh"/></then>
 			</if>
 			<if><available file="${zm-network-soap-harness.dir}/conf/global.properties" type="file"/>
 				<then><delete file="./conf/global.properties"/></then>
-			</if>
+			</if> -->
     		<if> <available file="${zm-network-soap-harness.dir}" type="dir"/>
       		<then>
         		<copy todir="${build.temp.dir}/data">
@@ -517,7 +517,7 @@
   	<target name="build-testware" description=" Build soap harness testware." 
   								depends="clean,build-testware-one,build-testware-two,build-tools-setup,compress-move" />		
 
-		<target name="Run-SoapTestCore" depends="compile" description="Run Staf Tests in non-STAF environment">
+		<target name="Run-SoapTestCore" depends="compile,zm-network-soap-content" description="Run Staf Tests in non-STAF environment">
 			<property name="testRoot" value="data/soapvalidator/"/>
 			<echo>STAF: Executing ${testRoot}</echo>
 			<java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
