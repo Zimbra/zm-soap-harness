@@ -908,6 +908,7 @@ public class SoapTestCore {
         
         // If there is a postfix delay pending, do it here
         test.mPostfixSetup = doPostfixDelay(e);
+        doEwsDelay(e);
         doLdapDelay(e);
         
         try
@@ -2462,6 +2463,30 @@ public class SoapTestCore {
 
     }
     
+    protected void doEwsDelay(Element test){
+        if ( TestProperties.testProperties.getProperty("EwsDelay.check", "true").equals("false") )
+        {
+            mLog.debug("postfix.check property is false - skipping the postfix check");
+        } else {
+            String[] requests = SoapTestMain.globalProperties.getProperty("ewsrequests.list", "").split(",");
+            boolean matched = false;
+            for (String request : requests) {
+                if ( Utilities.getElementsFromPath(test, "//" + request).length > 0 ) {
+                    matched = true;
+                    break;
+                }
+            }
+            if(matched){
+                try {
+                    Thread.sleep(new Long(SoapTestMain.globalProperties.getProperty("ewsrequests.delay", "1000")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
     protected boolean doLdapDelay(Element test) throws HarnessException {
     	//delay for replica
 
