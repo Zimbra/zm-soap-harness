@@ -518,7 +518,7 @@
   								depends="clean,build-testware-one,build-testware-two,build-tools-setup,compress-move" />		
 
 		<target name="Run-SoapTestCore" depends="compile,zm-network-soap-content" description="Run Staf Tests in non-STAF environment">
-			<property name="testRoot" value="data/soapvalidator/"/>
+			<property name="testRoot" value="build/temp/data/soapvalidator/"/>
 			<echo>STAF: Executing ${testRoot}</echo>
 			<java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
 				<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t smoke -j"/>
