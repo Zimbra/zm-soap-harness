@@ -2466,7 +2466,7 @@ public class SoapTestCore {
     protected void doEwsDelay(Element test){
         if ( TestProperties.testProperties.getProperty("EwsDelay.check", "true").equals("false") )
         {
-            mLog.debug("postfix.check property is false - skipping the postfix check");
+            mLog.debug("ews.check property is false - skipping the ews delay");
         } else {
             String[] requests = SoapTestMain.globalProperties.getProperty("ewsrequests.list", "").split(",");
             boolean matched = false;
