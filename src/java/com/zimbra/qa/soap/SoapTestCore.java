@@ -2463,20 +2463,19 @@ public class SoapTestCore {
 
     }
     
-    protected void doEwsDelay(Element test){
-        if ( TestProperties.testProperties.getProperty("EwsDelay.check", "true").equals("false") )
-        {
+    protected void doEwsDelay(Element test) {
+        if (TestProperties.testProperties.getProperty("EwsDelay.check", "true").equals("false")) {
             mLog.debug("ews.check property is false - skipping the ews delay");
         } else {
             String[] requests = SoapTestMain.globalProperties.getProperty("ewsrequests.list", "").split(",");
             boolean matched = false;
             for (String request : requests) {
-                if ( Utilities.getElementsFromPath(test, "//" + request).length > 0 ) {
+                if (Utilities.getElementsFromPath(test, "//" + request).length > 0) {
                     matched = true;
                     break;
                 }
             }
-            if(matched){
+            if (matched) {
                 try {
                     Thread.sleep(new Long(SoapTestMain.globalProperties.getProperty("ewsrequests.delay", "1000")));
                 } catch (Exception e) {
