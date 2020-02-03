@@ -642,7 +642,7 @@ public class SoapTest extends Test {
 				 * Retrying failed search related soap tests by waiting 10 to 60
 				 * second
 				 */
-				if (mDocResponse.getQualifiedName().contains("Search")) {
+				if (mDocResponse.getQualifiedName().contains("Search")|| mDocResponse.getQualifiedName().contains("Get")) {
 					if (LengthRetryCount > 6) {
 						check(false, "path '" + path + "' did not match any elements");
 						return;
@@ -822,7 +822,7 @@ public class SoapTest extends Test {
 			 * second
 			 */
 			mSuccess = success;
-			if (!success && mDocResponse.getQualifiedName().contains("Search")) {
+			if (!success && (mDocResponse.getQualifiedName().contains("Search")|| mDocResponse.getQualifiedName().contains("Get"))) {
 				if (MaxRetryCount < 6) {
 					MaxRetryCount++;
 					try {
