@@ -6,6 +6,7 @@
 
 <t:property name="domain2.name" value="${COUNTER}.${TIME}.${defaultdomain.name}"/>
 <t:property name="domain2.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain2.name}"/>
+<t:property name="account2.name" value="account${TIME}${COUNTER}@${domain2.name}"/>
 
 <t:property name="domain3.name" value="${COUNTER}.${TIME}.${defaultdomain.name}"/>
 <t:property name="domain3.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain3.name}"/>
@@ -18,9 +19,6 @@
 
 <t:property name="domain6.name" value="${COUNTER}.${TIME}.${defaultdomain.name}"/>
 <t:property name="domain6.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain6.name}"/>
-
-
-
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
 <t:test_case testcaseid="Ping" type="always">
@@ -34,9 +32,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -48,20 +44,17 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-
-        <t:test>
-                <t:request>
-                        <GetAccountRequest xmlns="urn:zimbraAdmin">
-                                <account by="name">${admin.user}</account>
-                        </GetAccountRequest>
-                </t:request>
-                <t:response>
-                   <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
-                </t:response>
-        </t:test>
-
-        <t:property name="server.zimbraAccount" value="${account1.server}"/>
-
+    <t:test>
+        <t:request>
+                <GetAccountRequest xmlns="urn:zimbraAdmin">
+                        <account by="name">${admin.user}</account>
+                </GetAccountRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test required="true" >
         <t:request>
             <CreateDomainRequest xmlns="urn:zimbraAdmin">
@@ -74,9 +67,41 @@
             <t:select path="//admin:CreateDomainResponse"/>
         </t:response>
     </t:test>
-
+    <t:test required="true" >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain2.name}</name>
+                <a n="zimbraGalMode">zimbra</a>
+                <a n="zimbraGalMaxResults">100</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+    <t:test id="CreateAccount1" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse"/>
+        </t:response>
+    </t:test>
+    <t:test id="CreateAccount2" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse"/>
+        </t:response>
+    </t:test>
 	<t:property name="domain1.galaccount.datasource.name" value="galaccount${TIME}${COUNTER}@${domain6.name}"/>
-
 	<t:test >
         <t:request>
             <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain1.galaccount.datasource.name}" type="zimbra" domain="${domain1.name}" server="${account1.server}">
@@ -86,21 +111,17 @@
         <t:response>
             <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id"/>
 		</t:response>
-    </t:test>  
-
-
+    </t:test>
 </t:test_case>
- 
-
-<t:test_case testcaseid="SyncGalRequest_Basic_01" type="smoke">
+<t:test_case testcaseid="SyncGalRequest_Basic_01" type="smoke" bugids="ZBUG-1094">
     <t:objective>Basic Test: Verify basic SyncGalAccountRequest </t:objective>
 	<t:steps>
 	1. Login as admin
 	2. Send SyncGalAccountRequest
+	3. Login as account2
+	4. Send AutoCompleteGal Request.
 	</t:steps>
-
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -112,8 +133,6 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-
-
     <t:test >
         <t:request>
 			<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
@@ -126,9 +145,27 @@
             <t:select path="//admin:SyncGalAccountResponse"/>
         </t:response>
     </t:test>
-
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+            <AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" name="acc" galAcctId="${domain1.galaccount.id}">
+            </AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED"/>
+        </t:response>
+    </t:test>
 </t:test_case>
-
 <t:test_case testcaseid="SyncGalRequest_Basic_02" type="smoke">
     <t:objective>Verify basic SyncGalAccountRequest (by id)</t:objective>
 	<t:steps>
@@ -136,9 +173,7 @@
 	2. Send GetDataSourcesRequest to get the datasource id
 	3.Send SyncGalAccountRequest
 	</t:steps>
-
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -150,7 +185,6 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-
     <t:test >
         <t:request>
 			<GetDataSourcesRequest xmlns="urn:zimbraAdmin">
@@ -163,10 +197,7 @@
             </t:select>
         </t:response>
     </t:test>
-
-
-	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test >
         <t:request>
 			<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
@@ -179,18 +210,14 @@
             <t:select path="//admin:SyncGalAccountResponse"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-
 <t:test_case testcaseid="SyncGalRequest_Basic_03" type="smoke">
     <t:objective>Verify SyncGalAccountRequest (fullsync=true)</t:objective>
 	<t:steps>
 	1. Login as admin
 	2. Send SyncGalAccountRequest
 	</t:steps>
-
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
-	
     <t:test id="adminlogin" required="true" depends="Ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -202,9 +229,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
-
     <t:test >
         <t:request>
 			<SyncGalAccountRequest xmlns="urn:zimbraAdmin">
@@ -315,19 +340,6 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>
-    </t:test>
-
-    <t:test required="true" >
-        <t:request>
-            <CreateDomainRequest xmlns="urn:zimbraAdmin">
-            	<name>${domain2.name}</name>
-            	<a n="zimbraGalMode">zimbra</a>
-            	<a n="zimbraGalMaxResults">100</a>
-        	</CreateDomainRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateDomainResponse"/>
         </t:response>
     </t:test>
 
