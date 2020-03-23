@@ -525,6 +525,15 @@
 				<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t smoke -j"/>
 			</java>
 		</target>
+
+                <target name="Run-SoapTestSanity" depends="compile,zm-network-soap-content" description="Run Staf Tests in non-STAF environment">
+                        <property name="testRoot" value="build/temp/data/soapvalidator/SanityTest/"/>
+                        <echo>STAF: Executing ${testRoot}</echo>
+                        <java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
+                                <arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t sanity -j"/>
+                        </java>
+                </target>
+
     <target name="Execute_Tests" depends="build-init,resolve" description="Run Staf Tests in non-STAF environment">
         <echo>STAF: Executing ${testRoot}</echo>
     	<echo>class path value ${class.path}</echo>
