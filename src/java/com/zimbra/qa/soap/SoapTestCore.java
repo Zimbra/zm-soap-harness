@@ -65,6 +65,7 @@ import com.zimbra.common.soap.Element;
 import com.zimbra.common.soap.SoapFaultException;
 import com.zimbra.common.soap.XmlParseException;
 import com.zimbra.common.util.ByteUtil;
+import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class SoapTestCore {
 
@@ -169,6 +170,7 @@ public class SoapTestCore {
     public static String rootZimbraQA = null;
     public static String mLogDirectory = null;
     public static String mLogSubDirectory = null;	// Used for ZDC server loop
+    public static ArrayList<File> toBeIgnored = new ArrayList<File>();
 
 
     // Current settings for this test script
@@ -295,8 +297,39 @@ public class SoapTestCore {
 		}
     	
     }
+    private void getFile(File inputFile){
+        if(!inputFile.isDirectory()){
+            toBeIgnored.add(inputFile);
+        } else {
+            for (File currentFile : inputFile.listFiles(xmlFileFilter)){
+                getFile(currentFile);
+            }
+        }
+    }
 
-
+    private void getIgnoredTests(){
+        String line = null;
+        FileReader fr;
+        try {
+            fr = new FileReader(SoapTestCore.rootZimbraQA +"/conf/ListOfTestCases.txt");
+            BufferedReader bufferedReader = new BufferedReader(fr);
+            while ((line = bufferedReader.readLine()) != null) {
+                File enlistedTestCases = new File(line);
+                if (!enlistedTestCases.isDirectory()) {
+                    toBeIgnored.add(enlistedTestCases);
+                } else {
+                    getFile(enlistedTestCases);
+                }
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     
     
     /**
@@ -313,6 +346,17 @@ public class SoapTestCore {
      */
     public void runTestFile(File inputFile) throws DocumentException, IOException, HarnessException {
 
+        try {
+            if(TestProperties.testProperties.getProperty("ignoreFiles").equals("true")){
+                getIgnoredTests();
+                if(toBeIgnored.contains(inputFile)){
+                    return;
+                }
+            }
+        } catch (HarnessException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
         FileAppender fileAppender = null;
         mTraceLogger = Logger.getLogger("zimbra.qa.trace");
         mResultLogger = Logger.getLogger("zimbra.qa.trace.result");
@@ -864,6 +908,7 @@ public class SoapTestCore {
         
         // If there is a postfix delay pending, do it here
         test.mPostfixSetup = doPostfixDelay(e);
+        doEwsDelay(e);
         doLdapDelay(e);
         
         try
@@ -2418,6 +2463,29 @@ public class SoapTestCore {
 
     }
     
+    protected void doEwsDelay(Element test) {
+        if (TestProperties.testProperties.getProperty("EwsDelay.check", "true").equals("false")) {
+            mLog.debug("ews.check property is false - skipping the ews delay");
+        } else {
+            String[] requests = SoapTestMain.globalProperties.getProperty("ewsrequests.list", "").split(",");
+            boolean matched = false;
+            for (String request : requests) {
+                if (Utilities.getElementsFromPath(test, "//" + request).length > 0) {
+                    matched = true;
+                    break;
+                }
+            }
+            if (matched) {
+                try {
+                    Thread.sleep(new Long(SoapTestMain.globalProperties.getProperty("ewsrequests.delay", "1000")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
     protected boolean doLdapDelay(Element test) throws HarnessException {
     	//delay for replica
 

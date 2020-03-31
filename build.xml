@@ -423,6 +423,7 @@
 		<target name="zm-network-soap-content" description="Copies network related soap data and tests">
 			<mkdir dir="${build.temp.dir}"/>
     		<echo message="Copying network related data and tests..."/>
+			<!--Current set of network related changes do not need these steps to be executed in zimbraX. Hence this part has been commented.-->
 			<if><available file="${zm-network-soap-harness.dir}/conf/setup.sh" type="file"/>
 				<then><delete file="./conf/setup.sh"/></then>
 			</if>
@@ -517,13 +518,22 @@
   	<target name="build-testware" description=" Build soap harness testware." 
   								depends="clean,build-testware-one,build-testware-two,build-tools-setup,compress-move" />		
 
-		<target name="Run-SoapTestCore" depends="compile" description="Run Staf Tests in non-STAF environment">
-			<property name="testRoot" value="data/soapvalidator/MailClient/Auth/auth_basic.xml"/>
+		<target name="Run-SoapTestCore" depends="compile,zm-network-soap-content" description="Run Staf Tests in non-STAF environment">
+			<property name="testRoot" value="build/temp/data/soapvalidator/"/>
 			<echo>STAF: Executing ${testRoot}</echo>
 			<java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
-				<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none"/>
+				<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t smoke -j"/>
 			</java>
 		</target>
+
+                <target name="Run-SoapTestSanity" depends="compile,zm-network-soap-content" description="Run Staf Tests in non-STAF environment">
+                        <property name="testRoot" value="build/temp/data/soapvalidator/SanityTest/"/>
+                        <echo>STAF: Executing ${testRoot}</echo>
+                        <java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
+                                <arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t sanity -j"/>
+                        </java>
+                </target>
+
     <target name="Execute_Tests" depends="build-init,resolve" description="Run Staf Tests in non-STAF environment">
         <echo>STAF: Executing ${testRoot}</echo>
     	<echo>class path value ${class.path}</echo>

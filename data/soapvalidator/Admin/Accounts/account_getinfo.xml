@@ -5,12 +5,14 @@
 <t:property name="test_acct3.server" value="NOT_DEFINED"/>
 <t:property name="test_acct4.server" value="NOT_DEFINED"/>
 <t:property name="test_acct5.server" value="NOT_DEFINED"/>
+<t:property name="test_acct6.server" value="NOT_DEFINED"/>
 
 <t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account4.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account5.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account6.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
     
 <t:property name="account.blank" value=""/>
 <t:property name="account.space" value="        "/>
@@ -18,6 +20,7 @@
 <t:property name="account.spchar" value="//|.'\\-"/>
 <t:property name="account.negative" value="-109876"/>
 <t:property name="account.zero" value="0"/>
+<t:property name="account.san" value="H123456"/>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="Ping" type="always" >
@@ -106,7 +109,19 @@
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
         </t:response>
     </t:test>
-
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account6.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraServiceAccountNumber">${account.san}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
+        </t:response>
+    </t:test>
 <t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
     <!--Delete an account-->
     <t:test required="true">
@@ -458,6 +473,43 @@
         </t:response>
     </t:test>
 
-</t:test_case>        
+</t:test_case>
+
+<!-- zcs-7488: Add attribute to account object LDAP for SAN -->
+<t:test_case testcaseid="acct_setup3_account_getInfo" type="always" bugids="ZCS7488,ZimbraX">
+    <t:objective>Login to the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!-- zcs-7488: Add attribute to account object LDAP for SAN -->
+<t:test_case testcaseid="GetAccountInfoRequest14" type="smoke" bugids="ZCS7488,ZimbraX">
+    <t:objective>Get the account information by account name. </t:objective>
+
+     <t:test required="true">
+        <t:request>
+            <GetAccountInfoRequest xmlns="urn:zimbraAccount">
+              <account by="name">${test_account6.name}</account>
+        </GetAccountInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetAccountInfoResponse/acct:name" match="${test_account6.name}"/>
+            <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraId']" match="${test_account6.id}"/>
+            <t:select path="//acct:GetAccountInfoResponse/acct:attr[@name='zimbraServiceAccountNumber']" match="${account.san}"/>
+        </t:response>
+     </t:test>
+</t:test_case>
  
 </t:tests>

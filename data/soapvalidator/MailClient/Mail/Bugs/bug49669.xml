@@ -5,7 +5,6 @@
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
 
@@ -17,10 +16,7 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-
 </t:test_case>
-
-
 <t:test_case testcaseid="AccountSetup" type="always">
     <t:objective>Create test account</t:objective>
     <steps> 1. Login to admin account, 2. Create a mail account </steps>
@@ -73,7 +69,7 @@
 	3. Reply/reply to all to that conversation, change subject and send mail
 	4. Login as receiver > verify that all messages are in single conversation.
     </t:steps>
-    
+
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
 	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
@@ -90,9 +86,7 @@
 
         </t:response>
     </t:test>
-	
 	<t:property name="msg01.file" value="${testMailRaw.root}/Bugs/49669/bug49669a.txt"/>
-
 
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
@@ -102,9 +96,9 @@
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest> 
-    
-	<t:property name="msg02.file" value="${testMailRaw.root}/Bugs/49669/bug49669b.txt"/>
 
+    <t:delay msec="1000" />
+    <t:property name="msg02.file" value="${testMailRaw.root}/Bugs/49669/bug49669b.txt"/>
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${msg02.file}</filename>
@@ -113,10 +107,9 @@
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
+
+    <t:delay msec="1000" />
     <t:property name="msg03.file" value="${testMailRaw.root}/Bugs/49669/bug49669c.txt"/>
-
-
     <t:mailinjecttest>
         <t:lmtpInjectRequest>
             <filename>${msg03.file}</filename>
@@ -125,11 +118,9 @@
             <server>${account1.server}</server>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>
-    
-    
-	<t:property name="server.zimbraAccount" value="${account2.server}"/>
 
-
+    <t:delay msec="1000" />
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test >
         <t:request>
 	        <AuthRequest xmlns="urn:zimbraAccount">

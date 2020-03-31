@@ -10,13 +10,10 @@
 <t:property name="domain1.account2.firstname" value="first${TIME}${COUNTER}"/>
 <t:property name="domain1.account2.lastname" value="last${TIME}${COUNTER}"/>
 
-
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<!--<t:property name="server.zimbraAdmin" value="${zimbraMailHost.name}"/>-->
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
     <t:test required="true">
         <t:request>
@@ -54,7 +51,7 @@
 
 	<t:test >
         <t:request>
-            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain1.galaccount.datasource.name}" type="zimbra" domain="${domain1.name}" server="${server.zimbraAdmin}">
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain1.galaccount.datasource.name}" type="zimbra" domain="${domain1.name}">
         		<account by="name">${domain1.galaccount.name}</account>
     		</CreateGalSyncAccountRequest>
         </t:request>

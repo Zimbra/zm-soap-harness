@@ -40,6 +40,7 @@
 <t:property name = "sent" value = "in:sent"/>
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:property name = "password.new" value = "test1234"/>
+<t:property name="account.san" value="H123456"/>
 
 <t:property name="server.name" value="testserver${TIME}${COUNTER}"/>
 
@@ -4742,6 +4743,23 @@ TODO
 
 </t:test_case>
 
+<!-- ZCS-7488: Add attribute to account object LDAP for SAN -->
+<t:test_case testcaseid="ModifyAccountRequest129" type="smoke" bugids="ZCS7488,ZimbraX">
+    <t:objective>Modify an account and set zimbraSAN</t:objective>
+
+    <t:test id = "modifyaccountrequest128a">
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_accountid.id}</id>
+                <a n="zimbraServiceAccountNumber">${account.san}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse/admin:account/admin:a[@n='zimbraServiceAccountNumber']" match="${account.san}"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
 <t:test_case testcaseid="AccountModify_AccountStatus_01" type="functional" >
 	<t:objective> Admin Modifies the Account Status of a normal user account </t:objective>
 
@@ -4783,6 +4801,35 @@ TODO
         </t:response>
     </t:test>
 
+</t:test_case>
+
+<t:test_case testcaseid="AccountModify_AccountStatus_02" type="smoke" bugids="ZCS-7788,ZimbraX">
+    <t:objective> Admin Modifies the Account Status of a normal user account along with Account suspension reason</t:objective>
+    <t:property name="server.zimbraAdmin" value="${status1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${status1.id}</id>
+                <a n="zimbraAccountStatus">locked</a>
+                <a n="zimbraAccountSuspensionReason">Account is locked due multiple failure attempts.</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse/admin:account/admin:a[@n='zimbraAccountStatus']" match="locked"/>
+            <t:select path="//admin:ModifyAccountResponse/admin:account/admin:a[@n='zimbraAccountSuspensionReason']" match="Account is locked due multiple failure attempts."/>
+        </t:response>
+    </t:test>
 </t:test_case>
 
 <t:test_case testcaseid="AccountModify_AccountStatus_02" type="functional" >

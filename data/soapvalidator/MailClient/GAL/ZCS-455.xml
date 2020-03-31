@@ -6,7 +6,7 @@
     <t:property name="domain2.galdatasource1.name" value="datasource${TIME}${COUNTER}"/>
     <t:property name="domain2.galdatasource2.name" value="ds${TIME}${COUNTER}"/>
     <t:property name="domain2.galsync.name" value="galsync@${domain2_name}"/>
-    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<!--    <t:property name="server.zimbraAdmin" value="${zimbraMailHost.name}"/>-->
 
     <t:test_case testcaseid="AcctSetup1_filters_save" type="always" >
         <t:objective>create domain and test account</t:objective>
@@ -64,7 +64,7 @@
         <!-- create and add galsync account on domain2 -->
         <t:test >
             <t:request>
-                <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain2.galdatasource1.name}" type="zimbra" domain="${domain2_name}" server="${server.zimbraAdmin}">
+                <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain2.galdatasource1.name}" type="zimbra" domain="${domain2_name}">
                     <account by="name">${domain2.galsync.name}</account>
                 </CreateGalSyncAccountRequest>
             </t:request>
