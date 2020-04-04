@@ -427,9 +427,6 @@
 			<if><available file="${zm-network-soap-harness.dir}/conf/setup.sh" type="file"/>
 				<then><delete file="./conf/setup.sh"/></then>
 			</if>
-			<if><available file="${zm-network-soap-harness.dir}/conf/global.properties" type="file"/>
-				<then><delete file="./conf/global.properties"/></then>
-			</if>
     		<if> <available file="${zm-network-soap-harness.dir}" type="dir"/>
       		<then>
         		<copy todir="${build.temp.dir}/data">
@@ -437,11 +434,6 @@
           				<include name="**/*"/>
           			</fileset>
         		</copy>
-      			<copy todir="./conf">
-      				<fileset dir="${zm-network-soap-harness.dir}/conf">
-      					<include name="**/*"/>
-      				</fileset>
-      			</copy>
       		</then>
     		</if>
   	</target>
