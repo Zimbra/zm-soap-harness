@@ -365,7 +365,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest1" type="smoke" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest1" type="bhr" areas="Calendar">
     <t:objective>Cancel an instance of daily appointment</t:objective>
     
     <t:test id="CancelAppointmentExceptionRequest1a">
@@ -389,7 +389,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest2" type="negative" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest2" type="functional" areas="Calendar">
     <t:objective>Cancel the whole series (No inst element) and verify cancelling it again  </t:objective>
     <t:steps>1. Cancel an instance of series
              2. Cancel the instance again
@@ -445,7 +445,7 @@
 </t:test_case>
 
     
-<t:test_case testcaseid="CancelAppointmentExceptionRequest3" type="negative" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest3" type="functional" areas="Calendar">
     <t:objective>Modify the series which is already cancelled</t:objective>
 
     <t:test depends="CancelAppointmentExceptionRequest2a">
@@ -476,7 +476,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest4" type="functional" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest4" type="sanity" areas="Calendar">
     <t:objective> CancelAppointmentRequest without optional m and id elements </t:objective>    
     
     <t:test id="CancelAppointmentExceptionRequest4a">
@@ -492,7 +492,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest5" type="negative" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest5" type="functional" areas="Calendar">
     <t:objective> CancelAppointmentRequest with the id of cancelled appointment</t:objective>
     <t:steps> 1.Cancel the created series
               2.Cancel any instance of that series
@@ -533,7 +533,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest6" type="negative" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest6" type="functional" areas="Calendar">
     <t:objective> CancelAppointmentRequest with the invalid numeric id (negative/zero/largepositive)</t:objective>
     <t:steps> 1.Cancel the created series
               2.Cancel any instance of that series
@@ -572,7 +572,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="negative" areas="Calendar" bugids="3843">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="functional" areas="Calendar" bugids="3843">
     <t:objective> CancelAppointmentRequest with the invalid non-numeric id (blank/spaces/special character/some text)</t:objective>
     <t:steps> 1.Cancel the created series
               2.Cancel any instance of that series
@@ -621,7 +621,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="negative" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest7" type="functional" areas="Calendar">
     <t:objective> CancelAppointmentRequest with the invalid missing id attribute </t:objective>
     <t:steps> 1.Cancel the created series
               2.Cancel any instance of that series
@@ -641,7 +641,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest8" type="functional" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest8" type="sanity" areas="Calendar">
     <t:objective> Searching the mail in another account for cancelled instance</t:objective>
     <t:steps>1. Login to any account2
              2. Search the mail for cancelled instance of series
@@ -690,7 +690,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CancelAppointmentExceptionRequest9" type="functional" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest9" type="sanity" areas="Calendar">
     <t:objective>To cancel two different instance of same series </t:objective>
     
     <t:test>
@@ -750,7 +750,7 @@
 </t:test_case>
     
      
-<t:test_case testcaseid="CancelAppointmentExceptionRequest10" type="negative" areas="Calendar">
+<t:test_case testcaseid="CancelAppointmentExceptionRequest10" type="functional" areas="Calendar">
     <t:objective>CancelAppointmentRequest with invalid value of 'd' in inst element </t:objective>
 
     <t:test>

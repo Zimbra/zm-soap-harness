@@ -98,7 +98,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest1" type="smoke">
+<t:test_case testcaseid="MsgGetRequest1" type="bhr">
     <t:objective>To get a mail with valid message id</t:objective>
     <t:steps>
         1. Send a mail and set the message id.
@@ -135,7 +135,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest2" type="negative" bugids="1797">
+<t:test_case testcaseid="MsgGetRequest2" type="functional" bugids="1797">
     <t:objective> Get message with valid message id with leading spaces </t:objective>
     
     <t:test id="MsgGetRequest2">
@@ -152,7 +152,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest3" type="negative" bugids="1797">
+<t:test_case testcaseid="MsgGetRequest3" type="functional" bugids="1797">
     <t:objective> Get message with valid message id with trailing spaces </t:objective>
     <t:test id="MsgGetRequest3">
         <t:request>
@@ -168,7 +168,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest4" type="negative" bugids="1797">
+<t:test_case testcaseid="MsgGetRequest4" type="functional" bugids="1797">
     <t:objective> Get message with valid message id with leading and trailing spaces </t:objective>
         <t:test id="MsgGetRequest4">
         <t:request>
@@ -184,7 +184,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest5" type="negative" >
+<t:test_case testcaseid="MsgGetRequest5" type="functional" >
     <t:objective> Get message with blank message id </t:objective>
     
     <t:test id="MsgGetRequest5">
@@ -201,7 +201,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest6" type="negative" >
+<t:test_case testcaseid="MsgGetRequest6" type="functional" >
     <t:objective> Get message with all spaces in message id </t:objective>
     
     <t:test id="MsgGetRequest6">
@@ -218,7 +218,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest7" type="negative" bugids="3843" >
+<t:test_case testcaseid="MsgGetRequest7" type="functional" bugids="3843" >
     <t:objective> Get message with special character in message id </t:objective>
         
     <t:test id="MsgGetRequest7">
@@ -235,7 +235,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest8" type="functional">
+<t:test_case testcaseid="MsgGetRequest8" type="sanity">
     <t:objective> Get message with valid message id and read attribute and html attribute = 0 </t:objective>
     
     <t:test id="MsgGetRequest8">
@@ -252,7 +252,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest9" type="negative">
+<t:test_case testcaseid="MsgGetRequest9" type="functional">
     <t:objective> GetMsgRequest without specifying id </t:objective>
     
     <t:test id="MsgGetRequest9">
@@ -269,7 +269,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest10" type="negative">
+<t:test_case testcaseid="MsgGetRequest10" type="functional">
     <t:objective> Get message with non existing message id </t:objective>
     <t:steps> 
         1. Delete an existing message 
@@ -302,7 +302,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest11" type="negative">
+<t:test_case testcaseid="MsgGetRequest11" type="functional">
     <t:objective> Get message with valid id and invalid read attribute (alpha/number/spchar/negative/blank) </t:objective>
 
     <t:test id="MsgGetRequest11a" >
@@ -380,7 +380,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest12" type="negative">
+<t:test_case testcaseid="MsgGetRequest12" type="functional">
     <t:objective> Get message with valid id and invalid html attribute (alpha/number/spchar/negative/blank) </t:objective>
 
     <t:test depends="MsgGetRequest11a">
@@ -441,7 +441,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest13" type="functional">
+<t:test_case testcaseid="MsgGetRequest13" type="sanity">
     <t:objective> GetMsgRequest for message which is tagged </t:objective>
     <t:steps> 1. Send a message
               2. Create a Tag
@@ -506,7 +506,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest14" type="functional">
+<t:test_case testcaseid="MsgGetRequest14" type="sanity">
     <t:objective> GetMsgRequest for message which is flagged </t:objective>
     <t:steps> 1. Send a message
               2. Flag a mail
@@ -556,7 +556,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="MsgGetRequest15" type="functional" bugids="13436">
+<t:test_case testcaseid="MsgGetRequest15" type="sanity" bugids="13436">
     <t:objective> TC to verify GetMsgRequest can access specific headers </t:objective>
 
    <t:test>
@@ -580,7 +580,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="MsgGetRequest15" type="smoke" bugids="3470">
+<t:test_case testcaseid="MsgGetRequest15" type="bhr" bugids="3470">
     <t:objective>Verify the "max" attribute for GetMsgRequest truncates the message body (basic)</t:objective>
 
     <!-- Add a mail to the inbox-->
@@ -631,7 +631,7 @@ But even against the No. 4 team in the BCS, the Bears' goals have not changed on
 
 </t:test_case>
 
-<t:test_case testcaseid="MsgGetRequest16" type="smoke" >
+<t:test_case testcaseid="MsgGetRequest16" type="bhr" >
     <t:objective>Verify if max is set to larger than the message size, the complete body is returned (text)</t:objective>
 
     <!-- Add a mail to the inbox-->
@@ -681,7 +681,7 @@ But even against the No. 4 team in the BCS, the Bears' goals have not changed on
 
 </t:test_case>
 
-<t:test_case testcaseid="MsgGetRequest17" type="smoke" >
+<t:test_case testcaseid="MsgGetRequest17" type="bhr" >
     <t:objective>Verify that max will truncate the message body (html)</t:objective>
 
     <!-- Add a mail to the inbox-->
@@ -759,7 +759,7 @@ taking their feet off the gas when the points matter most. &lt;br&gt;&lt;/p&gt;&
 
 </t:test_case>
 
-<t:test_case testcaseid="MsgGetRequest18" type="smoke" >
+<t:test_case testcaseid="MsgGetRequest18" type="bhr" >
     <t:objective>Verify if max is set to larger than the message size, the complete body is returned (text)</t:objective>
 
     <!-- Add a mail to the inbox-->
@@ -836,7 +836,7 @@ taking their feet off the gas when the points matter most. &lt;br&gt;&lt;/p&gt;&
 
 </t:test_case>
 
-<t:test_case testcaseid="MsgGetRequest19" type="functional" bugids="3470">
+<t:test_case testcaseid="MsgGetRequest19" type="sanity" bugids="3470">
     <t:objective>Helper test to import all messages associated with bug 3470</t:objective>
 
 	<t:property name="message.folder" value="${testMailRaw.root}/Bugs/3470/"/>
@@ -954,7 +954,7 @@ taking their feet off the gas when the points matter most. &lt;br&gt;&lt;/p&gt;&
 
 
 
-<t:test_case testcaseid="MsgGetRequest20" type="functional" bugids="32271">
+<t:test_case testcaseid="MsgGetRequest20" type="sanity" bugids="32271">
     <t:objective>Verify stringindexoutofbounds error for bug 32271</t:objective>
 
 
@@ -1009,7 +1009,7 @@ taking their feet off the gas when the points matter most. &lt;br&gt;&lt;/p&gt;&
 <t:property name="msg01.subject"	value="msg01.subject"/>
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="Bug #53779" type="functional" bugids="53779">
+<t:test_case testcaseid="Bug #53779" type="sanity" bugids="53779">
     <t:objective>Inject a particular mime message for P4 messages using LMTP and verify the fragment part</t:objective>
     
     <t:mailinjecttest >

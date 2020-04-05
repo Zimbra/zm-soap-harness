@@ -111,7 +111,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest1" type="smoke" areas="dev_sanity">
+<t:test_case testcaseid="RemoveAccountAliasRequest1" type="bhr" areas="dev_sanity">
     <t:objective> Remove an alias from an account </t:objective>
     <t:steps> 1. Create an alias
               2. Remove it
@@ -144,7 +144,7 @@
 </t:test_case>
  
 
-<t:test_case testcaseid="RemoveAccountAliasRequest2" type="negative" >
+<t:test_case testcaseid="RemoveAccountAliasRequest2" type="functional" >
     <t:objective> Remove an invalid alias (without domain name) from an account </t:objective>
 
     <t:test>
@@ -162,7 +162,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest3" type="negative" >
+<t:test_case testcaseid="RemoveAccountAliasRequest3" type="functional" >
     <t:objective> Remove an invalid alias (with non existing domain name) from an account </t:objective>
 
     <t:test>
@@ -181,7 +181,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="RemoveAccountAliasRequest4" type="negative" >
+<t:test_case testcaseid="RemoveAccountAliasRequest4" type="functional" >
     <t:objective> Remove an alias with name as blank/spchar/numbers </t:objective>
 
     <t:test>
@@ -223,7 +223,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest5" bugids="2157" type="negative" >
+<t:test_case testcaseid="RemoveAccountAliasRequest5" bugids="2157" type="functional" >
     <t:objective> Remove already deleted alias from the account </t:objective>
     <t:steps> 1. Create an alias
               2. Remove it
@@ -269,7 +269,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest6" type="functional" bugids="4091">
+<t:test_case testcaseid="RemoveAccountAliasRequest6" type="sanity" bugids="4091">
     <t:objective>Remove an alias from an account without removing alias from distribution list. </t:objective>
     <t:steps> 1. Create an alias.
               2. Add that alias to distribution list.
@@ -470,7 +470,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest9" type="functional">
+<t:test_case testcaseid="RemoveAccountAliasRequest9" type="sanity">
     <t:objective>Verify that deleting the original account deletes the aliases as well </t:objective>
     <t:steps> 1. Create an account and its alias
               2. Verify that you can log into alias account
@@ -574,7 +574,7 @@
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-<t:test_case testcaseid="RemoveAccountAliasRequest10" type="functional">
+<t:test_case testcaseid="RemoveAccountAliasRequest10" type="sanity">
     <t:objective>Verify that the original account does not get deleted if alias is deleted </t:objective>
     <t:steps> 1. Create an alias
               2. Try to log into alias account (should be allowed)
@@ -654,7 +654,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest11" type="functional">
+<t:test_case testcaseid="RemoveAccountAliasRequest11" type="sanity">
     <t:objective> Create an alias with same name as that deleted for some other account </t:objective>
     <t:steps> 1. Create an account and its alias
               2. Remove the alias
@@ -726,7 +726,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="RemoveAccountAliasRequest12" type="functional" bugids="8399">
+<t:test_case testcaseid="RemoveAccountAliasRequest12" type="sanity" bugids="8399">
     <t:objective>Verify that one cannot send mail to a deleted alias </t:objective>
     <t:steps> 1. Create an alias
               2. Log into test_account1 and send mail to alias address

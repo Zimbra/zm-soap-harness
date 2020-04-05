@@ -267,7 +267,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest1" type="smoke">
+<t:test_case testcaseid="SendInviteReplyRequest1" type="bhr">
     <t:objective>Accepting invitation request</t:objective>    
     <t:steps>1. Search the invitation
              2. Accept it
@@ -293,7 +293,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest2" type="smoke">
+<t:test_case testcaseid="SendInviteReplyRequest2" type="bhr">
     <t:objective>Declining invitation request</t:objective>
     <t:steps>1. Search the invitation
              2. Decline it
@@ -319,7 +319,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest3" type="smoke">
+<t:test_case testcaseid="SendInviteReplyRequest3" type="bhr">
     <t:objective>Tentative reply for invitaion </t:objective>
     <t:steps>1. Search the invitation
              2. Send tentative reply
@@ -347,7 +347,7 @@
 </t:test_case>
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
-<t:test_case testcaseid="SendInviteReplyRequest4" type="smoke">
+<t:test_case testcaseid="SendInviteReplyRequest4" type="bhr">
     <t:objective>Verify the mails for accept/tentative/decline of invitation are received properly</t:objective>
     <t:steps>1. Login to account1 
              2. Search the invitation replies
@@ -414,7 +414,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest5" type="negative">
+<t:test_case testcaseid="SendInviteReplyRequest5" type="functional">
     <t:objective> SendInviteReplyRequest with invalid value for verb (Space/blank/sometext/special character)</t:objective>
 
     <t:test depends="sendInviteReplyRequest3b">
@@ -488,7 +488,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest6" type="negative" bugids="3830">
+<t:test_case testcaseid="SendInviteReplyRequest6" type="functional" bugids="3830">
     <t:objective> SendInviteReplyRequest with invalid positive value for id (Zero/large number)</t:objective>
     
     <t:test depends="sendInviteReplyRequest3b">
@@ -528,7 +528,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest7" type="negative" bugids="1797">
+<t:test_case testcaseid="SendInviteReplyRequest7" type="functional" bugids="1797">
     <t:objective> SendInviteReplyRequest with invalid value for id (Negative/Space/blank/sometext/special character)</t:objective>
     
     <t:test depends="sendInviteReplyRequest3b">
@@ -619,7 +619,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest8" type="negative">
+<t:test_case testcaseid="SendInviteReplyRequest8" type="functional">
     <t:objective> SendInviteReplyRequest with deleted id </t:objective>
     <t:steps>1. Search the invitation
              2. Delete it 
@@ -670,7 +670,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest9" type="negative" bugids="3831">
+<t:test_case testcaseid="SendInviteReplyRequest9" type="functional" bugids="3831">
     <t:objective> SendInviteReplyRequest with invalid numeric value for compNum (Negative/large positive number) </t:objective>
 
     <t:test depends="sendInviteReplyRequest3b">
@@ -710,7 +710,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest10" type="negative">
+<t:test_case testcaseid="SendInviteReplyRequest10" type="functional">
     <t:objective> SendInviteReplyRequest with invalid non numeric value for compNum (Space/blank/sometext/special character) </t:objective>
     
     <t:test depends="sendInviteReplyRequest3b">
@@ -784,7 +784,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest11" type="functional">
+<t:test_case testcaseid="SendInviteReplyRequest11" type="sanity">
     <t:objective>SendInviteReplyRequest with updateOrganizer=True/False </t:objective>
     
     <t:test depends="sendInviteReplyRequest3b">
@@ -826,7 +826,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest12" type="functional">
+<t:test_case testcaseid="SendInviteReplyRequest12" type="sanity">
     <t:objective>SendInviteReplyRequest with updateOrganizer=zero/one </t:objective>    
 
     <t:test depends="sendInviteReplyRequest3b">
@@ -867,7 +867,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest13" type="negative">
+<t:test_case testcaseid="SendInviteReplyRequest13" type="functional">
     <t:objective>SendInviteReplyRequest with updateOrganizer=Invalid values (blank/space/sometext/special charecter) </t:objective>
     <t:steps>1. Search for the invitation
              2. Verify updateOrganizer= true/false
@@ -944,7 +944,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SendInviteReplyRequest14" type="functional">
+<t:test_case testcaseid="SendInviteReplyRequest14" type="sanity">
     <t:objective>SendInviteReplyRequest without m element </t:objective>
     
     <t:test depends="sendInviteReplyRequest3b">

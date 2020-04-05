@@ -199,7 +199,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest1" type="smoke">
+<t:test_case testcaseid="SyncRequest1" type="bhr">
     <t:objective>SyncRequest without any token on a new mailbox </t:objective>     
 
     <t:test id="syncRequest1a">
@@ -223,7 +223,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest2" type="smoke" bugids="2380">
+<t:test_case testcaseid="SyncRequest2" type="bhr" bugids="2380">
     <t:objective>SyncRequest with the previous token on a new mailbox (Sync Request without any change in account state)</t:objective>    
 
     <t:test depends="syncRequest1a">
@@ -238,7 +238,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest3" type="functional">
+<t:test_case testcaseid="SyncRequest3" type="sanity">
     <t:objective>SyncRequest after creation of a folder</t:objective>
      <t:steps> 1. Get the sync token
                2. Get the id of root folder
@@ -291,7 +291,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest4" type="functional">
+<t:test_case testcaseid="SyncRequest4" type="sanity">
     <t:objective>SyncRequest after creation of a tag</t:objective>
     <t:steps> 1. Get the sync token
               2. Create a tag
@@ -334,7 +334,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest5" type="functional">
+<t:test_case testcaseid="SyncRequest5" type="sanity">
     <t:objective>SyncRequest after creation of a contact</t:objective>
     <t:steps> 1. Get the sync token
               2. Create a contact
@@ -381,7 +381,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest6" type="functional">
+<t:test_case testcaseid="SyncRequest6" type="sanity">
     <t:objective>SyncRequest after addition of mail </t:objective>
     <t:steps> 1. Get the sync token
               2. Add a mail to mailbox
@@ -427,7 +427,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest7" type="functional">
+<t:test_case testcaseid="SyncRequest7" type="sanity">
     <t:objective>SyncRequest with a token obtained before the creation of a tag, folder, contact, mail</t:objective>    
     
     <t:test depends="syncRequest3c,syncRequest4b,syncRequest5b,syncRequest6b">
@@ -445,7 +445,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest8" type="functional">
+<t:test_case testcaseid="SyncRequest8" type="sanity">
     <t:objective>SyncRequest with a token obtained before the contact, mail</t:objective>
     
     <t:test depends="syncRequest5a,syncRequest5b,syncRequest6b">
@@ -463,7 +463,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest9" type="functional">
+<t:test_case testcaseid="SyncRequest9" type="sanity">
     <t:objective>SyncRequest without any token in a mailbox with information (tag, folder, contact, mail)</t:objective>
     
     <t:test  depends="syncRequest3c,syncRequest4b,syncRequest5b,syncRequest6b">
@@ -481,7 +481,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest10" type="functional">
+<t:test_case testcaseid="SyncRequest10" type="sanity">
     <t:objective>SyncRequest after saving the mail as draft </t:objective>
     <t:steps> 1. Get the sync token
               2. Save a mail as draft 
@@ -526,7 +526,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest11" type="functional">
+<t:test_case testcaseid="SyncRequest11" type="sanity">
     <t:objective>SyncRequest after creating an appointment</t:objective>
     <t:steps> 1. Get the sync token
               2. Create an appointment
@@ -577,7 +577,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest12" type="functional">
+<t:test_case testcaseid="SyncRequest12" type="sanity">
     <t:objective>SyncRequest with previous token instead of current token </t:objective>
     <t:steps> 1. Sync request to get a token A 
               2. Add message to the account
@@ -650,7 +650,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest13" type="negative">
+<t:test_case testcaseid="SyncRequest13" type="functional">
     <t:objective>SyncRequest with the invalid numeric tokens (Negative/Zero/Decimal/Large Number)</t:objective>    
     <t:steps> 1. Sync to get the next token.
               2. Sync with negative token and check the new token is same as that obtained in step1
@@ -706,7 +706,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest14" type="negative">
+<t:test_case testcaseid="SyncRequest14" type="functional">
     <t:objective>SyncRequest with the invalid tokens (blank/spaces/sometext)</t:objective>    
     
     <t:test>
@@ -740,7 +740,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="SyncRequest15" type="smoke">
+<t:test_case testcaseid="SyncRequest15" type="bhr">
     <t:objective>Sync without any token to a new account which already has a mail in its inbox</t:objective>
     <t:steps>1. Login to account 2 
              2. Check for the synchronization
@@ -772,7 +772,7 @@
 </t:test_case>
    
 
-<t:test_case testcaseid="SyncRequest16" type="functional" bugids="2368">
+<t:test_case testcaseid="SyncRequest16" type="sanity" bugids="2368">
     <t:objective>Sync after deleting a message</t:objective>
 
     <t:test id="syncRequest16a" depends="syncRequest15b">
@@ -799,7 +799,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
-<t:test_case testcaseid="SyncRequest17" type="functional">
+<t:test_case testcaseid="SyncRequest17" type="sanity">
     <t:objective>Verify Sync after deletion of a tag</t:objective>
     <t:steps>1. Login to account 1 
              2. Delete the folder
@@ -843,7 +843,7 @@
 </t:test_case>
     
     
-<t:test_case testcaseid="SyncRequest18" type="functional">
+<t:test_case testcaseid="SyncRequest18" type="sanity">
     <t:objective>Verify Sync after deletion of a Tag</t:objective>
     <t:steps>1. Delete the Tag
              2. Check for the synchronization
@@ -872,7 +872,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="SyncRequest19" type="functional">
+<t:test_case testcaseid="SyncRequest19" type="sanity">
     <t:objective>Verify Sync after deletion of a Contact</t:objective>
     <t:steps>1. Delete the Tag
              2. Check for the synchronization
@@ -901,7 +901,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="SyncRequest20" type="functional">
+<t:test_case testcaseid="SyncRequest20" type="sanity">
     <t:objective>Verify Sync after deletion of an appointment </t:objective>
     <t:steps>1. Get the summaries 
              2. Cancel the appointment
@@ -941,7 +941,7 @@
 </t:test_case>   
     
 
-<t:test_case testcaseid="SyncRequest21" type="functional" bugids="2367">
+<t:test_case testcaseid="SyncRequest21" type="sanity" bugids="2367">
     <t:objective>SyncRequest after performing rename operation on folder </t:objective>
      <t:steps> 1. Create a folder under root
                2. Check for the synchronization
@@ -992,7 +992,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="SyncRequest22" type="functional">
+<t:test_case testcaseid="SyncRequest22" type="sanity">
     <t:objective>SyncRequest after performing move operation on folder </t:objective>
      <t:steps> 1. Create two folder under root
                2. Check for the synchronization
@@ -1055,7 +1055,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest23" type="functional">
+<t:test_case testcaseid="SyncRequest23" type="sanity">
     <t:objective>SyncRequest after performing color operation on folder </t:objective>
      <t:steps> 1. Create a folder
                2. Perform synchronization
@@ -1106,7 +1106,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="SyncRequest24" type="functional">
+<t:test_case testcaseid="SyncRequest24" type="sanity">
     <t:objective>SyncRequest after performing empty operation on folder </t:objective>
      <t:steps> 1. Create two folder under root
                2. Move one folder within other 
@@ -1180,7 +1180,7 @@
 </t:test_case>    
     
     
-<t:test_case testcaseid="SyncRequest25" type="functional">
+<t:test_case testcaseid="SyncRequest25" type="sanity">
     <t:objective>SyncRequest after creation of renaming a tag </t:objective>
     <t:steps> 1. Create a tag
               2. Perform sync
@@ -1233,7 +1233,7 @@
 </t:test_case>
     
 
-<t:test_case testcaseid="SyncRequest26" type="functional">
+<t:test_case testcaseid="SyncRequest26" type="sanity">
     <t:objective>SyncRequest after creation of changing the color of a tag</t:objective>
     <t:steps> 1. Create a tag
               2. Perform sync
@@ -1286,7 +1286,7 @@
 </t:test_case>    
     
 
-<t:test_case testcaseid="SyncRequest27" type="functional">
+<t:test_case testcaseid="SyncRequest27" type="sanity">
     <t:objective>SyncRequest after tagging a contact</t:objective>
     <t:steps> 1. Create a contact.
               2. Create a tag.
@@ -1361,7 +1361,7 @@
 </t:test_case>
    
 
-<t:test_case testcaseid="SyncRequest28" type="functional">
+<t:test_case testcaseid="SyncRequest28" type="sanity">
     <t:objective>SyncRequest after multitagging a contact</t:objective>
     <t:steps> 1. Create a contact.
               2. Create a tag.
@@ -1467,7 +1467,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest29" type="functional">
+<t:test_case testcaseid="SyncRequest29" type="sanity">
     <t:objective>SyncRequest after removing tag from a contact</t:objective>
     <t:steps> 1. Create a contact.
               2. Create a tag.
@@ -1557,7 +1557,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest30" type="functional">
+<t:test_case testcaseid="SyncRequest30" type="sanity">
     <t:objective>SyncRequest after marking a contact as flagged</t:objective>
     <t:steps>1.Create a contact
              2.Check for synchronization
@@ -1614,7 +1614,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest31" type="functional">
+<t:test_case testcaseid="SyncRequest31" type="sanity">
     <t:objective>SyncRequest after marking a contact as unflagged</t:objective>
     <t:steps>1.Create a contact
              2.Mark the contact as flagged
@@ -1683,7 +1683,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest32" type="functional">
+<t:test_case testcaseid="SyncRequest32" type="sanity">
     <t:objective>SyncRequest after modifying a contact</t:objective>
     <t:steps>1.Create a contact
              2.Check for synchronization
@@ -1744,7 +1744,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest33" type="functional">
+<t:test_case testcaseid="SyncRequest33" type="sanity">
     <t:objective>SyncRequest after moving a contact to trash</t:objective>
     <t:steps>1.Create a contact
              2.Check for synchronization
@@ -1801,7 +1801,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest34" type="functional">
+<t:test_case testcaseid="SyncRequest34" type="sanity">
     <t:objective>SyncRequest after moving a contact to inbox.</t:objective>
     <t:steps>1.Create a contact
              2.Check for synchronization
@@ -1857,7 +1857,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest35" type="functional">
+<t:test_case testcaseid="SyncRequest35" type="sanity">
     <t:objective>SyncRequest after moving a contact to sent folder.</t:objective>
     <t:steps>1.Create a contact
              2.Check for synchronization
@@ -1913,7 +1913,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest36" type="functional">
+<t:test_case testcaseid="SyncRequest36" type="sanity">
     <t:objective>SyncRequest after moving a contact to drafts.</t:objective>
     <t:steps>1.Create a contact
              2.Check for synchronization
@@ -1969,7 +1969,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest37" type="functional">
+<t:test_case testcaseid="SyncRequest37" type="sanity">
     <t:objective>SyncRequest after moving a contact to junk folder.</t:objective>
     <t:steps>1.Create a contact
              2.Check for synchronization
@@ -2076,7 +2076,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest38" type="functional" >
+<t:test_case testcaseid="SyncRequest38" type="sanity" >
     <t:objective>SyncRequest after tagging and untagging a mail from inbox.</t:objective>
     <t:steps>
              1.Create a tag
@@ -2163,7 +2163,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest39" type="functional" >
+<t:test_case testcaseid="SyncRequest39" type="sanity" >
     <t:objective>SyncRequest after marking the mail as flagged and unflagged.</t:objective>
     <t:steps>
              1.Check for synchronization
@@ -2236,7 +2236,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest40" type="functional" >
+<t:test_case testcaseid="SyncRequest40" type="sanity" >
     <t:objective>SyncRequest after marking the mail as read and unread.</t:objective>
     <t:steps>
              1.Check for synchronization
@@ -2306,7 +2306,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest41" type="functional" >
+<t:test_case testcaseid="SyncRequest41" type="sanity" >
     <t:objective>SyncRequest after moving a mail to trash.</t:objective>
     <t:steps>1.Check for synchronization
              2.Move mail to trash
@@ -2349,7 +2349,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest42" type="functional" >
+<t:test_case testcaseid="SyncRequest42" type="sanity" >
     <t:objective>SyncRequest after moving a mail to spam folder.</t:objective>
     <t:steps>1.Check for synchronization
              2.Move mail to junk folder
@@ -2393,7 +2393,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest43" type="functional" >
+<t:test_case testcaseid="SyncRequest43" type="sanity" >
     <t:objective>SyncRequest after moving a mail to drafts.</t:objective>
     <t:steps>1.Check for synchronization
              2.Move mail to drafts
@@ -2437,7 +2437,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest44" type="functional" >
+<t:test_case testcaseid="SyncRequest44" type="sanity" >
     <t:objective>SyncRequest after moving a mail to sent folder.</t:objective>
     <t:steps>1.Check for synchronization
              2.Move mail to sent folder
@@ -2481,7 +2481,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SyncRequest45" type="functional" >
+<t:test_case testcaseid="SyncRequest45" type="sanity" >
     <t:objective>SyncRequest after moving a mail to inbox folder.</t:objective>
     <t:steps>1.Check for synchronization
              2.Move mail to inbox folder
@@ -2525,7 +2525,7 @@
 </t:test_case>
     
     
-<t:test_case testcaseid="SyncRequest46" type="functional" >
+<t:test_case testcaseid="SyncRequest46" type="sanity" >
     <t:objective>SyncRequest after marking a mail as spam </t:objective>
     <t:steps>1.Check for synchronization
              2.Mark the mail as spam
@@ -2569,7 +2569,7 @@
 </t:test_case>
 
     
-<t:test_case testcaseid="SyncRequest47" type="functional" bugids="15701" >
+<t:test_case testcaseid="SyncRequest47" type="sanity" bugids="15701" >
     <t:objective>SyncRequest after marking it as not a spam .</t:objective>
     <t:steps>1.Check for synchronization
              2.Mark the mail as spam (with "l" attribute)
@@ -2625,7 +2625,7 @@
 
 </t:test_case>    
 
-<t:test_case testcaseid="SyncRequest47a" type="functional" >
+<t:test_case testcaseid="SyncRequest47a" type="sanity" >
     <t:objective>SyncRequest after marking it as not a spam .</t:objective>
     <t:steps>1.Check for synchronization
              2.Mark the mail as spam

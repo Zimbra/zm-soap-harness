@@ -27,7 +27,7 @@
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-<t:test_case testcaseid="Ping" type="smoke" >
+<t:test_case testcaseid="Ping" type="bhr" >
  <t:objective>basic system check</t:objective>
 
 	<t:test id="ping" required="true">
@@ -42,7 +42,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="acct1_setup" type="smoke" >
+<t:test_case testcaseid="acct1_setup" type="bhr" >
  <t:objective>create test account</t:objective>
 
 	<t:test id="admin_login" required="true" depends="ping">
@@ -82,7 +82,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="acct1_login" type="smoke" >
+<t:test_case testcaseid="acct1_login" type="bhr" >
  <t:objective>login as the test account</t:objective>
 
 	<t:test required="true">
@@ -103,7 +103,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest1" type="smoke" >
+<t:test_case testcaseid="CreateFolderRequest1" type="bhr" >
  <t:objective>Create a folder with valid name </t:objective>
 
 	<t:test >
@@ -122,7 +122,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest2" type="functional" >
+<t:test_case testcaseid="CreateFolderRequest2" type="sanity" >
  <t:objective>Create a folder with blank folder name </t:objective>
 
 	<t:test >
@@ -140,7 +140,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest3" type="functional" >
+<t:test_case testcaseid="CreateFolderRequest3" type="sanity" >
  <t:objective>Create a folder with all spaces in folder name </t:objective>
 
 	<t:test >
@@ -158,7 +158,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest4" type="functional" >
+<t:test_case testcaseid="CreateFolderRequest4" type="sanity" >
  <t:objective>Create a folder with special characters in folder name </t:objective>
 
 	<t:test >
@@ -176,7 +176,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest5" type="functional" >
+<t:test_case testcaseid="CreateFolderRequest5" type="sanity" >
  <t:objective>Create a folder with duplicate folder name </t:objective>
 
 	<t:test id="createfolder5a">
@@ -207,7 +207,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest6" type="functional" >
+<t:test_case testcaseid="CreateFolderRequest6" type="sanity" >
  <t:objective>Create a folder with nonexisting parent folder name </t:objective>
 
 	<t:test >
@@ -225,7 +225,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest7" type="negative" bugids="1744" >
+<t:test_case testcaseid="CreateFolderRequest7" type="functional" bugids="1744" >
  <t:objective>Create a folder with blank parent folder name </t:objective>
 
 <t:test >
@@ -243,7 +243,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateFolderRequest8" type="negative" >
+<t:test_case testcaseid="CreateFolderRequest8" type="functional" >
  <t:objective>Create a folder with No parent folder name </t:objective>
 
 <t:test >
@@ -260,7 +260,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest1" type="smoke" >
+<t:test_case testcaseid="FolderActionRequest1" type="bhr" >
  <t:objective>Rename a folder to unique name </t:objective>
 
 	<t:test id="folderaction1a">
@@ -291,7 +291,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest2" type="functional" >
+<t:test_case testcaseid="FolderActionRequest2" type="sanity" >
  <t:objective>Rename a folder to duplicate name </t:objective>
 
 	<!-- First : Create a folder with any name -->
@@ -339,7 +339,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest3" type="negative" >
+<t:test_case testcaseid="FolderActionRequest3" type="functional" >
  <t:objective>Rename a folder with nonexisting folder id </t:objective>
 
 	<t:test >
@@ -356,7 +356,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest4" type="smoke" >
+<t:test_case testcaseid="FolderActionRequest4" type="bhr" >
  <t:objective>Move a folder within some existing folder </t:objective>
  <t:steps> create folderA, create folderB, move folderB under folderA </t:steps>
 
@@ -404,7 +404,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest5" type="functional" >
+<t:test_case testcaseid="FolderActionRequest5" type="sanity" >
  <t:objective>Move a folder within itself </t:objective>
 
 	<t:test id="folderaction5a">
@@ -435,7 +435,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest6" type="smoke" >
+<t:test_case testcaseid="FolderActionRequest6" type="bhr" >
  <t:objective>Delete a Folder,i.e move it to trash </t:objective>
 
 	<t:test id="folderaction6a">
@@ -469,7 +469,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest7" type="negative" >
+<t:test_case testcaseid="FolderActionRequest7" type="functional" >
  <t:objective>Move a folder within a non existing folder </t:objective>
 
 	<t:test id="folderaction7a">
@@ -499,7 +499,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="FolderActionRequest7" type="smoke" >
+<t:test_case testcaseid="FolderActionRequest7" type="bhr" >
  <t:objective>Move a folder within a non existing folder </t:objective>
 
 <t:test id="folderaction7a">

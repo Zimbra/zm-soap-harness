@@ -192,7 +192,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="ModifyAccountRequest1" type="functional" areas="dev_sanity">
+<t:test_case testcaseid="ModifyAccountRequest1" type="sanity" areas="dev_sanity">
  <t:objective> Modify an account with all valid details </t:objective>
 
 <t:test >
@@ -2610,7 +2610,7 @@
 
 <!--
 TODO
-<t:test_case testcaseid="ModifyAccountRequest68" type="smoke" >
+<t:test_case testcaseid="ModifyAccountRequest68" type="bhr" >
  <t:objective> Set zimbraMailHost to some valid name  </t:objective>
  <t:steps>
 	1. Create a new, unique host.  Is this possible without the corresponding hardware?
@@ -3084,7 +3084,7 @@ TODO
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyAccountRequest82" type="smoke">
+<t:test_case testcaseid="ModifyAccountRequest82" type="bhr">
     <t:objective>Modify an account and set zimbraAccountStatus to active, maintenance, locked, closed</t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -4450,7 +4450,7 @@ TODO
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyAccountRequest122" type="negative" bugids = "27967" >
+<t:test_case testcaseid="ModifyAccountRequest122" type="functional" bugids = "27967" >
     <t:objective>Modify an account with invalid(blank/space/spchar/sometext/negative/zero/largenumber/starting with zero/invalid.number) values of id.</t:objective>
     
     <t:test >
@@ -4555,7 +4555,7 @@ TODO
  </t:test_case>   
  
  
- <t:test_case testcaseid="ModifyAccountRequest123" type="negative">
+ <t:test_case testcaseid="ModifyAccountRequest123" type="functional">
     <t:objective>Modify an account with out id tag.</t:objective>
  
     <t:test >
@@ -4571,7 +4571,7 @@ TODO
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyAccountRequest124" type="negative">
+<t:test_case testcaseid="ModifyAccountRequest124" type="functional">
     <t:objective>Modify an account which is deleted.</t:objective>
     <t:steps> 1. Create an account.
               2. Delete it.
@@ -4615,7 +4615,7 @@ TODO
 </t:test_case> 
 
 
-<t:test_case testcaseid="ModifyAccountRequest125" type="negative">
+<t:test_case testcaseid="ModifyAccountRequest125" type="functional">
     <t:objective>Modify an account with leading spaces in id.</t:objective>
     <t:steps> 1. Create an account
               2. Modify that account with leading spaces in id.
@@ -4647,7 +4647,7 @@ TODO
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyAccountRequest126" type="negative">
+<t:test_case testcaseid="ModifyAccountRequest126" type="functional">
     <t:objective>Modify an account with trailing spaces in id.</t:objective>
     <t:steps> 1. Create an account
               2. Modify that account with trailing spaces in id.
@@ -4679,7 +4679,7 @@ TODO
 </t:test_case>
 
 
-<t:test_case testcaseid="ModifyAccountRequest127" type="functional" bugids="9964" hostCount="2" >
+<t:test_case testcaseid="ModifyAccountRequest127" type="sanity" bugids="9964" hostCount="2" >
     <t:objective> Verify that the change in zimbraMailHost is refelcted in zimbraMailTransport attribute.</t:objective>
     <t:steps> 1. Create an account with zimbraMailHost  as multihostA.FQDN
 				   2. Modify that account with zimbraMailHost  as multihostB.FQDN.
@@ -4744,7 +4744,7 @@ TODO
 </t:test_case>
 
 <!-- ZCS-7488: Add attribute to account object LDAP for SAN -->
-<t:test_case testcaseid="ModifyAccountRequest129" type="smoke" bugids="ZCS7488,ZimbraX">
+<t:test_case testcaseid="ModifyAccountRequest129" type="bhr" bugids="ZCS7488,ZimbraX">
     <t:objective>Modify an account and set zimbraSAN</t:objective>
 
     <t:test id = "modifyaccountrequest128a">
@@ -4760,7 +4760,7 @@ TODO
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="AccountModify_AccountStatus_01" type="functional" >
+<t:test_case testcaseid="AccountModify_AccountStatus_01" type="sanity" >
 	<t:objective> Admin Modifies the Account Status of a normal user account </t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${status1.server}"/>
@@ -4803,7 +4803,7 @@ TODO
 
 </t:test_case>
 
-<t:test_case testcaseid="AccountModify_AccountStatus_02" type="smoke" bugids="ZCS-7788,ZimbraX">
+<t:test_case testcaseid="AccountModify_AccountStatus_02" type="bhr" bugids="ZCS-7788,ZimbraX">
     <t:objective> Admin Modifies the Account Status of a normal user account along with Account suspension reason</t:objective>
     <t:property name="server.zimbraAdmin" value="${status1.server}"/>
     <t:test >
@@ -4832,7 +4832,7 @@ TODO
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="AccountModify_AccountStatus_02" type="functional" >
+<t:test_case testcaseid="AccountModify_AccountStatus_02" type="sanity" >
 	<t:objective> Admin Modifies the Account Status of a Admin account </t:objective>
 
 		<t:property name="server.zimbraAdmin" value="${status2.server}"/>
@@ -4876,7 +4876,7 @@ TODO
 </t:test_case>
 
 
-<t:test_case testcaseid="AccountModify_AccountStatus_03" type="functional" >
+<t:test_case testcaseid="AccountModify_AccountStatus_03" type="sanity" >
 	<t:objective> Admin Modifies the Account Status of a Domain Admin account </t:objective>
 
 		<t:property name="server.zimbraAdmin" value="${status3.server}"/>
@@ -4919,7 +4919,7 @@ TODO
 
 </t:test_case>
 
-<t:test_case testcaseid="AccountModify_AccountStatus_04" type="functional" >
+<t:test_case testcaseid="AccountModify_AccountStatus_04" type="sanity" >
 	<t:objective> Domain Admin Modifies the Account Status of a normal account </t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${status5.server}"/>
@@ -4962,7 +4962,7 @@ TODO
 
 </t:test_case>
 
-<t:test_case testcaseid="AccountModify_AccountStatus_05" type="functional" >
+<t:test_case testcaseid="AccountModify_AccountStatus_05" type="sanity" >
 	<t:objective> Domain Admin Modifies the Account Status of a Domain Admin account </t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${status6.server}"/>

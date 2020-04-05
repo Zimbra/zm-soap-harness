@@ -118,7 +118,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest1" type="smoke" >
+<t:test_case testcaseid="CreateContactRequest1" type="bhr" >
     <t:objective>Create a contact  </t:objective>
 
     <t:test >
@@ -141,7 +141,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest2" type="functional" >
+<t:test_case testcaseid="CreateContactRequest2" type="sanity" >
     <t:objective>Create a contact that is already existing </t:objective>
 
     <t:test id="contacts002a">
@@ -181,7 +181,7 @@
 </t:test_case>
  
 
-<t:test_case testcaseid="CreateContactRequest3" type="functional" >
+<t:test_case testcaseid="CreateContactRequest3" type="sanity" >
     <t:objective>Create a Contact with all the fields</t:objective>
 
     <t:test >
@@ -229,7 +229,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest4" type="negative" >
+<t:test_case testcaseid="CreateContactRequest4" type="functional" >
     <t:objective>Create a Contact with Blank Fields </t:objective>
 
     <t:test >
@@ -251,7 +251,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest5" type="functional" >
+<t:test_case testcaseid="CreateContactRequest5" type="sanity" >
     <t:objective>Create a Contacts with leading spaces in First Name and Last name </t:objective>
 
     <t:test >
@@ -271,7 +271,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest6" type="functional" >
+<t:test_case testcaseid="CreateContactRequest6" type="sanity" >
     <t:objective>Create a Contacts with trailling spaces in First Name and Last name </t:objective>
  
     <t:test>
@@ -291,7 +291,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest7" type="functional" >
+<t:test_case testcaseid="CreateContactRequest7" type="sanity" >
     <t:objective>Create a Contacts with Duplicate e-mail id </t:objective>
 
     <t:test id="contacts7a">
@@ -331,7 +331,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest8" type="functional" >
+<t:test_case testcaseid="CreateContactRequest8" type="sanity" >
  <t:objective>Create a contact with a valid company name, and with "file as" option company</t:objective>
 
     <t:test >
@@ -356,7 +356,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest9" type="functional" >
+<t:test_case testcaseid="CreateContactRequest9" type="sanity" >
  <t:objective>Create a contact without a company name, and with "file as" option company</t:objective>
 
     <t:test >
@@ -380,7 +380,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest10" type="negative" >
+<t:test_case testcaseid="CreateContactRequest10" type="functional" >
  <t:objective>Create a Contact with invalid "File As" option (10) </t:objective>
 
     <t:test >
@@ -403,7 +403,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest11" type="negative" >
+<t:test_case testcaseid="CreateContactRequest11" type="functional" >
  <t:objective>Create a Contact With negative "File As" option </t:objective>
 
     <t:test >
@@ -426,7 +426,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="ContactActionRequest1" type="functional" bugids="11018">
+<t:test_case testcaseid="ContactActionRequest1" type="sanity" bugids="11018">
  <t:objective>Delete already deleted Contact  </t:objective>
  <t:steps>create the contact, delete it, then delete it again </t:steps>
 
@@ -472,7 +472,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest12" type="negative" >
+<t:test_case testcaseid="CreateContactRequest12" type="functional" >
     <t:objective>Create a Contact With different valid file as option  </t:objective>
 
     <t:test>
@@ -596,7 +596,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateContactRequest13" type="negative" bugids="5201" >
+<t:test_case testcaseid="CreateContactRequest13" type="functional" bugids="5201" >
  <t:objective>Create a Contact with a bad attribute </t:objective>
 
     <t:test >
@@ -614,7 +614,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="CreateContactRequest14" type="smoke" bugids="6020">
+<t:test_case testcaseid="CreateContactRequest14" type="bhr" bugids="6020">
     <t:objective>Create a contact using a simple inline vCard</t:objective>
 
     <t:test >
@@ -650,7 +650,7 @@ END:VCARD
 </t:test_case>
 
 
-<t:test_case testcaseid="CreateContactRequest15" type="smoke" bugids="6630">
+<t:test_case testcaseid="CreateContactRequest15" type="bhr" bugids="6630">
     <t:objective>Create a contact using inline vCard exported rom Outlook</t:objective>
 
     <t:test >
@@ -712,7 +712,7 @@ END:VCARD
 
 <!-- Test case corresponding to bug 15589 -->
 
-<t:test_case testcaseid="CreateContactRequest16" type="smoke" >
+<t:test_case testcaseid="CreateContactRequest16" type="bhr" >
     <t:objective>Create a contact  with verbose ="0" and verify that only "id" is returned in response</t:objective>
 
     <t:test >
@@ -740,7 +740,7 @@ END:VCARD
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 <t:property name="uploadServletServer" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="CreateContactRequest17" type="smoke" bugids="13827">
+<t:test_case testcaseid="CreateContactRequest17" type="bhr" bugids="13827">
     <t:objective>Create a contact with image</t:objective>
     <t:steps> 1. Login with a user
 	2. create contact with image as attachment to the contact
@@ -789,7 +789,7 @@ END:VCARD
 <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
 <t:property name="uploadServletServer" value="${test_acct2.server}"/>
 
-<t:test_case testcaseid="CreateContactRequest18" type="smoke" bugids="71868">
+<t:test_case testcaseid="CreateContactRequest18" type="bhr" bugids="71868">
     <t:objective>Try to upload an invalid image in contact</t:objective>
     <t:steps> 	1. Login with a user
     			2. Upload a invalid picture(text file renamed as jpg file) 

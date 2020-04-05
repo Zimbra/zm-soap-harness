@@ -110,7 +110,7 @@
 
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
-<t:test_case testcaseid="acct1_login" type="smoke">
+<t:test_case testcaseid="acct1_login" type="bhr">
     <t:objective>Login as the test account and get the folder list</t:objective>
     <t:steps>
         1. Login to test account
@@ -147,7 +147,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest1" type="smoke">
+<t:test_case testcaseid="SaveDraftRequest1" type="bhr">
     <t:objective>To save a mail as draft and verify whether it is saved.</t:objective>
     <t:steps>
         1. Save a mail as draft
@@ -187,7 +187,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest2" type="functional">
+<t:test_case testcaseid="SaveDraftRequest2" type="sanity">
     <t:objective>To update the mail that was saved as draft.</t:objective>
 
     <t:test id="saveDraftRequest2a" depends="saveDraftRequest1a">
@@ -223,7 +223,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest3" type="functional">
+<t:test_case testcaseid="SaveDraftRequest3" type="sanity">
     <t:objective>To save a reply. i.e. rt="r" in 'm' </t:objective>
     <t:steps>
         1. Send a mail
@@ -267,7 +267,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest4" type="functional">
+<t:test_case testcaseid="SaveDraftRequest4" type="sanity">
     <t:objective>To save a forwarded mail. i.e. rt="w" in 'm'</t:objective>
     <t:steps>
         1. Send a mail
@@ -311,7 +311,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest5" type="negative">
+<t:test_case testcaseid="SaveDraftRequest5" type="functional">
     <t:objective>To delete a saved draft mail. </t:objective>
     <t:steps>
         1. Save a mail as draft
@@ -361,7 +361,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest6" type="negative">
+<t:test_case testcaseid="SaveDraftRequest6" type="functional">
     <t:objective>To resave the deleted draft i.e. SaveDraftRequest  with id of deleted draft</t:objective>
 
     <t:test depends="saveDraftRequest5b">
@@ -384,7 +384,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest7" type="functional">
+<t:test_case testcaseid="SaveDraftRequest7" type="sanity">
     <t:objective>To Send a draft mail</t:objective>
     <t:steps>
         1. Save a message as Draft
@@ -428,7 +428,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest8" type="functional">
+<t:test_case testcaseid="SaveDraftRequest8" type="sanity">
     <t:objective>To verify GetMsgRequest for Draft mail</t:objective>
     <t:steps>
         1. Save a message as Draft
@@ -466,7 +466,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest9" type="functional">
+<t:test_case testcaseid="SaveDraftRequest9" type="sanity">
     <t:objective>To verify individual attributes are saved correctly for Draft mail - plain text</t:objective>
     <t:steps>
         1. Save a message as Draft
@@ -522,7 +522,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest10" type="functional">
+<t:test_case testcaseid="SaveDraftRequest10" type="sanity">
     <t:objective>To verify individual attributes are saved correctly for Draft mail - html</t:objective>
     <t:steps>
         1. Save a message as Draft
@@ -605,7 +605,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest11" type="functional">
+<t:test_case testcaseid="SaveDraftRequest11" type="sanity">
     <t:objective>To save a mail with attachment as draft and verify whether it is saved.</t:objective>
     <t:steps>
         1. Upload attachment file and get its aid
@@ -671,7 +671,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest12" type="functional">
+<t:test_case testcaseid="SaveDraftRequest12" type="sanity">
     <t:objective>To save draft message using MIME i.e. using aid in m element</t:objective>
     <t:steps>
         1. Upload MIME file and get its aid
@@ -714,7 +714,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest13" type="functional">
+<t:test_case testcaseid="SaveDraftRequest13" type="sanity">
     <t:objective>To save a mail with multiple attachments as draft and verify whether it is saved.</t:objective>
     <t:steps>
         1. Upload attachment files and get their id's
@@ -808,7 +808,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest14" type="functional">
+<t:test_case testcaseid="SaveDraftRequest14" type="sanity">
     <t:objective>To save a mail as draft with MIME as attachment</t:objective>
     <t:steps>
         1. Upload MIME file and get its aid
@@ -873,7 +873,7 @@
 
 
 
-<t:test_case testcaseid="SaveDraftRequest15" type="smoke" bugids="2548">
+<t:test_case testcaseid="SaveDraftRequest15" type="bhr" bugids="2548">
     <t:objective>To save a mail with a folder ID</t:objective>
     <t:steps>
         1. Create a folder
@@ -931,7 +931,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SaveDraftRequest16" type="smoke" bugids="2548">
+<t:test_case testcaseid="SaveDraftRequest16" type="bhr" bugids="2548">
     <t:objective>To save a mail with a tag ID</t:objective>
     <t:steps>
         1. Create a tag
@@ -1007,7 +1007,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest17" type="smoke" bugids="2548">
+<t:test_case testcaseid="SaveDraftRequest17" type="bhr" bugids="2548">
     <t:objective>To save a mail with multiple tag IDs</t:objective>
     <t:steps>
         1. Create two tags
@@ -1094,7 +1094,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SaveDraftRequest18" type="smoke" bugids="2548">
+<t:test_case testcaseid="SaveDraftRequest18" type="bhr" bugids="2548">
     <t:objective>To save a mail that is flagged</t:objective>
     <t:steps>
         1. Save a mail as draft that is flagged
@@ -1158,7 +1158,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest19" type="functional">
+<t:test_case testcaseid="SaveDraftRequest19" type="sanity">
     <t:objective> SaveDraftRequest with "idnt" (identity) attribute   </t:objective>
     <t:steps>
         1. Creat one identity 
@@ -1224,7 +1224,7 @@
  </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest20" type="negative">
+<t:test_case testcaseid="SaveDraftRequest20" type="functional">
     <t:objective> Save a draft message with non-existent identity </t:objective>
    	
 	<t:test>
@@ -1351,7 +1351,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest22" type="functional">
+<t:test_case testcaseid="SaveDraftRequest22" type="sanity">
     <t:objective> Save a draft message with orgid attribute </t:objective>
 	<t:steps> 1. Send a messsge to urself and get the meesage id
 			  2. Save a 
@@ -1394,7 +1394,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="SaveDraftRequest23" type="functional" bugids="38035, 38503">
+<t:test_case testcaseid="SaveDraftRequest23" type="sanity" bugids="38035, 38503">
     <t:objective> Verify SaveDraftRequest supports relative path </t:objective>
 
 	<t:test>
