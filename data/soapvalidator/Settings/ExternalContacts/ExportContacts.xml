@@ -1,0 +1,755 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="acct1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="${defaultpassword.value}"/>
+<t:property name="account2.name" value="acct1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.password" value="${defaultpassword.value}"/>
+<t:property name="account3.name" value="acct1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.password" value="${defaultpassword.value}"/>
+<t:property name="account4.name" value="acct1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.password" value="${defaultpassword.value}"/>
+<t:property name="account5.name" value="acct1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.password" value="${defaultpassword.value}"/>
+
+<t:property name="contact1.first" value="first${TIME}.${COUNTER}"/>
+<t:property name="contact1.last" value="last${TIME}.${COUNTER}"/>
+<t:property name="contact1.email" value="email${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="contact2.first" value="first${TIME}.${COUNTER}"/>
+<t:property name="contact2.last" value="last${TIME}.${COUNTER}"/>
+<t:property name="contact2.email" value="email${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>
+<t:property name="test_acct4.server" value="NOT_DEFINED"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="ping" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="CSV_account_setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${account1.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${account2.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>${account3.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account4.name}</name>
+				<password>${account4.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account5.name}</name>
+				<password>${account5.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+
+<t:test_case testcaseid="export_contacts_01" type="smoke" >
+	<t:objective>Verify a contact can be exported</t:objective>
+
+
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact1.first}</a>
+                    <a n="lastName">${contact1.last}</a>
+                    <a n="email">${contact1.email}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+		    <t:select attr="id" set="contact.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.csvServlet" value="${test_acct1.server}"/>
+
+	<t:csvservlettest>
+		<t:csvServletRequest>
+		</t:csvServletRequest>
+		<t:csvServletResponse>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='firstName']" match="${contact1.first}"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='lastName']" match="${contact1.last}"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='email']" match="${contact1.email}"/>
+		</t:csvServletResponse>
+	</t:csvservlettest>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="export_contacts_02" type="smoke" >
+	<t:objective>Verify two contacts can be exported</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${account2.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact1.first}</a>
+                    <a n="lastName">${contact1.last}</a>
+                    <a n="email">${contact1.email}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+		    <t:select attr="id" set="contact.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact2.first}</a>
+                    <a n="lastName">${contact2.last}</a>
+                    <a n="email">${contact2.email}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+		    <t:select attr="id" set="contact.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.csvServlet" value="${test_acct2.server}"/>
+
+	<t:csvservlettest>
+		<t:csvServletRequest>
+		</t:csvServletRequest>
+		<t:csvServletResponse>
+			<t:select path="//test:csvServletResponse/cn/a[@n='email']" match="${contact1.email}"/>
+			<t:select path="//test:csvServletResponse/cn/a[@n='firstName']" match="${contact1.first}"/>
+			<t:select path="//test:csvServletResponse/cn/a[@n='lastName']" match="${contact1.last}"/>
+
+			<t:select path="//test:csvServletResponse/cn/a[@n='email']" match="${contact2.email}"/>
+			<t:select path="//test:csvServletResponse/cn/a@n='firstName']" match="${contact2.first}"/>
+			<t:select path="//test:csvServletResponse/cn/a[@n='lastName']" match="${contact2.last}"/>
+		</t:csvServletResponse>
+	</t:csvservlettest>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="export_contacts_03" type="functional" bugids="12214">
+	<t:objective>Verify that all contact fields are exported correctly</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+		<cn>
+			<!--a n="lastName">last</a>
+			<a n="firstName">first</a>
+			<a n="company">company</a>
+			<a n="middleName">middle</a>
+			<a n="jobTitle">job title</a>
+			<a n="email">email</a>
+			<a n="email2">email2</a>
+			<a n="email3">email3</a>
+			<a n="workStreet">street</a>
+			<a n="workCity">city</a>
+			<a n="workState">state</a>
+			<a n="workPostalCode">postal code</a>
+			<a n="workCountry">country</a>
+			<a n="workURL">webpage</a>
+			<a n="workPhone">phone</a>
+			<a n="workPhone2">phone2</a>
+			<a n="workFax">fax</a>
+			<a n="assistantPhone">assistant</a>
+			<a n="companyPhone">companyphone</a>
+			<a n="callbackPhone">callback</a>
+			<a n="homeStreet">home street</a>
+			<a n="homeCity">home city</a>
+			<a n="homeState">home state</a>
+			<a n="homePostalCode">home postal code</a>
+			<a n="homeCountry">home country</a>
+			<a n="homeURL">home webpage</a>
+			<a n="homePhone">home phone</a>
+			<a n="homePhone2">home phone2</a>
+			<a n="homeFax">home fax</a>
+			<a n="mobilePhone">home mobile</a>
+			<a n="pager">home pager</a>
+			<a n="carPhone">home car</a>
+			<a n="notes">notes line 1 notest line 2</a-->
+			<a n="firstName">First</a>
+            <a n="lastName">Last</a>
+            <a n="email">email@domain.com</a>
+            <a n="company">pspl</a>
+			<a n="assistantPhone">assphone</a>
+			<a n="birthday">11/11/11</a>
+            <a n="callbackPhone">6666</a>
+            <a n="carPhone">6666</a>
+            <a n="homePhone2">6666</a>
+            <a n="homeFax">6666</a>
+			<a n="otherStreet">other street</a>
+			<a n="otherState">other state</a>
+			<a n="otherPostalCode">other postal code</a>
+			<a n="otherCity">otherCity</a>
+			<a n="otherCountry">other country</a>
+			<a n="otherURL">other webpage</a>
+			<a n="otherPhone">6666</a>
+            <a n="otherFax">6666</a>
+            <a n="email2">user2@persistent.co.in</a>
+            <a n="middleName">s</a>
+            <a n="jobTitle">QA</a>
+            <a n="workPhone">6666</a>
+            <a n="homePhone">6666</a>
+            <a n="mobilePhone">6666</a>
+            <a n="pager">6666</a>
+            <a n="email3">user3@persistent.co.in</a>
+            <a n="workFax">6666</a>
+            <a n="workPhone2">6666</a>
+		    <a n="workStreet">tt</a>
+            <a n="workCity">tt</a>
+            <a n="workState">tt</a>
+            <a n="workPostalCode">tt</a>
+            <a n="workCountry">tt</a>
+            <a n="workURL">tt</a>
+            <a n="notes">hihohioohhghghgjhjhj</a>
+			<a n="homeCity">homecity</a>
+			<a n="homeCountry">homecountry</a>
+			<a n="homeFax">6666</a>
+			<a n="homePhone">6666</a>
+			<a n="homePhone2">6666</a>
+			<a n="homePostalCode">6666</a>
+			<a n="homeState">homestate</a>
+			<a n="homeStreet">homestreet</a>
+			<a n="homeURL">homeurl</a>
+			<a n="namePrefix">namePrefix</a>
+			<a n="nameSuffix">nameSuffix</a>
+			<a n="initials">Mr.</a>
+			<a n="nickname">nickname</a>
+			<a n="fileAs">3</a>
+		</cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+		    <t:select attr="id" set="contact.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.csvServlet" value="${test_acct1.server}"/>
+
+	<t:csvservlettest>
+		<t:csvServletRequest>
+		</t:csvServletRequest>
+		<t:csvServletResponse>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='assistantPhone']"  match="assphone"/>
+			<t:select path="//test:csvServletResponse/cn/a[@n='firstName']" match="First"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='lastName']" match="Last"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='email']" match="email@domain.com"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='company']" match="pspl"/> 
+			<t:select path="//test:csvServletResponse/cn/a[@n='birthday']"  match="11/11/11"/>
+			<t:select path="//test:csvServletResponse/cn/a[@n='callbackPhone']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='carPhone']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homePhone2']" match="6666"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homeFax']" match="6666"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='otherStreet']"  match="other street"/>
+			<t:select path="//test:csvServletResponse/cn/a[@n='otherState']" match="other state"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='otherPostalCode']" match="other postal code"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='otherCity']" match="otherCity"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='otherCountry']" match="other country"/> 
+			<t:select path="//test:csvServletResponse/cn/a[@n='otherURL']"  match="other webpage"/>
+			<t:select path="//test:csvServletResponse/cn/a[@n='otherPhone']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='otherFax']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='email2']" match="user2@persistent.co.in"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='middleName']" match="s"/> 
+			<t:select path="//test:csvServletResponse/cn/a[@n='jobTitle']"  match="QA"/>
+			<t:select path="//test:csvServletResponse/cn/a[@n='workPhone']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homePhone']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='mobilePhone']" match="6666"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='pager']" match="6666"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='email3']" match="user3@persistent.co.in"/> 
+			<t:select path="//test:csvServletResponse/cn/a[@n='workFax']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='workPhone2']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='workStreet']" match="tt"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='workCity']" match="tt"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='workState']" match="tt"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='workPostalCode']" match="tt"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='workCountry']" match="tt"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='workURL']" match="tt"/> 
+			<t:select path="//test:csvServletResponse/cn/a[@n='notes']" match="hihohioohhghghgjhjhj"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homeCity']" match="homecity"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homeCountry']" match="homecountry"/> 
+			<t:select path="//test:csvServletResponse/cn/a[@n='homeFax']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homePhone']" match="6666"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homePhone2']" match="6666"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homePostalCode']" match="6666"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homeState']" match="homestate"/> 
+			<t:select path="//test:csvServletResponse/cn/a[@n='homeStreet']" match="homestreet"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='homeURL']" match="homeurl"/>
+		    <t:select path="//test:csvServletResponse/cn/a[@n='namePrefix']" match="namePrefix"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='nameSuffix']" match="nameSuffix"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='initials']" match="Mr."/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='nickname']" match="nickname"/> 
+		    <t:select path="//test:csvServletResponse/cn/a[@n='fileAs']" match="3"/> 
+				<!-- Regarding display name, See test case export_contacts_08 and bug 9129 -->
+				<!--t:select path="a[@n='E-mail Display Name']" match=""/-->
+				<!--t:select path="a[@n='E-mail 2 Display Name']" match=""/-->
+				<!--t:select path="a[@n='E-mail 3 Display Name']" match=""/-->
+				<!-- see bug 4369<t:select path="a[@n='Title']" match="job title"/> -->
+		</t:csvServletResponse>
+	</t:csvservlettest>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="export_contacts_04" type="functional" bugids="34824" >
+	<t:objective>Verify that an account with no contacts can be exported</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${account3.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.csvServlet" value="${test_acct3.server}"/>
+
+	<t:csvservlettest>
+		<t:csvServletRequest>
+		</t:csvServletRequest>
+		<t:csvServletResponse>
+			<t:select path="//test:csvServletResponse/cn" emptyset="1"/>
+		</t:csvServletResponse>
+	</t:csvservlettest>
+
+</t:test_case>
+
+<!--
+	This test case is limited by the test harness - 
+	The harness is not robust enough to handle these characters
+-->
+<t:test_case testcaseid="export_contacts_05" type="deprecated" >
+	<t:objective>Export contacts with different characters in the fields</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${account4.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+		<cn>
+			<a n="lastName">la,st</a>
+			<a n="firstName">fi&quot;rst</a>
+			<a n="email">em ail</a>
+			<a n="workStreet">st&quot;&quot;reet</a>
+			<a n="workCity">ci
+ty</a>
+			<a n="workState"></a>
+		</cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+		    <t:select attr="id" set="contact.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.csvServlet" value="${test_acct4.server}"/>
+
+	<t:csvservlettest>
+		<t:csvServletRequest>
+		</t:csvServletRequest>
+		<t:csvServletResponse>
+			<a n="lastName">la,st</a>
+			<a n="firstName">fi&quot;rst</a>
+			<a n="email">em ail</a>
+			<a n="workStreet">st&quot;&quot;reet</a>
+			<a n="workCity">ci
+ty</a>
+			<a n="workState"></a>
+			<t:select path="//test:csvServletResponse/cn[@email='email']">
+				<t:select path="a[@n='Last Name']" match="la,st"/>
+				<t:select path="a[@n='First Name']" match="fi&quot;rst"/>
+				<t:select path="a[@n='E-mail Address']" match="em ail"/>
+				<t:select path="a[@n='Business Street']" match="st&quot;&quot;reet"/>
+				<t:select path="a[@n='Business City']" match="city"/>
+				<t:select path="a[@n='Business State']" match=""/>
+			</t:select>
+		</t:csvServletResponse>
+	</t:csvservlettest>
+
+</t:test_case>
+
+<t:test_case testcaseid="export_contacts_06" type="functional" >
+    <t:objective>Export 5000 Contacts</t:objective>
+    <t:steps>
+	1. Create the contacts
+	2. Export them
+    </t:steps>
+
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="email">first</a>
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn"/>         
+            </t:response>
+        </t:test>
+
+    <t:test_loop count="10">
+
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="email">${COUNTER}@${defaultdomain.name}</a>
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn"/>         
+            </t:response>
+        </t:test>
+
+    </t:test_loop>
+
+        <t:test>
+            <t:request>
+                <CreateContactRequest xmlns="urn:zimbraMail">
+                    <cn>
+                        <a n="email">last</a>
+                    </cn>
+                </CreateContactRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn"/>         
+            </t:response>
+        </t:test>
+
+	<t:csvservlettest>
+		<t:csvServletRequest>
+		</t:csvServletRequest>
+		<t:csvServletResponse>
+		<!-- 	<t:select path="//test:csvServletResponse/cn[@email='first']"/>
+			<t:select path="//test:csvServletResponse/cn[@email='last']"/> -->
+		    <t:select path="//test:csvServletResponse/cn/a[@n='email']" match="first"/> 
+			<t:select path="//test:csvServletResponse/cn/a[@n='email']" match="last"/>
+		</t:csvServletResponse>
+	</t:csvservlettest>
+
+</t:test_case>
+
+<t:test_case testcaseid="export_contacts_07" type="smoke" bugids="4290">
+    <t:objective>export after deleting a contact</t:objective>
+    <t:steps>
+	1. Create two contacts
+	2. Delete one of them
+	3. Export them
+	4. Verify that the deleted contact does not appear
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${account4.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact1.first}</a>
+                    <a n="lastName">${contact1.last}</a>
+                    <a n="email">${contact1.email}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+		    <t:select attr="id" set="contact1.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact2.first}</a>
+                    <a n="lastName">${contact2.last}</a>
+                    <a n="email">${contact2.email}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+		    <t:select attr="id" set="contact2.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+            	<action id="${contact2.id}" op="delete"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.csvServlet" value="${test_acct4.server}"/>
+
+	<t:csvservlettest>
+		<t:csvServletRequest>
+		</t:csvServletRequest>
+		<t:csvServletResponse>
+			<t:select path="//test:csvServletResponse/cn/a[@n='email']" match="${contact1.email}"/>
+			<t:select path="//test:csvServletResponse/cn/a[@n='email']" match="${contact2.email}" emptyset="1"/>
+		</t:csvServletResponse>
+	</t:csvservlettest>
+
+</t:test_case>
+
+
+
+
+<!-- See also importContacts.xml testcaseid="importcontacts03" -->
+<t:test_case testcaseid="export_contacts_08" type="deprecated" bugids="9129">
+	<t:objective>Verify that the 'Email Display Name" contact field is exported correctly</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+	<t:property name="contact1.email" value="contact1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="contact1.first" value="first${TIME}"/>
+	<t:property name="contact1.last" value="last${TIME}"/>
+
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+				<cn>
+					<a n="lastName">${contact1.last}</a>
+					<a n="firstName">${contact1.first}</a>
+					<a n="fullName">${contact1.first} ${contact1.last}</a>
+					<a n="email">${contact1.email}</a>
+				</cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.csvServlet" value="${test_acct1.server}"/>
+
+	<t:csvservlettest>
+		<t:csvServletRequest>
+		</t:csvServletRequest>
+		<t:csvServletResponse>
+			<t:select path="//test:csvServletResponse/cn[@email='${contact1.email}']">
+				<t:select path="a[@n='E-mail Address']" match="${contact1.email}"/>
+				<t:select path="a[@n='E-mail Display Name']" match=""/> <!-- Zimbra does not use this field -->
+				<t:select path="a[@n='First Name']" match="${contact1.first}"/>
+				<t:select path="a[@n='Last Name']" match="${contact1.last}"/>
+			</t:select>
+		</t:csvServletResponse>
+	</t:csvservlettest>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,1212 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<!-- Following bug is included as part of this testcase -->
+	<!-- zcs-1390 Variables should be supported in nested if in soap api -->
+
+	<t:property name="account1.name"
+		value="zcs1390_user.${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="subject01" value="var test 5 var test 6" />
+	<t:property name="subject02" value="subject2.${TIME}${COUNTER} test variable" />
+	<t:property name="subject03" value="var test 5 var test 6" />
+	<t:property name="subject04" value="var test 5 var test 7" />
+	<t:property name="subject05" value="supporttest check" />
+	<t:property name="subject06" value="test admin" />
+	
+	<t:property name="content01" value="content1.${TIME}${COUNTER}" />
+	<t:property name="content02" value="content2.${TIME}${COUNTER}" />
+	<t:property name="content03" value="content3.${TIME}${COUNTER}" />
+	<t:property name="content04" value="content4.${TIME}${COUNTER}" />
+	<t:property name="content05" value="content5.${TIME}${COUNTER}" />
+	<t:property name="content06" value="content6.${TIME}${COUNTER}" />
+
+	<t:property name="folder1.name" value="folder1.${TIME}${COUNTER}" />
+	<t:property name="folder2.name" value="folder2.${TIME}${COUNTER}" />
+
+	<t:property name="dollar" value="$" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="AcctSetup1_filters_save" type="always">
+		<t:objective>create test accounts</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="name" set="account1.name" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder1.name}" l="1" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id1" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder2.name}" l="1" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id2" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-1390_Filter1" type="smoke"
+		bugids="ZCS-1390">
+		<t:objective>Execute Modify and Get Filter Request filter variables.
+		</t:objective>
+		<t:steps>
+			1. Create a sieve script containing filter variable using
+			ModifyFilterRulesRequest
+			2. Do a GetFilterRulesRequest to get all info
+			of ModifyFilterRulesRequest.
+			3. Send a mail to user 1 with all sieve
+			conditions getting satisfied.
+			4. Verify mail is received in 'Folder1'
+			folder created from action Fileinto.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter1.name" value="filter_name1.${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter1.name}" active="1">
+							<filterVariables>
+								<filterVariable name="var" value="${defaultdomain.name}" />
+							</filterVariables>
+							<filterTests condition="anyof">
+								<envelopeTest header="from" stringComparison="matches"
+									value="${dollar}{var}" part="domain" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="Folder1" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter1.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterTests//mail:envelopeTest"
+					attr="part" match="domain" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterVariables/mail:filterVariable"
+					attr="name" match="var" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterVariables/mail:filterVariable"
+					attr="value" match="${defaultdomain.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="!">
+						<e t="t" a="${account1.name}" />
+						<su>${subject01}</su>
+						<mp ct="text/plain">
+							<content>${content01}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message01.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Folder1 subject:${subject01}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject01}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-1390_Filter02" type="smoke"
+		bugids="ZCS-1390">
+		<t:objective>Execute Modify and Get Filter Request for filter
+			variables with variable name having spaces
+		</t:objective>
+		<t:steps>
+			1. Create a sieve script containing filter variable
+			containing spaces using ModifyFilterRulesRequest.
+			2. Verify response
+			should contain error.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter2.name" value="filter_name2.${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter2.name}" active="1">
+							<filterVariables>
+								<filterVariable name="var1 23" value="test variable" />
+							</filterVariables>
+							<filterTests condition="allof">
+								<headerTest header="subject" stringComparison="contains"
+									value="${dollar}{var1 23}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="Folder2" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^service.PARSE_ERROR" />
+				<t:select path="//soap:Text" contains="parse error: evaluating Sieve script" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-1390_Filter3" type="smoke"
+		bugids="ZCS-1390">
+		<t:objective>Execute Modify and Get Filter Request for envelope test
+			containing normal/matched variables
+		</t:objective>
+		<t:steps>
+			1. Create a sieve script containing matched filter variable
+			using ModifyFilterRulesRequest.
+			2. Do a GetFilterRulesRequest to get
+			all info of ModifyFilterRulesRequest.
+			3. Send a mail to user 1 with
+			all sieve conditions getting satisfied.
+			4. Verify mail is received in
+			'admin@' folder created from action Fileinto.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter3.name" value="filter_name3.${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter3.name}" active="1">
+							<filterVariables>
+								<filterVariable name="var3" value="${defaultdomain.name}" />
+							</filterVariables>
+							<filterTests condition="allof">
+								<addressTest header="from" stringComparison="matches"
+									value="*${dollar}{var3}" part="all" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${dollar}{1}" />
+								<actionStop />
+							</filterActions>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter3.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule/mail:filterTests//mail:addressTest"
+					attr="part" match="all" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterVariables/mail:filterVariable"
+					attr="name" match="var3" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterVariables/mail:filterVariable"
+					attr="value" match="${defaultdomain.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="!">
+						<e t="t" a="${account1.name}" />
+						<su>${subject02}</su>
+						<mp ct="text/plain">
+							<content>${content02}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message02.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:admin@ subject:${subject02}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject02}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-1390_Filter4" type="smoke"
+		bugids="ZCS-1390">
+		<t:objective>Execute Modify and Get Filter Request for filterVariable
+			containing nested Rule
+		</t:objective>
+		<t:steps>
+			1. Create a sieve script containing filter variable within
+			nestedRule using ModifyFilterRulesRequest.
+			2. Do a
+			GetFilterRulesRequest to get all info of ModifyFilterRulesRequest.
+			3.
+			Send a mail to user 1 with all sieve conditions getting satisfied.
+			4.
+			Verify mail is received in 'var test 5' and 'var test 6' folder
+			created from action Fileinto.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter4.name" value="filter_name4.${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter4.name}" active="1">
+							<filterVariables>
+								<filterVariable name="var5" value="var test 5" />
+							</filterVariables>
+							<filterTests condition="allof">
+								<headerTest header="subject" stringComparison="matches"
+									value="${dollar}{var5}*" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${dollar}{var5}" />
+							</filterActions>
+							<nestedRule>
+								<filterVariables>
+									<filterVariable name="var6" value="var test 6" />
+								</filterVariables>
+								<filterTests condition="anyof">
+									<headerTest header="subject" stringComparison="matches"
+										value="${dollar}{var5}*" />
+								</filterTests>
+								<filterActions xmlns="urn:zimbraMail">
+									<actionFileInto folderPath="${dollar}{1}" />
+								</filterActions>
+							</nestedRule>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter4.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterVariables/mail:filterVariable"
+					attr="name" match="var5" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterVariables/mail:filterVariable"
+					attr="value" match="var test 5" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterActions//mail:filterVariables/mail:filterVariable"
+					attr="name" match="var6" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterActions//mail:filterVariables/mail:filterVariable"
+					attr="value" match="var test 6" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="!">
+						<e t="t" a="${account1.name}" />
+						<su>${subject03}</su>
+						<mp ct="text/plain">
+							<content>${content03}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message03.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:"var test 5 " subject:${subject03}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject03}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:" var test 6" subject:${subject03}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject03}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-1390_Filter5" type="smoke"
+		bugids="ZCS-1390">
+		<t:objective>Execute Modify and Get Filter Request for multiple
+			filterVariable.
+		</t:objective>
+		<t:steps>
+			1. Create a sieve script containing multiple filter variable
+			within nestedRule using ModifyFilterRulesRequest.
+			2. Do a
+			GetFilterRulesRequest to get all info of ModifyFilterRulesRequest.
+			3.
+			Send a mail to user 1 with all sieve conditions getting satisfied.
+			4.
+			Verify mail is received in inbox.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter5.name" value="filter_name5.${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter5.name}" active="1">
+							<filterTests condition="allof">
+								<headerTest header="subject" stringComparison="is"
+									value="${dollar}{var5}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="${dollar}{var5}" />
+							</filterActions>
+							<nestedRule>
+								<filterVariables>
+									<filterVariable name="var7" value="var test 7" />
+									<filterVariable name="var5" value="var test 5" />
+								</filterVariables>
+								<filterTests condition="allof">
+									<headerTest header="subject" stringComparison="contains"
+										value="${dollar}{var7}" />
+								</filterTests>
+								<filterActions xmlns="urn:zimbraMail">
+									<actionFileInto folderPath="${dollar}{var7}" />
+								</filterActions>
+							</nestedRule>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter5.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterActions//mail:filterVariables/mail:filterVariable[2]"
+					attr="name" match="var5" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:filterActions//mail:filterVariables/mail:filterVariable[1]"
+					attr="name" match="var7" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="!">
+						<e t="t" a="${account1.name}" />
+						<su>${subject04}</su>
+						<mp ct="text/plain">
+							<content>${content04}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message04.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:${subject04}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject04}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-1390_Filter6" type="smoke"
+		bugids="ZCS-1390">
+		<t:objective>Execute Modify and Get Filter Request for filterVariables
+			within nested/nested Rule
+			containing normal/matched variables
+		</t:objective>
+		<t:steps>
+			1. Create a sieve script containing filter variable within
+			nested/nested Rule using ModifyFilterRulesRequest.
+			2. Do a
+			GetFilterRulesRequest to get all info of ModifyFilterRulesRequest.
+			3.
+			Send a mail to user 1 with all sieve conditions getting satisfied.
+			4.
+			Verify mail is received in new1 and 'test check' folder.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter6.name" value="filter_name6.${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter6.name}" active="1">
+							<filterTests condition="allof">
+								<headerTest header="subject" stringComparison="contains"
+									value="test" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="new1" />
+							</filterActions>
+							<nestedRule>
+								<filterVariables>
+									<filterVariable name="var9" value="check" />
+								</filterVariables>
+								<filterTests condition="allof">
+									<headerTest header="subject" stringComparison="contains"
+										value="${dollar}{var9}" />
+								</filterTests>
+								<nestedRule>
+									<filterVariables>
+										<filterVariable name="var10" value="SUPPORT" />
+									</filterVariables>
+									<filterTests condition="allof">
+										<headerTest header="subject" stringComparison="matches"
+											value="${dollar}{var10}*" />
+									</filterTests>
+									<filterActions xmlns="urn:zimbraMail">
+										<actionFileInto folderPath="${dollar}{00000001}" />
+									</filterActions>
+								</nestedRule>
+							</nestedRule>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter6.name}" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:nestedRule//mail:filterActions/mail:filterVariables/mail:filterVariable"
+					attr="name" match="var10" />
+				<t:select
+					path="//mail:GetFilterRulesResponse/mail:filterRules/mail:filterRule//mail:nestedRule//mail:filterActions/mail:filterVariables/mail:filterVariable"
+					attr="value" match="SUPPORT" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="!">
+						<e t="t" a="${account1.name}" />
+						<su>${subject05}</su>
+						<mp ct="text/plain">
+							<content>${content05}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message05.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:"new1" subject:${subject05}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject05}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:"test check" subject:${subject05}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject05}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-1390_Filter7" type="smoke"
+		bugids="ZCS-1390">
+		<t:objective>Execute Modify and Get Filter Request for Outgoing
+			requests with filterVariables.
+		</t:objective>
+		<t:steps>
+			1. Create a sieve script containing filter variable within
+			nested Rule using ModifyOutgoingFilterRulesRequest.
+			2. Do a
+			GetOutgoingFilterRulesRequest to get all info of
+			ModifyOutgoingFilterRulesRequest.
+			3. Send a mail to user 1 with all
+			sieve conditions getting satisfied.
+			4. Verify mail is received in
+			'new1Outgoing' and 'test checkOutgoing' folder.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter7.name" value="filter_name7.${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyOutgoingFilterRulesRequest
+					xmlns="urn:zimbraMail">
+					<filterRules>
+						<filterRule name="${filter7.name}" active="1">
+							<filterTests condition="allof">
+								<headerTest header="subject" stringComparison="contains"
+									value="test" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="new1Outgoing" />
+							</filterActions>
+							<nestedRule>
+								<filterVariables>
+									<filterVariable name="var9" value="check" />
+								</filterVariables>
+								<filterTests condition="allof">
+									<headerTest header="subject" stringComparison="contains"
+										value="${dollar}{var9}" />
+								</filterTests>
+								<nestedRule>
+									<filterVariables>
+										<filterVariable name="var10" value="SUPPORT" />
+									</filterVariables>
+									<filterTests condition="allof">
+										<headerTest header="subject" stringComparison="matches"
+											value="${dollar}{var10}*" />
+									</filterTests>
+									<filterActions xmlns="urn:zimbraMail">
+										<actionFileInto folderPath="${dollar}{00000001}Outgoing" />
+									</filterActions>
+								</nestedRule>
+							</nestedRule>
+						</filterRule>
+					</filterRules>
+				</ModifyOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ModifyOutgoingFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetOutgoingFilterRulesRequest xmlns="urn:zimbraMail">
+					<account by="name">${account1.name}</account>
+				</GetOutgoingFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//mail:GetOutgoingFilterRulesResponse/mail:filterRules/mail:filterRule"
+					attr="name" match="${filter7.name}" />
+				<t:select
+					path="//mail:GetOutgoingFilterRulesResponse/mail:filterRules/mail:filterRule//mail:nestedRule//mail:filterActions/mail:filterVariables/mail:filterVariable"
+					attr="name" match="var10" />
+				<t:select
+					path="//mail:GetOutgoingFilterRulesResponse/mail:filterRules/mail:filterRule//mail:nestedRule//mail:filterActions/mail:filterVariables/mail:filterVariable"
+					attr="value" match="SUPPORT" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="!">
+						<e t="t" a="${admin.user}" />
+						<su>${subject05}</su>
+						<mp ct="text/plain">
+							<content>${content05}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message05.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:"new1Outgoing" subject:${subject05}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject05}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:"test checkOutgoing" subject:${subject05}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject05}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="ZCS-1390_Filter8" type="smoke"
+		bugids="ZCS-1390">
+		<t:objective>Execute Modify and Get Filter Request for filter
+			variables for admin rules
+			containing matched variables
+		</t:objective>
+		<t:steps>
+			1. Create a sieve script containing filter variable within
+			nested Rule using ModifyFilterRulesRequet for admin before script.
+			2.
+			Do a GetFilterRulesRequest to get all info of
+			ModifyFilterRulesRequet.
+			3. Send a mail to user 1 with all sieve
+			conditions getting satisfied.
+			4. Verify mail is received in 'admin1'
+			and 'admin2' folder.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:property name="filter8.name" value="filter_name8.${TIME}${COUNTER}" />
+
+		<t:test>
+			<t:request>
+				<ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+					type="before">
+					<account by="name">${account1.name}</account>
+					<filterRules>
+						<filterRule name="${filter8.name}" active="1">
+							<filterVariables xmlns="urn:zimbraMail">
+								<filterVariable name="var5" value="test" />
+							</filterVariables>
+							<filterTests condition="allof" xmlns="urn:zimbraMail">
+								<headerTest header="subject" stringComparison="contains"
+									value="${dollar}{var5}" />
+							</filterTests>
+							<filterActions xmlns="urn:zimbraMail">
+								<actionFileInto folderPath="admin1" />
+							</filterActions>
+							<nestedRule xmlns="urn:zimbraMail">
+								<filterVariables>
+									<filterVariable name="var6" value="admin" />
+								</filterVariables>
+								<filterTests condition="anyof">
+									<headerTest header="subject" stringComparison="contains"
+										value="${dollar}{var6}" />
+								</filterTests>
+								<filterActions xmlns="urn:zimbraMail">
+									<actionFileInto folderPath="admin2" />
+								</filterActions>
+							</nestedRule>
+						</filterRule>
+					</filterRules>
+				</ModifyFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyFilterRulesResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+					type="before">
+					<account by="name">${account1.name}</account>
+				</GetFilterRulesRequest>
+			</t:request>
+			<t:response>
+				<t:select
+					path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule"
+					attr="name" match="${filter8.name}" />
+				<t:select
+					path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule//mail:filterActions//mail:filterVariables/mail:filterVariable"
+					attr="name" match="var6" />
+				<t:select
+					path="//admin:GetFilterRulesResponse/admin:filterRules/admin:filterRule//mail:filterActions//mail:filterVariables/mail:filterVariable"
+					attr="value" match="admin" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m f="!">
+						<e t="t" a="${account1.name}" />
+						<su>${subject06}</su>
+						<mp ct="text/plain">
+							<content>${content06}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message06.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:admin1 subject:${subject06}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject06}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:admin2 subject:${subject06}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="su"
+					match="${subject06}" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>
