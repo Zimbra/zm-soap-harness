@@ -500,9 +500,10 @@
 
 	<target name="Run-SoapTestCore" depends="compile,zm-network-soap-content" description="Run Staf Tests in non-STAF environment">
 		<property name="testRoot" value="build/temp/data/soapvalidator/"/>
-		<echo>STAF: Executing ${testRoot}</echo>
+		<property name="testSuite" value="smoke"/>
+		<echo>STAF: Executing ${testRoot} ${testSuite}</echo>
 		<java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
-			<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t smoke -j"/>
+			<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t ${testSuite} -j"/>
 		</java>
 	</target>
 
@@ -521,4 +522,4 @@
 			<arg line="-f ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -j -k none -t ${suite}"/>
 		</java>
 	</target>
-	</project>
+</project>
