@@ -57,6 +57,7 @@ public class TestCase extends AbsTest {
 			"NO_TYPE",
 			"always",
 			"smoke",
+			"bhr",
 			"sanity",
 			"functional",
 			"feature",
