@@ -47,6 +47,7 @@ public class TestCase extends AbsTest {
 	/**
 	 NO_TYPE:		Default value for all tests w/o a type definition
 	 always:		always execute the test (ping test, authentication)
+	 bhr:			bhr test cases
 	 smoke:			basic tests to smoke test an installed build as 'sane'
 	 functional:	tests of requirements and core functionality
 	 feature:		tests of features that are not requirements, but are not negative tests either
@@ -480,10 +481,12 @@ public class TestCase extends AbsTest {
 
 		/* If the test type is sanity, run always and sanity */
 		/* If the test type is smoke, run always and smoke */
+		/* If the test type is bhr, run always and bhr */
 		/* If the test type is functional, run always, smoke, and functional */
 		/* If the test type is feature, run always, smoke, and feature */
 		/* If the test type is negative, run always, smoke, and negative */
 		String[] SMOKE_TYPES = {"always","smoke"};
+		String[] BHR_TYPES = {"always","bhr"};
 		String[] SANITY_TYPES = {"sanity"};
 		String[] FUNCTIONAL_TYPES = {"always","functional"};
 		String[] FEATURE_TYPES = {"always","feature"};
@@ -500,6 +503,12 @@ public class TestCase extends AbsTest {
 				}
 			}
 			
+		        if (type.equalsIgnoreCase("bhr")) {
+                                if (hasType(BHR_TYPES)) {
+                                        return false;
+                                }
+                        }
+
 			if (type.equalsIgnoreCase("smoke")) {
 				if (hasType(SMOKE_TYPES)) {
 					return false;
