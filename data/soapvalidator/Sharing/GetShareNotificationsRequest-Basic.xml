@@ -127,7 +127,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
         </t:response>
-    </t:test>        
+    </t:test>
 
 	<t:test  id="create_test_account5" required="false" depends="admin_login">
         <t:request>
@@ -140,8 +140,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
         </t:response>
-    </t:test>        
-	
+    </t:test>
+
 	<t:test  id="create_test_account6" required="false" depends="admin_login">
         <t:request>
         <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -153,7 +153,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
         </t:response>
-    </t:test>        
+    </t:test>
 
 	<t:test  id="create_test_account7" required="false" depends="admin_login">
         <t:request>
@@ -166,8 +166,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account7.id"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
         </t:response>
-    </t:test>        
-    
+    </t:test>
+
 	<!--  Create DistributionList -->
 	<t:test>
         <t:request>
@@ -193,7 +193,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl2.id"/>
         </t:response>
     </t:test>
-	
+
 
 	<!-- Add all Member to DL -->
     <t:test >
@@ -202,7 +202,7 @@
                 <id>${dl1.id}</id>
                 <dlm>${account3.name}</dlm>
                 <dlm>${account2.name}</dlm>
-                <dlm>${account1.name}</dlm>                
+                <dlm>${account1.name}</dlm>
             </AddDistributionListMemberRequest>
         </t:request>
         <t:response>
@@ -224,16 +224,16 @@
         </t:response>
     </t:test>
 
-</t:test_case> 
+</t:test_case>
 
 
-<t:test_case testcaseid="GetShareNotificationsRequest_Basic_01" type="smoke" bugids="97791">
+<t:test_case testcaseid="GetShareNotificationsRequest_Basic_01" type="bhr" bugids="97791">
     <t:objective>Verify that GetShareNotificationsRequest gets notification about share</t:objective>
      <t:steps>
-     1.Login to Account2 
+     1.Login to Account2
      2.Account2 shares calendar with Account1 and sends SendShareNotificationRequest
      3.Login to Account2
-     4.Sends GetShareNotificationRequest , Now check if Account1 has got the share notification     
+     4.Sends GetShareNotificationRequest , Now check if Account1 has got the share notification
      </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
@@ -242,7 +242,7 @@
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account2.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -250,8 +250,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
-		
+
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -259,7 +259,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar.id"/>
-			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account2.folder.Briefcase.id"/>			
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account2.folder.Briefcase.id"/>
 		</t:response>
 	</t:test>
 
@@ -276,7 +276,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<!--  Send share notificationrequest to Account1 -->
 
     <t:test >
@@ -290,16 +290,16 @@
             <t:select path="//mail:SendShareNotificationResponse"/>
         </t:response>
     </t:test>
-       
+
     <t:delay msec="3000"/>
-    
-     <t:property name="server.zimbraAccount" value="${account1.server}"/>   
+
+     <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <!-- Login to Account1 -->
     <t:test id="auth_acct1" required="true" depends="create_test_account1">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account1.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -307,7 +307,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -317,7 +317,7 @@
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Created: Calendar shared by ${account2.name}"/>
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="m1.id"/>
-			
+
 		</t:response>
 	</t:test>
     <t:test>
@@ -340,13 +340,13 @@
             <t:select path="//mail:GetShareNotificationsResponse/mail:share/mail:grantor"/>
         </t:response>
     </t:test>
-	     
+
 </t:test_case>
 
 <t:test_case testcaseid="GetShareNotificationsRequest_Basic_02" type="bhr" bugids="97791" >
     <t:objective>Verify that GetShareNotificationsRequest responds with blank response if folder not shared</t:objective>
      <t:steps>
-     1.Login to Account2 
+     1.Login to Account2
      2.Account2 sends GetShareNotificationsRequest for a folder
      3.Verify GetShareNotificationsRequest responds with blank response if folder not shared
      </t:steps>
@@ -357,7 +357,7 @@
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account2.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -365,8 +365,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
-		
+
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -374,7 +374,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account2.folder.calendar.id"/>
-			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account2.folder.Briefcase.id"/>			
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account2.folder.Briefcase.id"/>
 		</t:response>
 	</t:test>
 
@@ -388,15 +388,15 @@
             <t:select path="//mail:GetShareNotificationsResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 <t:test_case testcaseid="GetShareNotificationsRequest_Basic_03" type="bhr" bugids="97791">
     <t:objective>Verify that GetShareNotificationsRequest gets notification about share to all DL members</t:objective>
      <t:steps>
-     1.Login to Account2 
+     1.Login to Account2
      2.Account2 shares calendar with Dl1 and sends SendShareNotificationRequest
-     3.Now check if Account1 has get the share notification     
+     3.Now check if Account1 has get the share notification
      </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
@@ -405,7 +405,7 @@
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account3.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -413,8 +413,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
-		
+
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -422,7 +422,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account3.folder.inbox.id"/>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account3.folder.calendar.id"/>
-			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account3.folder.Briefcase.id"/>			
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account3.folder.Briefcase.id"/>
 		</t:response>
 	</t:test>
 
@@ -439,7 +439,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<!--  Send share notificationrequest to Account1 -->
 
     <t:test >
@@ -453,15 +453,15 @@
             <t:select path="//mail:SendShareNotificationResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <!-- Login to Account1 -->
     <t:test id="auth_acct1" required="true" depends="create_test_account1">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account1.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -469,7 +469,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -503,14 +503,14 @@
             <t:select path="//mail:GetShareNotificationsResponse/mail:share/mail:grantor"/>
         </t:response>
     </t:test>
-    
+
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <!-- Login to Account1 -->
     <t:test id="auth_acct1" required="true" depends="create_test_account1">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account2.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -518,7 +518,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -530,7 +530,7 @@
 			<t:select path='//mail:SearchResponse/mail:m/mail:e[@t="f"]' attr="a" match="${account3.name}"/>
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="m3.id"/>
 		</t:response>
-	</t:test>	
+	</t:test>
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -552,16 +552,16 @@
             <t:select path="//mail:GetShareNotificationsResponse/mail:share/mail:grantor"/>
         </t:response>
     </t:test>
-    
-        
+
+
 </t:test_case>
 
 <t:test_case testcaseid="GetShareNotificationsRequest_Basic_04" type="bhr" bugids="97791">
     <t:objective>Verify that GetShareNotificationsRequest gets share notification to added member of DL by admin</t:objective>
      <t:steps>
-     1.Login to Account2 
+     1.Login to Account2
      2.Account2 shares calendar with Dl1 and sends SendShareNotificationRequest
-     3.Now check if Account1 has received the share notification     
+     3.Now check if Account1 has received the share notification
 	 4.Add a new member to the DL
 	 5.Check if the new member got the share notification
      </t:steps>
@@ -572,7 +572,7 @@
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account3.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -580,8 +580,8 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
-		
+
+
 	<t:test>
 		<t:request>
 			<GetFolderRequest xmlns="urn:zimbraMail"/>
@@ -589,7 +589,7 @@
 		<t:response>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account3.folder.inbox.id"/>
 			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account3.folder.calendar.id"/>
-			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account3.folder.Briefcase.id"/>			
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account3.folder.Briefcase.id"/>
 		</t:response>
 	</t:test>
 
@@ -606,7 +606,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-    
+
 	<!--  Send share notificationrequest to Account1 -->
 
     <t:test >
@@ -620,15 +620,15 @@
             <t:select path="//mail:SendShareNotificationResponse"/>
         </t:response>
     </t:test>
-    
-    
+
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
     <!-- Login to Account1 -->
     <t:test id="auth_acct1" required="true" depends="create_test_account1">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account1.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -636,7 +636,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -648,7 +648,7 @@
 			<t:select path='//mail:SearchResponse/mail:m/mail:e[@t="f"]' attr="a" match="${account3.name}"/>
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="m4.id"/>
 		</t:response>
-	</t:test>	
+	</t:test>
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -670,7 +670,7 @@
         </t:response>
     </t:test>
 
-	
+
 	<!-- Login as admin to add new member to DL -->
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 	<t:test  id="admin_login" required="true" depends="ping">
@@ -697,14 +697,14 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
-	
+
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
 
 	<t:test id="auth_acct3" required="true" depends="create_test_account3">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account3.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -731,7 +731,7 @@
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
                 <account by="name">${account4.name}</account>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
         <t:response>
@@ -739,7 +739,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -751,7 +751,7 @@
 			<t:select path='//mail:SearchResponse/mail:m/mail:e[@t="f"]' attr="a" match="${account3.name}"/>
 			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="m5.id"/>
 		</t:response>
-	</t:test>	
+	</t:test>
     <t:test>
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -762,7 +762,7 @@
             <t:select path="//mail:GetMsgResponse//mail:mp//mail:mp//mail:content"  matches="${account3.name} has shared &quot;Briefcase&quot; with ${dl1.name}"/>
         </t:response>
     </t:test>
-	
+
 	<t:test >
         <t:request>
             <GetShareNotificationsRequest xmlns="urn:zimbraMail">
@@ -773,7 +773,7 @@
             <t:select path="//mail:GetShareNotificationsResponse/mail:share/mail:grantor"/>
         </t:response>
     </t:test>
-   
+
 </t:test_case>
 
 

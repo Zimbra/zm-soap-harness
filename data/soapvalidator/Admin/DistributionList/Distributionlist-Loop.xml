@@ -27,9 +27,9 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
- 
+
 
 <t:test_case testcaseid="acctSetup1_distributionlist_loop" type="always">
     <t:objective>Create test domain </t:objective>
@@ -60,9 +60,9 @@
 
 <t:test_case testcaseid="DistributionList_loops1" type="sanity" bugids="4504" duration="long">
     <t:objective> Creating 1000 DistributionList with valid name and description </t:objective>
-    
+
     <t:test_loop count="1000">
-    
+
         <t:test timeframeMax="2000">
             <t:request>
                 <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -74,8 +74,8 @@
                 <t:select path="//admin:CreateDistributionListResponse"/>
             </t:response>
         </t:test>
-      
-    </t:test_loop>    
+
+    </t:test_loop>
 
 </t:test_case>
 
@@ -83,11 +83,11 @@
 <t:test_case testcaseid="DistributionList_loops2" type="functional" duration="long">
     <t:objective> GetDistributionListRequest by name/id/id with limit ="2"  </t:objective>
     <t:step> 1. Create DistributionList
-             2. Get DistributionList with name 
+             2. Get DistributionList with name
              3. Get DistributionList with id
-             4. Get DistributionList id with limit="2"          
+             4. Get DistributionList id with limit="2"
     </t:step>
-    
+
     <t:test id="distributionList_loops2a">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -99,7 +99,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test timeframeMax="1000" depends="distributionList_loops2a">
         <t:request>
             <GetDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -110,7 +110,7 @@
             <t:select path="//admin:GetDistributionListResponse/admin:dl" attr="name" match="${list2}"/>
         </t:response>
     </t:test>
-    
+
     <t:test timeframeMax="1000" depends="distributionList_loops2a">
         <t:request>
             <GetDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -121,7 +121,7 @@
             <t:select path="//admin:GetDistributionListResponse/admin:dl" attr="id" match="${list2.id}"/>
         </t:response>
     </t:test>
-    
+
     <t:test timeframeMax="1000" depends="distributionList_loops2a">
         <t:request>
             <GetDistributionListRequest xmlns="urn:zimbraAdmin" limit="2">
@@ -132,8 +132,8 @@
             <t:select path="//admin:GetDistributionListResponse/admin:dl" attr="id" match="${list2.id}"/>
         </t:response>
     </t:test>
-    
-</t:test_case>  
+
+</t:test_case>
 
 
 <t:test_case testcaseid="DistributionList_loops3" type="sanity" duration="long">
@@ -141,7 +141,7 @@
     <t:steps> 1. Create a DistributionList.
               2. Delete the DL.
     </t:steps>
-    
+
     <t:test id="distributionList_loops3a">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -190,7 +190,7 @@
               2. Create an account.
               3. Add an account to DL
     </t:steps>
-    
+
     <t:test id="distributionList_loops5a">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -202,7 +202,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="distributionList_loops5b" timeframeMax="2000">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -213,8 +213,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${user1}"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
     <t:test depends="distributionList_loops5a,distributionList_loops5b" timeframeMax="2000">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -224,12 +224,12 @@
         </t:request>
         <t:response>
             <t:select path="//admin:AddDistributionListMemberResponse" attr="id" match="${list4.id}" />
-        </t:response>               
+        </t:response>
     </t:test>
-    
+
 </t:test_case>
-    
-                                                         
+
+
 <t:test_case testcaseid="DistributionList_loops6" type="functional" duration="long">
     <t:objective> Remove an account from the distribution list </t:objective>
     <t:steps> 1. Create a DistributionList.
@@ -237,7 +237,7 @@
               3. Add account to the distribution list
               4. Remove the same account from the distribution list
     </t:steps>
-    
+
     <t:test id="distributionList_loops6a">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -249,7 +249,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list5.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="distributionList_loops6b" timeframeMax="2000">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -260,8 +260,8 @@
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${user2}"/>
         </t:response>
-    </t:test>  
-           
+    </t:test>
+
     <t:test id="distributionList_loops6c" depends="distributionList_loops6a" timeframeMax="2000">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -273,7 +273,7 @@
             <t:select path="//admin:AddDistributionListMemberResponse" attr="id" match="${list5.id}" />
         </t:response>
     </t:test>
-   
+
     <t:test depends="distributionList_loops6c" timeframeMax="2000">
         <t:request>
             <RemoveDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -291,7 +291,7 @@
 
 <t:test_case testcaseid="DistributionList_loops7" type="sanity" duration="long">
     <t:objective> Remove an alias from the distribution list without deleting account from the DL </t:objective>
-    <t:steps> 1. Create DistributionList 
+    <t:steps> 1. Create DistributionList
               2. Create an account
               3. Create an alias of the same account
               4. Add account to DL
@@ -299,7 +299,7 @@
               6. Remove the alias from the distribution list
               7. Verify alias get deleted and account does not deleted from the DL
     </t:steps>
-    
+
      <t:test id="distributionList_loops7a">
         <t:request>
             <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
@@ -311,7 +311,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list6.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="distributionList_loops7b" timeframeMax="2000">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -323,7 +323,7 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${user3}"/>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="distributionList_loops7c" depends="distributionList_loops7b" timeframeMax="2000">
         <t:request>
@@ -336,7 +336,7 @@
             <t:select path="//admin:AddAccountAliasResponse" attr="id" match="${test_account3.id}"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="distributionList_loops7d" depends="distributionList_loops7b,distributionList_loops7c" timeframeMax="2000">
         <t:request>
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
@@ -347,7 +347,7 @@
         <t:response>
             <t:select path="//admin:AddDistributionListMemberResponse" attr="id" match="${list6.id}" />
         </t:response>
-    </t:test>  
+    </t:test>
 
     <t:test id="distributionList_loops7e" depends="distributionList_loops7d" timeframeMax="2000">
         <t:request>
@@ -372,7 +372,7 @@
             <t:select path="//admin:RemoveDistributionListMemberResponse" attr="id" match="${list6.id}" />
         </t:response>
     </t:test>
-    
+
     <t:test timeframeMax="2000" depends="distributionList_loops7f">
         <t:request>
             <GetDistributionListRequest xmlns="urn:zimbraAdmin">
