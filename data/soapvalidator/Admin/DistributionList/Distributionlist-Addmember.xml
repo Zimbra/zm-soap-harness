@@ -48,7 +48,7 @@
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
-<t:test_case testcaseid = "Ping" type = "always">
+<t:test_case testcaseid = "Ping" type="always">
     <t:objective>basic system check</t:objective>
 
 	<t:test required="true">
@@ -63,7 +63,7 @@
 </t:test_case>
  
 
-<t:test_case testcaseid = "acctSetup1_distributionlist_addmember" type = "always">
+<t:test_case testcaseid = "acctSetup1_distributionlist_addmember" type="always">
     <t:objective>Create test Distribution List </t:objective>
     <t:steps> 1. AuthRequest as admin
               2. Create a test domain
@@ -118,7 +118,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest1" type = "smoke">
+<t:test_case testcaseid = "AddDistributionListMemberRequest1" type="smoke">
     <t:objective> Add an already existing account to the distribution list </t:objective>
     <t:steps> 1. Create an account
               2. Add account to the distribution list
@@ -151,7 +151,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest2" type = "functional" bugids="3564,7785">
+<t:test_case testcaseid = "AddDistributionListMemberRequest2" type="functional" bugids="3564,7785">
     <t:objective> Try to again add same member(account) to the DL  </t:objective>
 
     <t:test>
@@ -169,7 +169,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest3" type = "smoke">
+<t:test_case testcaseid = "AddDistributionListMemberRequest3" type="smoke">
     <t:objective> Add an alias to the distribution list with its account already added to the DL </t:objective>
     <t:steps> 1. Add an alias to the account
               2. Add alias to the distribution list
@@ -202,7 +202,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest4" type = "negative" bugids="3564,7785">
+<t:test_case testcaseid = "AddDistributionListMemberRequest4" type="functional" bugids="3564,7785">
     <t:objective> Try to again add same member(alias) to the DL </t:objective>
 
     <t:test depends="addDistributionListMemberRequest3a">
@@ -220,7 +220,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest5" type = "functional">
+<t:test_case testcaseid = "AddDistributionListMemberRequest5" type="functional">
     <t:objective> Add an alias to the distribution list with its account not added to the DL </t:objective>
     <t:steps> 1. Create an account
               2. Add alias to the account
@@ -266,7 +266,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest6" type ="negative">
+<t:test_case testcaseid = "AddDistributionListMemberRequest6" type="functional">
     <t:objective> AddDistributionListMemberRequest with attribute "id" as (sometext/spchar/number/negative/decimal/blank/zero) </t:objective>
 
     <t:test>
@@ -356,7 +356,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest7" type ="negative">
+<t:test_case testcaseid = "AddDistributionListMemberRequest7" type="functional">
     <t:objective> Try to add member with dlm as (sometext/spchar/number/negative/decimal/blank/zero)
  </t:objective>
 
@@ -447,7 +447,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest8" type ="negative">
+<t:test_case testcaseid = "AddDistributionListMemberRequest8" type="functional">
     <t:objective> AddDistributionListMemberRequest without "id" attribute  </t:objective>
 
     <t:test>
@@ -464,7 +464,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest9" type ="negative" bugids="7848">
+<t:test_case testcaseid = "AddDistributionListMemberRequest9" type="functional" bugids="7848">
     <t:objective> AddDistributionListMemberRequest without "dlm" attribute  </t:objective>
 
     <t:test>
@@ -481,7 +481,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest10" type ="functional">
+<t:test_case testcaseid = "AddDistributionListMemberRequest10" type="functional">
     <t:objective> AddDistributionListMemberRequest to add an account which is not yet created  </t:objective>
 
     <t:test>
@@ -499,7 +499,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest11" type = "functional" bugids="7785">
+<t:test_case testcaseid = "AddDistributionListMemberRequest11" type="functional" bugids="7785">
     <t:objective> Add multiple users to the distribution list </t:objective>
     <t:steps> 1. Create a DL.
               2. Add users to the DL. 
@@ -534,7 +534,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest12" type = "functional" bugids="7889">
+<t:test_case testcaseid = "AddDistributionListMemberRequest12" type="functional" bugids="7889">
     <t:objective>AddDistributionListMemberRequest should check for loops on DL member addition</t:objective>
     <t:steps> 1. Create two DLs.
               2. Add DL1 to DL2
@@ -592,7 +592,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "AddDistributionListMemberRequest13" type = "functional" bugids="11398">
+<t:test_case testcaseid = "AddDistributionListMemberRequest13" type="functional" bugids="11398">
     <t:objective>Verify that on sending mail /calendar appt to a dl having all types of Accounts(Active, Closed, Maintenance and Locked ) doesnot return a bounce mail.</t:objective>
     <t:steps> 1. Create a DL.
 				   2. Create Accounts whose zimbraAccountStatus is Active, Closed, Maintenance and Locked.

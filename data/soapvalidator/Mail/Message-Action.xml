@@ -24,7 +24,7 @@
 <t:property name="folder.pname" value="1"/> <!-- Folder's parent ID -->
 <t:property name="test_acct.server" value="NOT_DEFINED"/>
 
-<t:test_case testcaseid = "Ping" type = "smoke">
+<t:test_case testcaseid = "Ping" type="smoke">
     <t:objective>basic system check</t:objective>
     
     <t:test id = "ping">
@@ -39,7 +39,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "acct1_setup" type = "always">
+<t:test_case testcaseid = "acct1_setup" type="always">
     <t:objective>create test account</t:objective>
     
     <t:test id = "admin_login" required = "true" depends = "ping">
@@ -107,7 +107,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest1" type = "smoke" bugids = "2036">
+<t:test_case testcaseid = "MsgActionRequest1" type="smoke" bugids = "2036">
     <t:objective>Mark a mail as read</t:objective>
 
     <t:test depends = "Send_mail">
@@ -125,7 +125,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest2" type = "smoke">
+<t:test_case testcaseid = "MsgActionRequest2" type="smoke">
     <t:objective>Mark a mail as unread</t:objective>
 
     <t:test depends = "Send_mail">
@@ -143,7 +143,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest3" type = "smoke">
+<t:test_case testcaseid = "MsgActionRequest3" type="smoke">
     <t:objective>Mark a mail as flagged</t:objective>
 
     <t:test depends = "Send_mail">
@@ -161,7 +161,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest4" type = "smoke">
+<t:test_case testcaseid = "MsgActionRequest4" type="smoke">
     <t:objective>Mark a mail as unflagged</t:objective>
 
     <t:test depends = "Send_mail">
@@ -179,7 +179,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest5" type = "smoke">
+<t:test_case testcaseid = "MsgActionRequest5" type="smoke">
     <t:objective>Tag a Mail</t:objective>
     <t:steps>
         1. Create a TAG
@@ -211,7 +211,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest6" type = "smoke">
+<t:test_case testcaseid = "MsgActionRequest6" type="smoke">
     <t:objective>Untag the mail</t:objective>
 
     <t:test depends = "MsgActionRequest5a">
@@ -229,7 +229,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest7" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest7" type="functional">
     <t:objective>Tag a mail with invalid id</t:objective>
     <t:steps>
         1. Delete the previously created tag
@@ -260,7 +260,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest8" type = "smoke">
+<t:test_case testcaseid = "MsgActionRequest8" type="smoke">
     <t:objective>Move a Mail to a custom folder</t:objective>
     <t:steps>
         1. Create a folder
@@ -292,7 +292,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest9" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest9" type="functional">
     <t:objective>Move the mail to nonexisting folder</t:objective>
     <t:steps>
         1. Move the mail back to inbox
@@ -335,7 +335,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest10" type = "smoke">
+<t:test_case testcaseid = "MsgActionRequest10" type="smoke">
     <t:objective>delete a message</t:objective>
 
     <t:test id = "MsgActionRequest10a">
@@ -353,7 +353,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest11" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest11" type="functional">
     <t:objective>delete a non existing message</t:objective>
 
     <t:test depends = "MsgActionRequest10a">
@@ -370,7 +370,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest12" type = "feature">
+<t:test_case testcaseid = "MsgActionRequest12" type="sanity">
     <t:objective>MsgActionRequest without Action tag</t:objective>
 
     <t:test>
@@ -385,7 +385,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest13" type = "feature">
+<t:test_case testcaseid = "MsgActionRequest13" type="sanity">
     <t:objective>MsgActionRequest without id in Action tag</t:objective>
 
     <t:test>
@@ -402,7 +402,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest14" type = "feature">
+<t:test_case testcaseid = "MsgActionRequest14" type="sanity">
     <t:objective>MsgActionRequest without op in Action tag</t:objective>
 
     <t:test>
@@ -419,7 +419,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest15" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest15" type="functional">
     <t:objective>MsgActionRequest with Blank id in Action tag</t:objective>
 
     <t:test>
@@ -436,7 +436,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest16" bugids = "1797" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest16" bugids = "1797" type="functional">
     <t:objective>MsgActionRequest with Spaces at id in Action tag</t:objective>
 
     <t:test>
@@ -453,7 +453,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest17" bugids = "1797" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest17" bugids = "1797" type="functional">
     <t:objective>MsgActionRequest with Special char at id in Action tag</t:objective>
 
     <t:test>
@@ -470,7 +470,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest18" bugids = "1797" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest18" bugids = "1797" type="functional">
     <t:objective>MsgActionRequest with Some text at id in Action tag</t:objective>
 
     <t:test>
@@ -487,7 +487,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest19" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest19" type="functional">
     <t:objective>MsgActionRequest with Blank op but valid id in Action tag {op=""}</t:objective>
     <t:steps>
         1. send a mail with valid address in To field 
@@ -524,7 +524,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest20" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest20" type="functional">
     <t:objective>MsgActionRequest with space in op but valid id in Action tag</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -541,7 +541,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest21" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest21" type="functional">
     <t:objective>MsgActionRequest with special char in op but valid id in Action tag {op="^//\\'"}</t:objective>
 
     <t:test id = "MailAction021" depends = "MsgActionRequest19a">
@@ -558,7 +558,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest22" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest22" type="functional">
     <t:objective>MsgActionRequest with sometext in op but valid id in Action tag {op="some text"}</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -575,7 +575,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest23" bugids = "1797" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest23" bugids = "1797" type="functional">
     <t:objective>MsgActionRequest with valid id and valid operation but leading spaces in id</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -592,7 +592,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest24" bugids = "1797" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest24" bugids = "1797" type="functional">
     <t:objective>MsgActionRequest with valid id and valid operation but trailing spaces in id</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -609,7 +609,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest25" bugids = "1797" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest25" bugids = "1797" type="functional">
     <t:objective>MsgActionRequest with valid id and valid operation but both leading trailing spaces in id</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
@@ -626,7 +626,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest26" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest26" type="functional">
 
     <t:objective>MsgActionRequest with valid id and valid operation but leading spaces in op</t:objective>
     <t:test depends = "MsgActionRequest19a">
@@ -643,7 +643,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "MsgActionRequest27" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest27" type="functional">
 
     <t:objective>MsgActionRequest with valid id and valid operation but trailing spaces in op</t:objective>
     <t:test id = "MailAction027" depends = "MsgActionRequest19a">
@@ -659,7 +659,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid = "MsgActionRequest28" type = "negative">
+<t:test_case testcaseid = "MsgActionRequest28" type="functional">
     <t:objective>MsgActionRequest with valid id and valid operation but both leading and trailing spaces in op</t:objective>
 
     <t:test depends = "MsgActionRequest19a">
