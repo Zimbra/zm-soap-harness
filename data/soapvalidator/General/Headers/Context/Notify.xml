@@ -191,57 +191,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification1" type="bhr">
-    <t:objective> Create a new Tag and verify the notify block </t:objective>
-    
-	<t:test>
-		<t:request>
-			<CreateTagRequest xmlns="urn:zimbraMail">
-				<tag name="${tag1.name}" color="${tag.colorvalid}" />
-			</CreateTagRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag1.id"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:tag" attr="color" match="${tag.colorvalid}"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:tag" attr="name" match="${tag1.name}"/>
-		</t:response>
-	</t:test>
-
-</t:test_case>
-
-
-<t:test_case testcaseid="Notification2" type="bhr">
-    <t:objective> delete a tag and verify notification block contains only valid information </t:objective>
-    
-	<t:test id="Notification2a">
-		<t:request>
-			<CreateTagRequest xmlns="urn:zimbraMail">
-				<tag name="${tag2.name}" color="${tag.colorvalid}" />
-			</CreateTagRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag2.id"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:tag" attr="color" match="${tag.colorvalid}"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:tag" attr="name" match="${tag2.name}"/>
-		</t:response>
-	</t:test>
-
-	<t:test depends="Notification2a">
-		<t:request>
-			<TagActionRequest xmlns="urn:zimbraMail">
-				<action op="delete" id="${tag2.id}"/>
-			</TagActionRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//mail:TagActionResponse/mail:action" attr="op" match="delete"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:deleted" attr="id" match="${tag2.id}"/>
-		</t:response>
-	</t:test>
-
-</t:test_case>
-
-
-<t:test_case testcaseid="Notification3" type="bhr">
+<t:test_case testcaseid="Notification1" type="smoke">
     <t:objective> Create a new folder and verify the notify block </t:objective>
     
 	<t:test>
@@ -290,7 +240,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="Notification4" type="bhr">
+<t:test_case testcaseid="Notification2" type="bhr">
     <t:objective> Delete a folder and verify the notify block </t:objective>
 
 	<t:test>
@@ -314,6 +264,56 @@
 		<t:response>
 			<t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="delete"/>
 			<t:header path="//zimbra:context/zimbra:notify/zimbra:deleted" attr="id" match="${folder2.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Notification3" type="bhr">
+    <t:objective> Create a new Tag and verify the notify block </t:objective>
+
+	<t:test>
+		<t:request>
+			<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="${tag1.name}" color="${tag.colorvalid}" />
+			</CreateTagRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag1.id"/>
+			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:tag" attr="color" match="${tag.colorvalid}"/>
+			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:tag" attr="name" match="${tag1.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Notification4" type="bhr">
+    <t:objective> delete a tag and verify notification block contains only valid information </t:objective>
+
+	<t:test id="Notification2a">
+		<t:request>
+			<CreateTagRequest xmlns="urn:zimbraMail">
+				<tag name="${tag2.name}" color="${tag.colorvalid}" />
+			</CreateTagRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag2.id"/>
+			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:tag" attr="color" match="${tag.colorvalid}"/>
+			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:tag" attr="name" match="${tag2.name}"/>
+		</t:response>
+	</t:test>
+
+	<t:test depends="Notification2a">
+		<t:request>
+			<TagActionRequest xmlns="urn:zimbraMail">
+				<action op="delete" id="${tag2.id}"/>
+			</TagActionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:TagActionResponse/mail:action" attr="op" match="delete"/>
+			<t:header path="//zimbra:context/zimbra:notify/zimbra:deleted" attr="id" match="${tag2.id}"/>
 		</t:response>
 	</t:test>
 
