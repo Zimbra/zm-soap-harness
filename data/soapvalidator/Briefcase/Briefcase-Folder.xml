@@ -20,7 +20,7 @@
 <t:test_case testcaseid="Briefcase_Folder_Setup" type="always" >
     <t:objective>basic system check</t:objective>
 
-	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
     <t:test id="ping" required="true">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -53,8 +53,8 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
         </t:response>
-    </t:test>  
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -66,15 +66,49 @@
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
 			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
         </t:response>
-    </t:test>  
+    </t:test>
 
-	
+ </t:test_case>
 
- </t:test_case>  
- 
- <t:test_case testcaseid="Briefcase_Folder_Duplicate_01" type="smoke">
+ <t:test_case testcaseid="Briefcase_Folder_01" type="smoke">
+    <t:objective>Create briefcase folder </t:objective>
+
+    <t:steps>
+	    1. Login to account1
+	    2. Create a Briefcase folder
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="1" name="${folder1.name}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_Folder_Duplicate_02" type="functional">
     <t:objective>Try to create duplicate briefcase folder </t:objective>
-    
+
     <t:steps>
 	    1. Login to account1
 	    2. Create a Briefcase folder
@@ -93,36 +127,36 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder1.name}"/>  	 
+                <folder l="1" name="${folder1.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder1.name}"/>  	 
+                <folder l="1" name="${folder1.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-       		    <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>	 
-	    </t:response>        
+            <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
+	    </t:response>
     </t:test>
-       
-</t:test_case> 
+
+</t:test_case>
 
 
-<t:test_case testcaseid="Briefcase_Folder_Rename_02" type="bhr">
+<t:test_case testcaseid="Briefcase_Folder_Rename_03" type="bhr">
     <t:objective>Rename briefcase folder </t:objective>
-    
+
     <t:steps>
 	    1. Login to account1
 	    2. Create a Briefcase folder
@@ -141,19 +175,19 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder2.name}"/>  	 
+                <folder l="1" name="${folder2.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -161,15 +195,15 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action[@id='${folder2.id}']" attr="op" match="rename"/>			
+            <t:select path="//mail:FolderActionResponse/mail:action[@id='${folder2.id}']" attr="op" match="rename"/>
         </t:response>
     </t:test>
-        
- </t:test_case> 
- 
- <t:test_case testcaseid="Briefcase_Folder_Delete_03" type="smoke">
+
+ </t:test_case>
+
+ <t:test_case testcaseid="Briefcase_Folder_Delete_04" type="smoke">
     <t:objective>Delete briefcase folder </t:objective>
-    
+
     <t:steps>
 	    1. Login to account1
 	    2. Create two Briefcase folder
@@ -189,30 +223,30 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder3.name}"/>  	 
+                <folder l="1" name="${folder3.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder4.name}"/>  	 
+                <folder l="1" name="${folder4.name}"/>
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
         </t:response>
     </t:test>
-  
+
     <t:test>
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -220,10 +254,10 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action[@id='${folder3.id}']" attr="op" match="trash"/>			
+            <t:select path="//mail:FolderActionResponse/mail:action[@id='${folder3.id}']" attr="op" match="trash"/>
         </t:response>
     </t:test>
-      
+
      <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -231,24 +265,24 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:FolderActionResponse/mail:action[@id='${folder4.id}']" attr="op" match="delete"/>			
+            <t:select path="//mail:FolderActionResponse/mail:action[@id='${folder4.id}']" attr="op" match="delete"/>
         </t:response>
     </t:test>
-      
- </t:test_case> 
- 
-<t:test_case testcaseid="Briefcase_ShareFolder_04" type="smoke">
+
+ </t:test_case>
+
+<t:test_case testcaseid="Briefcase_ShareFolder_05" type="smoke">
     <t:objective>Share briefcase folder</t:objective>
-    
+
    <t:steps>
 	    1. Login to account1
 	    2. Create a Briefcase folder
 	    3. Save documents to the newly created folder
 	    4. Share the folder with account2
-	    5. Login to account2 
+	    5. Login to account2
 	    6. Mount the shared folder and verify the documents inside of the folders.
 	    7. Login as account1 and delete the shared folder
-	    8. Login as account2 and check for shared documents	    
+	    8. Login as account2 and check for shared documents
     </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
@@ -263,19 +297,19 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test >
         <t:request>
             <CreateFolderRequest xmlns="urn:zimbraMail">
-                <folder l="1" name="${folder5.name}"  view="document" />  	 
+                <folder l="1" name="${folder5.name}"  view="document" />
             </CreateFolderRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.briefcase.folder.id"/>			
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.briefcase.folder.id"/>
         </t:response>
     </t:test>
-    
+
     <t:uploadservlettest>
 		<t:uploadServletRequest>
 			<filename>${account1.document.textfile}</filename>
@@ -284,7 +318,7 @@
 			<t:select attr="id" set="document.textfile.aid"/>
 		</t:uploadServletResponse>
 	</t:uploadservlettest>
-	
+
 	<t:test >
         <t:request>
 			<SaveDocumentRequest xmlns="urn:zimbraMail">
@@ -297,7 +331,7 @@
             <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document1.id"/>
         </t:response>
     </t:test>
-       
+
     <!--  Share the Briefcase folder with Account2 -->
     <t:test >
         <t:request>
@@ -311,7 +345,7 @@
             <t:select path="//mail:FolderActionResponse/mail:action"/>
         </t:response>
     </t:test>
-   
+
    <t:property name="server.zimbraAccount" value="${account2.server}"/>
 
     <t:test >
@@ -324,14 +358,14 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
      <t:test required="true">
         <t:request>
             <GetFolderRequest xmlns="urn:zimbraMail"/>
         </t:request>
         <t:response>
-            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>           
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
         </t:response>
     </t:test>
 
@@ -347,37 +381,37 @@
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account1.name}"/>
             <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.shared.folder.id"/>
         </t:response>
-    </t:test>    
-    
-     <!-- Do GetShareInfoRequest -->    
+    </t:test>
+
+     <!-- Do GetShareInfoRequest -->
     <t:test>
         <t:request>
             <GetShareInfoRequest xmlns="urn:zimbraAccount">
-            		<grantee type="usr" />            		                   
-                    <owner by="name">${account1.name}</owner>
-            </GetShareInfoRequest>            
+				<grantee type="usr" />
+				<owner by="name">${account1.name}</owner>
+            </GetShareInfoRequest>
         </t:request>
         <t:response>
-              <t:select path="//acct:GetShareInfoResponse">              		
-					<t:select path="acct:share" attr="mid" match="${account2.shared.folder.id}" />										
-              </t:select>          	
+              <t:select path="//acct:GetShareInfoResponse">
+					<t:select path="acct:share" attr="mid" match="${account2.shared.folder.id}" />
+              </t:select>
         </t:response>
     </t:test>
-    
-    <!-- Do SearchRequest for shared document -->    
+
+    <!-- Do SearchRequest for shared document -->
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="document">
              <query> in:(${shared.folder.name}) </query>
-            </SearchRequest>            
+            </SearchRequest>
         </t:request>
         <t:response>
-              <t:select path="//mail:SearchResponse">              		
-					<t:select path="mail:doc" attr="id" match="${account1.id}:${account1.document1.id}" />							
-              </t:select>          	
+              <t:select path="//mail:SearchResponse">
+					<t:select path="mail:doc" attr="id" match="${account1.id}:${account1.document1.id}" />
+              </t:select>
         </t:response>
     </t:test>
-    
+
     <t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test >
@@ -390,8 +424,8 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test >
         <t:request>
             <FolderActionRequest xmlns="urn:zimbraMail">
@@ -399,10 +433,10 @@
             </FolderActionRequest>
         </t:request>
         <t:response>
-             <t:select path="//mail:FolderActionResponse/mail:action[@id='${account1.briefcase.folder.id}']" attr="op" match="delete"/>	
+             <t:select path="//mail:FolderActionResponse/mail:action[@id='${account1.briefcase.folder.id}']" attr="op" match="delete"/>
         </t:response>
     </t:test>
-    
+
      <t:test >
         <t:request >
             <AuthRequest xmlns="urn:zimbraAccount">
@@ -413,20 +447,20 @@
         <t:response>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
-    </t:test> 
-    
+    </t:test>
+
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="document">
              <query> in:(${shared.folder.name}) </query>
-            </SearchRequest>            
+            </SearchRequest>
         </t:request>
         <t:response>
-              <t:select path="//mail:SearchResponse">              		
-					<t:select path="mail:doc" attr="id" match="${account1.id}:${account1.document1.id}" emptyset="1" />							
-              </t:select>          	
+              <t:select path="//mail:SearchResponse">
+					<t:select path="mail:doc" attr="id" match="${account1.id}:${account1.document1.id}" emptyset="1" />
+              </t:select>
         </t:response>
     </t:test>
-   </t:test_case>   
-    
+   </t:test_case>
+
 </t:tests>
