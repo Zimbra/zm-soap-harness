@@ -435,9 +435,13 @@ public class SoapTestMain {
 			FileReader fr = new FileReader(sHarnessTestSuite);
 			BufferedReader bufferedReader = new BufferedReader(fr);
 			while ((line = bufferedReader.readLine()) != null) {
-				File enlistedTestCases = new File(SoapTestCore.rootZimbraQA + File.separatorChar + line);
-
-				execute(enlistedTestCases);
+				
+        			File enlistedTestCases = new File(SoapTestCore.rootZimbraQA + File.separatorChar + line);
+				try {
+					execute(enlistedTestCases);
+				} catch (Exception e) {
+					mLog.error("Error Running test case file - " + enlistedTestCases, e);
+				}
 
 			}
 			bufferedReader.close();
