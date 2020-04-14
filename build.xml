@@ -494,9 +494,10 @@
 		<property name="testRoot" value="build/temp/data/soapvalidator/"/>
 		<property name="testSuite" value="smoke"/>
 		<property name="testResultDir" value="."/>
+		<property name="testRootOption" value="sf"/>
 		<echo>STAF: Executing ${testRoot} ${testSuite}</echo>
 		<java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
-			<arg line="-sf ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t ${testSuite} -j -o ${testResultDir}"/>
+			<arg line="-${testRootOption} ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t ${testSuite} -j -o ${testResultDir}"/>
 		</java>
 	</target>
 

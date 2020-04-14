@@ -435,8 +435,8 @@ public class SoapTestMain {
 			FileReader fr = new FileReader(sHarnessTestSuite);
 			BufferedReader bufferedReader = new BufferedReader(fr);
 			while ((line = bufferedReader.readLine()) != null) {
-				
-        			File enlistedTestCases = new File(SoapTestCore.rootZimbraQA + File.separatorChar + line);
+				// Get each test xml file from the list to execute.
+				File enlistedTestCases = new File(line);
 				try {
 					execute(enlistedTestCases);
 				} catch (Exception e) {
