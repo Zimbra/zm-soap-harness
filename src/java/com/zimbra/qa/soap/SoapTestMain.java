@@ -436,7 +436,7 @@ public class SoapTestMain {
 			BufferedReader bufferedReader = new BufferedReader(fr);
 			while ((line = bufferedReader.readLine()) != null) {
 				
-        			File enlistedTestCases = new File(SoapTestCore.rootZimbraQA + File.separatorChar + line);
+			        File enlistedTestCases = new File(line);
 				try {
 					execute(enlistedTestCases);
 				} catch (Exception e) {
