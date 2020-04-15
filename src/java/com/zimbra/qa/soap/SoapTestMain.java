@@ -207,17 +207,14 @@ public class SoapTestMain {
             	SoapTestCore.testType = new ArrayList<String>(Arrays.asList(cl.getOptionValues("t")));
             
             if ( SoapTestCore.testType != null ) {
-            	
-            	
-            	for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext();)
-        		{
-        			String type = iterator.next();
-        			
-        			if (type.equalsIgnoreCase("sanity") && !globalProperties.getProperty("ignoreFiles").toString().equalsIgnoreCase("true")) {
-        				SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
-        			}
-        		}
-        	}
+                for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext();) {
+                    String type = iterator.next();
+
+                    if (type.equalsIgnoreCase("sanity") && !globalProperties.getProperty("ignore.files").toString().equalsIgnoreCase("true")) {
+                        SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
+                    }
+                }
+            }
             
             // Option: -a <comma separated list of areas to test>
             if (cl.hasOption("a"))

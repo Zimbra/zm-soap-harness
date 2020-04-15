@@ -310,8 +310,14 @@ public class SoapTestCore {
     private void getIgnoredTests(){
         String line = null;
         FileReader fr;
+
         try {
-            fr = new FileReader(SoapTestCore.rootZimbraQA +"/conf/ListOfTestCases.txt");
+            if (SoapTestMain.globalProperties.getProperty("server.zimbrax").equals("true")) {
+                fr = new FileReader(SoapTestCore.rootZimbraQA + "/conf/skipped-tests-zimbrax.txt");
+            } else {
+                fr = new FileReader(SoapTestCore.rootZimbraQA + "/conf/skipped-tests.txt");
+            }
+
             BufferedReader bufferedReader = new BufferedReader(fr);
             while ((line = bufferedReader.readLine()) != null) {
                 File enlistedTestCases = new File(line);
@@ -322,11 +328,10 @@ public class SoapTestCore {
                 }
             }
             bufferedReader.close();
+
         } catch (FileNotFoundException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -347,7 +352,7 @@ public class SoapTestCore {
     public void runTestFile(File inputFile) throws DocumentException, IOException, HarnessException {
 
         try {
-            if(TestProperties.testProperties.getProperty("ignoreFiles").equals("true")){
+            if(TestProperties.testProperties.getProperty("ignore.files").equals("true")){
                 getIgnoredTests();
                 if(toBeIgnored.contains(inputFile)){
                     return;
