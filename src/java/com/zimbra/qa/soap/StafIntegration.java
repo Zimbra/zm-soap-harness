@@ -109,7 +109,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 
         
         // EXECUTE command parser
-        // EXECUTE <zimbra server> < SANITY | SMOKE | FULL | DIRECTORY <DIR> | FILE <FILE> | TESTCASE <ID> > [ AREAS | BITS | HOSTS | TYPES ] 
+        // EXECUTE <zimbra server> < SMOKE | BHR | SANITY | FUNCTIONAL | FULL | DIRECTORY <DIR> | FILE <FILE> | TESTCASE <ID> > [ AREAS | BITS | HOSTS | TYPES ] 
         fExecuteParser = new STAFCommandParser();
 
         // EXECUTE
@@ -640,12 +640,6 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
             	
             	String value = parsedRequest.optionValue(aSUITE);
             	mLog.debug(aSUITE + " is " + value);
-            	
-            	
-            	// Set the test case types accordingly
-            	if ( value.equalsIgnoreCase("SANITY") ) {
-            		SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
-            	}
         	}
             
             mLog.debug(aDIRECTORY + " is " + SoapTestMain.sHarnessTestCases);
@@ -660,11 +654,6 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 				String value = parsedRequest.optionValue(aSUITE);
 				mLog.debug(aSUITE + " is " + value);
 
-				// Set the test case types accordingly
-				if (value.equalsIgnoreCase("SANITY")) {
-					SoapTestMain.sHarnessTestCases = new File(
-							SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
-				}
 			}
 
 			mLog.debug(aTESTSUITES + " is " + SoapTestMain.sHarnessTestSuite);
@@ -673,15 +662,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
             	
             	String value = parsedRequest.optionValue(aSUITE);
             	mLog.debug(aSUITE + " is " + value);
-            	
-            	
-            	// Set the test case types accordingly
-            	if ( value.equalsIgnoreCase("SANITY") ) {
-            		SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
-            	}else{
-				// Use the default XML path (soap tests)
-            		SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator");
-            	}
+            	SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator");
             	mLog.debug("default "+ aDIRECTORY +" is " + SoapTestMain.sHarnessTestCases);   
         } 
         
@@ -767,27 +748,24 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
         	
         	String value = parsedRequest.optionValue(aSUITE);
         	mLog.debug(aSUITE + " is " + value);
-        	
-        	
-        	// Set the test case types accordingly
-        	if ( value.equalsIgnoreCase("SANITY") ) {
-            	SoapTestCore.testType = new ArrayList<String>(Arrays.asList("sanity".split(",")));            	
-        	} else if ( value.equalsIgnoreCase("SMOKE") ) {
-            	SoapTestCore.testType = new ArrayList<String>(Arrays.asList("sanity,smoke".split(",")));        		
-        	} else if ( value.equalsIgnoreCase("FULL") ) {
-        		SoapTestCore.testType = null;        		
-        	} else if (value!=null){
-        		SoapTestCore.testType =new ArrayList<String>(Arrays.asList(value.split(",")));   ;		       		
-        	} else {
-        		SoapTestCore.testType=null; // default - All tests
-        	}
-       
-        	mLog.debug(aSUITE + " is " + value);
-	        
-        }
-        
 
-        
+            if ( value.equalsIgnoreCase("SMOKE") ) {
+                SoapTestCore.testType = new ArrayList<String>(Arrays.asList("smoke".split(",")));
+            } else if ( value.equalsIgnoreCase("BHR") ) {
+                SoapTestCore.testType = new ArrayList<String>(Arrays.asList("bhr".split(",")));
+            } else if ( value.equalsIgnoreCase("SANITY") ) {
+                SoapTestCore.testType = new ArrayList<String>(Arrays.asList("sanity".split(",")));
+            } else if ( value.equalsIgnoreCase("FUNCTIONAL") ) {
+                SoapTestCore.testType = new ArrayList<String>(Arrays.asList("functional".split(",")));
+            } else if ( value.equalsIgnoreCase("FULL") ) {
+                SoapTestCore.testType = null;
+            } else if ( value != null ) {
+                SoapTestCore.testType =new ArrayList<String>(Arrays.asList(value.split(",")));
+            } else {
+                SoapTestCore.testType=null; // default - All tests
+            }
+        	mLog.debug(aSUITE + " is " + value);
+        }
     }
 
     private STAFResult handleHalt(STAFServiceInterfaceLevel30.RequestInfo info)
