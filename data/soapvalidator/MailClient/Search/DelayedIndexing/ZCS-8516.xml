@@ -1,0 +1,171 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test2${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="mail_content" value="Content in the message is content${TIME}${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acctSetup" type="always">
+    <t:objective>create test accounts</t:objective>
+    <t:steps> 1. Login to Admin
+              2. Create test accounts
+              3. Send email from account1 to account2
+              4. Auth as account2 and verify email can be searched
+    </t:steps>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request> 
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraDelayedIndexInactiveAccountAge">30s</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/> 
+        </t:response>        
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+     <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a="${test_account2.name}"/>
+                    <su>test mail</su>
+                    <mp ct="text/plain">
+                        <content>${mail_content}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="test mail"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" match="${mail_content}"/>        
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="auto_deletion_of_index" type="functional">
+    <t:objective>Verify that account's indexes are auto-deleted if account is inactive for more than zimbraDelayedIndexInactiveAccountAge duration</t:objective>
+    <t:steps>1. Wait for time interval where current time exceeds zimbraDelayedIndexInactiveAccountAge cutoff
+             2. Search email in account2 - verify no search results are returned
+             3. Verify account2's zimbraFeatureDelayedIndexEnabled, zimbraDelayedIndexStatus values
+    </t:steps>
+
+	<t:delay sec="60" />
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
+                  <query>subject:(test mail)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" emptyset="1"/>
+			</t:select>         
+        </t:response>
+    </t:test>
+    
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+    	<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${test_account2.id}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+		<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraFeatureDelayedIndexEnabled']" match="TRUE" />
+		<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraDelayedIndexStatus']" match="suppressed" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>
