@@ -6,10 +6,10 @@
 
 <t:property name="root" value="${soapxml.root}/Mail/lmtp/Exchange/"/>
 
-<t:property name="msg01.file" value="${root}/Exchange_Mail_Basic.txt"/>
-<t:property name="msg02.file" value="${root}/Exchange_Mail_Attachment.txt"/>
-<t:property name="msg03.file" value="${root}/Exchange_Mail_Image.txt"/>
-<t:property name="msg04.file" value="${root}/Exchange_Mail_HTML.txt"/>
+<t:property name="msg01.file" value="${root}/exchange-mail-basic.txt"/>
+<t:property name="msg02.file" value="${root}/exchange-mail-attachment.txt"/>
+<t:property name="msg03.file" value="${root}/exchange-mail-image.txt"/>
+<t:property name="msg04.file" value="${root}/exchange-mail-html.txt"/>
 
 <t:property name="subject1.valid" value="mail"/>
 <t:property name="subject2.valid" value="Mail with attachment"/>
@@ -21,11 +21,11 @@
 <t:property name="attachment2.type" value="image/jpeg"/>
 <t:property name="attachment2.name" value="image001.jpg"/>
 
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -34,16 +34,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_Exchange_MIMEBasic" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-                  2. Create a test account.       
+                  2. Create a test account.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -55,7 +55,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -70,7 +70,7 @@
     </t:test>
 
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 <t:test_case testcaseid="acctSetup2_Exchange_MIMEBasic" type="always">
@@ -109,7 +109,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_Exchange_MIMEBasic1a">
         <t:request>
@@ -122,7 +122,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_Exchange_MIMEBasic1a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -132,13 +132,13 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg1.id}']">
             <t:select attr="sd" match="1164096023000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="testuser@zimbraqa.com"/> 
+			<t:select path="//mail:e[@t='f']" attr="a" match="testuser@zimbraqa.com"/>
            	<t:select path="//mail:e[@t='t']" attr="a" match="test@liquidsys.zimbraqa.com"/>
            	<t:select path="//mail:m/mail:mp" attr="ct" match="multipart/alternative"/>
            	<t:select path="//mail:m/mail:mp/mail:mp[@ct='text/plain']" attr="content" match="(?s)Test message.*"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test depends="lmtp_Exchange_MIMEBasic1a">
         <t:request>
@@ -151,7 +151,7 @@
            	<t:select path="//mail:m/mail:mp/mail:mp[@ct='text/html']" attr="content" match="(?s).*Test message.*"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
@@ -172,7 +172,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_Exchange_MIMEBasic2a">
         <t:request>
@@ -185,7 +185,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_Exchange_MIMEBasic2a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -195,14 +195,14 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg2.id}']">
            <t:select attr="sd" match="1164096808000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="testuser@zimbraqa.com"/> 
+			<t:select path="//mail:e[@t='f']" attr="a" match="testuser@zimbraqa.com"/>
            	<t:select path="//mail:e[@t='t']" attr="a" match="test@liquidsys.zimbraqa.com"/>
            	<t:select path="//mail:m/mail:mp" attr="ct" match="multipart/mixed"/>
            	<t:select path="//mail:m/mail:mp/mail:mp/mail:mp[@ct='text/plain']" attr="content" match="(?s)This is a test message with attachment\..*"/>
-            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/> 
-			</t:select>    
+            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>
+			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test depends="lmtp_Exchange_MIMEBasic2a">
         <t:request>
@@ -212,10 +212,10 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg2.id}']">
-            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/> 
-			</t:select>    
+            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>
+			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
@@ -236,7 +236,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_Exchange_MIMEBasic3a">
         <t:request>
@@ -249,24 +249,6 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id"/>
         </t:response>
     </t:test>
-    
-    <t:test depends="lmtp_Exchange_MIMEBasic3a">
-        <t:request>
-            <GetMsgRequest xmlns="urn:zimbraMail">
-                <m id="${msg3.id}"/>
-            </GetMsgRequest>
-        </t:request>
-        <t:response>
-			<t:select path="//mail:GetMsgResponse/mail:m[@id='${msg3.id}']">
-           <t:select attr="sd" match="1164097955000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="testuser@zimbraqa.com"/> 
-           	<t:select path="//mail:e[@t='t']" attr="a" match="test@liquidsys.zimbraqa.com"/>
-            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/related"/>            
-           	<t:select path="//mail:m/mail:mp/mail:mp/mail:mp[@ct='text/plain']" attr="content" match="(?s)This message has an image embedded here\..*"/>
-            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/> 
-			</t:select>
-        </t:response>
-    </t:test> 
 
     <t:test depends="lmtp_Exchange_MIMEBasic3a">
         <t:request>
@@ -276,10 +258,28 @@
         </t:request>
         <t:response>
 			<t:select path="//mail:GetMsgResponse/mail:m[@id='${msg3.id}']">
-            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/> 
+           <t:select attr="sd" match="1164097955000"/>
+			<t:select path="//mail:e[@t='f']" attr="a" match="testuser@zimbraqa.com"/>
+           	<t:select path="//mail:e[@t='t']" attr="a" match="test@liquidsys.zimbraqa.com"/>
+            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/related"/>
+           	<t:select path="//mail:m/mail:mp/mail:mp/mail:mp[@ct='text/plain']" attr="content" match="(?s)This message has an image embedded here\..*"/>
+            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
+
+    <t:test depends="lmtp_Exchange_MIMEBasic3a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg3.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetMsgResponse/mail:m[@id='${msg3.id}']">
+            <t:select path="//mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>
+			</t:select>
+        </t:response>
+    </t:test>
 
 </t:test_case>
 
@@ -300,7 +300,7 @@
             <from>${nonZimbraUser.name}</from>
             <server>${test_acct1.server}</server>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_Exchange_MIMEBasic4a">
         <t:request>
@@ -313,7 +313,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_Exchange_MIMEBasic4a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -323,12 +323,12 @@
         <t:response>
 			<t:select path="//mail:GetMsgResponse/mail:m[@id='${msg4.id}']">
             <t:select attr="sd" match="1164098285000"/>
-			<t:select path="//mail:e[@t='f']" attr="a" match="testuser@zimbraqa.com"/> 
+			<t:select path="//mail:e[@t='f']" attr="a" match="testuser@zimbraqa.com"/>
            	<t:select path="//mail:e[@t='t']" attr="a" match="test@liquidsys.zimbraqa.com"/>
-            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/alternative"/>        
+            <t:select path="//mail:m/mail:mp" attr="ct" match="multipart/alternative"/>
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
     <t:test depends="lmtp_Exchange_MIMEBasic4a">
         <t:request>
@@ -340,7 +340,7 @@
 			<t:select path="//mail:GetMsgResponse/mail:m[@id='${msg4.id}']">
 			</t:select>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
 
