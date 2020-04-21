@@ -6,12 +6,12 @@
 
 <t:property name="root" value="${soapxml.root}/Mail/lmtp/OutlookExpress6/"/>
 
-<t:property name="msg01.file" value="${root}/OE6_textformat.txt"/>
-<t:property name="msg02.file" value="${root}/OE6_HTMLformat.txt"/>
-<t:property name="msg03.file" value="${root}/OE6_attachments.txt"/>
-<t:property name="msg04.file" value="${root}/OE6_encodingUTF8.txt"/>
-<t:property name="msg05.file" value="${root}/OE6_EncodingWesterEurpoean.txt"/>
-<t:property name="msg06.file" value="${root}/OE6_encodingLatin9.txt"/>    
+<t:property name="msg01.file" value="${root}/oe6-textformat.txt"/>
+<t:property name="msg02.file" value="${root}/oe6-htmlformat.txt"/>
+<t:property name="msg03.file" value="${root}/oe6-attachments.txt"/>
+<t:property name="msg04.file" value="${root}/oe6-encodingutf8.txt"/>
+<t:property name="msg05.file" value="${root}/oe6-encodingwestereurpoean.txt"/>
+<t:property name="msg06.file" value="${root}/oe6-encodinglatin9.txt"/>
 
 <t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>
 <t:property name="subject2.valid" value="Subject${TIME}${COUNTER}"/>
@@ -26,11 +26,11 @@
 <t:property name="attachment2.name" value="Sample.jpg"/>
 <t:property name="attachment3.type" value="text/xml"/>
 <t:property name="attachment3.name" value="outlook_ical_basic.xml"/>
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
-    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -39,16 +39,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup1_OE6_MIMEBasic" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin
-             2. Create a test account        
+             2. Create a test account
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -60,7 +60,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -75,7 +75,7 @@
     </t:test>
 
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 <t:test_case testcaseid="acctSetup2_OE6_MIMEBasic" type="always">
@@ -119,7 +119,7 @@
                 <header a="Subject">${subject1.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_OE6_MIMEBasic1a">
         <t:request>
@@ -132,7 +132,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_OE6_MIMEBasic1a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -143,10 +143,10 @@
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg1.id}"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="text/plain"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-    
+
 
 <t:test_case testcaseid="lmtp_OE6_MIMEBasic2" type="bhr">
     <t:objective>Verify a MIME message in HTML format from an account configured to Outlook express6 is received properly</t:objective>
@@ -169,7 +169,7 @@
                 <header a="Subject">${subject2.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_OE6_MIMEBasic2a">
         <t:request>
@@ -182,7 +182,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_OE6_MIMEBasic2a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -195,10 +195,10 @@
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='multipart/alternative']"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp/mail:mp[@ct='text/html']"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-   
+
 
 <t:test_case testcaseid="lmtp_OE6_MIMEBasic3" type="bhr">
     <t:objective>Verify a MIME message with attachments from an account configured to Outlook express6 is received properly</t:objective>
@@ -221,7 +221,7 @@
                 <header a="Subject">${subject3.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_OE6_MIMEBasic3a">
         <t:request>
@@ -234,7 +234,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_OE6_MIMEBasic3a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -243,17 +243,17 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg3.id}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/mixed"/>            
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/mixed"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='multipart/alternative']"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>
             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment3.type}']" attr="filename" match="${attachment3.name}"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-    
-    
+
+
 <t:test_case testcaseid="lmtp_OE6_MIMEBasic4" type="sanity">
     <t:objective>Verify a MIME message in UTF encoding from an account configured to Outlook express6 is received properly</t:objective>
     <t:steps>
@@ -275,7 +275,7 @@
                 <header a="Subject">${subject4.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_OE6_MIMEBasic4a">
         <t:request>
@@ -288,7 +288,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg4.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_OE6_MIMEBasic4a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -297,13 +297,13 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg4.id}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${subject4.valid}$"/>            
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${subject4.valid}$"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case>    
-    
-    
+</t:test_case>
+
+
 <t:test_case testcaseid="lmtp_OE6_MIMEBasic5" type="sanity">
     <t:objective>Verify a MIME message in WesterEurpoean encoding from an account configured to Outlook express6 is received properly</t:objective>
     <t:steps>
@@ -325,7 +325,7 @@
                 <header a="Subject">${subject5.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_OE6_MIMEBasic5a">
         <t:request>
@@ -338,7 +338,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg5.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_OE6_MIMEBasic5a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -347,12 +347,12 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg5.id}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${subject5.valid}$"/>            
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${subject5.valid}$"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
 </t:test_case>
-    
+
 
 <t:test_case testcaseid="lmtp_OE6_MIMEBasic6" type="sanity">
     <t:objective>Verify a MIME message in Latin9 encoding format from an account configured to Outlook express6 is received properly </t:objective>
@@ -375,7 +375,7 @@
                 <header a="Subject">${subject6.valid}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test id="lmtp_OE6_MIMEBasic6a">
         <t:request>
@@ -388,7 +388,7 @@
             <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg6.id"/>
         </t:response>
     </t:test>
-    
+
     <t:test depends="lmtp_OE6_MIMEBasic6a">
         <t:request>
             <GetMsgRequest xmlns="urn:zimbraMail">
@@ -397,12 +397,12 @@
         </t:request>
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg6.id}"/>
-            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${subject6.valid}$"/>            
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${subject6.valid}$"/>
         </t:response>
-    </t:test> 
+    </t:test>
 
-</t:test_case>    
- 
-   
+</t:test_case>
+
+
 
 </t:tests>
