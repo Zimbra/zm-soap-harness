@@ -1,0 +1,84 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="${TIME}patrick-schäfer.de"/>
+
+<t:property name="account1.user" value="german1${COUNTER}${TIME}"/>
+<t:property name="account1.name" value="${account1.user}@${domain1.name}"/>
+
+<t:test_case testcaseid="Auth_Accented_German" type="always" >
+    <t:objective>basic system check</t:objective>
+    <t:steps>
+    	1. Create domain1, which external authenticates against AD
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+		<CreateDomainRequest xmlns="urn:zimbraAdmin">
+			<name >${domain1.name}</name>
+		</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request required="true">
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="AuthRequest_German_01" type="bhr">
+	<t:objective>Test to check the authentication of user names having german characters </t:objective>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account1.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>
+

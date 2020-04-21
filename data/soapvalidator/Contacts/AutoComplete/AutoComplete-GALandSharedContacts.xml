@@ -1,0 +1,922 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- account1 is in the GAL -->
+<t:property name="account1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="account1.lastname" value="last${TIME}${COUNTER}"/>
+
+<!-- account2 autocompletes from contacts -->
+<t:property name="account2.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="account2.lastname" value="last${TIME}${COUNTER}"/>
+
+<!-- account3 autocompletes only from contacts and GAL -->
+<t:property name="account3.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="account3.lastname" value="last${TIME}${COUNTER}"/>
+
+<!-- account4 autocompletes from contacts and shared contacts -->
+<t:property name="account4.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="account4.lastname" value="last${TIME}${COUNTER}"/>
+
+<!-- account5 autcompletes from contacts, shared contacts, and GAL -->
+<t:property name="account5.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="account5.lastname" value="last${TIME}${COUNTER}"/>
+
+<!-- account6 an account that shares contacts folders with other users -->
+<t:property name="account6.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="account6.lastname" value="last${TIME}${COUNTER}"/>
+
+<t:property name="account7.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account7.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="account7.lastname" value="last${TIME}${COUNTER}"/>
+
+<t:property name="account8.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account8.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="account8.lastname" value="last${TIME}${COUNTER}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Create Accounts" type="always">
+    <t:objective>Create test accounts</t:objective>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">${account1.firstname} ${account1.lastname}</a>
+				<a n="givenName">${account1.firstname}</a>
+				<a n="sn">${account1.lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefGalAutoCompleteEnabled">${globals.false}</a>
+                <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+                <!-- auto-complete from GAL is true by default -->
+                <!--<a n="zimbraPrefGalAutoCompleteEnabled">${globals.true}</a>
+            --></CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.true}</a>
+                <a n="zimbraPrefGalAutoCompleteEnabled">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefGalAutoCompleteEnabled">${globals.true}</a>
+                <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account6.name}</name>
+                <password>${defaultpassword.value}</password>
+                
+                <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.false}</a>
+                
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account6.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+		</t:response>
+    </t:test>  
+    
+    
+    	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account7.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account7.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
+		</t:response>
+    </t:test>  
+    
+    
+    	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account8.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account8.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account8.server"/>
+		</t:response>
+    </t:test>  
+   
+</t:test_case>
+ 
+
+<t:test_case testcaseid="AutoCompleteRequest_GALandShared_01" type="smoke">
+    <t:objective>AutoCompleteRequest with zimbraPrefGalAutoCompleteEnabled=false and zimbraPrefSharedAddrBookAutoCompleteEnabled=false</t:objective>
+	<t:steps>
+	1. Login as account6
+	2. Share folder with account2
+	3. Create contact in folder
+	4. Login as account2
+	5. Create a contact
+	6. Send AutoCompleteRequest that matches only contacts
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account6.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="folder.name" value="folder${TIME}${COUNTER}"/>
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${account6.folder.contacts.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="grant" id="${account6.folder.id}">
+					<grant gt="usr" d="${account2.name}" perm="r"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account6.contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="account6.contact1.lastname" value="last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account6.folder.id}">
+                    <a n="firstName">${account1.firstname}</a>
+                    <a n="lastName">${account6.contact1.lastname}</a>
+                    <a n="email">${account6.contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="contact1.lastname" value="last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${account1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                    <a n="email">${contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${account1.firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${contact1.name}.*"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${account6.contact1.name}.*" emptyset="1"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${account1.name}.*" emptyset="1"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_GALandShared_02" type="bhr">
+    <t:objective>AutoCompleteRequest with zimbraPrefGalAutoCompleteEnabled=true and zimbraPrefSharedAddrBookAutoCompleteEnabled=false</t:objective>
+	<t:steps>
+	1. Login as account6
+	2. Share folder with account2
+	3. Create contact in folder
+	4. Login as account3
+	5. Create a contact
+	6. Send AutoCompleteRequest that matches both contacts and GAL
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account6.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="folder.name" value="folder${TIME}${COUNTER}"/>
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${account6.folder.contacts.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="grant" id="${account6.folder.id}">
+					<grant gt="usr" d="${account3.name}" perm="r"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account6.contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="account6.contact1.lastname" value="last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account6.folder.id}">
+                    <a n="firstName">${account1.firstname}</a>
+                    <a n="lastName">${account6.contact1.lastname}</a>
+                    <a n="email">${account6.contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="contact1.lastname" value="last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${account1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                    <a n="email">${contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${account1.firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${contact1.name}.*"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${account6.contact1.name}.*" emptyset="1"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${account1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_GALandShared_03" type="bhr">
+    <t:objective>AutoCompleteRequest with zimbraPrefGalAutoCompleteEnabled=false and zimbraPrefSharedAddrBookAutoCompleteEnabled=true</t:objective>
+	<t:steps>
+	1. Login as account6
+	2. Share folder with account4
+	3. Create contact in folder
+	4. Login as account4
+	5. Create a contact
+	6. Send AutoCompleteRequest that matches both contacts and shared contacts
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account6.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="folder.name" value="folder${TIME}${COUNTER}"/>
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${account6.folder.contacts.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="grant" id="${account6.folder.id}">
+					<grant gt="usr" d="${account4.name}" perm="r"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account6.contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="account6.contact1.lastname" value="last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account6.folder.id}">
+                    <a n="firstName">${account1.firstname}</a>
+                    <a n="lastName">${account6.contact1.lastname}</a>
+                    <a n="email">${account6.contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account4.folder.contacts.id"/>
+			</t:select>			
+		</t:response>
+	</t:test>
+
+	<t:property name="mountpoint1.name" value="mountpoint1${TIME}${COUNTER}"/>
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account4.folder.contacts.id}" name="${mountpoint1.name}" zid="${account6.id}" rid="${account6.folder.id}" view="contact"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="contact1.lastname" value="last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${account1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                    <a n="email">${contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${account1.firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${contact1.name}.*"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${account6.contact1.name}.*"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${account1.name}.*" emptyset="1"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_GALandShared_04" type="bhr">
+    <t:objective>AutoCompleteRequest with zimbraPrefGalAutoCompleteEnabled=true and zimbraPrefSharedAddrBookAutoCompleteEnabled=true</t:objective>
+	<t:steps>
+	1. Login as account6
+	2. Share folder with account5
+	3. Create contact in folder
+	4. Login as account5
+	5. Create a contact
+	6. Send AutoCompleteRequest that matches both contacts, shared contacts, and GAL
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account6.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="folder.name" value="folder${TIME}${COUNTER}"/>
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${account6.folder.contacts.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="grant" id="${account6.folder.id}">
+					<grant gt="usr" d="${account5.name}" perm="r"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account6.contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="account6.contact1.lastname" value="last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account6.folder.id}">
+                    <a n="firstName">${account1.firstname}</a>
+                    <a n="lastName">${account6.contact1.lastname}</a>
+                    <a n="email">${account6.contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account6.contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account5.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account5.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account5.folder.contacts.id"/>
+			</t:select>			
+		</t:response>
+	</t:test>
+
+	<t:property name="mountpoint1.name" value="mountpoint1${TIME}${COUNTER}"/>
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account5.folder.contacts.id}" name="${mountpoint1.name}" zid="${account6.id}" rid="${account6.folder.id}" view="contact"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="contact1.lastname" value="last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${account1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                    <a n="email">${contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${account1.firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${contact1.name}.*"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${account6.contact1.name}.*"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${account1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AutoCompleteRequest_GALandShared_05" type="bhr" bugids="65416" >
+    <t:objective>AutoCompleteRequest with firstname, lastname, firstname lastname, lastname firstname, email and partial of all these on shared contact</t:objective>
+	<t:steps>
+	1. Login as account7
+	2. Share folder with account8
+	3. Create contact in folder
+	4. Login as account8
+	5. Send AutoCompleteRequest with firstname lastname and full name
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account7.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account7.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account7.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="folder.name" value="folder${TIME}${COUNTER}"/>
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${account7.folder.contacts.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account7.folder.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="grant" id="${account7.folder.id}">
+					<grant gt="usr" d="${account8.name}" perm="r"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account7.contact1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="account7.contact1.lastname" value="last${TIME}${COUNTER}"/>
+	<t:property name="account7.contact1.firstname" value="first${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account7.folder.id}">
+                    <a n="firstName">${account7.contact1.firstname}</a>
+                    <a n="lastName">${account7.contact1.lastname}</a>
+                    <a n="email">${account7.contact1.name}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="account7.contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account8.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account8.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account8.folder.contacts.id"/>
+			</t:select>			
+		</t:response>
+	</t:test>
+
+	<t:property name="mountpoint1.name" value="mountpoint1${TIME}${COUNTER}"/>
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account8.folder.contacts.id}" name="${mountpoint1.name}" zid="${account7.id}" rid="${account7.folder.id}" view="contact"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account8.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+	
+	
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${account7.contact1.firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${account7.contact1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${account7.contact1.lastname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${account7.contact1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${account7.contact1.firstname} ${account7.contact1.lastname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${account7.contact1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+    
+    <t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${account7.contact1.name}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${account7.contact1.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+
+</t:test_case>
+
+
+</t:tests>

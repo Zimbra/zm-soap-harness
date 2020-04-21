@@ -1,0 +1,882 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="search.blank" value=""/>
+<t:property name="search.space" value="                   "/>
+<t:property name="search.spchar" value=";:^''//\\"/>
+<t:property name="search.invalidquery" value="invalid query"/>
+<t:property name="search.negative" value="-1"/>
+<t:property name="search.sometext" value="some text"/>
+<t:property name="search.validquery" value="(|(cn=*adminsearchaccount*)(sn=*adminsearchaccount*)(gn=*adminsearchaccount*)(displayName=*adminsearchaccount*)(zimbraMailAlias=*adminsearchaccount*)(zimbraMailAddress=*adminsearchaccount*)(zimbraMailDeliveryAddress=*adminsearchaccount*))"/>
+<t:property name="search.validquerywithspace" value="(|(cn=*  adminsearchaccount  *)(sn=*  adminsearchaccount  *)(gn=*  adminsearchaccount  *)(displayName=*  adminsearchaccount  *)(zimbraMailAlias=*  adminsearchaccount  *)(zimbraMailAddress=*  adminsearchaccount  *)(zimbraMailDeliveryAddress=*   adminsearchaccount   *))"/>
+    
+
+
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>
+    
+<t:property name="account1.string" value="adminsearchaccount.${TIME}${COUNTER}"/>
+<t:property name="account2.string" value="adminsearchaccount.${TIME}${COUNTER}"/>    
+<t:property name="account3.string" value="adminsearchaccount.${TIME}${COUNTER}"/>        
+<t:property name="account4.string" value="testaccount${TIME}${COUNTER}"/>            
+<t:property name="alias1.string" value="alias${TIME}${COUNTER}"/>
+<t:property name="dl1.string" value="account${TIME}${COUNTER}"/>    
+    
+<t:property name="comman.string" value="comman${TIME}"/>        
+    
+<t:property name="account1.name" value="${account1.string}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="${account2.string}@${defaultdomain.name}"/>    
+<t:property name="account3.name" value="${account3.string}@${domain1.name}"/>        
+<t:property name="account4.name" value="${account4.string}@${domain1.name}"/>        
+    
+<t:property name="alias1.name" value="${alias1.string}@${defaultdomain.name}"/>
+<t:property name="dl1.name" value="${dl1.string}@${defaultdomain.name}"/>
+    
+<t:property name="account5.name" value="${comman.string}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="dl2.name" value="${comman.string}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="alias2.name" value="${comman.string}${COUNTER}@${defaultdomain.name}"/>    
+    
+    
+<t:property name="account1.query1" value="(|(uid=*${account1.string}*)(cn=*${account1.string}*)(sn=*${account1.string}*)(gn=*${account1.string}*)(displayName=*${account1.string}*)(zimbraMailAlias=*${account1.string}*)(zimbraId=vc)(zimbraMailAddress=*${account1.string}*)(zimbraMailDeliveryAddress=*${account1.string}*))"/>
+<t:property name="alias1.query1" value="(|(uid=*${alias1.string}*)(cn=*${alias1.string}*)(sn=*${alias1.string}*)(gn=*${alias1.string}*)(displayName=*${alias1.string}*)(zimbraMailAlias=*${alias1.string}*)(zimbraId=vc)(zimbraMailAddress=*${alias1.string}*)(zimbraMailDeliveryAddress=*${alias1.string}*))"/>
+<t:property name="dl1.query1" value="(|(uid=*${dl1.string}*)(cn=*${dl1.string}*)(sn=*${dl1.string}*)(gn=*${dl1.string}*)(displayName=*${dl1.string}*)(zimbraMailAlias=*${dl1.string}*)(zimbraId=vc)(zimbraMailAddress=*${dl1.string}*)(zimbraMailDeliveryAddress=*${dl1.string}*))"/>
+<t:property name="domain1.query1" value="(|(uid=*${domain1.name}*)(cn=*${domain1.name}*)(sn=*${domain1.name}*)(gn=*${domain1.name}*)(displayName=*${domain1.name}*)(zimbraMailAlias=*${domain1.name}*)(zimbraId=vc)(zimbraMailAddress=*${domain1.name}*)(zimbraMailDeliveryAddress=*${domain1.name}*))"/>    
+
+<t:property name="account1.query2" value="(|(uid=*${account1.name}*)(cn=*${account1.name}*)(sn=*${account1.name}*)(gn=*${account1.name}*)(displayName=*${account1.name}*)(zimbraMailAlias=*${account1.name}*)(zimbraId=vc)(zimbraMailAddress=*${account1.name}*)(zimbraMailDeliveryAddress=*${account1.name}*))"/>
+<t:property name="alias1.query2" value="(|(uid=*${alias1.name}*)(cn=*${alias1.name}*)(sn=*${alias1.name}*)(gn=*${alias1.name}*)(displayName=*${alias1.name}*)(zimbraId=${alias1.name})(mail=*${alias1.name}*)(zimbraMailAlias=*${alias1.name}*)(zimbraMailDeliveryAddress=*${alias1.name}*)(zimbraDomainName=*${alias1.name}*))"/>
+
+<t:property name="dl1.query2" value="(|(uid=*${dl1.name}*)(cn=*${dl1.name}*)(sn=*${dl1.name}*)(gn=*${dl1.name}*)(displayName=*${dl1.name}*)(zimbraMailAlias=*${dl1.name}*)(zimbraId=vc)(zimbraMailAddress=*${dl1.name}*)(zimbraMailDeliveryAddress=*${dl1.name}*))"/>
+
+<t:property name="account2.query1" value="(|(uid=*${account2.string}*)(cn=*${account2.string}*)(sn=*${account2.string}*)(gn=*${account2.string}*)(displayName=*${account2.string}*)(zimbraMailAlias=*${account2.string}*)(zimbraId=vc)(zimbraMailAddress=*${account2.string}*)(zimbraMailDeliveryAddress=*${account2.string}*))"/>    
+<t:property name="account3.query1" value="(|(uid=*${account3.string}*)(cn=*${account3.string}*)(sn=*${account3.string}*)(gn=*${account3.string}*)(displayName=*${account3.string}*)(zimbraMailAlias=*${account3.string}*)(zimbraId=vc)(zimbraMailAddress=*${account3.string}*)(zimbraMailDeliveryAddress=*${account3.string}*))"/>
+<t:property name="comman1.query1" value="(|(uid=*${comman.string}*)(cn=*${comman.string}*)(sn=*${comman.string}*)(gn=*${comman.string}*)(displayName=*${comman.string}*)(zimbraMailAlias=*${comman.string}*)(zimbraId=vc)(zimbraMailAddress=*${comman.string}*)(zimbraMailDeliveryAddress=*${comman.string}*))"/>
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_account_search" type="deprecated" >
+    <t:objective>Prepare the account for tests</t:objective>
+    <t:steps> 1. Login to admin
+              2. Create test-accounts
+              3. Create an alias 
+              4. Create a distribution list        
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test reuqired="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <alias>${alias1.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${account5.id}</id>
+                <alias>${alias2.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${dl1.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${dl2.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl2.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="SearchAccountsRequest1" type="deprecated" >
+    <t:objective>Verify that SearchAccountsRequest receives a response</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest2" type="deprecated" >
+    <t:objective>Verify search with blank query </t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" limit="1">
+                <query>${search.blank}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+                    <t:select path="//admin:SearchAccountsResponse"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest3" type="deprecated" >
+    <t:objective>Verify search with space in query </t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" limit="1">
+                <query>${search.space}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest4" type="deprecated" >
+    <t:objective>Verify search with valid query with leading and trailing spaces in search string </t:objective>
+        
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquerywithspace}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+                    <t:select path="//admin:SearchAccountsResponse"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest5" type="deprecated" >
+    <t:objective>Verify search with no query tag </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">    
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+                    <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test> 
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest6" type="deprecated" >
+    <t:objective>Verify search with valid query and valid value of all parameters </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+                <pagenum>0</pagenum>
+                <pageresultsnum>25</pageresultsnum>
+                <isascending>0</isascending>
+                <orderby>zimbraId</orderby>
+                <attrstoget>displayName</attrstoget>
+                <attrstoget>zimbraId</attrstoget>
+                <attrstoget>uid</attrstoget>
+                <attrstoget>zimbraAccountStatus</attrstoget>
+                <maxsearchresults>500</maxsearchresults>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest7" type="deprecated" >
+    <t:objective>Verify search with valid query and negative value for isascending </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+            <query>${search.validquery}</query>
+            <isascending>${search.negative}</isascending>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest8" type="deprecated" >
+    <t:objective>Verify search with valid query and some text value for isascending </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+            <query>${search.validquery}</query>
+            <isascending>${search.sometext}</isascending>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest9" type="deprecated" >
+    <t:objective>Verify search with valid query and invalid value for isascending i.e. other than 0 and 1</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+                <isascending>4</isascending>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest10" type="deprecated" >
+    <t:objective>Verify search with valid query and space for orderby </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+                <orderby>${search.space}</orderby>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest11" type="deprecated" >
+    <t:objective>Verify search with valid query and space for attrstoget </t:objective>
+        <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+                <attrstoget>${search.space}</attrstoget>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest12" type="deprecated" >
+    <t:objective>Verify search with valid query and negative value for maxsearchresults </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+                <maxsearchresults>${search.negative}</maxsearchresults>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest13" type="deprecated" >
+    <t:objective>Verify search with valid query and some text value for maxsearchresults </t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+                <maxsearchresults>${search.sometext}</maxsearchresults>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest14" type="deprecated" bugids="1686"  >
+    <t:objective>Verify search with special characters in query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.spchar}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="ldap.INVALID_SEARCH_FILTER"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest15" type="deprecated" bugids="1686"  >
+    <t:objective>Verify search with invalid query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.invalidquery}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="ldap.INVALID_SEARCH_FILTER"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest16" type="deprecated" bugids="1265"  >
+    <t:objective>Verify search with invalid query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+            <query>${search.validquery}</query>
+            <pagenum>${search.negative}</pagenum>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.FAILURE"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest17" type="deprecated" bugids="2436"  >
+    <t:objective>Verify search with valid query and some text value for pagenum </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+                <pagenum>${search.sometext}</pagenum>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchAccountsRequest18" type="deprecated" bugids="1744"  >
+    <t:objective>Verify search with valid query and negative value for pageresultsnum </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+                <pageresultsnum>${search.negative}</pageresultsnum>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+ 
+    
+<t:test_case testcaseid="SearchAccountsRequest18" type="deprecated" bugids="1744"  >
+    <t:objective>Verify search with valid query and some text value for pageresultsnum </t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+                <pageresultsnum>${search.sometext}</pageresultsnum>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+    
+
+<t:test_case testcaseid="SearchAccountsRequest19" type="deprecated">
+    <t:objective>Verify searching for a particular account (without domain name) </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="accounts">
+                <query>${account1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="name" match="${account1.name}"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+
+    
+<t:test_case testcaseid="SearchAccountsRequest20" type="deprecated">
+    <t:objective>Verify searching for a particular account with domain name </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="accounts">
+                <query>${account1.query2}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="name" match="${account1.name}"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+    
+    
+<t:test_case testcaseid="SearchAccountsRequest21" type="deprecated">
+    <t:objective>Verify searching for a particular alias without domain name </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="aliases">
+                <query>${alias1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:alias" attr="name" match="${alias1.name}"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>       
+   
+    
+<t:test_case testcaseid="SearchAccountsRequest22" type="deprecated" bugids="4704">
+    <t:objective>Verify searching for a particular alias with domain name </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="aliases">
+                <query>${alias1.query2}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:alias" attr="name" match="${alias1.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>        
+    
+    
+<t:test_case testcaseid="SearchAccountsRequest23" type="deprecated">
+    <t:objective>Verify searching for a particular Distribution list witout domain name </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="distributionlists">
+                <query>${dl1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:dl" attr="name" match="${dl1.name}"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+    
+
+<t:test_case testcaseid="SearchAccountsRequest24" type="deprecated">
+    <t:objective>Verify searching for a particular Distribution list with domain name </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="distributionlists">
+                <query>${dl1.query2}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:dl" attr="name" match="${dl1.name}"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+
+
+<t:test_case testcaseid="SearchAccountsRequest25" type="deprecated">
+    <t:objective>Search a deleted distribution list </t:objective>
+    <t:steps>1. Delete the disribution list
+             2. Search the deleted distribution list        
+    </t:steps>
+
+    <t:test id="searchAccountsRequest25a">
+        <t:request>
+            <DeleteDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${dl1.id}</id>
+            </DeleteDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDistributionListResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="searchAccountsRequest25a">
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="distributionlists">
+                <query>${dl1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:dl" attr="name" match="${dl1.name}" emptyset="1"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>      
+    
+ 
+<t:test_case testcaseid="SearchAccountsRequest26" type="deprecated">
+    <t:objective>Verify searching for a remaaved alias </t:objective>
+    <t:steps>
+        1. Remove the alias
+        2. Search the removed alias
+    </t:steps>
+
+    <t:test id="searchAccountsRequest26a">
+        <t:request>
+            <RemoveAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <alias>${alias1.name}</alias>
+            </RemoveAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RemoveAccountAliasResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test delends="searchAccountsRequest26a">
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="aliases">
+                <query>${alias1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:alias" attr="name" match="${alias1.name}" emptyset="1"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+   
+    
+<t:test_case testcaseid="SearchAccountsRequest27" type="deprecated">
+    <t:objective>Verify searching for deleted particular account </t:objective>
+    <t:steps>
+        1. Delete the account
+        2. Search the deleted account
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <t:test id="searchAccountsRequest27a">
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account2.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test depends="searchAccountsRequest27a">
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="accounts">
+                <query>${account2.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="name" match="${account2.name}" emptyset="1"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>     
+    
+
+<t:test_case testcaseid="SearchAccountsRequest28" type="deprecated">
+    <t:objective>Verify searching for an account in particular domain </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" domain="${domain1.name}"  offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="accounts">
+                <query>${account3.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="name" match="${account3.name}"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>        
+    
+    
+<t:test_case testcaseid="SearchAccountsRequest29" type="deprecated">
+    <t:objective>Verify searching for an account in different domain </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" domain="${domain1.name}"  offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="accounts">
+                <query>${account1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="name" match="${account1.name}" emptyset="1"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>      
+      
+    
+<t:test_case testcaseid="SearchAccountsRequest30" type="deprecated">
+    <t:objective>Verify searching for with domain name only </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus" sortBy="uid" sortAscending="1" types="accounts">
+                <query>${domain1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="name" match=".*${domain1.name}.*"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case> 
+    
+    
+<t:test_case testcaseid="SearchAccountsRequest31" type="deprecated">
+    <t:objective>Verify sorting order is ascending order </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId" sortBy="displayName" sortAscending="1" types="accounts">
+                <query>${domain1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account[1]" attr="name" match="${account3.name}"/>
+            <t:select path="//admin:SearchAccountsResponse/admin:account[2]" attr="name" match="${account4.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>     
+    
+    
+<t:test_case testcaseid="SearchAccountsRequest32" type="deprecated">
+    <t:objective>Verify sorting order is descending order </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId" sortBy="name" sortAscending="0" types="accounts">
+                <query>${domain1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account[1]" attr="name" match="${account4.name}"/>    
+            <t:select path="//admin:SearchAccountsResponse/admin:account[2]" attr="name" match="${account3.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>     
+    
+
+<t:test_case testcaseid="SearchAccountsRequest33" type="deprecated" bugids="4194">
+    <t:objective>Verify searching accounts,aliases,distributionlists for a comman string </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId" sortBy="displayName" sortAscending="0" types="accounts,aliases,distributionlists">
+                <query>${comman1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account" attr="name" match="${account5.name}"/>
+            <t:select path="//admin:SearchAccountsResponse/admin:dl" attr="name" match="${dl2.name}"/>
+            <t:select path="//admin:SearchAccountsResponse/admin:alias" attr="name" match="${alias2.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>         
+    
+
+<t:test_case testcaseid="SearchAccountsRequest34" type="deprecated" bugids="5801">
+    <t:objective>Verify sorting order is ascending order </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchAccountsRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" applyCos="0" attrs="displayName,zimbraId" sortBy="name" sortAscending="1" types="accounts">
+                <query>${domain1.query1}</query>
+            </SearchAccountsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchAccountsResponse/admin:account[1]" attr="name" match="${account3.name}"/>
+            <t:select path="//admin:SearchAccountsResponse/admin:account[2]" attr="name" match="${account4.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>   
+
+   
+</t:tests>
+
+
+

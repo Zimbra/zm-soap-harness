@@ -1,0 +1,633 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="tag.name" value="zimbra"/>
+<t:property name="tag.newname" value="test"/>
+
+<t:property name="search.name" value="Satish"/>
+<t:property name="search.query" value="from:satish"/>
+
+<t:property name="search.newname" value="Unread"/>
+<t:property name="search.newquery" value="is:unread"/>
+
+
+
+
+
+
+<t:property name="acct1.name" value="account${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="acct2.name" value="account${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="acct3.name" value="account${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="acct4.name" value="account${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="acct5.name" value="account${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="password" value="${defaultpassword.value}"/>
+
+
+
+<t:property name="root" value="${soapxml.root}/Conversation"/>
+<t:property name="conv1.file1" value="${root}/Mime/conv1_file1.txt"/>
+<t:property name="conv1.file2" value="${root}/Mime/conv1_file2.txt"/>
+
+<t:property name="acct2.mimeFolderName" value="${testMailRaw.root}/bug4437"/>
+<t:property name="acct3.mimeFolderName" value="${testMailRaw.root}/bug4437a"/>
+<t:property name="acct4.mimeFolderName" value="${testMailRaw.root}/bug4437b"/>
+<t:property name="acct5.mimeFolderName" value="${testMailRaw.root}/bug4437c"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>
+<t:property name="test_acct4.server" value="NOT_DEFINED"/>
+<t:property name="test_acct5.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="account_setup_conversation" type="always" >
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a mail account 
+    </steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct1.name}</name>
+                <password>${password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct2.name}</name>
+                <password>${password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct3.name}</name>
+                <password>${password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct4.name}</name>
+                <password>${password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct5.name}</name>
+                <password>${password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
+        </t:response>
+    </t:test>
+
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${conv1.file1}</filename>
+            <to>${acct1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${conv1.file2}</filename>
+            <to>${acct1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct2.mimeFolderName}/mimeMsg01.txt</filename>
+            <to>${acct2.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct2.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct2.mimeFolderName}/mimeMsg02.txt</filename>
+            <to>${acct2.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct2.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct2.mimeFolderName}/mimeMsg03.txt</filename>
+            <to>${acct2.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct2.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct3.mimeFolderName}/mimeMsg01.txt</filename>
+            <to>${acct3.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct3.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct3.mimeFolderName}/mimeMsg02.txt</filename>
+            <to>${acct3.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct3.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct3.mimeFolderName}/mimeMsg03.txt</filename>
+            <to>${acct3.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct3.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct4.mimeFolderName}/mimeMsg01.txt</filename>
+            <to>${acct4.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct4.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct4.mimeFolderName}/mimeMsg02.txt</filename>
+            <to>${acct4.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct4.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct4.mimeFolderName}/mimeMsg03.txt</filename>
+            <to>${acct4.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct4.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct5.mimeFolderName}/mimeMsg01.txt</filename>
+            <to>${acct5.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct5.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct5.mimeFolderName}/mimeMsg02.txt</filename>
+            <to>${acct5.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct5.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${acct5.mimeFolderName}/mimeMsg03.txt</filename>
+            <to>${acct5.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct5.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+
+
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="user11_login" type="always" >
+ <t:objective>login as the test account</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${acct1.name}</account>
+	    <password>${password}</password>
+	    <!--<prefs/>-->
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="GetConvRequest1" type="bhr">
+ <t:objective>Search for a mail, then get the conversation</t:objective>
+
+	<t:test id="getconvrequest1a">
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
+	   <query>attachment:image/jpeg</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+		<!-- Make sure of certain conversation properties -->
+		<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="Another message in the conversation."/>
+		<t:select path="//mail:SearchResponse/mail:c" attr="su" match="Subject1"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test depends="getconvrequest1a">
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <!-- <c id="63"/> -->
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c" attr="n" match="2"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="ConvActionRequest1" type="bhr">
+ <t:objective>Flag a conversation</t:objective>
+
+
+	<t:test id="convactionrequest1a">
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
+	   <query>attachment:image/jpeg</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test id="convactionrequest1b" depends="convactionrequest1a">
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <!-- <c id="63"/> -->
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse"/>
+		<t:select path="//mail:GetConvResponse/mail:c" attr="f" set="flag"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test id="convactionrequest1c" depends="convactionrequest1b">
+	 <t:request>
+	   <ConvActionRequest xmlns="urn:zimbraMail">
+	     <action id="${conv.id}" op="flag"/>
+	   </ConvActionRequest>
+	 </t:request>
+	 <t:response>
+	   <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id}"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test depends="convactionrequest1c">
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c">
+			<t:select attr="f" match="${flag}" emptyset="1"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+<t:test_case testcaseid="conversation01" type="sanity" bugids="4437">
+ <t:objective>Verify bug 4437</t:objective>
+ <t:steps>
+ 1. Inject 3 messages.  The 2nd and 3rd messages have differing whitespace in the subject, but all should be combined into one conversation
+ 2. Search for the conversation.  Verify that there is 1 conversation with 3 messages (not 2 conversations or 3 conversations)
+ </t:steps>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${acct2.name}</account>
+	    <password>${password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test >
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="message">
+	   <query>subject:(How many Linux servers)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test >
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
+	   <query>subject:(How many Linux servers)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+		<t:select path="//mail:SearchResponse/mail:c" attr="n" match="3"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c/mail:su" match="How many Linux servers does Intel IT run in production today\?"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+<t:test_case testcaseid="conversation01a" type="sanity" bugids="4437">
+ <t:objective>Verify bug 4437</t:objective>
+ <t:steps>
+ 1. Inject 3 messages.  All three messages have a double space in them
+ 2. Search for the conversation.  Verify that there is 1 conversation with 3 messages (not 2 conversations or 3 conversations)
+ </t:steps>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${acct3.name}</account>
+	    <password>${password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test >
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="message">
+	   <query>subject:(How many Linux servers)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test >
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
+	   <query>subject:(How many Linux servers)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+		<t:select path="//mail:SearchResponse/mail:c" attr="n" match="3"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c/mail:su" match="How many Linux servers does  Intel IT run in production today\?"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+
+<t:test_case testcaseid="conversation01b" type="sanity" bugids="4437">
+ <t:objective>Verify bug 4437</t:objective>
+ <t:steps>
+ 1. Inject 3 messages.  The first message has double spaces, the second and third don't
+ 2. Search for the conversation.  Verify that there is 1 conversation with 3 messages (not 2 conversations or 3 conversations)
+ </t:steps>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${acct4.name}</account>
+	    <password>${password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test >
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="message">
+	   <query>subject:(How many Linux servers)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test >
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
+	   <query>subject:(How many Linux servers)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+		<t:select path="//mail:SearchResponse/mail:c" attr="n" match="3"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c/mail:su" match="How many Linux servers does  Intel IT run in production today\?"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+
+<t:test_case testcaseid="conversation01c" type="sanity" bugids="4437">
+ <t:objective>Verify bug 4437</t:objective>
+ <t:steps>
+ 1. Inject 3 messages.  All messages have double spaces in different locations.
+ 2. Search for the conversation.  Verify that there is 1 conversation with 3 messages (not 2 conversations or 3 conversations)
+ </t:steps>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${acct5.name}</account>
+	    <password>${password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/> 
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test >
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="message">
+	   <query>subject:(How many Linux servers)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test >
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" groupBy="conversation">
+	   <query>subject:(How many Linux servers)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+		<t:select path="//mail:SearchResponse/mail:c" attr="n" match="3"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test >
+	 <t:request>
+	   <GetConvRequest xmlns="urn:zimbraMail">
+	     <c id="${conv.id}"/>
+	   </GetConvRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetConvResponse/mail:c/mail:su" match="How many Linux servers does  Intel IT run in production today\?"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

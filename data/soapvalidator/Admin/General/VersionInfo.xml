@@ -1,0 +1,36 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="GetVersionInfo_01" type="bhr">
+    <t:objective>TagRequest GetVersionInfoRequest</t:objective>
+        
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetVersionInfoRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="version"/>            
+            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="release" match="^\d+$"/>
+            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="buildDate" match="[0-9\-]*"/>
+            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="host"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+</t:tests>

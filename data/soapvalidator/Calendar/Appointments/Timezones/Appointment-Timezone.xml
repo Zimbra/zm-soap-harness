@@ -1,0 +1,1721 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- ${TIME} and ${COUNTER} will be added later in the script -->
+<t:property name="appointment.subject" value="Subject of meeting"/>
+<t:property name="appointment.location" value="Location of meeting"/>
+<t:property name="appointment.content" value="Content of the message"/>
+<t:property name="appointment.start" value="1264986000000"/> <!-- 02/01/2010 01:00:00 GMT -->
+<t:property name="appointment.finish" value="${TIME(+1h)[${appointment.start}]}"/>
+
+
+<t:property name="account.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account.password" value="${defaultpassword.value}"/>
+
+
+<t:property name="timezone1" value="(GMT-12.00) International Date Line West"/>
+<t:property name="timezone2" value="(GMT-11.00) Midway Island / Samoa"/>
+<t:property name="timezone3" value="(GMT-10.00) Hawaii"/>
+<t:property name="timezone4" value="(GMT-09.00) Alaska"/>
+<t:property name="timezone5" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+<t:property name="timezone6" value="(GMT-07.00) Arizona"/>
+<t:property name="timezone7" value="(GMT-07.00) Chihuahua / La Paz / Mazatlan"/>
+<t:property name="timezone8" value="(GMT-07.00) Mountain Time (US &amp; Canada)"/>
+<t:property name="timezone9" value="(GMT-06.00) Central America"/>
+<t:property name="timezone10" value="(GMT-06.00) Central Time (US &amp; Canada)"/>
+<t:property name="timezone11" value="(GMT-06.00) Guadalajara / Mexico City / Monterrey"/>
+<t:property name="timezone12" value="(GMT-06.00) Saskatchewan"/>
+<t:property name="timezone13" value="(GMT-05.00) Bogota / Lima / Quito"/>
+<t:property name="timezone14" value="(GMT-05.00) Eastern Time (US &amp; Canada)"/>
+<t:property name="timezone15" value="(GMT-05.00) Indiana (East)"/>
+<t:property name="timezone16" value="(GMT-04.00) Atlantic Time (Canada)"/>
+<t:property name="timezone17" value="(GMT-04.00) Caracas / La Paz"/>
+<t:property name="timezone18" value="(GMT-04.00) Santiago"/>
+<t:property name="timezone19" value="(GMT-03.30) Newfoundland"/>
+<t:property name="timezone20" value="(GMT-03.00) Brasilia"/>
+<t:property name="timezone21" value="(GMT-03.00) Buenos Aires / Georgetown"/>
+<t:property name="timezone22" value="(GMT-03.00) Greenland"/>
+<t:property name="timezone23" value="(GMT-02.00) Mid-Atlantic"/>
+<t:property name="timezone24" value="(GMT-01.00) Azores"/>
+<t:property name="timezone25" value="(GMT-01.00) Cape Verde Is."/>
+<t:property name="timezone26" value="(GMT) Casablanca / Monrovia"/>
+<t:property name="timezone27" value="(GMT) Greenwich Mean Time - Dublin / Edinburgh / Lisbon / London"/>
+<t:property name="timezone28" value="(GMT+01.00) Amsterdam / Berlin / Bern / Rome / Stockholm / Vienna"/>
+<t:property name="timezone29" value="(GMT+01.00) Belgrade / Bratislava / Budapest / Ljubljana / Prague"/>
+<t:property name="timezone30" value="(GMT+01.00) Brussels / Copenhagen / Madrid / Paris"/>
+<t:property name="timezone31" value="(GMT+01.00) Sarajevo / Skopje / Warsaw / Zagreb"/>
+<t:property name="timezone32" value="(GMT+01.00) West Central Africa"/>
+<t:property name="timezone33" value="(GMT+02.00) Athens / Beirut / Istanbul / Minsk"/>
+<t:property name="timezone34" value="(GMT+02.00) Bucharest"/>
+<t:property name="timezone35" value="(GMT+02.00) Cairo"/>
+<t:property name="timezone36" value="(GMT+02.00) Harare / Pretoria"/>
+<t:property name="timezone37" value="(GMT+02.00) Helsinki / Kyiv / Riga / Sofia / Tallinn / Vilnius"/>
+<t:property name="timezone38" value="(GMT+02.00) Jerusalem"/>
+<t:property name="timezone39" value="(GMT+03.00) Baghdad"/>
+<t:property name="timezone40" value="(GMT+03.00) Kuwait / Riyadh"/>
+<t:property name="timezone41" value="(GMT+04.00) Moscow / St. Petersburg / Volgograd"/>
+<t:property name="timezone42" value="(GMT+03.00) Nairobi"/>
+<t:property name="timezone43" value="(GMT+03.30) Tehran"/>
+<t:property name="timezone44" value="(GMT+04.00) Abu Dhabi / Muscat"/>
+<t:property name="timezone45" value="(GMT+04.00) Baku / Tbilisi / Yerevan"/>
+<t:property name="timezone46" value="(GMT+04.30) Kabul"/>
+<t:property name="timezone47" value="(GMT+06.00) Ekaterinburg"/>
+<t:property name="timezone48Tashkent" value="Asia/Tashkent"/>
+<t:property name="timezone48Karachi" value="Asia/Karachi"/>
+<t:property name="timezone49" value="(GMT+05.30) Chennai / Kolkata / Mumbai / New Delhi"/>
+<t:property name="timezone50" value="(GMT+05.45) Kathmandu"/>
+<t:property name="timezone51" value="(GMT+06.00) Almaty / Novosibirsk"/>
+<t:property name="timezone52" value="(GMT+06.00) Astana / Dhaka"/>
+<t:property name="timezone53" value="(GMT+05.30) Sri Jayawardenepura"/>
+<t:property name="timezone54" value="(GMT+06.30) Rangoon"/>
+<t:property name="timezone55" value="(GMT+07.00) Bangkok / Hanoi / Jakarta"/>
+<t:property name="timezone56" value="(GMT+08.00) Krasnoyarsk"/>
+<t:property name="timezone57" value="(GMT+08.00) Beijing / Chongqing / Hong Kong / Urumqi"/>
+<t:property name="timezone58" value="(GMT+09.00) Irkutsk"/>
+<t:property name="timezone59" value="(GMT+08.00) Kuala Lumpur / Singapore"/>
+<t:property name="timezone60" value="(GMT+08.00) Perth"/>
+<t:property name="timezone61" value="(GMT+08.00) Taipei"/>
+<t:property name="timezone62" value="(GMT+09.00) Osaka / Sapporo / Tokyo"/>
+<t:property name="timezone63" value="(GMT+09.00) Seoul"/>
+<t:property name="timezone64" value="(GMT+10.00) Yakutsk"/>
+<t:property name="timezone65" value="(GMT+09.30) Adelaide"/>
+<t:property name="timezone66" value="(GMT+09.30) Darwin"/>
+<t:property name="timezone67" value="(GMT+10.00) Brisbane"/>
+<t:property name="timezone68" value="(GMT+10.00) Canberra / Melbourne / Sydney"/>
+<t:property name="timezone69" value="(GMT+10.00) Guam / Port Moresby"/>
+<t:property name="timezone70" value="(GMT+10.00) Hobart"/>
+<t:property name="timezone71" value="(GMT+11.00) Vladivostok"/>
+<t:property name="timezone72" value="(GMT+11.00) Magadan / Solomon Is. / New Caledonia"/>
+<t:property name="timezone73" value="(GMT+12.00) Auckland / Wellington"/>
+<t:property name="timezone74" value="(GMT+12.00) Fiji / Kamchatka / Marshall Is."/>
+<t:property name="timezone75" value="(GMT+13.00) Nuku'alofa"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_acct1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.name}</name>
+                <password>${account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account.server}"/>
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones1" type="smoke">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone1}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+12h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones2" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone2}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+11h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones3" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone3}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+10h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones4" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone4}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+9h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones5" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone5}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones6" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone6}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+7h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones7" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone7}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+7h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones8" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone8}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+7h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones9" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone9}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+6h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones10" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone10}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+6h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones11" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone11}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+6h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones12" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone12}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+6h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones13" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone13}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+5h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones14" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone14}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+5h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones15" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone15}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+5h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones16" type="bhr" bugids="10041">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone16}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+4h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones17" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone17}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+4h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones18" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Feb is Daylight Savings Time in Chile -->
+	<t:property name="appointment.timezone" value="${timezone18}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+4h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones19" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone19}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+3h)(+30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones20" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Feb is Daylight Savings Time in Chile -->
+	<t:property name="appointment.timezone" value="${timezone20}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+3h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones21" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone21}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+3h) [${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones22" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone22}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones23" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone23}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+2h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones24" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone24}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones25" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone25}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones26" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone26}"/>
+	<t:property name="appointment.start.gmt" value="${TIME[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones27" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone27}"/>
+	<t:property name="appointment.start.gmt" value="${TIME[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones28" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone28}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones29" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone29}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones30" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone30}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones31" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone31}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones32" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone32}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones33" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone33}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones34" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone34}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones35" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone35}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones36" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone36}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones37" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone37}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones38" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone38}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones39" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone39}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones40" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone40}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones41" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone41}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones42" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone42}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones43" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone43}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones44" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone44}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-4h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones45" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone45}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-4h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones46" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone46}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-4h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones47" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone47}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones48Tashkent" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone48Tashkent}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones48Karachi" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone48Karachi}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones49" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone49}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones50" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone50}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)(-45m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones51" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone51}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-6h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones52" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone52}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-6h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones53" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone53}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones54" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone54}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-6h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones55" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone55}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-7h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones56" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone56}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-7h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones57" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone57}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones58" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone58}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones59" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone59}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones60" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Perth observes savings time: http://www.timeanddate.com/worldclock/city.html?n=196 -->
+	<t:property name="appointment.timezone" value="${timezone60}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones61" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone61}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones62" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone62}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones63" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone63}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones64" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone64}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones65" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone65}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)(-30m)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones66" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone66}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones67" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone67}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones68" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone68}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones69" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone69}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones70" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone70}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones71" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone71}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones72" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone72}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-11h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones73" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone73}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-12h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones74" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone74}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-12h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones75" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone75}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-13h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+
+
+
+
+<t:property name="appointment.start" value="1275354000000"/> <!-- 06/01/2010 01:00:00 GMT -->
+
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones1A" type="deprecated" >
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Is the international date line west used as a timezone? -->
+	
+	<t:property name="appointment.timezone" value="${timezone1}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+12h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones2A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Somoa doesn't have a savings time -->
+	<t:property name="appointment.timezone" value="${timezone2}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+11h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones3A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Hawaii doesn't have a savings time -->
+	<t:property name="appointment.timezone" value="${timezone3}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+10h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones4A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone4}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+9h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones5A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone5}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+8h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones6A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Arizona  doesn't have a savings time -->
+	<t:property name="appointment.timezone" value="${timezone6}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+7h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones7A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone7}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+7h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones8A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone8}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+7h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones9A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Central America doesn't have a savings time -->
+	<t:property name="appointment.timezone" value="${timezone9}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+6h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones10A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone10}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+6h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones11A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone11}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+6h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones12A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Saskatchawan does not observe daylight savings -->
+	<!-- TODO: Lloydminster does - it uses mountain time with daylight savings time -->
+	<t:property name="appointment.timezone" value="${timezone12}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+6h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones13A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Bogota does not observe daylight savings -->
+	<t:property name="appointment.timezone" value="${timezone13}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+5h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones14A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone14}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+5h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones15A" type="deprecated" >
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- TODO: figure out how "indiana time" is used. -->
+
+	<t:property name="appointment.timezone" value="${timezone15}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+5h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones16A" type="bhr" bugids="10041">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone16}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+4h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones17A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- La Paz does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone17}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+4h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones18A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Feb is Daylight Savings Time in Chile -->
+	<t:property name="appointment.timezone" value="${timezone18}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+4h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones19A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone19}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+3h)(+30m)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones20A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Feb is Daylight Savings Time in Chile -->
+	<t:property name="appointment.timezone" value="${timezone20}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones21A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Buenos Aires does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone21}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones22A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone22}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+3h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones23A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone23}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+2h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones24A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone24}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+1h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones25A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- La Paz does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone25}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones26A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- La Paz does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone26}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+0h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones27A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone27}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(+0h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones28A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone28}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones29A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone29}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones30A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone30}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones31A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone31}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones32A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- west central africa does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone32}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones33A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone33}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones34A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone34}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones35A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone35}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones36A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- pretoria does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone36}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones37A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone37}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-2h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones38A" type="bhr" bugids="10041">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Jerusalem observes savings time: http://www.timeanddate.com/worldclock/results.html?query=jerusalem -->
+	<t:property name="appointment.timezone" value="${timezone38}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones39A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+	<!-- Baghdad do not observes savings time: http://www.timeanddate.com/worldclock/results.html?query=baghdad -->
+	<t:property name="appointment.timezone" value="${timezone39}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones40A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- kuwait  does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone40}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones41A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone41}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones42A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Nairobi does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone42}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones43A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone43}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-3h)(-30m)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones44A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Muscat does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone44}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-4h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones45A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone45}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-4h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones46A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Kabul does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone46}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-4h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones47A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone47}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones48ATashkent" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Tashkent does not observe savings time -->
+	<t:property name="appointment.timezone" value="${timezone48Tashkent}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones48AKarachi" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Islamabad does observe savings time -->
+	<t:property name="appointment.timezone" value="${timezone48Karachi}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones49A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Chennai does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone49}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones50A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Kathmandu does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone50}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)(-45m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones51A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone51}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-6h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones52A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Dhaka does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone52}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-6h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones53A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- TODO: Sri Jayawardenepura - http://www.timeanddate.com/worldclock/timezone.html?n=389 -->
+	<t:property name="appointment.timezone" value="${timezone53}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-5h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones54A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Rangoon does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone54}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-6h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones55A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Bangkok does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone55}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-7h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones56A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone56}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-7h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones57A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Beijing does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone57}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones58A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Sri Jayawardenepura does not observer savings time-->
+	<t:property name="appointment.timezone" value="${timezone58}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones59A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Singapore does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone59}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones60A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone60}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones61A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Taipei does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone61}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-8h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones62A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Osaka does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone62}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones63A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Seoul does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone63}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones64A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone64}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones65A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone65}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones66A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Darwin does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone66}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-9h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones67A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Brisbane does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone67}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones68A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone68}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones69A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Guam does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone69}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones70A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone70}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones71A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone71}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-10h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones72A" type="deprecated" >
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- TODO: Magadan observes savings time, Solomon Islands does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone72}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-11h)(-1h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Standard_TimeZones73A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<t:property name="appointment.timezone" value="${timezone73}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-12h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones74A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Fiji does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone74}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-12h)(-30m)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+<t:test_case testcaseid="Calendar_Savings_TimeZones75A" type="bhr">
+    <t:objective>Send all valid time zone values, check for valid response</t:objective>
+
+	<!-- Tonga does not observer savings time -->
+	<t:property name="appointment.timezone" value="${timezone75}"/>
+	<t:property name="appointment.start.gmt" value="${TIME(-13h)[${appointment.start}]}"/>
+
+	<t:include filename="appointment_timezone.inc"/> 
+
+</t:test_case>
+
+
+
+
+
+
+</t:tests>

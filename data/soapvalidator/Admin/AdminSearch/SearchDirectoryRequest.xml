@@ -1,0 +1,383 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>  
+<t:property name="Resource.equipment" value="Equipment"/>
+<t:property name="Resource.location" value="Location"/>
+
+<t:property name="account1.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="account2.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>  
+<t:property name="alias1.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="dl1.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="displayName1" value="TestName.${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="resource1.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="resource2.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
+
+<t:property name="search.spchar" value=";:^''//\\"/>
+<t:property name="search.negative" value="-1"/>
+<t:property name="search.sometext" value="some text"/>
+<t:property name="search.validquery" value="(|(cn=*searchdir*)(sn=*searchdir*)(gn=*searchdir*)(displayName=*searchdir*)(zimbraMailAlias=*searchdir*)(zimbraMailAddress=*searchdir*)(zimbraMailDeliveryAddress=*searchdir*))"/>
+<t:property name="search.validquerywithspace" value="(|(cn=*  searchdir  *)(sn=*  searchdir  *)(gn=*  searchdir  *)(displayName=*  searchdir  *)(zimbraMailAlias=*  searchdir  *)(zimbraMailAddress=*  searchdir  *)(zimbraMailDeliveryAddress=*   searchdir   *))"/>
+
+<t:property name="account1.query1" value="(|(uid=*searchdir*)(cn=*searchdir*)(sn=*searchdir*)(gn=*searchdir*)(displayName=*searchdir*)(zimbraMailAlias=*searchdir*)(zimbraId=vc)(zimbraMailAddress=*searchdir*)(zimbraMailDeliveryAddress=*searchdir*))"/>
+<t:property name="dl1.query1" value="(|(uid=*searchdir*)(cn=*searchdir*)(sn=*searchdir*)(gn=*searchdir*)(displayName=*searchdir*)(zimbraMailAlias=*searchdir*)(zimbraId=vc)(zimbraMailAddress=*searchdir*)(zimbraMailDeliveryAddress=*searchdir*))"/>
+<t:property name="domain1.query1" value="(|(uid=*${domain1.name}*)(cn=*${domain1.name}*)(sn=*${domain1.name}*)(gn=*${domain1.name}*)(displayName=*${domain1.name}*)(zimbraMailAlias=*${domain1.name}*)(zimbraId=vc)(zimbraMailAddress=*${domain1.name}*)(zimbraMailDeliveryAddress=*${domain1.name}*))"/>   
+<t:property name="alias1.query1" value="(|(uid=*alias1*)(cn=*alias1*)(sn=*alias1*)(gn=*alias1*)(displayName=*alias1*)(zimbraMailAlias=*alias1*)(zimbraId=vc)(zimbraMailAddress=*alias1*)(zimbraMailDeliveryAddress=*alias1*))"/>
+<t:property name="resource1.query1" value="(|(uid=*resource1*)(cn=*resource1*)(sn=*resource1*)(gn=*resource1*)(displayName=*resource1}*)(zimbraMailAlias=*resource1*)(zimbraId=*resource1*)(zimbraMailAddress=*resource1*)(zimbraMailDeliveryAddress=*resource1*))"/>
+
+<t:property name="account1.query2" value="(|(uid=*${account1.name}*)(cn=*${account1.name}*)(sn=*${account1.name}*)(gn=*${account1.name}*)(displayName=*${account1.name}*)(zimbraMailAlias=*${account1.name}*)(zimbraId=vc)(zimbraMailAddress=*${account1.name}*)(zimbraMailDeliveryAddress=*${account1.name}*))"/>
+<t:property name="dl1.query2" value="(|(uid=*${dl1.name}*)(cn=*${dl1.name}*)(sn=*${dl1.name}*)(gn=*${dl1.name}*)(displayName=*${dl1.name}*)(zimbraMailAlias=*${dl1.name}*)(zimbraId=vc)(zimbraMailAddress=*${dl1.name}*)(zimbraMailDeliveryAddress=*${dl1.name}*))"/>
+<t:property name="alias1.query2" value="(|(uid=*${alias1.name}*)(cn=*${alias1.name}*)(sn=*${alias1.name}*)(gn=*${alias1.name}*)(displayName=*${alias1.name}*)(zimbraMailAlias=*${alias1.name}*)(zimbraId=vc)(zimbraMailAddress=*${alias1.name}*)(zimbraMailDeliveryAddress=*${alias1.name}*))"/>
+<t:property name="resource1.query2" value="(|(uid=*${resource1.name}*)(cn=*${resource1.name}*)(sn=*${resource1.name}*)(gn=*${resource1.name}*)(displayName=*${resource1.name}*)(zimbraMailAlias=*${resource1.name}*)(zimbraId=vc)(zimbraMailAddress=*${resource1.name}*)(zimbraMailDeliveryAddress=*${resource1.name}*))"/>
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_account_search" type="always" >
+    <t:objective>Prepare the account for tests</t:objective>
+    <t:steps> 1. Login to admin
+              2. Create test-accounts
+              3. Create an alias 
+              4. Create a distribution list        
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test reuqired="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:test required="true">
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <alias>${alias1.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${dl1.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource1.name}</name>
+				<a n="zimbraCalResType">${Resource.location}</a>
+				<a n="displayName">${displayName1}</a>
+	        </CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource2.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${displayName1}</a>
+	        </CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource2.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="SearchDirectoryRequest1" type="bhr">
+    <t:objective>Verify search with valid query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquery}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>   
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchDirectoryRequest2" type="sanity" >
+    <t:objective>Verify search with valid query with leading and trailing spaces in search string </t:objective>
+        
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin">
+                <query>${search.validquerywithspace}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>   
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchDirectoryRequest3" type="functional"   >
+    <t:objective>Verify search with spchar/sometext/negative/no_query_tag  </t:objective>
+
+    <t:test>
+	    <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin">
+                <query>${search.spchar}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test> 
+    
+	<t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin">
+                <query>${search.sometext}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test> 
+
+	<t:test> 
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin">
+                <query>${search.negative}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test> 
+
+	<!--Search with no query tag-->
+	<t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin">    
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test> 
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchDirectoryRequest4" type="sanity" >
+    <t:objective>Verify search with blank query </t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" limit="10">
+                <query></query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+			 <t:select path="//admin:SearchDirectoryResponse"/>  
+        </t:response>
+    </t:test> 
+
+	
+</t:test_case>
+
+<t:test_case testcaseid="SearchDirectoryRequest5" type="sanity" >
+    <t:objective>Verify search with space in query </t:objective>
+    
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" limit="10">
+                <query>                          </query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse"/>   
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchDirectoryRequest6" type="bhr">
+    <t:objective>Verify searching for an account where types="accounts" offset="0" limit="0" without domain name</t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" offset="0" limit="0" types="accounts">
+				<query>${account1.query1}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>   
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+
+
+<t:test_case testcaseid="SearchDirectoryRequest7" type="bhr" bugids="19272">
+    <t:objective> Verify SearchDirectoryRequest returns only specified attributes if attr is specified with applyCos as 0.  </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" attrs="mail" applyCos="0">
+                <query>${search.validquery}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>   
+            <t:select path='//admin:SearchDirectoryResponse/admin:account/admin:a[@n="zimbraImapEnabled"]' emptyset="1"/>
+        </t:response>
+    </t:test> 
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" attrs="mail" applyCos="1">
+                <query>${search.validquery}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>   
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchDirectoryRequest8" type="sanity" bugids="19272, 20510">
+    <t:objective> Verify applyConfig works for domain as per comment in bug 19272.  </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="domains" applyConfig="1">
+                <query>(zimbraDomainType=local)</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:domain" attr="name" match="${domain1.name}"/>   
+        </t:response>
+    </t:test> 
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="domains" applyConfig="0">
+                <query>(zimbraDomainType=local)</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:domain" attr="name" match="${domain1.name}"/>   
+            <t:select path='//admin:SearchDirectoryResponse/admin:account/admin:a[@n="zimbraGalLdapAttrMap"]' emptyset="1"/>
+        </t:response>
+    </t:test> 
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="domains" attrs="zimbraGalMode" applyConfig="1">
+                <query>(zimbraDomainType=local)</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:domain" attr="name" match="${domain1.name}"/>   
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchDirectoryRequest9" type="sanity" bugids="19272">
+    <t:objective> Use case types="accounts,domains" applyCos="0" applyConfig="1" as mentioned in bug 19272 </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" types="accounts,domains" applyCos="0" applyConfig="1">
+                <query>(zimbraMailStatus=*)</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:domain" attr="name" match="${domain1.name}"/>  
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" attr="name" match="${account1.name}"/>   
+            <t:select path='//admin:SearchDirectoryResponse/admin:domain/admin:a[@n="zimbraGalLdapAttrMap"]' emptyset="0"/>
+            <t:select path='//admin:SearchDirectoryResponse/admin:domain/admin:a[@n="zimbraMailStatus"]' emptyset="0"/>
+            <t:select path='//admin:SearchDirectoryResponse/admin:account/admin:a[@n="zimbraMailStatus"]' emptyset="0"/>
+	        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+
+</t:tests>

@@ -1,0 +1,541 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="uri" value="${admin.uri}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="im_acct_setup" type="deprecated" >
+    <t:objective>Set up test accounts</t:objective>
+    <t:steps>
+    1. create test accounts
+    2. Add test accounts to each others' buddy list
+    </t:steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	 <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:property name="authToken_acct1" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="authToken_acct2" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	<t:test>
+		<t:request>
+			<IMSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account2.name}" name="account2" op="add"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMSubscribeResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribe']" attr="from" match="${test_account1.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMAuthorizeSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account1.name}" authorized="true" add="true" name="account1"/>
+		</t:request>
+		<t:response>
+			<t:request path="//im:IMAuthorizeSubscribeResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribed']" attr="to" match="${test_account2.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+
+	<t:test>
+		<t:request>
+			<IMAuthorizeSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account2.name}" authorized="true"/>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMAuthorizeSubscribeResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribed']" attr="to" match="${test_account1.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n/zimbra:n[@type='subscribed']" attr="to" match="${test_account1.name}"/>
+			<t:header path="//zimbra:im/zimbra:n" attr="show" match="ONLINE"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="im_status01" type="deprecated">
+    <t:objective> Change the status of user1 to away and check whether same is reflected to user2  </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	
+	<t:test>
+		<t:request>
+			<IMSetPresenceRequest xmlns="urn:zimbraIM">
+				<presence lang="en" show="away" />
+			</IMSetPresenceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMSetPresenceResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@from='${test_account1.name}']" attr="show" match="AWAY" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n[@from='${test_account1.name}']" attr="show" match="AWAY"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="im_status02" type="deprecated">
+    <t:objective> Change the status of user1 to chat and check whether same is reflected to user2  </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	
+	<t:test>
+		<t:request>
+			<IMSetPresenceRequest xmlns="urn:zimbraIM">
+				<presence lang="en" show="chat" />
+			</IMSetPresenceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMSetPresenceResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@from='${test_account1.name}']" attr="show" match="CHAT" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n[@from='${test_account1.name}']" attr="show" match="CHAT"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="im_status03" type="deprecated">
+    <t:objective> Change the status of user1 to dnd and check whether same is reflected to user2  </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	
+	<t:test>
+		<t:request>
+			<IMSetPresenceRequest xmlns="urn:zimbraIM">
+				<presence lang="en" show="dnd" />
+			</IMSetPresenceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMSetPresenceResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@from='${test_account1.name}']" attr="show" match="DND" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n[@from='${test_account1.name}']" attr="show" match="DND"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="im_status04" type="deprecated">
+    <t:objective> Change the status of user1 to xa and check whether same is reflected to user2  </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	
+	<t:test>
+		<t:request>
+			<IMSetPresenceRequest xmlns="urn:zimbraIM">
+				<presence lang="en" show="xa" />
+			</IMSetPresenceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMSetPresenceResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@from='${test_account1.name}']" attr="show" match="XA" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n[@from='${test_account1.name}']" attr="show" match="XA"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="im_status05" type="deprecated">
+    <t:objective> Change the status of user1 to a custom status and check whether same is reflected to user2  </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	
+	<t:test>
+		<t:request>
+			<IMSetPresenceRequest xmlns="urn:zimbraIM">
+				<presence lang="en" status="CUSTOM_STATUS" />
+			</IMSetPresenceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMSetPresenceResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@from='${test_account1.name}']" attr="show" match="CUSTOM_STATUS" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n[@from='${test_account1.name}']" attr="status" match="CUSTOM_STATUS"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="im_status06" type="deprecated">
+    <t:objective> Change the status of user1 to offline and check whether same is reflected to user2  </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	
+	<t:test>
+		<t:request>
+			<IMSetPresenceRequest xmlns="urn:zimbraIM">
+				<presence lang="en" show="offline" />
+			</IMSetPresenceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMSetPresenceResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@from='${test_account1.name}']" attr="show" match="OFFLINE" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	
+</t:test_case>
+
+</t:tests>

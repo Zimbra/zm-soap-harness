@@ -1,0 +1,176 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="COS1.name" value="testcos${TIME}${COUNTER}"/>
+<t:property name="COS1.copyName" value="testcos${TIME}${COUNTER}"/>
+<t:property name="COS2.name" value="testcos${TIME}${COUNTER}"/>
+<t:property name="COS2.copyName" value="testcos${TIME}${COUNTER}"/>
+<t:property name="COS3.name" value="testcos${TIME}${COUNTER}"/>
+<t:property name="COS3.copyName" value="testcos${TIME}${COUNTER}"/>
+<t:property name="COS4.name" value="testcos${TIME}${COUNTER}"/>
+<t:property name="COS4.copyName" value="testcos${TIME}${COUNTER}"/>
+<t:property name="COS5.copyName" value="testcos${TIME}${COUNTER}"/>
+<t:property name="COS6.copyName" value="testcos${TIME}${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+	
+
+</t:test_case>
+
+<t:test_case testcaseid="admin_auth" type="always">
+<t:objective>ADMIN</t:objective>
+   <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CopyCosRequest01" type="bhr">
+    <t:objective>Login to admin account and Copy default cos.</t:objective>
+    <t:steps>1.Login to admin account
+             2. Copy default cos
+    </t:steps>
+    
+ 
+    <t:test required="true">
+        <t:request>
+            <CopyCosRequest xmlns="urn:zimbraAdmin">
+          		<name>${COS1.copyName}</name>
+  				<cos by="name">default</cos>
+			</CopyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CopyCosResponse/admin:cos" attr="name" match="${COS1.copyName}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CopyCosRequest02" type="bhr">
+    <t:objective>Login to admin account create COS and Copy created cos.</t:objective>
+    <t:steps>
+    </t:steps>
+
+
+    <t:test required="true">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS2.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS2.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CopyCosRequest xmlns="urn:zimbraAdmin">
+          		<name>${COS2.copyName}</name>
+  				<cos by="id">${COS2.id}</cos>
+			</CopyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CopyCosResponse/admin:cos" attr="name" match="${COS2.copyName}"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CopyCosRequest03" type="bhr">
+    <t:objective>Login to admin account create COS and Copy created cos WITH SAME NAME.</t:objective>
+    <t:steps>
+    </t:steps>
+
+
+    <t:test required="true">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS3.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS3.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS3.id"/>
+        </t:response>
+    </t:test>
+
+   <t:test required="true">
+        <t:request>
+            <CopyCosRequest xmlns="urn:zimbraAdmin">
+          		<name>${COS3.name}</name>
+  				<cos by="id">${COS3.id}</cos>
+			</CopyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CopyCosRequest04" type="bhr">
+    <t:objective>Login to admin account create COS with some attributes and Copy created cos verify attribute vales cloned.</t:objective>
+    <t:steps>
+             
+    </t:steps>
+
+    <t:test required="true">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS4.name}</name>
+                <a n="zimbraFeatureContactsEnabled">FALSE</a>
+                <a n="zimbraDataSourceRssPollingInterval">20m</a>
+                <a n="zimbraFeatureCalendarUpsellEnabled">TRUE</a>
+                <a n="zimbraMobilePolicyAllowHTMLEmail"></a>
+                <a n="zimbraPrefMailInitialSearch">in:Sent</a>
+                <a n="zimbraPrefForwardIncludeOriginalText">includeBody</a>
+                <a n="zimbraPrefIMLogChats">FALSE</a>
+                <a n="zimbraMobilePolicyMinDevicePasswordLength">12</a>
+                <a n="zimbraProxyAllowedDomains">test.com</a>
+                <a n="zimbraPrefSpellIgnoreAllCaps">FALSE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS4.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS4.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CopyCosRequest xmlns="urn:zimbraAdmin">
+          		<name>${COS4.copyName}</name>
+  				<cos by="id">${COS4.id}</cos>
+			</CopyCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CopyCosResponse/admin:cos" attr="name" match="${COS4.copyName}"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

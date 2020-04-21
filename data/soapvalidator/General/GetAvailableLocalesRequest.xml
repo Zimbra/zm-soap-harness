@@ -1,0 +1,184 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.user" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="${defaultpassword.value}"/>
+<t:property name="locale1.name" value="العربية" />
+<t:property name="locale1.id" value="ar" />
+<t:property name="locale2.id" value="zh" />
+<t:property name="locale2.name" value="中文"/>
+<t:property name="locale3.name" value="中文 (中国)"/>
+<t:property name="locale3.id" value="zh_CN" />
+<t:property name="locale4.name"  value="中文 (香港)"/>
+<t:property name="locale4.id" value="zh_HK" />
+<t:property name="locale5.name" value="Dansk" />
+<t:property name="locale5.id" value="da" />
+<t:property name="locale6.name" value="Nederlands" />
+<t:property name="locale6.id" value="nl" />
+<t:property name="locale7.id" value="en" />
+<t:property name="locale7.name" value="English" />
+<t:property name="locale8.id" value="en_AU" />
+<t:property name="locale8.name" value="English (Australia)" />
+<t:property name="locale9.id" value="en_GB" />
+<t:property name="locale9.name" value="English (United Kingdom)" />
+<t:property name="locale10.id" value="en_US" />
+<t:property name="locale10.name" value="English (United States)" />
+<t:property name="locale11.id" value="fr" />
+<t:property name="locale11.name" value="français" />
+<t:property name="locale12.id" value="de" />
+<t:property name="locale12.name" value="Deutsch" />
+<t:property name="locale13.name" value="ελληνικά" />
+<t:property name="locale13.id" value="el" />
+<t:property name="locale14.id" value="iw" />
+<t:property name="locale14.name" value="עברית" />
+<t:property name="locale15.name" value="हिंदी" />
+<t:property name="locale15.id" value="hi" />
+<t:property name="locale16.id" value="in" />
+<t:property name="locale16.name" value="Indonesian" />
+<t:property name="locale17.name" value="italiano" />
+<t:property name="locale17.id" value="it" />
+<t:property name="locale18.id" value="ja" />
+<t:property name="locale18.name" value="日本語" />
+<t:property name="locale19.id" value="ko" />
+<t:property name="locale19.name" value="한국어" />
+<t:property name="locale20.id" value="pl" />
+<t:property name="locale20.name" value="polski" />
+<t:property name="locale21.name" value="português" />
+<t:property name="locale21.id" value="pt" />
+<t:property name="locale22.name" value="português (Brasil)" />
+<t:property name="locale22.id" value="pt_BR" />
+<t:property name="locale23.name" value="русский" />
+<t:property name="locale23.id" value="ru" />
+<t:property name="locale24.name" value="español" />
+<t:property name="locale24.id" value="es" />
+<t:property name="locale25.name" value="svenska" />
+<t:property name="locale25.id" value="sv" />
+<t:property name="locale26.id" value="tr" />
+<t:property name="locale26.name" value="Türkçe" />
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="GetAllLocalesRequest_acct1_setup" type="always" >
+<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.user}</name>
+				<password>${account1.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAvailableLocalesRequest01" type="smoke">
+ <t:objective>Verify that proper response is obtained when GetAvailableLocalesRequest is fired.</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.user}</account>
+                    <password>${account1.password}</password>
+                 </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+            </t:response>
+        </t:test>
+
+    <t:test>
+        <t:request>
+            <GetAvailableLocalesRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+           	  <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale10.name}']" attr="id" match="${locale10.id}" />
+         </t:response>
+     </t:test>  
+</t:test_case>
+
+<t:test_case testcaseid="GetAvailableLocalesRequest02" type="bhr">
+ <t:objective>Verify All available locales are obtained by GetAvailableLocalesRequest.</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.user}</account>
+                    <password>${account1.password}</password>
+                 </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+            </t:response>
+        </t:test>
+
+    <t:test>
+        <t:request>
+            <GetAvailableLocalesRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+           	  <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale1.name}']" attr="id" match="${locale1.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale2.name}']" attr="id" match="${locale2.id}" />
+               <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale3.name}']" attr="id" match="${locale3.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale4.name}']" attr="id" match="${locale4.id}" />
+             <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale5.name}']" attr="id" match="${locale5.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale6.name}']" attr="id" match="${locale6.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale7.name}']" attr="id" match="${locale7.id}" />
+               <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale8.name}']" attr="id" match="${locale8.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale9.name}']" attr="id" match="${locale9.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale10.name}']" attr="id" match="${locale10.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale11.name}']" attr="id" match="${locale11.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale12.name}']" attr="id" match="${locale12.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale13.name}']" emptyset="1" />
+           <!-- Commenting this locale due to open bug 67386   
+           <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale14.name}']" emptyset="1" />-->
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale15.name}']" attr="id" match="${locale15.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale16.name}']" emptyset="1" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale17.name}']" attr="id" match="${locale17.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale18.name}']" attr="id" match="${locale18.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale19.name}']" attr="id" match="${locale19.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale20.name}']" attr="id" match="${locale20.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale21.name}']" attr="id" match="${locale21.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale22.name}']" attr="id" match="${locale22.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale23.name}']" attr="id" match="${locale23.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale24.name}']" attr="id" match="${locale24.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale25.name}']" attr="id" match="${locale25.id}" />
+              <t:select path="//acct:GetAvailableLocalesResponse/acct:locale[@name='${locale26.name}']" attr="id" match="${locale26.id}" /> 
+		</t:response>
+	</t:test>
+	</t:test_case>
+</t:tests>

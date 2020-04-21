@@ -1,0 +1,225 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account, 2. Create a mail account </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Contacts_Attachments_SendContactAttachment_01" type="bhr">
+    <t:objective>Send a message with a contact attachment</t:objective>
+        
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="contact.email" value="email${TIME}${COUNTER}@example.com"/>
+
+    <t:test >
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account2.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First${TIME}${COUNTER}</a>
+                    <a n="lastName">Last${TIME}${COUNTER}</a>
+                    <a n="email">${contact.email}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            	<t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a="${account1.name}"/>
+                    <su>${message.subject}</su>
+                    <mp ct="text/plain">
+                        <content>content ${TIME} ${COUNTER}</content>
+                    </mp>
+                    <attach>
+                    	<cn id="${contact.id}"/>
+                    </attach>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account1.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="message.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+    
+	<t:test>
+		<t:request>
+			<GetMsgRequest xmlns="urn:zimbraMail" >
+				<m id="${message.id}"/>
+			</GetMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetMsgResponse">
+				<t:select path="//mail:mp[@ct='text/x-vcard']" attr="part" set="part.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+    
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message.id}</id>
+			<part>${part.id}</part>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="BEGIN" match="VCARD"/>
+			<t:select attr="EMAIL" match="TYPE=internet:${contact.email}"/>
+			<t:select attr="END" match="VCARD"/>
+		</t:restServletResponse>
+	</t:resttest>
+    
+
+</t:test_case>
+
+</t:tests>
+
+

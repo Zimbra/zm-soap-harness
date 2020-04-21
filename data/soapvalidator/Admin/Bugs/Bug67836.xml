@@ -1,0 +1,138 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="server.mailurl" value="/zimbrass"/>
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug67836_1" type="bhr" bugids="67836">
+    <t:objective>FlushCacheRequests skin and uistrings  are causing NPE's</t:objective>
+    <t:steps>
+        1. Login into Admin
+        2. Send FlushCacheRequests with skin and uistrings
+    </t:steps>
+    
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+     <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="name">${server.zimbraAdmin}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServerResponse/admin:server" attr="id" set="server.id1"/>
+        </t:response>
+    </t:test>
+     
+      <t:test id="ModifyServer01">
+        <t:request>
+            <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                <id>${server.id1}</id>
+                <a n="zimbraMailURL">${server.mailurl}</a>
+            </ModifyServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyServerResponse/admin:server" attr="id" set="server.id1"/>
+        </t:response>
+    </t:test>
+    
+  	<t:staftask >
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+        </t:request>
+    </t:staftask>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test>
+        <t:request>
+			<FlushCacheRequest xmlns="urn:zimbraAdmin">
+				<cache type="skin"/>
+			</FlushCacheRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:FlushCacheResponse"/>
+        </t:response>
+    </t:test>
+      	
+    <t:test>
+        <t:request>
+			<FlushCacheRequest xmlns="urn:zimbraAdmin">
+				<cache type="uistrings"/>
+			</FlushCacheRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:FlushCacheResponse"/>
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case>
+
+<t:finally>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.mailurl" value="/"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test id="ModifyServer01">
+        <t:request>
+            <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                <id>${server.id1}</id>
+                <a n="zimbraMailURL">/</a>
+            </ModifyServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyServerResponse/admin:server" attr="id" set="server.id1"/>
+        </t:response>
+    </t:test>
+    
+	  <t:staftask >
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+        </t:request>
+    </t:staftask>
+
+</t:finally>
+
+
+</t:tests>

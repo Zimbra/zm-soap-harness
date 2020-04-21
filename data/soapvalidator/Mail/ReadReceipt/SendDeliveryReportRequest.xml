@@ -1,0 +1,643 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- Reference: http://bugzilla.zimbra.com/show_bug.cgi?id=7257#c167 -->
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="ping" type="always" >
+	<t:objective>basic system check</t:objective>
+	
+	<t:test id="ping" required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="SendDeliveryReportRequest_AccountSetup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraPrefMailSendReadReceipts">always</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraPrefMailSendReadReceipts">prompt</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account4.name}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraPrefMailSendReadReceipts">never</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SendDeliveryReportRequest_01" type="bhr" bugids="7257">
+	<t:objective>Send SendDeliveryReportRequest for a message with read receipt request</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<e t="n" a="${account1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="message.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="Disposition-Notification-To" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test>
+		<t:request>
+			<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${message.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendDeliveryReportResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:inbox subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="receipt.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="SendDeliveryReportRequest_02" type="bhr">
+	<t:objective>Verify read receipt subject uses "Read-Receipt:"</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>Date: Thu, 10 Sep 2009 15:39:51 -0700 (PDT)
+From: ${account1.name}
+To: ${account2.name}
+Subject: ${message.subject}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Disposition-Notification-To: ${account1.name}
+
+content${TIME}${COUNTER}
+
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse">
+            	<t:select path="//mail:m" attr="id" set="message.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${message.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendDeliveryReportResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:inbox subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="receipt.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+    <t:test id="MsgGetRequest1b" depends="MsgGetRequest1a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${receipt.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:su" match="Read-Receipt:.*"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SendDeliveryReportRequest_03" type="bhr">
+	<t:objective>Verify "Read-Receipt" is normalized as a subject prefix</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<e t="n" a="${account1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="message.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="Disposition-Notification-To" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test>
+		<t:request>
+			<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${message.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendDeliveryReportResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:sent subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="message.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:inbox subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="receipt.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" match="${message.id}"/>
+				<t:select path="//mail:m" attr="id" match="${receipt.id}"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="SendDeliveryReportRequest_04" type="sanity" >
+	<t:objective>Send SendDeliveryReportRequest for message without header</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>Date: Thu, 10 Sep 2009 15:39:51 -0700 (PDT)
+From: ${account1.name}
+To: ${account2.name}
+Subject: ${message.subject}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+content${TIME}${COUNTER}
+
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse">
+            	<t:select path="//mail:m" attr="id" set="message.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${message.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendDeliveryReportResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" emptyset="1"/>
+			</t:select>
+		</t:response>
+	</t:test>
+		
+</t:test_case>
+
+<t:test_case testcaseid="SendDeliveryReportRequest_05" type="bhr" bugids="40884">
+	<t:objective>Verify read receipt does not include email attachment</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>Date: Thu, 10 Sep 2009 15:39:51 -0700 (PDT)
+From: ${account1.name}
+To: ${account2.name}
+Subject: ${message.subject}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Disposition-Notification-To: ${account1.name}
+
+content${TIME}${COUNTER}
+
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse">
+            	<t:select path="//mail:m" attr="id" set="message.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SendDeliveryReportRequest xmlns="urn:zimbraMail" mid="${message.id}"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendDeliveryReportResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="message.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+		
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:mp[@ct='message/disposition-notification']"/>
+            	<t:select path="//mail:mp[@ct='message/rfc822']" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+
+
+
+
+
+
+
+

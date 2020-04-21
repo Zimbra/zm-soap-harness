@@ -1,0 +1,246 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="${defaultpassword.value}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.password" value="${defaultpassword.value}"/>
+<t:property name="account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.password" value="${defaultpassword.value}"/>
+
+
+<t:property name="base.dir" value="${soapxml.root}/Settings/externalContacts/data/"/>
+<t:property name="zimbra1.file" value="${base.dir}/contacts_blank.csv"/>
+<t:property name="zimbra2.file" value="${base.dir}/contacts_garbled.csv"/>
+<t:property name="zimbra3.file" value="${base.dir}/contacts_displayname.csv"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="CS_Account_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${account1.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${account2.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>${account3.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="importcontacts01" type="smoke" bugid="7638">
+	<t:objective>
+		Import contacts: use a blank csv file.  No contacts should be added, but the system shouldn't fail either.
+	</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="uploadServletServer" value="${test_acct1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${zimbra1.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="file1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+	  <t:request>
+		<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+		  <content aid="${file1.aid}"/>
+		</ImportContactsRequest>
+	  </t:request>
+	  <t:response>
+                <t:select path= "//zimbra:Code" match="mail.UNABLE_TO_IMPORT_CONTACTS"/>	         
+	   </t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="importcontacts02" type="bhr">
+	<t:objective>
+		Import contacts:  use a garbled file
+	</t:objective>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="uploadServletServer" value="${test_acct2.server}"/>
+	
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${account2.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${zimbra2.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="file2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+	  <t:request>
+		<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+		  <content aid="${file2.aid}"/>
+		</ImportContactsRequest>
+	  </t:request>
+	  <t:response>
+			 <t:select path="//soap:Text" match="^invalid format.*"/>
+	         <t:select path="//zimbra:Code" match="^mail.UNABLE_TO_IMPORT_CONTACTS$"/>
+	   </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<!-- See also exportContacts.xml testcaseid="export_contacts_08" -->
+<t:test_case testcaseid="importcontacts03" type="sanity"  bugids="9129">
+	<t:objective>
+		Import contacts:  Verify Email display name is imported correctly
+	</t:objective>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+	<t:property name="uploadServletServer" value="${test_acct3.server}"/>
+	
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${account3.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${zimbra3.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="file3.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+	  <t:request>
+		<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+		  <content aid="${file3.aid}"/>
+		</ImportContactsRequest>
+	  </t:request>
+	  <t:response>
+	         <t:select path="//mail:ImportContactsResponse/mail:cn" attr="n" match="^1$"/>
+	         <t:select path="//mail:ImportContactsResponse/mail:cn" attr="ids" set="contact3.id"/>
+	   </t:response>
+	</t:test>
+
+	<t:test >
+	 <t:request>
+	   <GetContactsRequest xmlns="urn:zimbraMail">
+		<cn id="${contact3.id}"/>
+	   </GetContactsRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetContactsResponse/mail:cn[@id='${contact3.id}']">
+			<t:select path="mail:a[@n='email']" match="email@foo.com"/>
+			<t:select path="mail:a[@n='firstName']" match="First"/>
+			<t:select path="mail:a[@n='lastName']" match="Last"/>
+			<t:select path="mail:a[@n='displayName']" emptyset="1"/> <!-- Display Name should not be set.  Zimbra doesn't use the field. -->
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

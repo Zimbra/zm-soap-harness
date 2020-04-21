@@ -1,0 +1,372 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain.name" value="dom${TIME}${COUNTER}"/>
+<t:property name="domain1.name" value="dom1${TIME}${COUNTER}"/>
+<t:property name="domain1.new.name" value="new.dom${TIME}${COUNTER}"/>
+
+<t:property name="domain2.name" value="dom2${TIME}${COUNTER}"/>
+<t:property name="domain2.new.name" value="new2.dom${TIME}${COUNTER}"/>
+
+<t:property name="domain3.name" value="dom3${TIME}${COUNTER}"/>
+<t:property name="domain3.new.name" value="new3.dom${TIME}${COUNTER}"/>
+
+<t:property name="domain.new.name" value="new.dom${TIME}${COUNTER}"/>
+<t:property name="domain.zimbra" value="zimbra"/>
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${domain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${domain.name}"/>
+
+<t:property name="account3.name" value="test.${TIME}.${COUNTER}@${domain1.name}"/>
+<t:property name="account4.name" value="test.${TIME}.${COUNTER}@${domain1.name}"/>
+<t:property name="list1" value="List1.${TIME}.@${defaultdomain.name}"/>
+<t:property name="list2" value="List2.${TIME}.@${domain1.name}"/>
+<t:property name="list3" value="List3.${TIME}.@${domain3.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug_62325_1" type="bhr" bugids="62325" >
+    <t:objective>Verify zimbraMemberOf pointing to DL after renaming domain(distribution list in default domain).</t:objective>
+	<t:steps>
+		1. Login as account1
+		2. Create a Domain.
+		3. Create account in that domain 
+		4. Create distribution list in default domain, add members in that list
+		5. Rename created domain
+		6. Send GetAccountRequest and verify zimbraMemberOf pointing to DL. 	
+	</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	
+    <!-- Create Domain -->
+    <t:test  id="CreateDomainRequest29a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id" />
+        </t:response>
+    </t:test>
+        
+	<!--  Create User for that Domain -->	
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <!--  Create User for that Domain -->	
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+   <t:test>
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <dynamic>true</dynamic>
+                <name>${list1}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+        </t:response>
+    </t:test>	
+    
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${account1.name}</dlm>
+                <dlm>${account2.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov -l rd ${domain.name} ${domain.new.name}\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+	<t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain.id}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetDomainResponse">
+	        	<t:select path="//admin:domain" attr="id"  match="^${domain.id}$"/>
+	        	<t:select path="//admin:domain" attr="name"  match="^${domain.new.name}$"/>
+	        </t:select>
+        </t:response>
+    </t:test>
+	
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+			</GetAccountRequest>
+		</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+				<t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraMemberOf"]' match="${list1.id}"/>
+			</t:response>
+		</t:test>
+		
+</t:test_case>    
+
+<t:test_case testcaseid="bug62325_2" type="bhr">
+    <t:objective>Verify zimbraMemberOf pointing to DL after renaming domain(distribution list in created domain).</t:objective>
+	<t:steps>
+		1. Login as account1
+		2. Create a Domain.
+		3. Create account in that domain 
+		4. Create distribution list in created domain, add members in that list
+		5. Rename created domain
+		6. Send GetAccountRequest and verify zimbraMemberOf pointing to DL. 		
+	</t:steps>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+		
+	
+    <!-- Create Domain -->
+    <t:test  id="CreateDomainRequest29a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id" />
+        </t:response>
+    </t:test>
+        
+	<!--  Create User for that Domain -->	
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+    <!--  Create User for that Domain -->	
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+    
+   <t:test>
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <dynamic>true</dynamic>
+                <name>${list2}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
+        </t:response>
+    </t:test>	
+    
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${account3.name}</dlm>
+                <dlm>${account4.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov -l rd ${domain1.name} ${domain1.new.name}\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+	<t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain1.id}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetDomainResponse">
+	        	<t:select path="//admin:domain" attr="id"  match="^${domain1.id}$"/>
+	        	<t:select path="//admin:domain" attr="name"  match="^${domain1.new.name}$"/>
+	        </t:select>
+        </t:response>
+    </t:test>
+	
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account3.id}</account>
+			</GetAccountRequest>
+		</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse/admin:account" />
+				<t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraMemberOf"]' match="${list2.id}"/>
+			</t:response>
+		</t:test>
+		
+</t:test_case>    
+
+<t:test_case testcaseid="bug62325_3" type="bhr">
+    <t:objective>Verify zimbraMemberOf pointing to DL after renaming domain.(Create DL without member)</t:objective>
+	<t:steps>
+		1. Create a Domain.
+		2. Create distribution list in created domain
+		3. Create account in that domain 
+		4. Rename created domain
+		5. Send GetAccountRequest and verify zimbraMemberOf pointing to DL. 	
+	</t:steps>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	
+    <!-- Create Domain -->
+    <t:test  id="CreateDomainRequest29a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain3.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain3.id" />
+        </t:response>
+    </t:test>
+        
+	
+   <t:test>
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <dynamic>true</dynamic>
+                <name>${list3}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list3.id"/>
+        </t:response>
+    </t:test>	
+    
+   
+    <t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov -l rd ${domain3.name} ${domain3.new.name}\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+	<t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain3.id}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetDomainResponse">
+	        	<t:select path="//admin:domain" attr="id"  match="^${domain3.id}$"/>
+	        	<t:select path="//admin:domain" attr="name"  match="^${domain3.new.name}$"/>
+	        </t:select>
+        </t:response>
+    </t:test>
+		
+</t:test_case>    
+
+
+</t:tests>

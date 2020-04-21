@@ -1,0 +1,395 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="resource1.name" value="resource1${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account1.name" value="account1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account3${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account4${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="account5${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.name" value="account6${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+<t:property name="timezone.pst.regex" value="America\/Los_Angeles"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+    		<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+    			<name>${resource1.name}</name>
+    			<password>${defaultpassword.value}</password>
+    			<a n="displayName">${resource1.name}</a>
+    			<a n="zimbraCalResType">Equipment</a>
+    			<a n="zimbraAccountStatus">active</a>
+    			<a n="zimbraCalResAutoAcceptDecline">TRUE</a>
+    			<a n="zimbraCalResAutoDeclineIfBusy">TRUE</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id"  set="resource1.id"/>
+            <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account6.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="GrantPermissionRequest_Basic_01" type="smoke">
+    <t:objective>Basic test case for GrantPermissionRequest (usr grant/zid)</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="invite" gt="usr" zid="${account2.id}"/>
+			</GrantPermissionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GrantPermissionRequest_Basic_02" type="bhr">
+    <t:objective>Basic test case for GrantPermissionRequest (usr grant/d)</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="invite" gt="usr" d="${account3.name}"/>
+			</GrantPermissionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GrantPermissionRequest_Basic_03" type="bhr">
+    <t:objective>Basic test case for GrantPermissionRequest (all)</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="invite" gt="all"/>
+			</GrantPermissionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GrantPermissionRequest_Basic_04" type="bhr">
+    <t:objective>Basic test case for GrantPermissionRequest (pub)</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="invite" gt="pub"/>
+			</GrantPermissionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GrantPermissionRequest_Basic_05" type="bhr" bugids="47568">
+    <t:objective>Basic test case for GrantPermissionRequest (gst)</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="invite" gt="gst" d="foo@example.com" pw="${defaultpassword.value}"/>
+			</GrantPermissionRequest>
+		</t:request>
+		<t:response>
+			<t:select path='//mail:GrantPermissionResponse/mail:ace[@gt="gst"]' attr="d" match="foo@example.com"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GrantPermissionRequest_Basic_06" type="bhr">
+    <t:objective>Basic test case for GrantPermissionRequest (key)</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="invite" gt="key" d="foo@example.com"/>
+			</GrantPermissionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GrantPermissionRequest_Basic_07" type="sanity" >
+    <t:objective>GrantPermissionRequest to an invalid ZID should throw NO_SUCH_ACCOUNT</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="nonexistant.id" value="509be613-7ea6-4a3d-9d9b-bf97577c657b"/>
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="invite" gt="usr" zid="${nonexistant.id}"/>
+			</GrantPermissionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="account.NO_SUCH_ACCOUNT"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GrantPermissionRequest_Basic_08" type="bhr">
+    <t:objective>Basic test case for GrantPermissionRequest (usr grant/d)</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="nonexistant.name" value="nonexistant@${defaultdomain.name}"/>
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail" >
+				<ace right="invite" gt="usr" d="${nonexistant.name}"/>
+			</GrantPermissionRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="account.NO_SUCH_ACCOUNT"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

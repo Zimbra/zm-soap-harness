@@ -1,0 +1,975 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <t:property name="domain.name" value="mydomain.com" />
+    <t:property name="cos.name" value="mycos" />
+    <t:property name="account1.name" value="test1@${domain.name}" />
+    <t:property name="sieve_rule1" value='require ["tag"];if anyof true { tag "t1"; }' />
+    <t:property name="sieve_rule2" value='require ["tag"];if anyof true { tag "t2"; }' />
+    <t:property name="sieve_rule3" value='require ["tag"];if anyof true { tag "t3"; }' />
+    <t:property name="sieve_rule4" value='require ["tag"];if anyof true { tag "t4"; }' />
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="SetupEnviroment" type="always"
+        bugids="ZCS-806">
+        <t:objective>create test account</t:objective>
+        <t:steps>
+            1. admin auth
+            2. create domain
+            3. create cos
+            4. create test account on new domain and cos
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain.name}</name>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse//admin:domain"
+                    attr="id" set="domain1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test id="CreateCosRequest1a">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name xmlns="">${cos.name}</name>
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="name"
+                    match="${cos.name}" />
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="id"
+                    set="cos1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cos1.id}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account1.id" />
+                <t:select
+                    path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+                    set="account1.server" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+<!-- 
+    <t:test_case testcaseid="SetSieveScriptOnDomain"
+        type="bhr" bugids="ZCS-806">
+        <t:objective>Set sieve script on domain and verify the same with domain, cos, account</t:objective>
+        <t:steps>
+            1. admin auth
+            2. set zimbraAdminSieveScriptBefore on domain
+            3. set zimbraAdminSieveScriptAfter on domain
+            4. set zimbraAdminOutgoingSieveScriptBefore on domain
+            5. set zimbraAdminOutgoingSieveScriptAfter on domain
+            6. verify all above ldap attributes on domain
+            7. verify all above ldap attributes on account
+            8. verify all above ldap attributes are not on cos
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <domain by="name">${domain.name}</domain>
+                    <filterRules>
+                        <filterRule active="1">
+                            <filterTests xmlns="urn:zimbraMail" condition="anyof">
+                                <trueTest index="0"></trueTest>
+                            </filterTests>
+                            <filterActions xmlns="urn:zimbraMail">
+                                <actionTag index="0" tagName="t1"></actionTag>
+                            </filterActions>
+                        </filterRule>
+                    </filterRules>
+                </ModifyFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <domain by="name">${domain.name}</domain>
+                    <filterRules>
+                        <filterRule active="1">
+                            <filterTests xmlns="urn:zimbraMail" condition="anyof">
+                                <trueTest index="0"></trueTest>
+                            </filterTests>
+                            <filterActions xmlns="urn:zimbraMail">
+                                <actionTag index="0" tagName="t2"></actionTag>
+                            </filterActions>
+                        </filterRule>
+                    </filterRules>
+                </ModifyFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <domain by="name">${domain.name}</domain>
+                    <filterRules>
+                        <filterRule active="1">
+                            <filterTests xmlns="urn:zimbraMail" condition="anyof">
+                                <trueTest index="0"></trueTest>
+                            </filterTests>
+                            <filterActions xmlns="urn:zimbraMail">
+                                <actionTag index="0" tagName="t3"></actionTag>
+                            </filterActions>
+                        </filterRule>
+                    </filterRules>
+                </ModifyOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <domain by="name">${domain.name}</domain>
+                    <filterRules>
+                        <filterRule active="1">
+                            <filterTests xmlns="urn:zimbraMail" condition="anyof">
+                                <trueTest index="0"></trueTest>
+                            </filterTests>
+                            <filterActions xmlns="urn:zimbraMail">
+                                <actionTag index="0" tagName="t4"></actionTag>
+                            </filterActions>
+                        </filterRule>
+                    </filterRules>
+                </ModifyOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <domain by="name">${domain.name}</domain>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t1" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <domain by="name">${domain.name}</domain>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t2" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <domain by="name">${domain.name}</domain>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t3" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <domain by="name">${domain.name}</domain>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t4" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <account by="name">${account1.name}</account>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t1" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <account by="name">${account1.name}</account>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t2" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <account by="name">${account1.name}</account>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t3" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <account by="name">${account1.name}</account>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t4" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <cos by="name">${cos.name}</cos>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule"
+                    emptyset="1" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <cos by="name">${cos.name}</cos>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule"
+                    emptyset="1" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <cos by="name">${cos.name}</cos>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule"
+                    emptyset="1" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <cos by="name">${cos.name}</cos>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule"
+                    emptyset="1" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <domain by="name">${domain.name}</domain>
+                    <filterRules>
+                    </filterRules>
+                </ModifyFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <domain by="name">${domain.name}</domain>
+                    <filterRules>
+                    </filterRules>
+                </ModifyFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <domain by="name">${domain.name}</domain>
+                    <filterRules>
+                    </filterRules>
+                </ModifyOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <domain by="name">${domain.name}</domain>
+                    <filterRules>
+                    </filterRules>
+                </ModifyOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="SetSieveScriptOnCOS"
+        type="bhr" bugids="ZCS-806">
+        <t:objective>Set sieve script on domain and verify the same with domain, cos, account</t:objective>
+        <t:steps>
+            1. admin auth
+            2. set zimbraAdminSieveScriptBefore on cos
+            3. set zimbraAdminSieveScriptAfter on cos
+            4. set zimbraAdminOutgoingSieveScriptBefore on cos
+            5. set zimbraAdminOutgoingSieveScriptAfter on cos
+            6. verify all above ldap attributes on cos
+            7. verify all above ldap attributes on account
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <cos by="name">${cos.name}</cos>
+                    <filterRules>
+                        <filterRule active="1">
+                            <filterTests xmlns="urn:zimbraMail" condition="anyof">
+                                <trueTest index="0"></trueTest>
+                            </filterTests>
+                            <filterActions xmlns="urn:zimbraMail">
+                                <actionTag index="0" tagName="t1"></actionTag>
+                            </filterActions>
+                        </filterRule>
+                    </filterRules>
+                </ModifyFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <cos by="name">${cos.name}</cos>
+                    <filterRules>
+                        <filterRule active="1">
+                            <filterTests xmlns="urn:zimbraMail" condition="anyof">
+                                <trueTest index="0"></trueTest>
+                            </filterTests>
+                            <filterActions xmlns="urn:zimbraMail">
+                                <actionTag index="0" tagName="t2"></actionTag>
+                            </filterActions>
+                        </filterRule>
+                    </filterRules>
+                </ModifyFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <cos by="name">${cos.name}</cos>
+                    <filterRules>
+                        <filterRule active="1">
+                            <filterTests xmlns="urn:zimbraMail" condition="anyof">
+                                <trueTest index="0"></trueTest>
+                            </filterTests>
+                            <filterActions xmlns="urn:zimbraMail">
+                                <actionTag index="0" tagName="t3"></actionTag>
+                            </filterActions>
+                        </filterRule>
+                    </filterRules>
+                </ModifyOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <cos by="name">${cos.name}</cos>
+                    <filterRules>
+                        <filterRule active="1">
+                            <filterTests xmlns="urn:zimbraMail" condition="anyof">
+                                <trueTest index="0"></trueTest>
+                            </filterTests>
+                            <filterActions xmlns="urn:zimbraMail">
+                                <actionTag index="0" tagName="t4"></actionTag>
+                            </filterActions>
+                        </filterRule>
+                    </filterRules>
+                </ModifyOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <cos by="name">${cos.name}</cos>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t1" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <cos by="name">${cos.name}</cos>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t2" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <cos by="name">${cos.name}</cos>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t3" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <cos by="name">${cos.name}</cos>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t4" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <account by="name">${account1.name}</account>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t1" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <account by="name">${account1.name}</account>
+                </GetFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t2" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <account by="name">${account1.name}</account>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t3" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <account by="name">${account1.name}</account>
+                </GetOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule/mail:filterTests/mail:trueTest"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    emptyset="0" />
+                <t:select path="//admin:GetOutgoingFilterRulesResponse//admin:filterRules/admin:filterRule//mail:filterActions/mail:actionTag"
+                    attr="tagName" matches="t4" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <cos by="name">${cos.name}</cos>
+                    <filterRules>
+                    </filterRules>
+                </ModifyFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <cos by="name">${cos.name}</cos>
+                    <filterRules>
+                    </filterRules>
+                </ModifyFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="before">
+                    <cos by="name">${cos.name}</cos>
+                    <filterRules>
+                    </filterRules>
+                </ModifyOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ModifyOutgoingFilterRulesRequest xmlns="urn:zimbraAdmin"
+                    type="after">
+                    <cos by="name">${cos.name}</cos>
+                    <filterRules>
+                    </filterRules>
+                </ModifyOutgoingFilterRulesRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyOutgoingFilterRulesResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+-->
+<!-- Marking these tests deprecated as Global config no more has these variables. Other inheritance is covered as part of zcs-1248 -->
+    <t:test_case testcaseid="SetSieveAttributesOnGlobalConfig" type="deprecated" bugids="ZCS-806">
+        <t:objective>Set sieve attributes on globalconfig and verify the same with globalconfig and server</t:objective>
+        <t:steps>
+            1. admin auth
+            2. set zimbraSieveRejectEnabled on globalconfig
+            3. set zimbraMailSieveNotifyActionRFCCompliant on globalconfig
+            4. verify all above ldap attributes on globalconfig
+            5. verify all above ldap attributes on server
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+                    <a n="zimbraSieveRejectEnabled">TRUE</a>
+                    <a n="zimbraMailSieveNotifyActionRFCCompliant">TRUE</a>
+                </ModifyConfigRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyConfigResponse" />
+            </t:response>
+        </t:test>
+
+        <!-- ################################## -->
+        <!-- Verify sieve attributes on globalconfig -->
+        <t:test required="true">
+            <t:request>
+                <GetConfigRequest xmlns="urn:zimbraAdmin">
+                    <a n="zimbraSieveRejectEnabled" />
+                </GetConfigRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetConfigResponse//admin:a" attr="n" matches="zimbraSieveRejectEnabled" />
+                <t:select path="//admin:GetConfigResponse//admin:a" matches="TRUE" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <GetConfigRequest xmlns="urn:zimbraAdmin">
+                    <a n="zimbraMailSieveNotifyActionRFCCompliant" />
+                </GetConfigRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetConfigResponse//admin:a" attr="n" matches="zimbraMailSieveNotifyActionRFCCompliant" />
+                <t:select path="//admin:GetConfigResponse//admin:a" matches="TRUE" />
+            </t:response>
+        </t:test>
+
+        <!-- ############################ -->
+        <!-- Verify sieve attributes on server -->
+        <t:test>
+            <t:request>
+                <GetServerRequest xmlns="urn:zimbraAdmin">
+                    <server by="serviceHostname" attrs="zimbraSieveRejectEnabled">${account1.server}</server>
+                </GetServerRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:GetServerResponse/admin:server'
+                    attr="id" set="server1.id" />
+                <t:select path='//admin:GetServerResponse/admin:server//admin:a'
+                    attr="n" matches="zimbraSieveRejectEnabled" />
+                <t:select path='//admin:GetServerResponse/admin:server//admin:a'
+                    matches="TRUE" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetServerRequest xmlns="urn:zimbraAdmin">
+                    <server by="serviceHostname" attrs="zimbraMailSieveNotifyActionRFCCompliant">${account1.server}</server>
+                </GetServerRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:GetServerResponse/admin:server//admin:a'
+                    attr="n" matches="zimbraMailSieveNotifyActionRFCCompliant" />
+                <t:select path='//admin:GetServerResponse/admin:server//admin:a'
+                    matches="TRUE" />
+            </t:response>
+        </t:test>
+
+        <!-- ############################ -->
+        <!-- Reset sieve attributes to default values on global -->
+        <t:test>
+            <t:request>
+                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+                    <a n="zimbraSieveRejectEnabled">TRUE</a>
+                    <a n="zimbraMailSieveNotifyActionRFCCompliant">FALSE</a>
+                </ModifyConfigRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyConfigResponse" />
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+
+    <t:test_case testcaseid="SetSieveAttributesOnServer" type="deprecated" bugids="ZCS-806">
+        <t:objective>Set sieve attributes on server and verify the same on server</t:objective>
+        <t:steps>
+            1. admin auth
+            2. set zimbraSieveRejectEnabled on server
+            3. set zimbraMailSieveNotifyActionRFCCompliant on server
+            4. verify all above ldap attributes on server
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                    <id>${server1.id}</id>
+                    <a n="zimbraSieveRejectEnabled">TRUE</a>
+                    <a n="zimbraMailSieveNotifyActionRFCCompliant">TRUE</a>
+                </ModifyServerRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyServerResponse/admin:server" attr="id" set="server.id1"/>
+            </t:response>
+        </t:test>
+
+        <!-- ############################ -->
+        <!-- Verify sieve attributes on server -->
+        <t:test>
+            <t:request>
+                <GetServerRequest xmlns="urn:zimbraAdmin">
+                    <server by="serviceHostname" attrs="zimbraSieveRejectEnabled">${account1.server}</server>
+                </GetServerRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:GetServerResponse/admin:server'
+                    attr="id" set="server1.id" />
+                <t:select path='//admin:GetServerResponse/admin:server//admin:a'
+                    attr="n" matches="zimbraSieveRejectEnabled" />
+                <t:select path='//admin:GetServerResponse/admin:server//admin:a'
+                    matches="TRUE" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetServerRequest xmlns="urn:zimbraAdmin">
+                    <server by="serviceHostname" attrs="zimbraMailSieveNotifyActionRFCCompliant">${account1.server}</server>
+                </GetServerRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:GetServerResponse/admin:server//admin:a'
+                    attr="n" matches="zimbraMailSieveNotifyActionRFCCompliant" />
+                <t:select path='//admin:GetServerResponse/admin:server//admin:a'
+                    matches="TRUE" />
+            </t:response>
+        </t:test>
+
+        <!-- ############################ -->
+        <!-- Reset sieve attributes to default values on global -->
+        <t:test>
+            <t:request>
+                <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                    <id>${server1.id}</id>
+                    <a n="zimbraSieveRejectEnabled">TRUE</a>
+                    <a n="zimbraMailSieveNotifyActionRFCCompliant">FALSE</a>
+                </ModifyServerRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyServerResponse/admin:server" attr="id" set="server.id1"/>
+            </t:response>
+        </t:test>
+        
+    </t:test_case>
+
+    <t:finally>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${account1.id}</id>
+                </DeleteAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteAccountResponse" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                    <id>${domain1.id}</id>
+                </DeleteDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteDomainResponse" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                    <id>${cos1.id}</id>
+                </DeleteCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteCosResponse" />
+            </t:response>
+        </t:test>
+    </t:finally>
+</t:tests>

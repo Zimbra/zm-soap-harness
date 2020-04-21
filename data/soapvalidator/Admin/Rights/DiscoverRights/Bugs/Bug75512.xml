@@ -1,0 +1,340 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always">
+    <t:objective>Create test accounts and DL</t:objective>
+    
+	<!-- Login as the admin to get an auth token -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_acct1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+            </t:response>
+    </t:test>
+    
+    <t:test id="create_acct2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+            </t:response>
+    </t:test>
+    
+    <t:test id="create_acct3" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+            </t:response>
+    </t:test>
+    
+    <t:test id="create_acct4" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+            </t:response>
+    </t:test>
+    	    
+</t:test_case> 
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="DiscoverRightsRequest1" type="bhr" bugids="75512">
+    <t:objective>Verify DiscoverRightsRequest should return with rights only "sendAs" right.</t:objective>
+    <t:steps>
+			1) Login as user1
+			2) User1 delegate "Send As" access to user2
+			3) User1 delegate "send on behalf of" access to user3
+			4) User2 sends DiscoverRightsRequest 			
+	</t:steps>
+
+    <t:test id="auth_acct1" required="true" depends="create_acct1">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail">
+				 <ace right="sendAs"  gt="usr" d="${test_account2.name}"/>
+			</GrantPermissionRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail">
+				 <ace right="sendOnBehalfOf"  gt="usr" d="${test_account3.name}"/>
+			</GrantPermissionRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:test id="auth_acct2" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	
+	<t:test>
+		<t:request>
+			<DiscoverRightsRequest xmlns="urn:zimbraAccount">
+				<right>sendAs</right>
+				<right>sendOnBehalfOf</right>			
+			</DiscoverRightsRequest>    
+		</t:request>
+		<t:response>
+                <t:select path="//acct:DiscoverRightsResponse"/>
+                <t:select path="//acct:DiscoverRightsResponse/acct:targets" attr="right" match="sendOnBehalfOf" emptyset="1"/> 	
+            	<t:select path="//acct:DiscoverRightsResponse/acct:targets" attr="right" match="sendAs"/>
+            	<t:select path="//acct:DiscoverRightsResponse/acct:targets/acct:target/acct:email[@addr='${test_account1.name}']"/>        
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="DiscoverRightsRequest2" type="bhr" bugids="75512">
+    <t:objective>Verify DiscoverRightsRequest should return with rights "sendAs" and "send on behalf of" right.</t:objective>
+    <t:steps>
+			1) Login as user1
+			2) User1 delegate "Send As" access to user2
+			3) User1 delegate "send on behalf of" access to user2
+			4) User2 sends DiscoverRightsRequest 		
+	</t:steps>
+
+    <t:test id="auth_acct1" required="true" depends="create_acct1">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail">
+				 <ace right="sendAs"  gt="usr" d="${test_account2.name}"/>
+			</GrantPermissionRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail">
+				 <ace right="sendOnBehalfOf"  gt="usr" d="${test_account2.name}"/>
+			</GrantPermissionRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:test id="auth_acct2" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	
+	<t:test>
+		<t:request>
+			<DiscoverRightsRequest xmlns="urn:zimbraAccount">
+				<right>sendAs</right>
+				<right>sendOnBehalfOf</right>			
+			</DiscoverRightsRequest>    
+		</t:request>
+		<t:response>
+                <t:select path="//acct:DiscoverRightsResponse"/>
+                <t:select path="//acct:DiscoverRightsResponse/acct:targets" attr="right" match="sendOnBehalfOf"/> 
+                <t:select path="//acct:DiscoverRightsResponse/acct:targets/acct:target/acct:email[@addr='${test_account1.name}']"/>	
+            	<t:select path="//acct:DiscoverRightsResponse/acct:targets" attr="right" match="sendAs"/>
+            	<t:select path="//acct:DiscoverRightsResponse/acct:targets/acct:target/acct:email[@addr='${test_account1.name}']"/>        
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="DiscoverRightsRequest3" type="bhr" bugids="75512">
+    <t:objective>Verify DiscoverRightsRequest should return with right "send on behalf of" right.</t:objective>
+    <t:steps>
+			1) Login as user1
+			2) User1 delegate "Send As" access to user2
+			3) User1 delegate "send on behalf of" access to user3 and remove "Send As" access.
+			4) User2 sends DiscoverRightsRequest 			
+	</t:steps>
+ 
+    <t:test id="auth_acct1" required="true" depends="create_acct1">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail">
+				 <ace right="sendAs"  gt="usr" d="${test_account4.name}"/>
+			</GrantPermissionRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GrantPermissionRequest xmlns="urn:zimbraMail">
+				 <ace right="sendOnBehalfOf"  gt="usr" d="${test_account4.name}"/>
+			</GrantPermissionRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//mail:GrantPermissionResponse"/>
+		</t:response>
+	</t:test>
+	
+	
+	<t:test >
+        <t:request>
+			<RevokePermissionRequest xmlns="urn:zimbraMail">
+				<ace xmlns="" gt="usr" d="${test_account4.name}" right="sendAs"/>
+			</RevokePermissionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:RevokePermissionResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:test id="auth_acct2" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	
+	<t:test>
+		<t:request>
+			<DiscoverRightsRequest xmlns="urn:zimbraAccount">
+				<right>sendAs</right>
+				<right>sendOnBehalfOf</right>			
+			</DiscoverRightsRequest>    
+		</t:request>
+		<t:response>
+                <t:select path="//acct:DiscoverRightsResponse"/>
+                <t:select path="//acct:DiscoverRightsResponse/acct:targets" attr="right" match="sendOnBehalfOf"/> 
+                <t:select path="//acct:DiscoverRightsResponse/acct:targets/acct:target/acct:email[@addr='${test_account1.name}']"/>	
+            	<t:select path="//acct:DiscoverRightsResponse/acct:targets" attr="right" match="sendAs" amptyset="1"/>        
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+</t:tests>

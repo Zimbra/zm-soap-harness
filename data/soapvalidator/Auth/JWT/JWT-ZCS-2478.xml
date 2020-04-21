@@ -1,0 +1,633 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<!-- ZCS-2478: Invalidate JWT on logout -->
+
+	<t:property name="account1.name"
+		value="user1_${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account2.name"
+		value="user2_${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account3.name"
+		value="user3_${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+	<t:property name="message.subject1" value="JWT Subject1" />
+	<t:property name="message.subject2" value="JWT Subject2" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="acct1_setup" type="always">
+		<t:objective>create test account</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+					<domain by="name">${defaultdomain.name}</domain>
+				</GetDomainInfoRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetDomainInfoResponse/admin:domain"
+					attr="id" set="domain1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraAuthTokenLifetime">1m</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="server.zimbraAccount" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="server.zimbraAccount" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account3.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="server.zimbraAccount" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs2478_TC_01" type="bhr"
+		bugsids="zcs-2478">
+		<t:objective>Generate JWT auth token, let it expire and send email
+			using that token. Error should be thrown
+		</t:objective>
+		<t:steps>1. User 1 generates a JWT token.
+			2. Wait for it to expire.
+			3. Send a soap request using the above token. It should fail.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken" />
+			</t:response>
+		</t:test>
+
+		<t:delay sec="60" />
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account2.name}" />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>Content ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="service.AUTH_REQUIRED" />
+				<t:select path="//soap:Text" match="no valid authtoken present" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs_2478SendMsg_02" type="bhr"
+		bugsids="zcs-2478">
+		<t:objective>Invalidate a JWT session using EndSessionRequest and send
+			a soap request
+		</t:objective>
+		<t:steps>1. User 1 generates a JWT token.
+			2. Invalidate using EndSessionRequest
+			3. Send a soap request using the above token. It should fail.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount" tokenType="JWT">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<EndSessionRequest xmlns="urn:zimbraAccount"
+					logoff="1" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:EndSessionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account2.name}" />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>Content ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="service.AUTH_REQUIRED" />
+				<t:select path="//soap:Text" match="no valid authtoken present" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account2.name}" />
+						<e t="t" a="${account3.name}" />
+						<su>${message.subject2}</su>
+						<mp ct="text/plain">
+							<content>Content 2 ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="service.AUTH_REQUIRED" />
+				<t:select path="//soap:Text" match="no valid authtoken present" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+   <!--  Test case 3,4,5 deprecated since generation of auth token from jwt and vice versa is no longer supported -->
+	<t:test_case testcaseid="zcs2478_TC_03" type="deprecated"
+		bugsids="zcs-2478">
+		<t:objective>Use an invalidated JWT token to generate another auth
+			token.
+		</t:objective>
+		<t:steps>1. User 1 generates a JWT token.
+			2. Invalidate using EndSessionRequest
+			3. Use the invalidated JWT token to generate auth token and JWt token.
+			Both should fail
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<EndSessionRequest xmlns="urn:zimbraAccount"
+					logoff="1" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:EndSessionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false">
+					<jwtToken>${jwtToken}</jwtToken>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.AUTH_FAILED" />
+				<t:select path="//soap:Text" contains="authentication failed for" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<jwtToken>${jwtToken}</jwtToken>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="^account.AUTH_FAILED" />
+				<t:select path="//soap:Text" contains="authentication failed for" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs2478_TC_04" type="deprecated"
+		bugsids="zcs-2478">
+		<t:objective>Invalidate a JWT session and send a soap request
+		</t:objective>
+		<t:steps>1. User 1 generates a JWT token.
+			2. User 1 generates a new auth token on basis of above jwt token
+			2. Invalidate JWT token using EndSessionRequest
+			3. Send a soap request using the auth token. It should pass.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false">
+					<jwtToken>${jwtToken}</jwtToken>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<EndSessionRequest xmlns="urn:zimbraAccount"
+					logoff="1" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:EndSessionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<authToken>${authToken}</authToken>
+			</t:requestContext>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account2.name}" />
+						<su>${message.subject2}</su>
+						<mp ct="text/plain">
+							<content>Content ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="sendmsg.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs2478_TC_05" type="deprecated"
+		bugsids="zcs-2478">
+		<t:objective>Invalidate a JWT session and send a soap request
+		</t:objective>
+		<t:steps>1. User 1 generates an auth token.
+			2. User 1 generates a new JWT token on basis of above auth token
+			2. Invalidate JWT token using EndSessionRequest
+			3. Send a soap request using the auth token. It should pass.
+		</t:steps>
+
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken1" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<authToken>${authToken1}</authToken>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<EndSessionRequest xmlns="urn:zimbraAccount"
+					logoff="1" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:EndSessionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<authToken>${authToken1}</authToken>
+			</t:requestContext>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account2.name}" />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>Content ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="sendmsg.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+	<t:test_case testcaseid="zcs2478_TC_06" type="bhr"
+		bugsids="zcs-2478">
+		<t:objective>Invalidate a JWT session and send a soap request
+		</t:objective>
+		<t:steps>1. User 1 generates a JWT token.
+			2. Send a soap request using the above jwt token. It should pass.
+			2. Invalidate JWT token using EndSessionRequest
+			3. Send a soap request using the jwt token. It should fail.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account2.name}" />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>Content ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="sendmsg.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<EndSessionRequest xmlns="urn:zimbraAccount"
+					logoff="1" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:EndSessionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account2.name}" />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>Content ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="service.AUTH_REQUIRED" />
+				<t:select path="//soap:Text" match="no valid authtoken present" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs2478_TC_07" type="bhr"
+		bugsids="zcs-2478">
+		<t:objective>Invalidate a JWT session and send a soap request
+		</t:objective>
+		<t:steps>1. User 1 generates three JWT tokens.
+			2. User 1 invalidates 2nd jwt token.
+			3. Send a soap request using the 2nd token. It should fail.
+			4. Send a soap request using the 3rd token. It should pass.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken1" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken2" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken2}</jwtToken>
+			</t:requestContext>
+			<t:request>
+				<EndSessionRequest xmlns="urn:zimbraAccount"
+					logoff="1" />
+			</t:request>
+			<t:response>
+				<t:select path="//acct:EndSessionResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount"
+					persistAuthTokenCookie="false" tokenType="JWT">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="jwtToken3" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken2}</jwtToken>
+			</t:requestContext>					<!-- Should fail as invalid jwt token -->
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account2.name}" />
+						<su>${message.subject1}</su>
+						<mp ct="text/plain">
+							<content>Content ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//zimbra:Code" match="service.AUTH_REQUIRED" />
+				<t:select path="//soap:Text" match="no valid authtoken present" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:requestContext>
+				<jwtToken>${jwtToken3}</jwtToken>
+			</t:requestContext>					<!-- Should pass as valid jwt token -->
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account2.name}" />
+						<su>${message.subject2}</su>
+						<mp ct="text/plain">
+							<content>Content2 ${TIME} ${COUNTER}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="sendmsg.id" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+
+</t:tests>

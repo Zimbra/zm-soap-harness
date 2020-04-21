@@ -1,0 +1,98 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+		<t:test id="ping" required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="acctSetup" type="always">
+		<t:objective>Create test accounts</t:objective>
+		<t:steps>	1. Login to admin account
+					2. Create accounts with default charset ISO-2022-JP        
+	    </t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraPrefMailDefaultCharset">ISO-2022-JP</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'	set="account1.server" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}" />
+	<t:property name="authToken" value="" />
+
+	<t:test_case testcaseid="bug28727" type="bhr" bugids="28727">
+		<t:objective>Mail with non-2047 Subject</t:objective>
+		<t:steps>
+			1. create account set default charset zimbraPrefMailDefaultCharset ISO-2022-JP
+			2. inject mime attached having non-2047 Subject
+			3. login to account1 
+			4. verify subject not garbled.
+		</t:steps>
+
+		<t:property name="msg01.file" value="${testMailRaw.root}/bug28727/263-15.msg" />
+		<t:property name="msg01.subject" value="テスト  テスト" />
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		
+		<t:mailinjecttest>
+		<t:lmtpInjectRequest>
+			<filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>foo@foo.com</from>
+			<server>${account1.server}</server>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+
+	   	<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>is:anywhere from:admin@zcs.srao.com</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${msg01.subject}"/>
+			</t:response>
+		</t:test>
+</t:test_case>
+</t:tests>

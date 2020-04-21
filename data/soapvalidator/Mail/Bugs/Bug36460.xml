@@ -1,0 +1,110 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="acct1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message.folder"	value="${testMailRaw.root}/36460/"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    	
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+	    <t:response>
+	        <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="VerifyBug36460" type="sanity" bugids="36460">
+    <t:objective>Verify bug #36460 </t:objective>
+
+	<!-- Auth Admin -->
+	<t:property name="uri" value="${admin.uri}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- Create User id -->
+	<t:test >
+	    <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	            <name>${account1.name}</name>
+	            <password>${defaultpassword.value}</password>
+	        </CreateAccountRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+	</t:test>
+
+	<!-- LMTP inject the blob -->
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${message.folder}</foldername>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+         </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<!-- Login to the account -->
+	<t:test >
+		<t:request>
+	  		<AuthRequest xmlns="urn:zimbraAccount">
+	    		<account by="name">${account1.name}</account>
+			    <password>${defaultpassword.value}</password>
+		    </AuthRequest>
+		</t:request>
+	  	<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<!-- Search for the email -->
+	<t:test id="SearchRequest">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(FROM QUEEN ELIZABETH)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
+		</t:response>
+	</t:test>
+
+	<!-- Do a get message to see if things are getting displayed properly-->
+    <t:test id="GetMsgRequest" depends="SearchRequest">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg01.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+			</t:select>            	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+

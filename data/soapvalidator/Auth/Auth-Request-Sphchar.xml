@@ -1,0 +1,374 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account.password" value="${defaultpassword.value}"/>
+<t:property name="case.password1" value="pass123"/>
+<t:property name="case.password2" value="passwd123"/>
+
+<!-- Valid user names -->
+<t:property name="account.case.cap" value="USERA@${defaultdomain.name}"/>
+<t:property name="account.case.small" value="usera@${defaultdomain.name}"/>
+<t:property name="account.case.mix" value="UserA@${defaultdomain.name}"/>
+<t:property name="account.decimal" value="0123456789${TIME}@${defaultdomain.name}"/>
+<t:property name="account.allsphchars" value="!#$%&amp;\*\+-/=\?\^_`\{\|\}~${TIME}@${defaultdomain.name}"/>
+<t:property name="account.charsdot" value="User.a${TIME}@${defaultdomain.name}"/>
+<t:property name="account.decimaldot" value="0123.456789${TIME}@${defaultdomain.name}"/>
+<t:property name="account.sphchardot" value="!#$%&amp;'\*\+.-/=\?\^_`\{\|\}~${TIME}@${defaultdomain.name}"/>
+<t:property name="account.alphanum" value="User123${TIME}@${defaultdomain.name}"/>
+<t:property name="account.alphasphchar" value="User!#$~${TIME}@${defaultdomain.name}"/>
+<t:property name="account.sphcharnum" value="1234%&amp;'\*\+/=\}~${TIME}@${defaultdomain.name}"/>
+<t:property name="account.alphanumsphchardot" value="User\?\^.0987${TIME}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="adminSetup_AuthRequestSpChar" type="always" >
+    <t:objective>login as the admin</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+<t:property name="admin.authToken" value="${authToken}"/>
+
+ </t:test_case>
+
+<t:test_case testcaseid="AuthRequest_Sphchar1" type="sanity" bugids="18237">
+	<t:objective>Tests to check the authentication of case sensitive user names.</t:objective>
+
+<t:test>
+        <t:request required="true">
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.case.cap}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="case.cap.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user1.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user1.zimbraAccount}"/>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.case.cap}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+    
+	<t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.case.small}</name>
+                <password>${case.password1}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<!-- As per comment #6 of bug 18237 zimbra is not going to support case sensitive user accounts. Hence modifying test case.-->
+			<t:select path="//zimbra:Code" match="account.ACCOUNT_EXISTS"/>
+		</t:response>
+    </t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.case.mix}</name>
+                <password>${case.password2}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<!-- As per comment #6 of bug 18237 zimbra is not going to support case sensitive user accounts. Hence modifying test case.-->
+			<t:select path="//zimbra:Code" match="account.ACCOUNT_EXISTS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="AuthRequest_Sphchar2" type="bhr">
+	<t:objective>Tests to check the authentication of user names having special characters and numbers.</t:objective>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.decimal}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="decimal.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user4.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user4.zimbraAccount}"/>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.decimal}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.allsphchars}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="sphchars.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user5.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user5.zimbraAccount}"/>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.allsphchars}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.charsdot}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="charsdot.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user6.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user6.zimbraAccount}"/>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.charsdot}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.decimaldot}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="decimaldot.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user7.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user7.zimbraAccount}"/>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.decimaldot}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.sphchardot}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="sphchardot.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user8.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user8.zimbraAccount}"/>
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.sphchardot}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.alphanum}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="alphanum.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user9.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user9.zimbraAccount}"/>
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.alphanum}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.alphasphchar}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="alphasphchar.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user10.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user10.zimbraAccount}"/>
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.alphasphchar}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.sphcharnum}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="sphcharnum.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user11.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user11.zimbraAccount}"/>
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.sphcharnum}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+
+<t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.alphanumsphchardot}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="alphanumsphchardot.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="user12.zimbraAccount"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${user12.zimbraAccount}"/>
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account.alphanumsphchardot}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	</t:response>
+	</t:test>
+</t:test_case>
+
+</t:tests>

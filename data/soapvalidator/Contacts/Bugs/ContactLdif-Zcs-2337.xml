@@ -1,0 +1,391 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<!-- Following bug is included as part of this testcase -->
+<!-- ZCS-2337: Modify REST API for Get Contacts to support LDIF  -->
+
+	<t:property name="account1.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account1.password" value="${defaultpassword.value}" />
+	<t:property name="account2.name"
+		value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account2.password" value="${defaultpassword.value}" />
+	<t:property name="folder.name" value="Folder1.${TIME}" />
+
+	<t:property name="contact01.FirstName" value="FirstName01" />
+	<t:property name="contact01.LastName" value="LastName01" />
+	<t:property name="contact01.MiddleInitial" value="1" />
+	<t:property name="contact01.emailAddress" value="email01@domain.com" />
+	<t:property name="contact02.FirstName" value="FirstName02" />
+	<t:property name="contact02.LastName" value="LastName02" />
+	<t:property name="contact02.MiddleInitial" value="2" />
+	<t:property name="contact02.emailAddress" value="email02@domain.com" />
+
+	<t:property name="contact03.FirstName" value="FirstName03" />
+	<t:property name="contact03.LastName" value="LastName03" />
+	<t:property name="contact03.MiddleInitial" value="MiddleName03" />
+	<t:property name="contact03.emailAddress" value="email03@domain.com" />
+
+	<t:property name="contact04.FirstName" value="FirstName04" />
+	<t:property name="contact04.LastName" value="LastName04" />
+	<t:property name="contact04.MiddleName" value="MiddleName04" />
+	<t:property name="contact04.emailAddress" value="email04@domain.com" />
+	<t:property name="contact04.company" value="zimbra" />
+	<t:property name="contact04.workFax" value="fax" />
+	<t:property name="contact04.workPhone2" value="3333" />
+	<t:property name="contact04.callbackPhone" value="4444" />
+	<t:property name="contact04.carPhone" value="5555" />
+	<t:property name="contact04.otherPhone" value="6666" />
+	<t:property name="contact04.email2" value="email042@domain.com" />
+	<t:property name="contact04.jobTitle" value="qa" />
+	<t:property name="contact04.workPhone" value="7777" />
+	<t:property name="contact04.mobilePhone" value="8888" />
+	<t:property name="contact04.pager" value="9999" />
+	<t:property name="contact04.workStreet" value="Street" />
+	<t:property name="contact04.workCity" value="City" />
+	<t:property name="contact04.workState" value="State" />
+	<t:property name="contact04.workPostalCode" value="121212" />
+	<t:property name="contact04.workCountry" value="India" />
+	<t:property name="contact04.workCountry" value="India" />
+	<t:property name="contact04.birthday" value="24-10-1989" />
+	<t:property name="contact04.workURL" value="www.google.com" />
+
+	<t:property name="test_ldif_content_file01"
+		value="${testMailRaw.root}/zcs-2337/contact.ldif" />
+	<t:property name="test_ldif_content_file02"
+		value="${testMailRaw.root}/zcs-2337/contact03.ldif" />
+	<t:property name="test_ldif_content_file03"
+		value="${testMailRaw.root}/zcs-2337/contact04.ldif" />
+	<t:property name="test_csv_content_file"
+		value="${testMailRaw.root}/zcs-2337/contact03.csv" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+		<t:test id="ping" required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs-2337_account_setup"
+		type="always">
+		<t:objective>create test account</t:objective>
+
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${account1.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${account2.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account2.server" />
+			</t:response>
+		</t:test>
+
+		<t:property name="server.zimbraAccount" value="${account1.server}" />
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs2337_contact_ldif_01">
+		<t:objective>Using the REST servlet, export multiple (2) contacts
+			using ldif format</t:objective>
+		<t:steps>
+			1. Create 2 contacts
+			2. Export the contacts using the REST servlet, in ldif format
+			3. Compare the result to the 'expected' file
+		</t:steps>
+
+		<t:property name="server.zimbraAccount" value="${account2.server}" />
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">${contact01.FirstName}</a>
+						<a n="lastName">${contact01.LastName}</a>
+						<a n="email">${contact01.emailAddress}</a>
+					</cn>
+				</CreateContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateContactResponse/mail:cn">
+					<t:select attr="id" set="contact01.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">${contact02.FirstName}</a>
+						<a n="lastName">${contact02.LastName}</a>
+						<a n="email">${contact02.emailAddress}</a>
+					</cn>
+				</CreateContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateContactResponse/mail:cn">
+					<t:select attr="id" set="contact02.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<folder>contacts</folder>
+				<fmt>ldif</fmt>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="200" />
+				<t:content file="${test_ldif_content_file01}" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs2337_contact_ldif_02">
+		<t:objective>Using the REST servlet, export a contact from a new
+			folder using ldif format</t:objective>
+		<t:steps>
+			1. Create a contact in a new folder containing public certificate.
+			2. Export the contact using the REST servlet, in ldif format
+			3. Verify the results with the expected file.
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<CreateFolderRequest xmlns="urn:zimbraMail">
+					<folder name="${folder.name}" l="1" view="contact" />
+				</CreateFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateFolderResponse/mail:folder"
+					attr="id" set="folder.id" />
+			</t:response>
+		</t:test>
+
+		<t:property name="uploadPubCert.name2" value="${testMailRaw.root}/zcs-2337/user.cer" />
+
+		<t:uploadservlettest>
+			<t:uploadServletRequest>
+				<filename>${uploadPubCert.name2}</filename>
+			</t:uploadServletRequest>
+			<t:uploadServletResponse>
+				<t:select attr="StatusCode" match="200" />
+				<t:select attr="id" set="aid.pub.cert" />
+			</t:uploadServletResponse>
+		</t:uploadservlettest>
+
+		<t:test>
+			<t:request>
+				<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn l="${folder.id}">
+						<a n="firstName">${contact03.FirstName}</a>
+						<a n="lastName">${contact03.LastName}</a>
+						<a n="email">${contact03.emailAddress}</a>
+						<a n="userCertificate" aid="${aid.pub.cert}" />
+					</cn>
+				</CreateContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateContactResponse/mail:cn">
+					<t:select attr="id" set="contact03.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<folder>${folder.name}</folder>
+				<fmt>ldif</fmt>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="200" />
+				<t:content file="${test_ldif_content_file02}" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="zcs2337_contact_ldif_03">
+		<t:objective>Using the REST servlet, export a contact containing
+			multiple fields using ldif format</t:objective>
+		<t:steps>
+			1. Create a contact with multiple fields.
+			2. Export the contact using the REST servlet, in ldif format
+			3. Verify all fields are populated and the results are in ldif format. Compare with the expected file
+		</t:steps>
+
+		<t:test>
+			<t:request>
+				<ContactActionRequest xmlns="urn:zimbraMail">
+					<action id="${contact01.id}" op="delete" />
+				</ContactActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ContactActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ContactActionRequest xmlns="urn:zimbraMail">
+					<action id="${contact02.id}" op="delete" />
+				</ContactActionRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:ContactActionResponse/mail:action" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<CreateContactRequest xmlns="urn:zimbraMail">
+					<cn>
+						<a n="firstName">${contact04.FirstName}</a>
+						<a n="lastName">${contact04.LastName}</a>
+						<a n="email">${contact04.emailAddress}</a>
+						<a n="company">${contact04.company}</a>
+						<a n="birthday">${contact04.birthday}</a>
+						<a n="workFax">${contact04.workFax}</a>
+						<a n="workPhone2">${contact04.workPhone2}</a>
+						<a n="callbackPhone">${contact04.callbackPhone}</a>
+						<a n="carPhone">${contact04.carPhone}</a>
+						<a n="otherPhone">${contact04.otherPhone}</a>
+						<a n="email2">${contact04.email2}</a>
+						<a n="middleName">${contact04.MiddleName}</a>
+						<a n="jobTitle">${contact04.jobTitle}</a>
+						<a n="workPhone">${contact04.workPhone}</a>
+						<a n="mobilePhone">${contact04.mobilePhone}</a>
+						<a n="pager">${contact04.pager}</a>
+						<a n="workStreet">${contact04.workStreet}</a>
+						<a n="workCity">${contact04.workCity}</a>
+						<a n="workState">${contact04.workState}</a>
+						<a n="workPostalCode">${contact04.workPostalCode}</a>
+						<a n="workCountry">${contact04.workCountry}</a>
+						<a n="workURL">${contact04.workURL}</a>
+						<a n="notes">These are
+notes
+multiline</a>
+					</cn>
+				</CreateContactRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateContactResponse/mail:cn">
+					<t:select attr="id" set="contact.id" />
+				</t:select>
+			</t:response>
+		</t:test>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<folder>contacts</folder>
+				<fmt>ldif</fmt>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="200" />
+				<t:content file="${test_ldif_content_file03}" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="RestServlet_contact_ldif_04">
+		<t:objective>Using the REST servlet, export a contact without giving
+			the fmt</t:objective>
+		<t:steps>
+			2. Export the contact using the REST servlet, without specifying the
+			format
+			3. Verify the results are in default csv format. Compare with expected file
+		</t:steps>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<folder>${folder.name}</folder>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="200" />
+				<t:content file="${test_csv_content_file}" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+	
+	<t:test_case testcaseid="RestServlet_contact_ldif_05">
+		<t:objective>Using the REST servlet, export a contact giving
+			and invalid format</t:objective>
+		<t:steps>
+			2. Export the contact using the REST servlet, specifying the invalid
+			format
+			3. Verify results are in csv format in the response.
+		</t:steps>
+
+		<t:resttest>
+			<t:restServletRequest>
+				<folder>${folder.name}</folder>
+				<fmt>ldef</fmt>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="StatusCode" match="200" />
+				<t:content file="${test_csv_content_file}" />
+			</t:restServletResponse>
+		</t:resttest>
+
+	</t:test_case>
+
+</t:tests>

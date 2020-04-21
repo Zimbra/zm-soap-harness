@@ -1,0 +1,708 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="negative.date" value="-1/1/2005"/>
+<t:property name="negative.month" value="01/-1/2005"/>
+<t:property name="negative.year" value="01/01/-2005"/>
+<t:property name="invalid.date" value="503/01/2005"/>
+<t:property name="invalid.month" value="01/153/2005"/>
+<t:property name="invalid.year" value="01/01/10"/>
+<t:property name="search.text" value="ab/ab/abc"/>
+<t:property name="decimal.date" value="1.5/01/2005"/>
+<t:property name="decimal.month" value=""/>
+<t:property name="decimal.year" value=""/>
+
+
+<!-- authentication -->
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<!-- Login as the admin to get an auth token -->
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test  required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+                <!-- 
+                 <a n="zimbraMailDeliveryAddress">${test_account1.name}</a>
+                <a n="zimbraMailStatus">enabled</a>
+                <a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+                <a n="zimbraPasswordMinAge">7</a>
+                Commenting out the optional attributes and sending the request with minimal requirement
+                 -->
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+<t:test_case testcaseid="acct1_login" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                    <password>${test_account1.password}</password>
+                    <!--<prefs/>-->
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+            </t:response>
+        </t:test>
+        
+    </t:test_case>
+
+
+    <t:test_case testcaseid="Search_SearchDate_SearchRequest1" bugids="1781" type="functional" >
+        <t:objective>Search with negative value of date in "before" query </t:objective>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                    <tz id="${defaultlocale.timezone}"/>
+					<query>before:${negative.date}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+            </t:response>
+        </t:test>
+        
+    </t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest2" bugids="1781" type="functional" >
+    <t:objective>Search with negative after date </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${negative.date}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest3" bugids="1781" type="functional" >
+    <t:objective>Search with negative date </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${negative.date}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest4" type="functional" >
+    <t:objective>Search for negative value of Month in after query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${negative.month}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest5" type="functional" >
+    <t:objective>Search for negative value of Month in before query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${negative.month}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest6" type="functional" >
+    <t:objective>Search for negative value of Month </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${negative.month}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest7" type="functional" >
+    <t:objective>Search for negative value of Year in after query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${negative.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest8" type="functional" >
+    <t:objective>Search for negative value of Year in before query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${negative.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest9" type="functional" >
+    <t:objective>Search for negative value of Year </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${negative.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest10" type="sanity" >
+    <t:objective>Search for mails before 50 years </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:1/1/1955</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/> 
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest11" type="functional" >
+    <t:objective>Search with wrong Date Formate in query "after:" using variable GENTIME </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${GENTIME}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest12" type="functional" >
+    <t:objective>Search with wrong Date Formate in query "before:" using variable GENTIME </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${GENTIME}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest13" type="functional" >
+    <t:objective>Search with wrong Date Formate using variable GENTIME </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${GENTIME}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest14" bugids="1305" type="sanity" >
+    <t:objective>Search for invalid value of Date in after query </t:objective>
+
+    <t:test id="date014">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${invalid.date}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest15" bugids="1305" type="sanity" >
+    <t:objective>Search for invalid value of Date in before query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${invalid.date}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest16" bugids="1305" type="sanity" >
+    <t:objective>Search for invalid value of Date </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${invalid.date}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest17" bugids="1305" type="sanity" >
+    <t:objective>Search for invalid value of Month in "after:" query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${invalid.month}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest18" bugids="1305" type="sanity" >
+    <t:objective>Search for invalid value of Month in "before:" query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${invalid.month}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest19" bugids="1305" type="sanity" >
+    <t:objective>Search for invalid value of Month </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${invalid.month}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!-- I don't see how invalid.year (1/1/10) is invalid -->
+<t:test_case testcaseid="Search_SearchDate_SearchRequest20"  type="deprecated" >
+    <t:objective>Search for invalid value of Year in after query </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${invalid.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest21"  type="deprecated" >
+    <t:objective>Search for invalid value of Year in before query </t:objective>
+
+    <t:test id="date021">
+        <t:request>
+        
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${invalid.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest22"  type="deprecated" >
+    <t:objective>Search for invalid value of Year  </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${invalid.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest23"  type="sanity" >
+    <t:objective> Search with text in after query  </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${search.text}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+ 
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest24"  type="sanity" >
+    <t:objective> Search with text in before query  </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${search.text}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest25"  type="sanity" >
+    <t:objective> Search with text   </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${search.text}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest26"  type="sanity" >
+    <t:objective> Search with decimal value of date in after query   </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${decimal.date}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest27"  type="sanity" >
+    <t:objective> Search with decimal value of date in before query   </t:objective>
+
+    <t:test id="date027">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${decimal.date}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest28"  type="sanity" >
+    <t:objective> Search with decimal value of date   </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${decimal.date}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest29"  type="sanity" >
+    <t:objective> Search with decimal value of month in after query  </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${decimal.month}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest30"  type="sanity" >
+    <t:objective> Search with decimal value of month in before query  </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${decimal.month}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest31"  type="sanity" >
+    <t:objective> Search with decimal value of month  </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${decimal.month}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest32"  type="sanity" >
+    <t:objective> Search with decimal value of year in after query   </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>after:${decimal.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest33"  type="sanity" >
+    <t:objective> Search with decimal value of year in before query    </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>before:${decimal.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Search_SearchDate_SearchRequest34"  type="sanity" >
+    <t:objective> Search with decimal value of year   </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                <tz id="${defaultlocale.timezone}"/>
+				<query>date:${decimal.year}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+</t:tests>

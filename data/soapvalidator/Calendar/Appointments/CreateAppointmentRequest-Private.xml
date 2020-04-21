@@ -1,0 +1,150 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="436735" type="bhr" areas="Calendar">
+    <t:objective> Create Private calendar - Default.</t:objective>
+
+
+	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
+   
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" class="PRI" >
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <or a="${account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appointment1.id}']">
+        		<t:select path="//mail:comp">
+        			<t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20071201120000.gmt}]}"/>
+            	</t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+
+   <t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20071201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20071201120000.gmt}]}" types="appointment">
+				<query>inid:${account1.calendar.folder.id}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:appt[@invId='${appointment1.id}']"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

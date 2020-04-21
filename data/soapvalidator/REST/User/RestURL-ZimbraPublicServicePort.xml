@@ -1,0 +1,168 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain.name1" value="${TIME}${COUNTER}.domain.com"/>
+<t:property name="public.hostname" value="${TIME}${COUNTER}.host.com"/>
+<t:property name="public.protocol" value="http"/>
+<t:property name="public.port" value="8445"/>
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${domain.name1}"/>
+<t:property name="account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="rest.url" value="${public.protocol}://${public.hostname}:${public.port}/home/${account1.name}"/>
+<t:property name="public.url" value="${public.protocol}://${public.hostname}:${public.port}"/>
+
+<t:property name="guest1.name" value="guest1${TIME}.${COUNTER}@foo.com"/>
+<t:property name="guest1.password" value="guest1password"/>
+
+<t:property name="folder.name"		value="folder.${TIME}.${COUNTER}"/>			<!-- Folder's parent ID -->
+<t:property name="op.move"			value="move"/>
+<t:property name="op.grant"			value="grant"/>
+<t:property name="perm.guest"		value="guest"/>
+
+<t:property name="message1.content" value="content${TIME}.${COUNTER}"/>
+<t:property name="message1.subject" value="subject${TIME}.${COUNTER}"/>
+
+
+<t:test_case testcaseid="RestURL_zimbraPublicServicePort_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+		    <CreateDomainRequest xmlns="urn:zimbraAdmin">
+		          <name>${domain.name1}</name>
+		        	<a n="zimbraPublicServiceHostname">${public.hostname}</a>    
+				<a n="zimbraPublicServicePort">${public.port}</a>    
+				<a n="zimbraPublicServiceProtocol">${public.protocol}</a>    
+		    </CreateDomainRequest>
+		</t:request>
+		<t:response>
+		    <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${account1.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="inbox.folder.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${inbox.folder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestURL_zimbraPublicServicePort_01" type="bhr" bugids="20558">
+	<t:objective>Verify that providing zimbraPublicServicePort is reflected in the rest URL </t:objective>
+	<t:steps>
+	1. Create a domain with zimbraPublicServiceHostname, zimbraPublicServicePort
+	2. Create a user in the domain
+	3. Create a folder and share it
+	4. View the rest URL. The rest URL should have the zimbraPublicServicePort in it.
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${folder1.id}">
+					<grant gt="${perm.guest}" perm="r" d="${guest1.name}" args="${guest1.password}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	
+	<t:test >
+		<t:request>
+			<GetInfoRequest sections="mbox" xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse/acct:rest" match="${rest.url}"/>
+			<t:select path="//acct:GetInfoResponse/acct:publicURL" match="${public.url}"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+</t:tests>

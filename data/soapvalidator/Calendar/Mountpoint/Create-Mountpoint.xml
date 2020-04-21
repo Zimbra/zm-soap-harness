@@ -1,0 +1,506 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+ 
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
+    
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="acct3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="acct4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="nonexisting.account" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="destination.name" value="destination.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.read"			value="read"/>
+<t:property name="op.unread"		value="!read"/>
+<t:property name="op.flag"			value="flag"/>
+<t:property name="op.unflag"		value="!flag"/>
+<t:property name="op.tag"			value="tag"/>
+<t:property name="op.untag"			value="!tag"/>
+<t:property name="op.move"			value="move"/>
+<t:property name="op.delete"		value="delete"/>
+
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.grp"			value="grp"/>
+<t:property name="grant.dom"			value="dom"/>
+<t:property name="grant.cos"			value="cos"/>
+<t:property name="grant.all"			value="all"/>
+<t:property name="grant.pub"			value="pub"/>
+<t:property name="grant.guest"			value="guest"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="view.conversation"	value="conversation"/>
+<t:property name="view.message"			value="message"/>
+<t:property name="view.contact"			value="contact"/>
+<t:property name="view.appointment"		value="appointment"/>
+<t:property name="view.note"			value="note"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Basic_AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>
+        1. Login to admin.
+        2. Create accounts
+        3. Account1 shares calendar with account2 (manager rights)
+    </t:steps>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e zimbra_feed_manager_blacklist=172.16.0.0/12,192.168.0.0/16,fd00::/8'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+    
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${destination.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="destination.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="destination.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CalendarSharing_CreateMountpointRequest_Basic_01" type="bhr">
+    <t:objective>Verify a shared calendar can be mounted</t:objective>
+    <t:steps>
+        1. Login as account1.  Share calendar with account2.
+        2. Login as account2.
+        3. Accept and mount the shared calendar
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account1.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.folder.calendar}" op="${op.grant}">
+                    <grant d="${account2.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.root}" name="Calendar.${TIME}.${COUNTER}" view="appointment" rid="${account1.folder.calendar}" zid="${account1.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.delegated.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account1.name}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="CreateMountpointRequest_Basic_01" type="bhr" bugids="25644">
+    <t:objective>Verify CreateMountpointRequest for non-existing account gives perm-denied</t:objective>
+   
+   <t:steps> 1. Send CreateFolderRequest to link a non-existing account's calendar
+             2. Send CreateFolderRequest to link a non-existing account's contacts
+             2. Send CreateMountpointRequest to link to non-exsisting account's calendar
+			 3. Send CreateMountpointRequest to link to non-exsisting account's contacts
+             4. Send GetInfoRequest to a non-existing account
+   </t:steps>
+
+	<t:test required="true">
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+            <t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="account2.folder.contact"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="error.text" value="resource unreachable: HTTP/1.1 401 must authenticate"/>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Publish-cal" l="${account2.folder.root}" url="https://${zimbraServer.name}:443/home/${nonexisting.account}/Calendar" view="appointment"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.RESOURCE_UNREACHABLE$"/>
+            <t:select path="//soap:Reason/soap:Text" contains="${error.text}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Publish-contact" l="${account2.folder.root}" url="https://${zimbraServer.name}:443/home/${nonexisting.account}/Contacts" view="contact"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.RESOURCE_UNREACHABLE$"/>
+            <t:select path="//soap:Reason/soap:Text" contains="${error.text}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.root}" name="Calendar.${TIME}.${COUNTER}" view="appointment" path="http://${account1.server}/home/${nonexisting.account}/Calendar" owner="${nonexisting.account}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+		</t:response>
+    </t:test>
+
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.contact}" name="Contact.${TIME}.${COUNTER}" view="contact" path="http://${account1.server}/home/${nonexisting.account}/Contacts" owner="${nonexisting.account}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetAccountInfoRequest xmlns="urn:zimbraAccount">
+				<account by="name">${nonexisting.account}</account>
+			</GetAccountInfoRequest>
+		</t:request>
+		<t:response> 
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug26227" type="sanity" bugids="26227">
+    <t:objective> Verify GetMiniCalRequest for a shared calendar works after deleting the account who share the calendar  </t:objective>
+
+   <t:steps> 1. acct3 share the calendar with manager rights
+             2. acct4 accepts the share
+             2. admin deletes acct3
+			 3. acct4 send GetMiniCalRequest (expected account.NO_SUCH_ACCOUNT)
+   </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account3.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account3.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account3.folder.calendar}" op="${op.grant}">
+                    <grant d="${account4.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
+        </t:response>
+    </t:test>
+
+    
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account4.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account4.folder.root}" name="Calendar.${TIME}.${COUNTER}" view="appointment" rid="${account3.folder.calendar}" zid="${account3.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account4.delegated.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account3.name}"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account3.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+    <t:test required="true">
+        <t:request>
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="1206815400000" e="1210444200000">
+			    <folder id="${account4.delegated.id}"/>
+			</GetMiniCalRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMiniCalResponse/mail:error" attr="code" match="^account.NO_SUCH_ACCOUNT"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:finally>
+        <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e zimbra_feed_manager_blacklist=10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,fd00::/8'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+        
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+</t:finally>
+
+</t:tests>

@@ -1,0 +1,314 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="mailbox.blank" value=""/>
+<t:property name="mailbox.space" value="             "/>
+<t:property name="mailbox.spchar" value=":''&lt;//\\"/>
+<t:property name="mailbox.sometext" value="some text that is not valid for mbx"/>
+<t:property name="mailbox.negative" value="-1"/>
+
+<t:property name="account.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account.password" value="test123"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+<t:property name="admin.authToken" value="authToken"/>
+
+    
+    <t:test id="createaccountrequest" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.name}</name>
+                <password>${account.password}</password>
+                <!-- 
+                <a n="zimbraNotes">test of adding via SOAP</a>
+                <a n="zimbraPrefSaveToSent">FALSE</a>    
+                <a n="zimbraMailHost">${LOCALHOST}</a>
+                <a n="zimbraMailStatus">enabled</a>
+                <a n="zimbraPasswordMinAge">7</a>
+                Commenting out the optional attributes and sending the request with minimal requirement  -->
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:test_case testcaseid="GetMailboxRequest1" type="bhr">
+    <t:objective> GetMailboxRequest with valid account id. </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxRequest2" type="functional">
+    <t:objective> GetMailboxRequest with leading space in account id </t:objective>
+   
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="       ${account.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxRequest3" type="functional">
+    <t:objective> GetMailboxRequest with trailing space in account id </t:objective>
+   
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account.id}       "/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox"/>
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+
+<t:test_case testcaseid="GetMailboxRequest4" type="functional">
+    <t:objective> GetMailboxRequest with blank account id </t:objective>
+   
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${mailbox.blank}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxRequest5" type="functional">
+    <t:objective> GetMailboxRequest with sometext at account id </t:objective>
+   
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${mailbox.sometext}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxRequest6" type="functional">
+    <t:objective> GetMailboxRequest with special character at account id </t:objective>
+   
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${mailbox.spchar}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxRequest7" type="functional" bugids="2051">
+    <t:objective> GetMailboxRequest with deleted account-id </t:objective>
+    <t:steps>1. Delete the existing account.
+        2. Get Mailbox of existing account. 
+    </t:steps>
+    
+    <t:test id="getmailboxrequest7a">
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="getmailboxrequest7b" depends="getmailboxrequest7a">
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetMailboxRequest8" type="functional">
+    <t:objective> GetMailboxRequest with no id attribute</t:objective>
+   
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+<!-- A testcase 'Get the deleted mailbox' can be added here once DeleteMailboxRequest works properly. -->
+
+<t:test_case testcaseid="GetMailboxRequest9" type="functional">
+    <t:objective> Get the deleted mailbox </t:objective>
+   
+    <t:steps> 1. Create a test account
+              2. Login to the test account for mailbox to get created
+              3. Login to admin to have admin authtoken
+              4. Delete the mailbox of the created account
+              5. Get the deleted mailbox
+    </t:steps>
+
+    <t:test id="getMailboxRequest9a">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <t:test id="getMailboxRequest9b">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+    <t:test id="getMailboxRequest9c" depends="getMailboxRequest9b">
+        <t:request>
+            <DeleteMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account2.id}"/>
+            </DeleteMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteMailboxResponse"/>
+        </t:response>
+    </t:test>    
+
+    <t:test depends="getMailboxRequest9c">
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account2.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllMailboxRequest01" type="bhr">
+    <t:objective> Verify GetAllMailboxesRequest works </t:objective>
+   
+    <t:test>
+        <t:request>
+            <GetAllMailboxesRequest xmlns="urn:zimbraAdmin" limit="5" />
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllMailboxesResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+

@@ -1,0 +1,665 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain3.name" value="domain.${TIME}.${COUNTER}.${defaultdomain.name}"/>
+<t:property name="domain3.new.name" value="new.${domain3.name}"/>
+<t:property name="account3a.name" value="acct.${TIME}.${COUNTER}"/>
+<t:property name="account3b.name" value="acct.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3a.folder1.name" value="folder.${TIME}.${COUNTER}"/>
+
+<t:property name="appointment.subject" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content${TIME}.${COUNTER}"/>
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+<t:property name="timezone.pst.regex" value="\\(GMT-08\\.00\\) Pacific Time \\(US \\&amp; Canada\\) \\/ Tijuana"/>
+<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+<t:property name="time.20180101120000.pst" value="${TIME[${time.20180101120000.gmt}]}"/>
+
+<t:property name="account3a.wiki1.pagename" value="wiki.${TIME}.${COUNTER}"/>
+<t:property name="account3a.document1.filename" value="${testMailRaw.root}/wiki01/basic.html"/>
+<t:property name="account3a.document1.name" value="doc${TIME}${COUNTER}"/>
+
+<t:property name="uploadFile.name2" value="${testMailRaw.root}/email01/msg01.txt"/>
+<t:property name="uploadFile.subject2" value="email01A"/>
+<t:property name="uploadFile.fragment2" value="simple text string in the body"/>
+<t:property name="uploadFile.content2" value="simple text string in the body.*"/>
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="rights.manager"		value="rwidx"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+    
+	<t:test id="ping" required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="DomainRename_01" type="bhr" bugids="35180" areas="noncluster">
+	<t:objective>Basic rename domain check </t:objective>
+    <t:steps>
+		1. Create a domain.
+		2. rename domain
+	</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="domain1.name" value="domain.${TIME}.${COUNTER}.${defaultdomain.name}"/>
+	<t:property name="domain1.new.name" value="new.${domain1.name}"/>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+                <a n="zimbraNotes">test of adding via SOAP</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
+        </t:response>        
+    </t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov -l rd ${domain1.name} ${domain1.new.name}\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+	<t:staftask >
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+        </t:request>
+    </t:staftask>
+
+    <t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain1.id}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetDomainResponse">
+	        	<t:select path="//admin:domain" attr="id"  match="^${domain1.id}$"/>
+	        	<t:select path="//admin:domain" attr="name"  match="^${domain1.new.name}$"/>
+	        </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DomainRename_02" type="bhr" areas="noncluster">
+	<t:objective>Rename domain with accounts provisioned in it </t:objective>
+    <t:steps>
+		1. Create a domain.
+		2. Add account to the domain.
+		3. rename domain
+		4. Verify account cannot login with old domain. 
+		5. Verify account can login with new domain
+	</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="domain2.name" value="domain.${TIME}.${COUNTER}.${defaultdomain.name}"/>
+	<t:property name="domain2.new.name" value="new.${domain2.name}"/>
+
+	<t:property name="account2.name" value="account2@${domain2.name}"/>
+	<t:property name="account2.new.name" value="account2@${domain2.new.name}"/>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain2.name}</name>
+                <a n="zimbraNotes">test of adding via SOAP</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain2.id"/>
+        </t:response>        
+    </t:test>
+
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>                
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov -l rd ${domain2.name} ${domain2.new.name}\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+        </t:request>
+    </t:staftask>
+   
+    <t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc domain\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${account2.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc domain\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+    	
+	<t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain2.id}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetDomainResponse">
+	        	<t:select path="//admin:domain" attr="id"  match="^${domain2.id}$"/>
+	        	<t:select path="//admin:domain" attr="name"  match="^${domain2.new.name}$"/>
+	        </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+	
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="account.AUTH_FAILED"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.new.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DomainRename_03" type="bhr" bugids="37832" areas="noncluster">
+	<t:objective> Create test senerio before renaming domain and test rename domain works </t:objective>
+
+    <t:steps>
+		1. Auth as account3a
+		2. Create appointment and share it with account3b
+		3. Create a wiki page and shared it with account3b
+		4. Upload a document and share it with account3b
+		5. Create a mail folder and share it with account3b
+		6. Accept calendar share
+		7. Accept wiki share
+		8. Accept document share
+		9. Accept mail folder share
+		10. rename domain
+		11. Verify newdomain name got reflected
+	</t:steps>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain3.name}</name>
+                <a n="zimbraNotes">test of adding via SOAP</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
+        </t:response>        
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3a.name}@${domain3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3a.server"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="account01.name"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3a.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3b.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3b.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account3a.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account01.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account3a.briefcase.id"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account3a.inbox.id"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account3a.calendar.id"/>
+			<!--  t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.notebook}']" attr="id" set="account3a.notebook.id"/-->
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account3a.name}"/>
+							<recur>
+								<add>
+									<rule freq="WEE">
+										<interval ival="1"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account3a.calendar.id}">
+					<grant gt="${grant.usr}" d="${account3b.name}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<!--  t:test >
+        <t:request>
+			<SaveWikiRequest xmlns="urn:zimbraMail">
+			  <w name="${account3a.wiki1.pagename}" l="${account3a.notebook.id}">
+			  Now is the time for all good men to come to the aid of their country.
+			  </w>
+			</SaveWikiRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveWikiResponse/mail:w" attr="ver" match="^1$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account3a.notebook.id}">
+					<grant gt="${grant.usr}" d="${account3b.name}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test-->
+
+<t:property name="uploadServletServer" value="${account3a.server}"/>
+<t:property name="server.restServlet" value="${account3a.server}"/>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account3a.document1.filename}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account3a.document1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account3a.briefcase.id}" name="${account3a.document1.name}">
+			    <upload id="${account3a.document1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse">
+            	<t:select path="//mail:doc" attr="id" set="account3a.document1.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account3a.briefcase.id}">
+					<grant gt="${grant.usr}" d="${account3b.name}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account3a.folder1.name}" l="${account3a.inbox.id}" f="i"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account3a.folder1.id"/>
+        </t:response>
+    </t:test >
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name2}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account3a.message1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account3a.folder1.id}" aid="${account3a.message1.aid}"/>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account3a.message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account3a.folder1.id}">
+					<grant gt="${grant.usr}" d="${account3b.name}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${account3b.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3b.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account3b.briefcase.id"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account3b.inbox.id"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account3b.calendar.id"/>
+			<!-- t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.notebook}']" attr="id" set="account3b.notebook.id"/-->
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account3b.calendar.id}" name="Calendar.${TIME}.${COUNTER}" view="appointment" rid="${account3a.calendar.id}" zid="${account3a.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="delegated.calendar.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account01.name}"/>
+        </t:response>
+    </t:test>
+
+    <!--  t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account3b.notebook.id}" name="Notebook.${TIME}.${COUNTER}" view="wiki" rid="${account3a.notebook.id}" zid="${account3a.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="delegated.notebook.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account01.name}"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="delegated.notebook.name"/>
+        </t:response>
+    </t:test-->
+
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account3b.briefcase.id}" name="Document.${TIME}.${COUNTER}" view="document" rid="${account3a.briefcase.id}" zid="${account3a.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="delegated.briefcase.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account01.name}"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account3b.inbox.id}" name="Folder.${TIME}.${COUNTER}" view="mail" rid="${account3a.folder1.id}" zid="${account3a.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="delegated.folder1.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="owner" match="${account01.name}"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="delegated.folder1.name"/>
+        </t:response>
+    </t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov -l rd ${domain3.name} ${domain3.new.name}\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+		
+	<t:staftask >
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+        </t:request>
+    </t:staftask>
+
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc domain\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${account3b.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc domain\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+ 	<t:property name="account3a.newName" value="${account3a.name}@${domain3.new.name}"/>
+ 	<t:property name="server.zimbraAccount" value="${account3b.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3b.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+
+    <t:test>
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" 
+            	l="${delegated.calendar.id}"
+            	s="${TIME(-1d)[${time.20180101120000.gmt}]}" 
+            	e="${TIME(+1d)(+1h)[${time.20180101120000.gmt}]}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt" attr="name" set="${appointment.subject}"/>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt/mail:or" attr="url" match="${account3a.name}"/>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt/mail:or" attr="a" match="${account3a.name}"/>
+        </t:response>
+    </t:test>
+
+    <!--  t:test>
+        <t:request>
+			<GetItemRequest xmlns="urn:zimbraMail">
+				<item path="${globals.notebook}/${delegated.notebook.name}"/>
+			</GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetItemResponse">
+            <t:select path="//mail:GetItemResponse/mail:link" attr="owner" match="${account3a.newName}"/>
+            <t:select path="//mail:GetItemResponse/mail:link" attr="name" match="${delegated.notebook.name}"/>
+           </t:select>
+        </t:response>
+    </t:test-->
+
+<!-- Add verification for briefcase --> 
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:"${globals.inbox}/${delegated.folder1.name}"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="su" match="${uploadFile.subject2}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>
+

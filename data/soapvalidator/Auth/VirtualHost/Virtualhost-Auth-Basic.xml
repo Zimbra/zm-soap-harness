@@ -1,0 +1,291 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="domain.${TIME}.${COUNTER}.com"/>
+<t:property name="domain1.virtual.name" value="virtual.${domain1.name}"/>
+<t:property name="domain2.name" value="domain.${TIME}.${COUNTER}.com"/>
+<t:property name="domain2.virtual.name" value="virtual.${domain2.name}"/>
+
+<t:property name="domain3.name" value="domain.${TIME}.${COUNTER}.com"/>
+<t:property name="domain3.virtual.name" value="virtual.${domain3.name}"/>
+<t:property name="domain4.name" value="domain.${TIME}.${COUNTER}.com"/>
+
+<t:property name="password1.value" value="${defaultpassword.value}1"/>
+<t:property name="password2.value" value="${defaultpassword.value}2"/>
+
+<t:property name="account1.user" value="user.${TIME}.${COUNTER}"/>
+<t:property name="account1.name" value="${account1.user}@${domain1.name}"/>
+<t:property name="account1.password" value="${password1.value}"/>
+<t:property name="account1.server" value="NOT_DEFINED"/>
+
+<t:property name="account2.user" value="user.${TIME}.${COUNTER}"/>
+<t:property name="account2.name" value="${account2.user}@${domain1.name}"/>
+<t:property name="account2.password" value="${password2.value}"/>
+<t:property name="account2.server" value="NOT_DEFINED"/>
+
+<!-- Account3 has the same name and password as Account2, but different domains -->
+<t:property name="account3.user" value="${account2.user}"/>
+<t:property name="account3.name" value="${account3.user}@${domain2.name}"/>
+<t:property name="account3.password" value="${password1.value}"/>
+<t:property name="account3.server" value="NOT_DEFINED"/>
+
+
+<t:test_case testcaseid="VirtualHost_AuthBasic_Setup" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+	<t:test required="true" >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAdmin">
+	    <name>${admin.user}</name>
+	    <password>${admin.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+	    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+                <a n="zimbraVirtualHostname">${domain1.virtual.name}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true" >
+	 <t:request>
+	  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	    <name>${account1.name}</name>
+	    <password>${account1.password}</password>
+	  </CreateAccountRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+        <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	 </t:response>
+	</t:test>
+
+	<t:test required="true" >
+	 <t:request>
+	  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	    <name>${account2.name}</name>
+	    <password>${account2.password}</password>
+	  </CreateAccountRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+        <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	 </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain2.name}</name>
+                <a n="zimbraVirtualHostname">${domain2.virtual.name}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain2.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true" >
+	 <t:request>
+	  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	    <name>${account3.name}</name>
+	    <password>${account3.password}</password>
+	  </CreateAccountRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+        <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="VirtualHost_AuthBasic_01" type="smoke">
+ <t:objective>login as the test account using the full email address</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account1.name}</account>
+	    <password>${account1.password}</password>
+	    <virtualHost>${domain1.virtual.name}</virtualHost>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="VirtualHost_AuthBasic_02" type="bhr">
+ <t:objective>login as the test account using only the name part of the email address</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account1.user}</account>
+	    <password>${account1.password}</password>
+	    <virtualHost>${domain1.virtual.name}</virtualHost>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="VirtualHost_AuthBasic_03" type="deprecated" bugids="8709">
+ <t:objective>Login with only the name (not full email address), where the account name exists in multiple virtual hosts</t:objective>
+ <t:steps>
+ 1. Create account1@domain1.com (virtual domain = v.domain1.com) with password abc123
+ 2. Create account1@domain2.com (virtual domain = v.domain2.com) with password test123
+ 3. Auth with account1/test123 on virtual domain v.domain2.com - success
+ 3. Auth with account1/test123 on virtual domain v.domain1.com - failure
+ 3. Auth with account1@domain2.com/test123 on virtual domain v.domain2.com - success
+ 3. Auth with account1@domain2.com/test123 on virtual domain v.domain1.com - failure
+ </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<!-- use the correct domain, correct password -->
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account3.user}</account>
+	    <password>${account3.password}</password>
+	    <virtualHost>${domain2.virtual.name}</virtualHost>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+	<!-- use the wrong domain, correct password -->
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account3.user}</account>
+	    <password>${account3.password}</password>
+	    <virtualHost>${domain1.virtual.name}</virtualHost>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+	 </t:response>
+	</t:test>
+
+	<!-- use the correct domain, correct password -->
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account3.name}</account>
+	    <password>${account3.password}</password>
+	    <virtualHost>${domain2.virtual.name}</virtualHost>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+	<!-- use the wrong domain, correct password -->
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account3.name}</account>
+	    <password>${account3.password}</password>
+	    <virtualHost>${domain1.virtual.name}</virtualHost>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:finally>
+
+    <!-- Remove virtual host from all domains because if it could not resolved then nginx proxy failed to restart -->
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+   	<t:test >
+        <t:request>
+            <ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain1.id}</id>
+				<a n="zimbraVirtualHostname"></a>
+            </ModifyDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+        </t:response>
+    </t:test>    
+        
+   	<t:test >
+        <t:request>
+            <ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain2.id}</id>
+				<a n="zimbraVirtualHostname"></a>
+            </ModifyDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+        </t:response>
+    </t:test>    
+
+</t:finally>
+
+
+
+</t:tests>

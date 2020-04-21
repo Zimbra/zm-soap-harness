@@ -1,0 +1,322 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="DisplayFrom1.name" value="newdisplayname1${TIME}.${COUNTER}"/>
+
+<t:property name="Identity1.name" value="identity1${TIME}.${COUNTER}"/>
+<t:property name="Identity2.name" value="identity2${TIME}.${COUNTER}"/>
+
+<t:property name="sometext" value="ab cd" />
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+   <t:objective>basic system check</t:objective>
+   
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin" />
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse" />
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="get_identity_acctsetup01" type="always">
+    <t:objective>login as admin and create a test account.</t:objective>
+	<t:steps> 1. Login as an admin
+              2. create a test account
+    </t:steps>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="get_identity01" type="bhr">
+	<t:objective> GetIdentitiesRequest for default identity.</t:objective>
+
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+		<t:test>
+			<t:request>
+				<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				</GetIdentitiesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetIdentitiesResponse/acct:identity" attr="name" match="DEFAULT"/>
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+
+<t:test_case testcaseid="get_identity_acctsetup02" type="always" >
+    <t:objective>Create new identity.</t:objective>
+	<t:steps>
+		1. login into the account.
+		2. Add a new identity.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<CreateIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${Identity1.name}">
+					<a name="zimbraPrefIdentityName">${Identity1.name}</a>
+					<a name="zimbraPrefFromDisplay">${DisplayFrom1.name}</a>
+					<a name="zimbraPrefFromAddress">${account1.name}</a>
+				</identity>
+			</CreateIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="identity1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="get_identity02" type="bhr">
+	<t:objective> GetIdentitiesRequest with valid value of "id" </t:objective>
+		<t:test>
+			<t:request>
+				<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+					<identity by="id">${identity1.id}</identity>
+				</GetIdentitiesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetIdentitiesResponse/acct:identity[@id='${identity1.id}']" attr="name" match="${Identity1.name}"/>
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+<t:test_case testcaseid="get_identity03" type="bhr">
+	<t:objective> GetIdentitiesRequest with valid value of "name" </t:objective>
+		<t:test>
+			<t:request>
+				<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+					<identity by="name">${Identity1.name}</identity>
+				</GetIdentitiesRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:GetIdentitiesResponse/acct:identity[@name='${Identity1.name}']" attr="id" match="${identity1.id}"/>
+			</t:response>
+		</t:test>
+		
+</t:test_case>
+
+
+<t:test_case testcaseid="get_identity04" type="functional">
+	<t:objective> GetIdentitiesRequest by id/name and with leading spaces in id/name  </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="         id">${identity1.id}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse" />
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="          name">${Identity1.name}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse" />
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="get_identity05" type="functional">
+	<t:objective> GetIdentitiesRequest by id/name and with trailing spaces in id/name  </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="id            ">${identity1.id}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse" />
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="name              ">${Identity1.name}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse" />
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="get_identity06" type="functional">
+	<t:objective> GetIdentitiesRequest by id/name and with both leading and trailing spaces in id/name  </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="           id            ">${identity1.id}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse" />
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="         name              ">${Identity1.name}</identity>
+			</GetIdentitiesRequest>
+	    </t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse" />
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="get_identity07" type="functional">
+	<t:objective> GetIdentitiesRequest with value of atrribute "by" as sometext (i.e invalid) </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="${sometext}">${Identity1.name}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetIdentitiesResponse" />
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="get_identity08" type="functional">
+	<t:objective> GetIdentitiesRequest by name of deleted Identity </t:objective>
+	<t:steps> 1. create an identity.
+              2. delete it.
+              3. get account by id of deleted identity.
+    </t:steps>
+    <t:test id="getidentityrequest08a">
+        <t:request>
+			<CreateIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${Identity2.name}">
+					<a name="zimbraPrefIdentityName">${Identity2.name}</a>
+					<a name="zimbraPrefFromDisplay">${DisplayFrom1.name}</a>
+					<a name="zimbraPrefFromAddress">${account1.name}</a>
+				</identity>
+			</CreateIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="identity2.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="getidentityrequest08b" depends="getidentityrequest08a">
+        <t:request>
+			<DeleteIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${Identity2.name}"/>
+			</DeleteIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:DeleteIdentityResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="getidentityrequest08c" depends="getidentityrequest08b">
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="id">${identity2.id}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+				<t:select path="//acct:GetIdentitiesResponse/acct:identity[@name='${Identity2.name}']" attr="id" match="${identity2.id}" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+	<t:test id="getidentityrequest08d" depends="getidentityrequest08b">
+		<t:request>
+			<GetIdentitiesRequest xmlns="urn:zimbraAccount">
+				<identity by="name">${Identity2.name}</identity>
+			</GetIdentitiesRequest>
+		</t:request>
+		<t:response>
+				<t:select path="//acct:GetIdentitiesResponse/acct:identity[@name='${Identity2.name}']" attr="id" match="${identity2.id}" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,274 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>    
+<t:property name="account3.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message1.subject" value="subject1.${TIME}.${COUNTER}"/>
+<t:property name="message1.content" value="content1.${TIME}.${COUNTER}"/>
+
+<t:property name="message2.subject" value="subject2.${TIME}.${COUNTER}"/>
+<t:property name="message2.content" value="content2.${TIME}.${COUNTER}"/>
+
+<t:property name="message3.subject" value="subject3.${TIME}.${COUNTER}"/>
+<t:property name="message3.content" value="content3.${TIME}.${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<!-- authentication -->
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_SaveToSent" type="always">
+    <t:objective>Prepare the account for testing</t:objective>
+    <t:steps>1. Login to admin.
+             2. Create test accounts.
+             3. Login to test account
+             4. Set Save to sent
+             5. Get the list of folders
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+        </t:response>
+    </t:test>
+    
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefSaveToSent">${globals.true}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>            
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SaveToSentBasic01" type="bhr">
+    <t:objective>Verify that save to sent setting saves the sent mails in sent folder </t:objective>
+    <t:steps>        
+        1. Send mail from Account1 to Account2 and Account3.
+        2. Verify that same mail is saved at the sent folder
+    </t:steps>    
+    
+    <t:test id="SaveToSentBasic01a">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account2.name}'/>
+                    <e t="t" a='${account3.name}'/>
+                    <su>${message1.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${message1.content}</content>
+                   </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="mail1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="SaveToSentBasic01a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>in:${globals.sent}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${mail1.id}']" attr="l" match="${folder.sent}">
+            <t:select path="mail:su" match="${message1.subject}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="SaveToSentBasic02" type="sanity">
+    <t:objective>Verify that mail sent to self is also saved in the sent folder </t:objective>
+    <t:steps>
+        1. Send mail from Account1 to self
+        2. Verify that same mail is saved at the sent folder
+    </t:steps>
+
+    <t:test id="SaveToSentBasic02a">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account1.name}'/>                    
+                    <su>${message2.subject}</su>
+                    <mp ct="text/plain">
+                        <content>${message2.content}</content>
+                   </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="mail2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="SaveToSentBasic02a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>in:${globals.sent}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${mail2.id}']" attr="l" match="${folder.sent}">
+                <t:select path="mail:su" match="${message2.subject}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>    
+
+    
+<t:test_case testcaseid="SaveToSentBasic03" type="bhr">
+    <t:objective>Verify that if save to sent setting is turned off then the mails are not stored in sent folder </t:objective>
+    <t:steps>        
+        1. Turn off SaveToSent settings
+        2. Send mail from Account1 to Account2.
+        3. Verify mail is not saved in the sent folder
+    </t:steps>
+    
+    <t:test id="SaveToSentBasic03a">
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefSaveToSent">${globals.false}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="SaveToSentBasic03b">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account2.name}'/>
+                    <su> ${message3.subject} </su>
+                   <mp ct="text/plain">
+                   <content>${message3.content}</content>
+                   </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="SaveToSentBasic03a,SaveToSentBasic03b">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>in:${globals.sent}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message3.subject}" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="SaveToSentBasic03a,SaveToSentBasic03b">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>is:(anywhere)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>            
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${message3.subject}" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case> 
+
+</t:tests>

@@ -1,0 +1,565 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="tz" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+<t:property name="now.standard"	value="1169208000000"/>		<!-- Jan 19, 2007 12:00:00 (GMT) -->
+<t:property name="now.savings"	value="1188043200000"/>		<!-- Aug 25, 2007 12:00:00 (GMT) -->
+
+<t:property name="now.standard.pst"	value="${TIME(-8h)[${now.standard}]}"/>		<!-- Jan 19, 2007 4:00:00 -->
+<t:property name="now.savings.pst"	value="${TIME(-7h)[${now.savings}]}"/>		<!-- Aug 25, 2007 5:00:00 -->
+
+
+
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create a test account</t:objective>
+    <steps> 
+        1. Login to admin account
+        2. Create test accounts
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test> 
+
+    <t:test id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test> 
+
+    <t:test id="create_test_account3" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test> 
+
+    <t:test id="create_test_account4" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test> 
+
+    <t:test id="create_test_account5" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetFreeBusy_Organizer_01" type="smoke">
+    <t:objective>Send appointments (standard time) with F, B, T, O status.  Verify Free/Busy status.</t:objective>
+    <steps> 
+        1. Login as Account1
+        2. Create 5 appointments with "unspecified", F, B, T, O status
+        3. Login as Account2
+        4. Get Free/Busy status of Account1     
+    </steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event"  transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+1h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+2h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment1.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="F" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+3h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+4h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment2.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+5h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+6h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment3.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="T" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+7h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+8h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment4.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="O" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+9h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+10h)[${now.standard.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment5.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <!--
+    Account1:
+    	Free:		${TIME(+0h)[${now}]} TO ${TIME(+1h)[${now}]}
+    	Busy:		${TIME(+1h)[${now}]} TO ${TIME(+2h)[${now}]}
+    	Free:		${TIME(+2h)[${now}]} TO ${TIME(+3h)[${now}]}
+    	Free:		${TIME(+3h)[${now}]} TO ${TIME(+4h)[${now}]}
+    	Free:		${TIME(+4h)[${now}]} TO ${TIME(+5h)[${now}]}
+    	Busy:		${TIME(+5h)[${now}]} TO ${TIME(+6h)[${now}]}
+    	Free:		${TIME(+6h)[${now}]} TO ${TIME(+7h)[${now}]}
+    	Tentative:	${TIME(+7h)[${now}]} TO ${TIME(+8h)[${now}]}
+    	Free:		${TIME(+8h)[${now}]} TO ${TIME(+9h)[${now}]}
+    	Unavailable:${TIME(+9h)[${now}]} TO ${TIME(+10h)[${now}]}
+    	Free:		${TIME(+10h)[${now}]} TO ${TIME(+11h)[${now}]}
+    -->
+	<t:property name="free1.start"		value="${now.standard}"/>
+	<t:property name="free1.finish"		value="${TIME(+1h)[${now.standard}]}"/>
+	<t:property name="busy1.start"		value="${TIME(+1h)[${now.standard}]}"/>
+	<t:property name="busy1.finish"		value="${TIME(+2h)[${now.standard}]}"/>
+	<t:property name="free2.start"		value="${TIME(+2h)[${now.standard}]}"/>
+	<t:property name="free2.finish"		value="${TIME(+5h)[${now.standard}]}"/>
+	<t:property name="busy2.start"		value="${TIME(+5h)[${now.standard}]}"/>
+	<t:property name="busy2.finish"		value="${TIME(+6h)[${now.standard}]}"/>
+	<t:property name="free3.start"		value="${TIME(+6h)[${now.standard}]}"/>
+	<t:property name="free3.finish"		value="${TIME(+7h)[${now.standard}]}"/>
+	<t:property name="tentative1.start"	value="${TIME(+7h)[${now.standard}]}"/>
+	<t:property name="tentative1.finish"		value="${TIME(+8h)[${now.standard}]}"/>
+	<t:property name="free4.start"		value="${TIME(+8h)[${now.standard}]}"/>
+	<t:property name="free4.finish"		value="${TIME(+9h)[${now.standard}]}"/>
+	<t:property name="unavail1.start"	value="${TIME(+9h)[${now.standard}]}"/>
+	<t:property name="unavail1.finish"	value="${TIME(+10h)[${now.standard}]}"/>
+	<t:property name="free5.start"		value="${TIME(+10h)[${now.standard}]}"/>
+	<t:property name="free5.finish"		value="${TIME(+11h)[${now.standard}]}"/>
+
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now.standard}" e="${TIME(+11h)[${now.standard}])}" uid="${account1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse">
+				<t:select path="//mail:f[@s='${free1.start}']" attr="e" match="${free1.finish}"/>
+				<t:select path="//mail:b[@s='${busy1.start}']" attr="e" match="${busy1.finish}"/>
+				<t:select path="//mail:f[@s='${free2.start}']" attr="e" match="${free2.finish}"/>
+				<t:select path="//mail:b[@s='${busy2.start}']" attr="e" match="${busy2.finish}"/>
+				<t:select path="//mail:f[@s='${free3.start}']" attr="e" match="${free3.finish}"/>
+				<t:select path="//mail:t[@s='${tentative1.start}']" attr="e" match="${tentative1.finish}"/>
+				<t:select path="//mail:f[@s='${free4.start}']" attr="e" match="${free4.finish}"/>
+				<t:select path="//mail:u[@s='${unavail1.start}']" attr="e" match="${unavail1.finish}"/>
+				<t:select path="//mail:f[@s='${free5.start}']" attr="e" match="${free5.finish}"/>
+            </t:select>     
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetFreeBusy_Organizer_02" type="bhr">
+    <t:objective>Send appointments (savings time) with F, B, T, O status.  Verify Free/Busy status.</t:objective>
+    <steps> 
+        1. Login as Account1
+        2. Create 5 appointments with "unspecified", F, B, T, O status
+        3. Login as Account2
+        4. Get Free/Busy status of Account1     
+    </steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event"  transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+1h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+2h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment1.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="F" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+3h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+4h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment2.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+5h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+6h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment3.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="T" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+7h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+8h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment4.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.content" value="content.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location.${TIME}.${COUNTER}"/>
+	<t:property name="appointment.subject" value="subject.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="O" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${ICALTIME(+9h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <e d="${ICALTIME(+10h)[${now.savings.pst}]}" tz="${tz}"/>
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment5.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <!--
+    Account1:
+    	Free:		${TIME(+0h)[${now}]} TO ${TIME(+1h)[${now}]}
+    	Busy:		${TIME(+1h)[${now}]} TO ${TIME(+2h)[${now}]}
+    	Free:		${TIME(+2h)[${now}]} TO ${TIME(+3h)[${now}]}
+    	Free:		${TIME(+3h)[${now}]} TO ${TIME(+4h)[${now}]}
+    	Free:		${TIME(+4h)[${now}]} TO ${TIME(+5h)[${now}]}
+    	Busy:		${TIME(+5h)[${now}]} TO ${TIME(+6h)[${now}]}
+    	Free:		${TIME(+6h)[${now}]} TO ${TIME(+7h)[${now}]}
+    	Tentative:	${TIME(+7h)[${now}]} TO ${TIME(+8h)[${now}]}
+    	Free:		${TIME(+8h)[${now}]} TO ${TIME(+9h)[${now}]}
+    	Unavailable:${TIME(+9h)[${now}]} TO ${TIME(+10h)[${now}]}
+    	Free:		${TIME(+10h)[${now}]} TO ${TIME(+11h)[${now}]}
+    -->
+	<t:property name="free1.start"		value="${now.savings}"/>
+	<t:property name="free1.finish"		value="${TIME(+1h)[${now.savings}]}"/>
+	<t:property name="busy1.start"		value="${TIME(+1h)[${now.savings}]}"/>
+	<t:property name="busy1.finish"		value="${TIME(+2h)[${now.savings}]}"/>
+	<t:property name="free2.start"		value="${TIME(+2h)[${now.savings}]}"/>
+	<t:property name="free2.finish"		value="${TIME(+5h)[${now.savings}]}"/>
+	<t:property name="busy2.start"		value="${TIME(+5h)[${now.savings}]}"/>
+	<t:property name="busy2.finish"		value="${TIME(+6h)[${now.savings}]}"/>
+	<t:property name="free3.start"		value="${TIME(+6h)[${now.savings}]}"/>
+	<t:property name="free3.finish"		value="${TIME(+7h)[${now.savings}]}"/>
+	<t:property name="tentative1.start"	value="${TIME(+7h)[${now.savings}]}"/>
+	<t:property name="tentative1.finish"		value="${TIME(+8h)[${now.savings}]}"/>
+	<t:property name="free4.start"		value="${TIME(+8h)[${now.savings}]}"/>
+	<t:property name="free4.finish"		value="${TIME(+9h)[${now.savings}]}"/>
+	<t:property name="unavail1.start"	value="${TIME(+9h)[${now.savings}]}"/>
+	<t:property name="unavail1.finish"	value="${TIME(+10h)[${now.savings}]}"/>
+	<t:property name="free5.start"		value="${TIME(+10h)[${now.savings}]}"/>
+	<t:property name="free5.finish"		value="${TIME(+11h)[${now.savings}]}"/>
+
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now.savings}" e="${TIME(+11h)[${now.savings}])}" uid="${account1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse">
+				<t:select path="//mail:f[@s='${free1.start}']" attr="e" match="${free1.finish}"/>
+				<t:select path="//mail:b[@s='${busy1.start}']" attr="e" match="${busy1.finish}"/>
+				<t:select path="//mail:f[@s='${free2.start}']" attr="e" match="${free2.finish}"/>
+				<t:select path="//mail:b[@s='${busy2.start}']" attr="e" match="${busy2.finish}"/>
+				<t:select path="//mail:f[@s='${free3.start}']" attr="e" match="${free3.finish}"/>
+				<t:select path="//mail:t[@s='${tentative1.start}']" attr="e" match="${tentative1.finish}"/>
+				<t:select path="//mail:f[@s='${free4.start}']" attr="e" match="${free4.finish}"/>
+				<t:select path="//mail:u[@s='${unavail1.start}']" attr="e" match="${unavail1.finish}"/>
+				<t:select path="//mail:f[@s='${free5.start}']" attr="e" match="${free5.finish}"/>
+            </t:select>     
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

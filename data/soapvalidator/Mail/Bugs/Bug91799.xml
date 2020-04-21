@@ -1,0 +1,147 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:property name="compose.content" value="content${TIME}.${COUNTER}"/>
+<t:property name="compose.subject" value="subject${TIME}.${COUNTER}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="MessageSend_AccSetup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <!-- For informational purposes, log the value for zimbraMtaMaxMessageSize -->
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraMtaMaxMessageSize"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug91799" type="bhr" bugids="91799">
+		<t:objective>provide conversation unread count in SearchResponse</t:objective>
+		<t:steps>
+			1. create account 
+			2. inject mime attached
+			3. login to account1 
+			4. verify conversation unread count in SearchResponse.
+		</t:steps>
+
+		<t:property name="msg01.file" value="${testMailRaw.root}/bug91799/mime.txt" />
+		<t:property name="msg01.subject" value="test" />
+		<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+		
+		<t:mailinjecttest>
+		<t:lmtpInjectRequest>
+			<filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>foo@foo.com</from>
+			<server>${test_acct1.server}</server>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+
+	   <t:test>
+	 	<t:request>
+	   		<SearchRequest xmlns="urn:zimbraMail">
+	   			<query>in:Inbox</query>
+	   		</SearchRequest>
+ 		</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="f" match="u"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="u" match="1"/>
+	 	</t:response>
+	</t:test>
+
+   
+    
+</t:test_case>
+</t:tests>
+
+
+

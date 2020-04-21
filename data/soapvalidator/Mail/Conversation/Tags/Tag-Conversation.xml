@@ -1,0 +1,795 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="compose.content" value="Content in the message is contents..."/>
+
+<t:property name="op.tag" value="tag"/>
+<t:property name="op.untag" value="!tag"/>
+<t:property name="op.delete" value="delete"/>
+
+<t:property name="tag.color.orange" value="9"/>
+<t:property name="tag.color.default" value="0"/>
+
+<t:property name="tag.name.default" value="tag${TIME}${COUNTER}"/>
+
+<t:property name="tag3.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag5.name" value="tag${TIME}${COUNTER}"/>
+
+<t:property name="tag.spchar" value="//\\'^%"/>
+<t:property name="tag.space" value="           "/>
+<t:property name="tag.blank" value=""/>
+<t:property name="tag.sometext" value="some text"/>
+<t:property name="tag.negative" value="-50"/>
+<t:property name="tag.invalid" value="0099"/>
+<t:property name="tag.decimal" value="10.10"/>
+
+<t:property name="message.subject1" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="message.content1" value="content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+	        <PingRequest xmlns="urn:zimbraAdmin"/>
+	    </t:request>
+	    <t:response>
+	        <t:select path="//admin:PingResponse"/>
+	    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_tag_conversation" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAdmin">
+	            <name>${admin.user}</name>
+	            <password>${admin.password}</password>
+	        </AuthRequest>
+        </t:request>
+	    <t:response>
+	        <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+	        <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+               <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+	    </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+	     <AuthRequest xmlns="urn:zimbraAccount">
+	         <account by="name">${test_account1.name}</account>
+	         <password>${test_account1.password}</password>
+	     </AuthRequest>
+	 </t:request>
+	 <t:response>
+	     <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	     <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="conv_TagActionRequest1" type="smoke" bugids="3433, 6473">
+    <t:objective>search for a tagged conversation (ConvActionRequest - tag)</t:objective>
+    <t:steps> 
+        1. Add 2 emails (same conversation).
+        2. Create a new tag;
+        3. Tag the conversation (ConvActionRequest)
+        4. Search for the tag
+        5. Verify that the correct email was returned
+    </t:steps>
+
+    <t:test>
+        <t:request>
+	     <SendMsgRequest xmlns="urn:zimbraMail">
+	         <m xmlns="">
+		      <e t="t" a="${test_account1.name}"/>
+		      <su>email01A</su>
+		      <mp ct="text/plain">
+			    <content> ${compose.content} </content>
+			</mp>
+	         </m>
+            </SendMsgRequest>
+        </t:request>
+	    <t:response>
+	        <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+	    </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+	     <SendMsgRequest xmlns="urn:zimbraMail">
+	         <m orig="${message1.id}" rt="w">
+		      <e t="t" a="${test_account1.name}"/>
+		      <su>Fwd: email01A</su>
+		      <mp ct="text/plain">
+		          <content> ${compose.content} </content>
+		      </mp>
+	         </m>
+	     </SendMsgRequest>
+        </t:request>
+	    <t:response>
+	        <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
+	    </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:(email01A)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+	        <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag.name.default}" color="${tag.color.default}"/>
+	        </CreateTagRequest>
+	    </t:request>
+	    <t:response>
+	        <t:select path="//mail:CreateTagResponse/mail:tag">
+	        <t:select attr="id" set="tag.id"/>
+		    <t:select attr="color" match="${tag.color.default}" emptyset="1"/>
+	        </t:select>
+	    </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.id}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="op" match="${op.tag}"/>
+            <t:select path="//mail:ConvActionResponse/mail:action" attr="id" match="${conv.id}"/>
+         </t:response>
+    </t:test>
+ 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>tag:"${tag.name.default}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="conv_TagActionRequest3" type="bhr" bugids="3433, 6473">
+    <t:objective>search for a tagged conversation (ItemActionRequest - tag)</t:objective>
+    <t:steps> 
+            1. Add 2 emails (same conversation). 
+            2. Create a new tag;
+            3. Tag the conversation (ItemActionRequest)
+            4. Search for the tag
+            5. Verify that the correct email was returned
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m xmlns="">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>email03A</su>
+                    <mp ct="text/plain">
+                        <content> ${compose.content} </content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+	    <t:response>
+	        <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+	    </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m orig="${message1.id}" rt="w">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>Fwd: email03A</su>
+                    <mp ct="text/plain">
+                        <content> ${compose.content} </content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+	    <t:response>
+	        <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
+	    </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:(email03A)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+	        <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag3.name}" color="${tag.color.default}"/>
+	        </CreateTagRequest>
+	    </t:request>
+	    <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag.id"/>
+		    <t:select attr="color" match="${tag.color.default}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse/mail:action" attr="op" match="${op.tag}"/>
+            <t:select path="//mail:ItemActionResponse/mail:action" attr="id" match="${conv.id}"/>
+         </t:response>
+    </t:test>
+ 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>tag:"${tag3.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="conv_TagActionRequest5" type="bhr" bugids="6473">
+    <t:objective>search for a tagged conversation</t:objective>
+    <t:steps> 
+            1. Add 2 emails (same conversation). 
+            2. Create a new tag;
+            3. Tag the conversation (MsgActionRequest)
+            4. Search for the tag
+            5. Verify that the correct email was returned
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m xmlns="">
+                    <e t="t" a="${test_account1.name}"/>
+                    <su>email05A</su>
+                    <mp ct="text/plain">
+                        <content> ${compose.content} </content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+	    <t:response>
+	        <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+	    </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+	        <SendMsgRequest xmlns="urn:zimbraMail">
+	            <m orig="${message1.id}" rt="w">
+		            <e t="t" a="${test_account1.name}"/>
+		            <su>Fwd: email05A</su>
+		            <mp ct="text/plain">
+			            <content> ${compose.content} </content>
+		            </mp>
+	            </m>
+	        </SendMsgRequest>
+	    </t:request>
+	    <t:response>
+	        <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
+	    </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+                <query>subject:(email05A)</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+	    <t:request>
+	        <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag5.name}" color="${tag.color.default}"/>
+	        </CreateTagRequest>
+	    </t:request>
+	    <t:response>
+	        <t:select path="//mail:CreateTagResponse/mail:tag">
+	            <t:select attr="id" set="tag.id"/>
+		    <t:select attr="color" match="${tag.color.default}" emptyset="1"/>
+	        </t:select>
+	    </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="${op.tag}" tag="${tag.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.tag}"/>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message1.id}"/>
+         </t:response>
+    </t:test>
+ 
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+                <query>tag:"${tag5.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:c" attr="id" match="${conv.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="conv_TagActionRequest6" type="functional">
+    <t:objective>Test for invalid values in tag id in ConvActionRequest</t:objective>
+
+    <!-- Tag a conversation with leading spaces in tag id-->
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="             ${tag.id}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+ 
+    <!--  Tag a conversation with trailing spaces in tag id -->
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.id}          "/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+ 
+    <!--  Tag a conversation with both leading and trailing spaces in tag id-->
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="         ${tag.id}          "/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+ 
+    <!-- Tag a conversation with special characters in tag id-->
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.spchar}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+ 
+    <!-- Tag a conversation with spaces in tag id-->
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.space}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+ 
+    <!-- Tag a conversation with blank tag id-->
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.blank}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+ 
+    <!-- Tag a conversation with some text in tag id-->
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.sometext}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+ 
+    <!-- Tag a conversation with a decimal number in tag id--> 
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.decimal}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+ 
+    <!-- Tag a conversation with a invalid number in tag id-->  
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.invalid}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
+         </t:response>
+    </t:test>
+  
+    <!-- Tag a conversation with a negative number in tag id-->  
+    <t:test>
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.negative}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
+         </t:response>
+    </t:test>
+  
+    <!-- Tag a conversation with a non existing tag id --> 
+    <t:test id="TagActionRequest6a">
+	    <t:request>
+	        <TagActionRequest xmlns="urn:zimbraMail">
+	            <action op="${op.delete}" id="${tag.id}" name="${tag5.name}" color="0"/>
+	        </TagActionRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:TagActionResponse/mail:action" attr="id" match="${tag.id}"/>
+            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="${op.delete}"/>
+	    </t:response>
+    </t:test>
+
+    <t:test depends="TagActionRequest6a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.id}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
+         </t:response>
+    </t:test>
+
+    <!-- Untag a conversation with a non existing tag id -->
+    <t:test depends="TagActionRequest6a">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.untag}" tag="${tag.id}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
+         </t:response>
+    </t:test>
+
+    <t:test id="CreateTagRequest6a">
+	    <t:request>
+	        <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="tag${TIME}${COUNTER}" color="0"/>
+	        </CreateTagRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:CreateTagResponse/mail:tag">
+		    <t:select attr="id" set="tag.id1"/>
+            <t:select attr="name" set="tag.name1"/>
+		    <t:select attr="color" emptyset="1"/>
+		    </t:select>
+	    </t:response>
+    </t:test>
+
+    <!-- Tag a conversation with multiple tag ids -->
+    <t:test id="CreateTagRequest6b">
+	    <t:request>
+	        <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="tag${TIME}${COUNTER}" color="1"/>
+	        </CreateTagRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:CreateTagResponse/mail:tag">
+		    <t:select attr="id" set="tag.id2"/>
+            <t:select attr="name" set="tag.name2"/>
+		    <t:select attr="color" match="1"/>
+		    </t:select>
+	    </t:response>
+    </t:test>
+
+    <t:test depends="CreateTagRequest6a,CreateTagRequest6b">
+        <t:request>
+            <ConvActionRequest xmlns="urn:zimbraMail">
+                <action id="${conv.id}" op="${op.tag}" tag="${tag.id1},${tag.id2}"/>
+            </ConvActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="conv_TagActionRequest7" type="functional">
+    <t:objective>Test for invalid values in tag id in ItemActionRequest</t:objective>
+    
+    <!--Tag a conversation with a valid tag id with leading spaces using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="        ${tag.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag a conversation with a valid tag id with trailing spaces using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.id}           "/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag a conversation with a valid tag id with both leading and trailing spaces using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="        ${tag.id}         "/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag a conversation with special characters in tag id using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.spchar}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag a conversation with spaces in tag id using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.space}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag a conversation with blank tag id using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.blank}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag a conversation with some text in tag id using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.sometext}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag a conversation with a decimal number in tag id using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.decimal}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+     
+    <!--Tag a conversation with a invalid number in tag id using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.invalid}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag a conversation with a negative number in tag id using ItemActionRequest-->
+    <t:test>
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.negative}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
+        </t:response>
+    </t:test>
+    
+    <!--Tag a conversation with a non existing tag id using ItemActionRequest-->
+    <t:test id="TagActionRequest7">
+        <t:request>
+	     <TagActionRequest xmlns="urn:zimbraMail">
+	         <action op="${op.delete}" id="${tag.id}"/>
+	     </TagActionRequest>
+	 </t:request>
+	 <t:response>
+	     <t:select path="//mail:TagActionResponse/mail:action" attr="id" match="${tag.id}"/>
+            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="${op.delete}"/>
+	 </t:response>
+    </t:test>
+
+    <t:test depends="TagActionRequest7">
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
+         </t:response>
+    </t:test>
+   
+    <!--Untag a conversation with a non existing tag id using ItemActionRequest-->
+    <t:test depends="TagActionRequest7">
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.untag}" tag="${tag.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$"/>
+         </t:response>
+    </t:test>
+
+    <!--Tag a conversation with a multiple tag ids using ItemActionRequest-->
+    <t:test id="CreateTagRequest7a">
+	 <t:request>
+	     <CreateTagRequest xmlns="urn:zimbraMail">
+	         <tag name="tag${TIME}${COUNTER}" color="0"/>
+	     </CreateTagRequest>
+	  </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateTagResponse/mail:tag">
+		     <t:select attr="id" set="tag.id1"/>
+		     <t:select attr="name" set="tag.name1"/>
+		     <t:select attr="color" emptyset="1"/>
+		</t:select>
+	 </t:response>
+    </t:test>
+
+    <t:test id="CreateTagRequest7b">
+	 <t:request>
+	     <CreateTagRequest xmlns="urn:zimbraMail">
+	         <tag name="tag${TIME}${COUNTER}" color="1"/>
+	     </CreateTagRequest>
+	  </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateTagResponse/mail:tag">
+		     <t:select attr="id" set="tag.id2"/>
+		     <t:select attr="name" set="tag.name2"/>
+		     <t:select attr="color" match="1"/>
+		</t:select>
+	 </t:response>
+    </t:test>
+
+    <t:test depends="CreateTagRequest7a,CreateTagRequest7b">
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                 <action id="${conv.id}" op="${op.tag}" tag="${tag.id1},${tag.id2}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+         </t:response>
+    </t:test>
+     
+</t:test_case>
+
+
+</t:tests>
+

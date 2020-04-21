@@ -1,0 +1,203 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="ramtest.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="folder.name" value="folder.${TIME}.${COUNTER}"/>
+    
+
+<t:property name="folder.pname" value="1"/> <!-- Folder's parent ID -->
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>create test account</t:objective>
+    <t:steps> 
+        1. Login to admin. 
+		3. Create a user account
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>                
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+	</t:test>    
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+<t:property name="message1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+<t:property name="message1.subject" value="email01A"/>
+<t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
+
+<t:test_case testcaseid="MoveSubFolderCheckFilter" type="bhr">
+    <t:objective>Test to check if filters work after changing parent folders of a subfolder </t:objective>
+	<t:steps>
+			1. login as the test account and have the auth request and auth response 
+			2. Create a subfolder within Inbox.
+			3. Create a Second folder which will be the parent folder for the above created subfolder after 
+			   movement			
+			4. Create filter to file messages with a specific subject in to that subfolder and Inject email
+			5. Move the Subfolder to the second folder
+			6. Search for the email with second folder as parent id.
+	</t:steps>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+                <!--<prefs/>-->
+            </AuthRequest>
+         </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="secondfolder.id"/>
+        </t:response>
+	</t:test>
+	
+	  <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Inbox/Folderram" color="3"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="subfolder.id"/>
+        </t:response>
+	</t:test>    	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+	
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                        	<headerTest  header= "subject" stringComparison="is"  value="${message1.subject}" />          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionFileInto folderPath="/${globals.inbox}/Folderram" />
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+		
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+		<t:mailinjecttest >
+			<t:lmtpInjectRequest>
+				<filename>${message1.file}</filename>
+				<to>${test_account1.name}</to>
+				<from>${nonZimbraUser.name}</from>
+				<server>${test_acct.server}</server>
+			</t:lmtpInjectRequest>
+		</t:mailinjecttest>       
+		
+		<t:test>
+		 <t:request>
+		   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(${message1.subject})</query>
+		   </SearchRequest>
+		 </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="l" match="${subfolder.id}"/>
+		 </t:response>
+		</t:test>
+
+		<t:test>
+	        <t:request>
+	            <FolderActionRequest xmlns="urn:zimbraMail">
+	                <action op="move" id="${subfolder.id}" l="${secondfolder.id}"/>
+	            </FolderActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:FolderActionResponse/mail:action">	
+	            <t:select attr="id" match="${subfolder.id}"/>      
+	            <t:select attr="op" match="move"/>      
+	            </t:select>
+	        </t:response>
+	    </t:test>	
+		
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+	
+		<t:test>
+			 <t:request>
+			   <SearchRequest xmlns="urn:zimbraMail" types="message">
+			   <query>subject:(${message1.subject})</query>
+			   </SearchRequest>
+			 </t:request>
+			 <t:response>
+			 	<t:select path="//mail:SearchResponse/mail:m" attr="l" match="${subfolder.id}"/>
+			 </t:response>
+		</t:test>
+		
+</t:test_case>
+		
+</t:tests>

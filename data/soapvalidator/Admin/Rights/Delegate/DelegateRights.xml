@@ -1,0 +1,114 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="delegate.domain.name" value="right.${TIME}.${COUNTER}.${defaultdomain.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="admin.authToken" value="${authToken}"/>
+	
+    <t:test id="CreateDomainRequest0a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${delegate.domain.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="delegate.domain.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DelegateRights_01" type="smoke">
+	<t:objective> Basic test case to verify GrantRightRequest </t:objective>
+	<t:steps>
+	1. Login as admin
+	2. For each right
+	 A. Create a admin account
+	 B. Give the right to that account
+	 C. For each soap soap requests
+	 	a. Verify success for requests that should have permission
+	 	b. Verify failure for requests that should not have permission
+	</t:steps>
+
+	<t:delegate rights="*" set="right.value">
+
+		<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+		<t:property name="authToken" value="${admin.authToken}"/>
+
+		<t:property name="delegate.name" value="delegate${COUNTER}${TIME}@${delegate.domain.name}"/>
+
+	    <t:test required="true">
+	        <t:request>
+	            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	                <name>${delegate.name}</name>
+	                <password>${defaultpassword.value}</password>
+					<a n="zimbraIsDelegatedAdminAccount">${globals.true}</a>
+	            </CreateAccountRequest>
+	        </t:request>
+	        <t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="delegate.id"/>
+				<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="delegate.server"/>
+	        </t:response>
+	    </t:test>  
+
+		<t:test>
+			<t:request>
+				<GrantRightRequest xmlns="urn:zimbraAdmin">
+					<target type="domain" by="name">${delegate.domain.name}</target>
+					<grantee type="usr" by="id">${delegate.id}</grantee>
+					<right>${right.value}</right>
+				</GrantRightRequest>    
+			</t:request>
+			<t:response>
+	            <t:select path="//admin:GrantRightResponse"/>
+			</t:response>
+		</t:test>
+	
+		<t:property name="server.zimbraAdmin" value="${delegate.server}"/>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<account by="name">${delegate.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+	
+		<t:property name="delegate.authToken" value="${authToken}"/>
+
+		<t:checksoap requests="*" right="${right.value}"/>
+
+	</t:delegate>
+	
+</t:test_case>
+
+
+</t:tests>

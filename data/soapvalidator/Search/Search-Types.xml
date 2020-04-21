@@ -1,0 +1,348 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="types01.user" value="acct${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="types01.password" value="${defaultpassword.value}"/>
+<t:property name="msg.foldername" value="${testMailRaw.root}/types01"/>
+
+
+<t:property name="contact1.firstName" value="contact${TIME}.${COUNTER}"/>
+<t:property name="contact1.password" value="test123"/>
+<t:property name="contact2.firstName" value="contact${TIME}.${COUNTER}"/>
+<t:property name="contact2.password" value="test123"/>
+<t:property name="contact3.firstName" value="contact${TIME}.${COUNTER}"/>
+<t:property name="contact3.password" value="test123"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+<t:test required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="account_setup_search_read" type="always" >
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a mail account 
+    </steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${types01.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="types01.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${msg.foldername}</foldername>
+                        <to>${types01.user}</to>
+                        <from>${nonZimbraUser.name}</from>
+                        <server>${test_acct.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${types01.user}</account>
+	    <password>${types01.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="Types_SearchRequest1" type="sanity" >
+ <t:objective>
+ Verify that a search by types="message" returns the correct results
+ </t:objective>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(invite02)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^invite02$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Types_SearchRequest2" type="sanity" >
+ <t:objective>
+ Verify that a search by types="conversation" returns the correct results
+ </t:objective>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+		   <query>subject:(invite03)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<!-- t:select path="//mail:SearchResponse/mail:c[2]" attr="su" match="^invite03$"/-->		
+		<t:select path="//mail:SearchResponse">
+			<t:select path="//mail:c" attr="su" match=".*invite03"/>		
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Types_SearchRequest3" type="sanity" >
+ <t:objective>
+ Verify that a search by types="contacts" returns the correct results
+ </t:objective>
+
+	<t:test >
+	 <t:request>
+	   <CreateContactRequest xmlns="urn:zimbraMail">
+	     <cn>
+	     	<a n="firstName">${contact1.firstName}</a>
+	     </cn>     
+	   </CreateContactRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateContactResponse/mail:cn">
+		  <t:select attr="id" set="contact1.id"/>	 	  
+		</t:select>	
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="contact">
+		   <query>${contact1.firstName}</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:cn">
+			<t:select attr="id" match="^${contact1.id}$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<!-- deprecating TC since type appointment is currently not supported -->
+<t:test_case testcaseid="Types_SearchRequest4" type="deprecated" bugids="3141, 5176">
+ <t:objective>
+ Verify that a search by types="appointment" returns the correct results
+ </t:objective>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="appointment">
+		   <query>invite01</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^invite01$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Types_SearchRequest5" type="sanity" >
+ <t:objective>
+ Verify that a search by types="conversation,contact,appointment" returns the correct results
+ </t:objective>
+
+	<t:test >
+	 <t:request>
+	   <CreateContactRequest xmlns="urn:zimbraMail">
+	     <cn>
+	     	<a n="firstName">${contact2.firstName}</a>
+	     </cn>     
+	   </CreateContactRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateContactResponse/mail:cn">
+		  <t:select attr="id" set="contact2.id"/>	 	  
+		</t:select>	
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="conversation,contact,appointment">
+		   <query>${contact2.firstName}</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:cn">
+			<t:select attr="id" match="^${contact2.id}$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message,contact,appointment">
+		   <query>invite01</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^invite01$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message,contact,appointment">
+		   <query>invite02</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m">
+			<t:select attr="su" match="^invite02$"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="conversation,contact,appointment">
+		   <query>invite03</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse">
+			<!-- Drop the "RE: " part in the regex using .*, since it is not important to this test case -->
+			<t:select path="//mail:c" attr="su" match=".*invite03"/>		
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="conversation,contact,appointment">
+		   <query>${contact2.firstName} OR subject:(invite01) OR subject:(invite02) OR subject:(invite03)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse">
+			<t:select path="//mail:c" attr="su" match=".*invite03"/>
+			<t:select path="//mail:c" attr="su" match=".*invite01"/>
+			<t:select path="//mail:c" attr="su" match=".*invite02"/>
+			<t:select path="//mail:cn" attr="id" match="${contact2.id}"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Types_SearchRequest5" type="sanity" >
+ <t:objective>
+ Verify that a search by the wrong type (contact should be message) returns the correct results
+ </t:objective>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="contact">
+		   <query>invite01</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Types_SearchRequest5" type="sanity" >
+ <t:objective>
+ Verify that a search by the wrong type (message should be contact) returns the correct results
+ </t:objective>
+
+	<t:test >
+	 <t:request>
+	   <CreateContactRequest xmlns="urn:zimbraMail">
+	     <cn>
+	     	<a n="firstName">${contact3.firstName}</a>
+	     </cn>     
+	   </CreateContactRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateContactResponse/mail:cn">
+		  <t:select attr="id" set="contact3.id"/>	 	  
+		</t:select>	
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>${contact3.firstName}</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+		<t:select path="//mail:SearchResponse/mail:cn" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,516 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="onlydomain.name" value="@${defaultdomain.name}"/>
+<t:property name="onlydomain.password" value="${defaultpassword.value}"/>
+<t:property name="invaliddomain.name" value="invaliddomain"/>
+<t:property name = "RECIPIENT_ADDRESS" value = " "/>
+<t:property name="invalidUser.name" value ="  34  "/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account.blank" value=""/>
+<t:property name="account.space" value="             "/>
+<t:property name="account.spchar" value=":''&lt;//\\"/>
+<t:property name="account.sometext" value="some text"/>
+<t:property name="account.negative" value="-1"/>
+<t:property name="account.zero" value="0"/>
+<t:property name="account.largenumber" value="12345678901234567890"/>
+
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.newname" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="${defaultpassword.value}"/>
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="${defaultpassword.value}"/>
+<t:property name="test_account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.newname" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.password" value="${defaultpassword.value}"/>
+<t:property name="test_account4.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.password" value="${defaultpassword.value}"/>
+<t:property name="test_account5.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account5.password" value="${defaultpassword.value}"/>
+<t:property name="test_account6.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account6.password" value="${defaultpassword.value}"/>
+<t:property name="test_account7.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account8.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account9.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account10.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account11.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account12.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account13.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="admin_auth" type="always" >
+	<t:objective>login as the admin</t:objective>
+
+	<t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<!-- Rename an account with valid new-name -->
+
+<!-- Create an account -->
+<t:test_case testcaseid="RenameAccountRequest1" type="smoke" areas="dev_sanity">
+    <t:objective>Rename an account with valid new-name</t:objective>
+
+    <t:test id="renameAccountRequest1a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+        </t:response>
+    </t:test>  
+
+    <!-- 21. -->
+    <t:test depends="renameAccountRequest1a">
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account1.id}</id>
+                <newName>${test_account1.newname}</newName>
+            </RenameAccountRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RenameAccountResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<!-- Rename an account with in-valid(blank) new-name but correct domain name  -->
+
+<t:test_case testcaseid="RenameAccountRequest2" type="functional" >
+    <t:objective> Rename an account with in-valid(blank) new-name but correct domain name</t:objective>
+
+
+    <t:test id="renameAccountRequest2a">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account2.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test depends="renameAccountRequest2a">
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account2.id}</id>
+                <newName>${onlydomain.name}</newName>
+            </RenameAccountRequest >
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<!-- Rename an account with valid name & invalid domain name  -->
+<t:test_case testcaseid="RenameAccountRequest3" type="functional" >
+    <t:objective> Rename an account with valid name and invalid domain name</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with a valid name, and invalid domain(Eg- ABCD@abcd)	
+    </Steps>
+        
+    <t:test id="renameAccountRequest3a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${test_account3.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest3b" depends ="renameAccountRequest3a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account3.id}</id>
+                <newName>${invaliddomain.name}</newName>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!-- Rename an account with invalid name & invalid domain name -->
+<t:test_case testcaseid="RenameAccountRequest4" type="functional" >
+    <t:objective> Rename an account with valid name and invalid domain name</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with a invalid name, and invalid domain(Eg- ABCD@abcd)	
+    </Steps> 
+       
+    <t:test id="renameAccountRequest4a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${test_account4.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account5.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest4b" depends ="renameAccountRequest4a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account5.name}</name>
+                <newName>${invaliddomain.name}</newName>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case> 
+
+
+<!--Rename an account with blank name  -->
+<t:test_case testcaseid="RenameAccountRequest6" type="functional" >
+    <t:objective> Rename an account with blank name</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with blank.	
+    </Steps> 
+       
+    <t:test id="renameAccountRequest6a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account6.name}</name>
+                <password>${test_account6.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account6.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest6b" depends ="renameAccountRequest6a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account6.name}</name>
+                <name>${account.blank}</name>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!--Rename an account with spaces in name  -->
+<t:test_case testcaseid="RenameAccountRequest7" type="functional" >
+    <t:objective> Rename an account with spaces in name</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with spaces in name.	
+    </Steps> 
+       
+    <t:test id="renameAccountRequest7a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account7.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account7.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest7b" depends ="renameAccountRequest7a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account7.name}</name>
+                <name>${account.space}</name>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!--Rename an account with spchar in name  -->
+<t:test_case testcaseid="RenameAccountRequest8" type="functional" >
+    <t:objective> Rename an account with spchar in name</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with spaces in name.
+    </Steps> 
+       
+    <t:test id="renameAccountRequest8a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account8.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account8.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest8b" depends ="renameAccountRequest8a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account8.name}</name>
+                <name>${account.spchar}</name>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!--Rename an account with sometext in name  -->
+<t:test_case testcaseid="RenameAccountRequest9" type="functional" >
+    <t:objective> Rename an account with sometext in name</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with sometext in name.
+    </Steps> 
+       
+    <t:test id="renameAccountRequest9a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account9.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account9.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest9b" depends ="renameAccountRequest9a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account9.name}</name>
+                <name>${account.sometext}</name>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!--Rename an account with sometext in name  -->
+<t:test_case testcaseid="RenameAccountRequest10" type="functional" >
+    <t:objective> Rename an account with sometext in name</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with sometext in name.
+    </Steps> 
+       
+    <t:test id="renameAccountRequest10a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account10.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account10.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest10b" depends ="renameAccountRequest10a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account10.name}</name>
+                <name>${account.sometext}</name>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!--Rename an account with negative in name  -->
+<t:test_case testcaseid="RenameAccountRequest11" type="functional" >
+    <t:objective> Rename an account with negative name</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with negative name.
+    </Steps> 
+       
+    <t:test id="renameAccountRequest11a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account11.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account11.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest11b" depends ="renameAccountRequest11a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account11.name}</name>
+                <name>${account.negative}</name>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!--Rename an account with zero in name  -->
+<t:test_case testcaseid="RenameAccountRequest12" type="functional" >
+    <t:objective> Rename an account with zero in name</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with zero in name.
+    </Steps> 
+       
+    <t:test id="renameAccountRequest12a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account12.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account12.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest12b" depends ="renameAccountRequest12a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account12.name}</name>
+                <name>${account.zero}</name>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<!--Rename an account with largenumber  -->
+<t:test_case testcaseid="RenameAccountRequest13" type="functional" >
+    <t:objective> Rename an account with largenumber</t:objective>
+    <Steps> 1. Create a account.
+            2. Rename it with largenumber.
+    </Steps> 
+       
+    <t:test id="renameAccountRequest13a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account13.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="test_account13.name"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="renameAccountRequest13b" depends ="renameAccountRequest13a" >
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account13.name}</name>
+                <name>${account.largenumber}</name>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameAccountRequest14" type="bhr" bugids="24865">
+    <t:objective> Rename an account along with zimbraMailHost/zimbraMailTransport </t:objective>
+
+<t:property name="account14.name" value="test14.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account14.newname" value="new.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account14.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="acct14.server"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account14.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account14.id}</id>
+                <newName>${account14.newname}</newName>
+                <a n="zimbraMailHost">${acct14.server}</a>
+                <a n="zimbraMailTransport">${acct14.server}</a>
+            </RenameAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RenameAccountResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

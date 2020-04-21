@@ -1,0 +1,200 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account.password" value="${defaultpassword.value}"/>
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="firstName" value="First.${TIME}.${COUNTER}"/>
+<t:property name="lastName" value="Last.${TIME}.${COUNTER}"/>
+<t:property name="email" value="email.${TIME}.${COUNTER}@domain.com"/>
+
+<t:property name="contact.blank" value=""/>
+<t:property name="contact.firstname" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact.lastname" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact.mailid" value="email.${TIME}.${COUNTER}"/>
+
+<t:property name="company.name" value="Company"/>
+<t:property name="notes" value="あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ContactsCreate_acctsetup1" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+             </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="ContactsCreate_acctlogin" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+                <!--<prefs/>-->
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+ 
+
+<t:test_case testcaseid="CreateContactWithNotes" type="bhr" bugids="78469">
+    <t:objective>Create a Contact with all the fields</t:objective>
+    <t:steps>
+     1. Creating New contact:
+     2. Open Address Book -> Press Contact button
+     3. Enter  full-width "あ" character more than 368 characters to Note field
+     4. Press Save or Cancel button
+     5. Create a contact which has less than 367 full-width characters "あ" in Note field
+    </t:steps>
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">pspl</a>
+                    <a n="workFax">6666</a>
+                    <a n="workPhone2">6666</a>
+                    <a n="callbackPhone">6666</a>
+                    <a n="carPhone">6666</a>
+                    <a n="homePhone2">6666</a>
+                    <a n="homeFax">6666</a>
+                    <a n="otherPhone">6666</a>
+                    <a n="otherFax">6666</a>
+                    <a n="email">user1@persistent.co.in</a>
+                    <a n="email2">user1@persistent.co.in</a>
+                    <a n="middleName">s</a>
+                    <a n="jobTitle">QA</a>
+                    <a n="workPhone">66666</a>
+                    <a n="homePhone">66666</a>
+                    <a n="mobilePhone">6666</a>
+                    <a n="pager">666</a>
+                    <a n="email3">user1@persistent.co.in</a>
+                    <a n="workStreet">ttt</a>
+                    <a n="workCity">tt</a>
+                    <a n="workState">tt</a>
+                    <a n="workPostalCode">tt</a>
+                    <a n="workCountry">tt</a>
+                    <a n="workURL">tt</a>
+                    <a n="notes">${notes}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+	
+	<t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="notes">ああああああああ</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact1.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContactRequest1" bugids="78469" type="bhr">
+    <t:objective>Modify a contact: change the notes</t:objective>
+    <t:steps>
+       1. Select the contact created above Press Edit button
+       2. Enter full-width characters "あ" to Note field more than 367 characters
+       3. Press Save or Cancel button
+    </t:steps>
+         
+    <t:test>
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
+                <cn id = "${contact1.id}">
+                    <a n="notes">${notes}</a>
+                </cn>     
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetContactsRequest xmlns = "urn:zimbraMail">
+                <cn id = "${contact1.id}"/>
+            </GetContactsRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetContactsResponse/mail:cn/mail:a[@n='notes']"  match ="${notes}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+</t:tests>

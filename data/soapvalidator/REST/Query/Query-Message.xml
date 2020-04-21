@@ -1,0 +1,171 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.password" value="${defaultpassword.value}"/>
+
+<t:property name="message1.content" value="content${TIME}.${COUNTER}"/>
+<t:property name="message1.subject" value="subject${TIME}.${COUNTER}"/>
+
+
+<t:test_case testcaseid="RestServlet_Query_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${account1.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${account2.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>${message1.subject}</su>
+					<mp ct="text/plain">
+						<content>${message1.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_Query_01" type="bhr">
+	<t:objective>Search for a message by subject through the REST interface</t:objective>
+	<t:steps>
+	1. Use the rest servlet with query='subject' to find a message
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<!-- TODO: For lack of a better way to read the search results, use RSS -->
+	<t:resttest>
+		<t:restServletRequest>
+			<folder>${globals.sent}</folder>
+			<query>${message1.subject}</query>
+			<fmt>rss</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${account2.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+	<!-- TODO: For lack of a better way to read the search results, use RSS -->
+	<t:resttest>
+		<t:restServletRequest>
+			<folder>${globals.inbox}</folder>
+			<query>${message1.subject}</query>
+			<fmt>rss</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+</t:tests>

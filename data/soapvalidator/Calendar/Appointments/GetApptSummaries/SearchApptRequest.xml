@@ -1,0 +1,308 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="moretest${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.password" value="test123"/>
+
+<t:property name="calender.s" value="9999999999999"/>
+<t:property name="calender.e" value="9999999999999"/>
+
+<t:property name="calender.spchar" value="//\\'^%"/>
+<t:property name="calender.space" value="           "/>
+<t:property name="calender.blank" value=""/>
+<t:property name="calender.sometext" value="some text"/>
+
+<t:property name="message.subject1" value="Subject${TIME}.${COUNTER}"/>
+<t:property name="message.content1" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create a test account</t:objective>
+    <steps> 
+        1. Login to admin account
+        2. Create a test_account1     
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct_setup2" type="always" >
+    <t:objective>login to the test account</t:objective>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+        <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${test_account1.name}</account>
+            <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest1" type="smoke">
+    <t:objective>SearchRequest details</t:objective>
+
+    <t:test id ="SearchRequest1">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.s}" calExpandInstEnd="${calender.e}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest2" type="functional" >
+    <t:objective>SearchRequest details with blank in s attribute and valid e attribute</t:objective>
+
+    <t:test id ="SearchRequest3">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.blank}" calExpandInstEnd="${calender.e}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest3" type="functional" >
+    <t:objective>SearchRequest details with spaces in s attribute and valid e attribute</t:objective>
+
+    <t:test id ="SearchRequest3">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.space}" calExpandInstEnd="${calender.e}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest4" type="functional" >
+    <t:objective>SearchRequest details with sometext in s attribute and valid e attribute</t:objective>
+
+    <t:test id ="SearchRequest4">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.sometext}" calExpandInstEnd="${calender.e}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest5" type="functional" >
+    <t:objective>SearchRequest details with special characters in s attribute and valid e attribute</t:objective>
+
+    <t:test id ="SearchRequest5">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.spchar}" calExpandInstEnd="${calender.e}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest6" type="functional" >
+    <t:objective>SearchRequest details with valid value in s attribute and blank e attribute</t:objective>
+
+    <t:test id ="SearchRequest6">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.s}" calExpandInstEnd="${calender.blank}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest7" type="functional" >
+    <t:objective>SearchRequest details with valid value in s attribute and spaces e attribute</t:objective>
+
+    <t:test id ="SearchRequest7">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.s}" calExpandInstEnd="${calender.space}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest8" type="functional" >
+    <t:objective>SearchRequest details with valid in s attribute and sometext in e attribute</t:objective>
+
+    <t:test id ="SearchRequest8">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.s}" calExpandInstEnd="${calender.sometext}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest9" type="functional" >
+    <t:objective>SearchRequest details with valid value in s attribute and special characters in e attribute</t:objective>
+
+    <t:test id ="SearchRequest9">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.s}" calExpandInstEnd="${calender.spchar}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.FAILURE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest10" type="functional" >
+    <t:objective>SearchRequest details with valid value in s attribute and e attribute with leading spaces</t:objective>
+
+    <t:test id ="SearchRequest10">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="               ${calender.s}" calExpandInstEnd="          ${calender.e}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest11" type="functional" >
+    <t:objective>SearchRequest details with valid value in s attribute and e attribute with trailing spaces</t:objective>
+
+    <t:test id ="SearchRequest11">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.s}       " calExpandInstEnd="${calender.e}        ">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest12" type="functional" >
+    <t:objective>SearchRequest details with valid value in s attribute and without e attribute</t:objective>
+
+    <t:test id ="SearchRequest12">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${calender.s}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest13" type="functional" >
+    <t:objective>SearchRequest details with valid value in e attribute and without s attribute</t:objective>
+
+    <t:test id ="SearchRequest13">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstEnd="${calender.e}">
+				<query>in:Calendar</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+

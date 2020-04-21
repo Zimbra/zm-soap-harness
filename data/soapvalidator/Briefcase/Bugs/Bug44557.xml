@@ -1,0 +1,181 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="perm.pub" value="pub"/>
+
+
+<t:test_case testcaseid="Briefcase_Account_Setup" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test  >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+	
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_SharePublic_01" type="bhr" bugids="44557" >
+    <t:objective>Create a briefcase folder. Share it to public. </t:objective>
+    <t:steps>
+    1. Login to account1
+    2. Create a briefcase folder
+    3. Share the folder to public and verify if its accessible.
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	
+	<t:property name="account1.briefcase1.folder.name" value="briefcase1.${TIME}.${COUNTER}"/>
+	
+	<t:test >
+		<t:request>
+			<CreateFolderRequest xmlns="urn:zimbraMail">
+				<folder name="${account1.briefcase1.folder.name}" l="${account1.folder.briefcase.id}" view="document"/>
+			</CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.briefcase1.folder.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@id='${account1.briefcase1.folder.id}']">
+					<t:select attr="name" match="${account1.briefcase1.folder.name}"/>
+					<t:select attr="view" match="document"/>
+					<t:select attr="l" match="${account1.folder.briefcase.id}"/>
+					<t:select attr="rest" emptyset="1"/>
+				</t:select>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.briefcase1.folder.id}" op="grant">                    
+					<grant gt="${perm.pub}" perm="r" inh="1" pw=""/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account1.name}</user>
+			<folder>${globals.briefcase}/${account1.briefcase1.folder.name}</folder>			
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>		
+		</t:restServletResponse>
+	</t:resttest>
+</t:test_case>
+
+
+</t:tests>
+

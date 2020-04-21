@@ -1,0 +1,305 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="Resource.equipment" value="Equipment"/>
+<t:property name="active" value="active"/>
+
+<t:property name="Resource1.name" value="TestResource1.${TIME}${COUNTER}"/>
+<t:property name="Resource1.description" value="Desc_Resource1.${TIME}${COUNTER}"/>
+
+<t:property name="Resource1.invalidname" value="TestResource1_InvalidName.${TIME}${COUNTER}"/>
+
+<t:property name="Resource2.name" value="TestResource2.${TIME}${COUNTER}"/>
+<t:property name="Resource2.description" value="Desc_Resource1.${TIME}${COUNTER}"/>
+
+<t:property name="displayName1" value="TestDisplayName1.${TIME}${COUNTER}"/>
+
+<t:property name="zimbraCalResCapacity1" value="20"/>
+<t:property name="zimbraCalResCapacity2" value="20.{COUNTER}"/>
+
+<t:property name="zimbraCalResLocationDisplayName1" value="zimbraCalResLocationDisplayName1.${TIME}${COUNTER}"/>
+<t:property name="zimbraCalResContactName1" value="ContactName1.${TIME}${COUNTER}"/>
+
+<t:property name="zimbraCalResSite1" value="Site1.${TIME}${COUNTER}"/>
+<t:property name="testnotes" value="This is a Note used in testing Resource"/>
+<t:property name="zimbraCalResBuilding1" value="Building1.${TIME}${COUNTER}"/>
+<t:property name="zimbraCalResFloor1" value="Floor1.${TIME}${COUNTER}"/>
+
+<t:property name="account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="defcos.name" value="default"/>
+<t:property name="cos.name" value="testcos${TIME}${COUNTER}"/>
+<t:property name="nonexistcos.name" value="nonexistcos${TIME}${COUNTER}"/>
+
+<t:property name="domain.name" value="testdomain${TIME}.${COUNTER}.com"/>
+<t:property name="nonexistdomain.name" value="nonexistdomain${TIME}.${COUNTER}.com"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="AcctSetup01_resource_search" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup02_resource_search" type="always" >
+    <t:objective>COS, Accounts and Resources setup.</t:objective>
+	<t:steps>
+			1. Login into admin.
+			2. Create COS, domain, Accounts and Resources.
+	</t:steps>
+
+	<t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateDomainRequest1" depends="admin_login">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name"/>
+        </t:response>
+    </t:test>
+
+
+	<t:test id="Createcos" required="true" depends="admin_login">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">TestCos${TIME}${COUNTER}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <GetAllCosRequest xmlns="urn:zimbraAdmin">
+            </GetAllCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllCosResponse/admin:cos[@name='default']" attr="id" set="defcos.id"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test id="Createaccount" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+    
+	<t:test id="CreateRes1" required="true" depends="Createcos">
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource1.name}@${defaultdomain.name}</name>
+				<a n="zimbraCOSId">${defcos.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}@${defaultdomain.name}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+				<a n="description">${Resource1.description}</a>
+				<a n="zimbraNotes">${testnotes}</a>
+				<a n="zimbraCalResCapacity">${zimbraCalResCapacity1}</a>
+				<a n="zimbraCalResBuilding">${zimbraCalResBuilding1}</a>
+				<a n="zimbraCalResFloor">${zimbraCalResFloor1}</a>
+				<a n="zimbraCalResContactName">${zimbraCalResContactName1}</a>
+				<a n="zimbraCalResLocationDisplayName">${zimbraCalResLocationDisplayName1}</a>
+				<a n="zimbraCalResSite">${zimbraCalResSite1}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='displayName']"  set="resourceeq1.name"/>
+			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="name" set="resource1.name"/>
+			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='description']"  set="resource1.description"/>
+			
+        </t:response>
+    </t:test>
+    
+    <t:test id="CreateRes2" required="true" depends="Createcos">
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource2.name}@${defaultdomain.name}</name>
+				<a n="zimbraCOSId">${defcos.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}@${defaultdomain.name}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+				<a n="description">${Resource1.description}</a>
+				<a n="zimbraCalResCapacity">${zimbraCalResCapacity1}</a>
+				<a n="zimbraCalResBuilding">${zimbraCalResBuilding1}</a>
+				<a n="zimbraCalResFloor">${zimbraCalResFloor1}</a>
+				<a n="zimbraCalResContactName">${zimbraCalResContactName1}</a>
+				<a n="zimbraCalResLocationDisplayName">${zimbraCalResLocationDisplayName1}</a>
+				<a n="zimbraCalResSite">${zimbraCalResSite1}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='displayName']"  set="resourceeq2.name"/>
+			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="name" set="resource2.name"/>
+			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='description']"  set="resource2.description"/>
+			
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="resource_search01" type="bhr" bugids="60134">
+    <t:objective>Search the resources by Equipment using description.</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search the resources by Equipment using description.
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+            </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<SearchCalendarResourcesRequest xmlns="urn:zimbraAccount" attrs="fullName,email,zimbraCalResLocationDisplayName,zimbraCalResContactEmail,description,zimbraCalResType" offset="0" limit="25">
+				<searchFilter>
+					<conds>
+						<cond attr="description" op="has" value="${resource1.description}"/>
+					</conds>
+				</searchFilter>
+			</SearchCalendarResourcesRequest>
+		</t:request>
+        <t:response>
+	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource/acct:a[@n='zimbraCalResLocationDisplayName']" match="${zimbraCalResLocationDisplayName1}"/>
+	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource" attr="name" match="${resource1.name}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="resource_search02" type="bhr" bugids="60134">
+    <t:objective>Search by zimbraCalResType and description. </t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search the resources by Equipment using description.
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+            </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<SearchCalendarResourcesRequest xmlns="urn:zimbraAccount" attrs="fullName,email,zimbraCalResLocationDisplayName,zimbraCalResContactEmail,description,zimbraCalResType" offset="0" limit="25">
+				<searchFilter>
+					<conds>
+						<cond attr="zimbraCalResType" op="eq" value="${Resource.equipment}"/>
+						<cond attr="description" op="has" value="Desc_Resource1"/>
+					</conds>
+				</searchFilter>
+			</SearchCalendarResourcesRequest>
+		</t:request>
+        <t:response>
+	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource/acct:a[@n='zimbraCalResLocationDisplayName']" match="${zimbraCalResLocationDisplayName1}"/>
+	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource" attr="name" match="${resource1.name}"/>
+	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource" attr="name" match="${resource2.name}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="resource_search03" type="functional" bugids="60134">
+    <t:objective>Search the resources by Equipment using non existing resource.</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search the resources by Equipment using non existing resource.
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+            </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<SearchCalendarResourcesRequest xmlns="urn:zimbraAccount" attrs="fullName,email,zimbraCalResLocationDisplayName,zimbraCalResContactEmail,description,zimbraCalResType" offset="0" limit="25">
+				<searchFilter>
+					<conds>
+						<cond attr="zimbraCalResType" op="eq" value="${Resource.equipment}"/>
+						<cond attr="description" op="has" value="${Resource1.invalidname}"/>
+						<cond attr="name" op="has" value="Desc_Resource1"/>
+					</conds>
+				</searchFilter>
+			</SearchCalendarResourcesRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//acct:SearchCalendarResourcesResponse"/>
+	        <t:select path="//acct:SearchCalendarResourcesResponse/acct:calresource" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

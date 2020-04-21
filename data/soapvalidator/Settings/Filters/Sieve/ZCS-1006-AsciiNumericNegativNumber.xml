@@ -1,0 +1,2384 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <!-- Test accounts declaration -->
+    <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+    <!-- Variables declaration -->
+    <t:property name="text"       value="$\{text}"/>
+    <t:property name="positive"   value="$\{positive}"/>
+    <t:property name="negative"   value="$\{negative}"/>
+    <t:property name="undefined"  value="$\{undefined}"/>
+
+    <t:test_case testcaseid="acctSetup1" type="always">
+        <t:objective>create test account</t:objective>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+	    
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="configSetup1" type="always">
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:objective>set zimbraCustomMimeHeaderNameAllowed key value </t:objective>
+        <t:test>
+            <t:request>
+                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Priority</a>
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-OldHeader</a>
+                    <a n="zimbraCustomMimeHeaderNameAllowed">X-NewHeader</a>
+                </ModifyConfigRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyConfigResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+
+    <t:test_case testcaseid="ZCS-1006_string-is" type="bhr" bugids="ZCS-1006">
+        <t:objective>Verify that the execution of the 'string :is' test with i;ascii-numeric negative value is failed.
+           Verify that the execution of tag is cancelled due to the exception.
+      # : test   | type   | comparator      | l.h.s                        | r.h.s 
+      01: string | :is    | i;ascii-numeric | variable (negative number)   | literal (negative number)
+      02: string | :is    | i;ascii-numeric | variable (negative number)   | variable (negative number)
+      03: string | :is    | i;ascii-numeric | variable (negative number)   | variable (text)
+      04: string | :is    | i;ascii-numeric | variable (negative number)   | variable (positive number)
+      05: string | :is    | i;ascii-numeric | variable (negative number)   | undefined variable (empty)
+      06: string | :is    | i;ascii-numeric | literal (negative number)    | variable (negative number)
+      07: string | :is    | i;ascii-numeric | variable (text)              | variable (negative number)
+      08: string | :is    | i;ascii-numeric | variable (positive number)   | variable (negative number)
+      09: string | :is    | i;ascii-numeric | undefined variable (empty)   | variable (negative number)
+        </t:objective>
+
+        <t:property name="labe_string_is_rule0101" value="sieve_string_is_rule0101_label"/>
+        <t:property name="sieve_string_is_rule0101" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-11";
+if not string :is :comparator "i;ascii-numeric" "${negative}" "-12" {
+ tag "negative-${labe_string_is_rule0101}";
+}
+tag "always-${labe_string_is_rule0101}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0101}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_is_rule0101}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_is_rule0101}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_is_rule0101}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_is_rule0101}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+        <t:property name="labe_string_is_rule0102" value="sieve_string_is_rule0102_label"/>
+        <t:property name="sieve_string_is_rule0102" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-2";
+if not string :is :comparator "i;ascii-numeric" "${negative}" "${negative}" {
+ tag "negative-${labe_string_is_rule0102}";
+}
+tag "always-${labe_string_is_rule0102}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0102}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_is_rule0102}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_is_rule0102}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_is_rule0102}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_is_rule0102}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_string_is_rule0103" value="sieve_string_is_rule0103_label"/>
+        <t:property name="sieve_string_is_rule0103" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-3";
+set "text" "abc";
+if not string :is :comparator "i;ascii-numeric" "${negative}" "${text}" {
+ tag "negative-${labe_string_is_rule0103}";
+}
+tag "always-${labe_string_is_rule0103}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0103}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_is_rule0103}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_is_rule0103}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_is_rule0103}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_is_rule0103}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_string_is_rule0104" value="sieve_string_is_rule0104_label"/>
+        <t:property name="sieve_string_is_rule0104" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-41";
+set "positive" "42";
+if not string :is :comparator "i;ascii-numeric" "${negative}" "${positive}" {
+ tag "negative-${labe_string_is_rule0104}";
+}
+tag "always-${labe_string_is_rule0104}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0104}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_is_rule0104}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_is_rule0104}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_is_rule0104}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_is_rule0104}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_string_is_rule0105" value="sieve_string_is_rule0105_label"/>
+        <t:property name="sieve_string_is_rule0105" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-5";
+if not string :is :comparator "i;ascii-numeric" "${negative}" "${undefined}" {
+  tag "negative-${labe_string_is_rule0105}";
+}
+tag "always-${labe_string_is_rule0105}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0105}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_is_rule0105}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_is_rule0105}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_is_rule0105}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_is_rule0105}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_string_is_rule0106" value="sieve_string_is_rule0106_label"/>
+        <t:property name="sieve_string_is_rule0106" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-6";
+if not string :is :comparator "i;ascii-numeric" "-9" "${negative}" {
+  tag "negative-${labe_string_is_rule0106}";
+}
+tag "always-${labe_string_is_rule0106}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0106}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_is_rule0106}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_is_rule0106}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_is_rule0106}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_is_rule0106}" emptyset="1"/>
+            </t:response>
+        </t:test>
+
+
+
+        <t:property name="labe_string_is_rule0107" value="sieve_string_is_rule0107_label"/>
+        <t:property name="sieve_string_is_rule0107" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-7";
+set "text" "abc";
+if not string :is :comparator "i;ascii-numeric" "${text}" "${negative}" {
+  tag "negative-${labe_string_is_rule0107}";
+}
+tag "always-${labe_string_is_rule0107}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0107}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_is_rule0107}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_is_rule0107}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_is_rule0107}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_is_rule0107}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_string_is_rule0108" value="sieve_string_is_rule0108_label"/>
+        <t:property name="sieve_string_is_rule0108" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-81";
+set "positive" "82";
+if not string :is :comparator "i;ascii-numeric" "${positive}" "${negative}" {
+ tag "negative-${labe_string_is_rule0108}";
+}
+tag "always-${labe_string_is_rule0108}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0108}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_is_rule0108}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_is_rule0108}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_is_rule0108}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_is_rule0108}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_string_is_rule0109" value="sieve_string_is_rule0109_label"/>
+        <t:property name="sieve_string_is_rule0109" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-9";
+if not string :is :comparator "i;ascii-numeric" "${undefined}" "${negative}" {
+  tag "negative-${labe_string_is_rule0109}";
+}
+tag "always-${labe_string_is_rule0109}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_is_rule0109}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_is_rule0109}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_is_rule0109}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_is_rule0109}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_is_rule0109}" emptyset="1"/>
+			</t:response>
+		</t:test>
+    </t:test_case>
+
+
+
+    <t:test_case testcaseid="ZCS-1006_string-value" type="bhr" bugids="ZCS-1006">
+        <t:objective>Verify that the execution of the 'string :value' test with i;ascii-numeric negative value is failed.
+           Verify that the execution of tag is cancelled due to the exception.
+      # : test   | type   | comparator      | l.h.s                           | r.h.s
+      01: string | :value | i;ascii-numeric | variable list (negative number) | literal (positive number)
+      02: string | :value | i;ascii-numeric | literal (positive number)       | variable list (negative number)
+        </t:objective>
+
+        <t:property name="labe_string_value_rule0201" value="sieve_string_value_rule0201_label"/>
+        <t:property name="sieve_string_value_rule0201" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-101";
+if string :value "ne" :comparator "i;ascii-numeric" ["${negative}"] "1" {
+  tag "negative-${labe_string_value_rule0201}";
+}
+tag "always-${labe_string_value_rule0201}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_value_rule0201}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_value_rule0201}</su>
+                        <header name="X-Priority">-102</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_value_rule0201}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_value_rule0201}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_value_rule0201}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_string_value_rule0202" value="sieve_string_value_rule0202_label"/>
+        <t:property name="sieve_string_value_rule0202" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-111";
+if string :value "ne" :comparator "i;ascii-numeric" "112" ["${negative}"] {
+  tag "negative-${labe_string_value_rule0202}";
+}
+tag "always-${labe_string_value_rule0202}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_value_rule0202}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_value_rule0202}</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_value_rule0202}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_value_rule0202}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_value_rule0202}" emptyset="1"/>
+			</t:response>
+		</t:test>
+    </t:test_case>
+
+
+
+    <t:test_case testcaseid="ZCS-1006_string-count" type="bhr" bugids="ZCS-1006">
+        <t:objective>Verify that the execution of the 'string :count' test with i;ascii-numeric negative value is failed.
+           Verify that the execution of tag is cancelled due to the exception.
+      # : test   | type   | comparator      | l.h.s                           | r.h.s
+      01: string | :count | i;ascii-numeric | variable list (negative number) | literal (positive number)
+      02: string | :count | i;ascii-numeric | literal (positive number)       | variable list (negative number)
+        </t:objective>
+
+        <t:property name="labe_string_count_rule0301" value="sieve_string_count_rule0301_label"/>
+        <t:property name="sieve_string_count_rule0301" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-121";
+if string :count "ne" :comparator "i;ascii-numeric" ["${negative}"] "122" {
+  tag "negative-${labe_string_count_rule0301}";
+}
+tag "always-${labe_string_count_rule0301}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_count_rule0301}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_count_rule0301}</su>
+                        <header name="X-Priority">-123</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_count_rule0301}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_count_rule0301}" emptyset="0"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_count_rule0301}" emptyset="0"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_string_count_rule0302" value="sieve_string_count_rule0302_label"/>
+        <t:property name="sieve_string_count_rule0302" value='require ["tag", "variables", "comparator-i;ascii-numeric", "relational"];
+set "negative" "-131";
+if string :value "ne" :comparator "i;ascii-numeric" "1" ["${negative}"] {
+  tag "negative-${labe_string_count_rule0302}";
+}
+tag "always-${labe_string_count_rule0302}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_string_count_rule0302}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_string_count_rule0302}</su>
+                        <header name="X-Priority">-132</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_string_count_rule0302}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_string_count_rule0302}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_string_count_rule0302}" emptyset="1"/>
+			</t:response>
+		</t:test>
+    </t:test_case>
+
+
+
+    <t:test_case testcaseid="ZCS-1006_header-is" type="bhr" bugids="ZCS-1006">
+        <t:objective>Verify that the execution of the 'header :is' test with i;ascii-numeric negative value is failed.
+           Verify that the execution of tag is cancelled due to the exception.
+      # : test   | type   | comparator      | l.h.s                        | r.h.s
+      01: header | :is    | i;ascii-numeric | negative number header       | literal (negative number)
+      02: header | :is    | i;ascii-numeric | negative number header       | literal (positive number)
+      03: header | :is    | i;ascii-numeric | negative number header       | literal (text)
+      04: header | :is    | i;ascii-numeric | negative number header       | literal (empty)
+      05: header | :is    | i;ascii-numeric | positive number header       | literal (negative number)
+        </t:objective>
+
+        <t:property name="labe_header_is_rule0401" value="sieve_header_is_rule0401_label"/>
+        <t:property name="sieve_header_is_rule0401" value='require ["tag", "comparator-i;ascii-numeric", "relational"];
+if not header :is :comparator "i;ascii-numeric" "X-Priority" "-141" {
+  tag "negative-${labe_header_is_rule0401}";
+}
+tag "always-${labe_header_is_rule0401}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0401}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_header_is_rule0401}</su>
+                        <header name="X-Priority">-142</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_header_is_rule0401}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_header_is_rule0401}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_header_is_rule0401}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+        <t:property name="labe_header_is_rule0402" value="sieve_header_is_rule0402_label"/>
+        <t:property name="sieve_header_is_rule0402" value='require ["tag"];
+if not header :is :comparator "i;ascii-numeric" "X-Priority" "151" {
+  tag "negative-${labe_header_is_rule0402}";
+}
+tag "always-${labe_header_is_rule0402}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0402}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_header_is_rule0402}</su>
+                        <header name="X-Priority">-152</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_header_is_rule0402}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_header_is_rule0402}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_header_is_rule0402}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_header_is_rule0403" value="sieve_header_is_rule0403_label"/>
+        <t:property name="sieve_header_is_rule0403" value='require ["tag"];
+if not header :is :comparator "i;ascii-numeric" "X-Priority" "abc" {
+  tag "negative-${labe_header_is_rule0403}";
+}
+tag "always-${labe_header_is_rule0403}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0403}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_header_is_rule0403}</su>
+                        <header name="X-Priority">-16</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_header_is_rule0403}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_header_is_rule0403}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_header_is_rule0403}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_header_is_rule0404" value="sieve_header_is_rule0404_label"/>
+        <t:property name="sieve_header_is_rule0404" value='require ["tag"];
+if not header :is :comparator "i;ascii-numeric" "X-Priority" "" {
+  tag "negative-${labe_header_is_rule0404}";
+}
+tag "always-${labe_header_is_rule0404}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0404}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_header_is_rule0404}</su>
+                        <header name="X-Priority">-17</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_header_is_rule0404}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_header_is_rule0404}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_header_is_rule0404}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+
+        <t:property name="labe_header_is_rule0405" value="sieve_header_is_rule0405_label"/>
+        <t:property name="sieve_header_is_rule0405" value='require ["tag"];
+if not header :is :comparator "i;ascii-numeric" "X-Priority" "-181" {
+  tag "negative-${labe_header_is_rule0405}";
+}
+tag "always-${labe_header_is_rule0405}";
+'/>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_header_is_rule0405}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_header_is_rule0405}</su>
+                        <header name="X-Priority">182</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_header_is_rule0405}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_header_is_rule0405}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_header_is_rule0405}" emptyset="1"/>
+			</t:response>
+		</t:test>
+    </t:test_case>
+
+
+    <t:test_case testcaseid="ZCS-1006_address-count" type="bhr" bugids="ZCS-1006">
+        <t:objective>Verify that the execution of the 'address :count' test with i;ascii-numeric negative value is failed.
+           Verify that the execution of tag is cancelled due to the exception.
+      # : test   | type   | comparator      | l.h.s                           | r.h.s
+      01: address| :count | i;ascii-numeric | variable list (negative number) | literal (negative number)
+        </t:objective>
+
+        <t:property name="labe_address_count_rule0501" value="sieve_address_count_rule0501_label"/>
+        <t:property name="sieve_address_count_rule0501" value='require ["tag"];
+if address :count "ge" :comparator "i;ascii-numeric" ["Subject"] "-191" {
+  tag "negative-${labe_address_count_rule0501}";
+}
+tag "always-${labe_address_count_rule0501}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraMailSieveScript">${sieve_address_count_rule0501}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_address_count_rule0501}</su>
+                        <header name="X-Priority">-192</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_address_count_rule0501}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="negative-${labe_address_count_rule0501}" emptyset="1"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_address_count_rule0501}" emptyset="1"/>
+			</t:response>
+		</t:test>
+    </t:test_case>
+
+
+    <t:test_case testcaseid="ZCS-1006_deleteheader-value" type="bhr" bugids="ZCS-1006">
+        <t:objective>Verify that the execution of the 'deleteheader ... :value' test with i;ascii-numeric negative value is failed.
+           Verify that the execution of tag is cancelled due to the exception.
+      # : command     | type   | comparator      | l.h.s                  | r.h.s
+      01: deleteheader| :value | i;ascii-numeric | negative number header | literal (negative number)
+      02: deleteheader| :value | i;ascii-numeric | negative number header | literal (positive number)
+      03: deleteheader| :value | i;ascii-numeric | positive number header | literal (negative number)
+        </t:objective>
+
+        <t:property name="labe_deleteheader_value_rule0601" value="sieve_deleteheader_value_rule0601_label"/>
+        <t:property name="sieve_deleteheader_value_rule0601" value='require ["editheader", "tag", "comparator-i;ascii-numeric", "relational"];
+deleteheader :value "ne" :comparator "i;ascii-numeric" ["X-Priority"] "-201";
+tag "always-${labe_deleteheader_value_rule0601}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+            6. verify X-priority header is not deleted
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_deleteheader_value_rule0601}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_deleteheader_value_rule0601}</su>
+                        <header name="X-Priority">-202</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_deleteheader_value_rule0601}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_deleteheader_value_rule0601}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+        <t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-Priority" match="-202" />
+			</t:restServletResponse>
+		</t:resttest>
+
+
+        <t:property name="labe_deleteheader_value_rule0602" value="sieve_deleteheader_value_rule0602_label"/>
+        <t:property name="sieve_deleteheader_value_rule0602" value='require ["editheader", "tag"];
+deleteheader :value "ne" :comparator "i;ascii-numeric" ["X-Priority"] "211";
+tag "always-${labe_deleteheader_value_rule0602}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+            6. verify X-Priority header is not deleted
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_deleteheader_value_rule0602}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_deleteheader_value_rule0602}</su>
+                        <header name="X-Priority">-212</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_deleteheader_value_rule0602}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_deleteheader_value_rule0602}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+        <t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-Priority" match="-212" />
+			</t:restServletResponse>
+		</t:resttest>
+
+
+        <t:property name="labe_deleteheader_value_rule0603" value="sieve_deleteheader_value_rule0603_label"/>
+        <t:property name="sieve_deleteheader_value_rule0603" value='require ["editheader", "tag"];
+deleteheader :value "ne" :comparator "i;ascii-numeric" ["X-Priority"] "-221";
+tag "always-${labe_deleteheader_value_rule0603}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+            6. verify the X-Priority header is not deleted
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_deleteheader_value_rule0603}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_deleteheader_value_rule0603}</su>
+                        <header name="X-Priority">222</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_deleteheader_value_rule0603}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_deleteheader_value_rule0603}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+        <t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-Priority" match="222" />
+			</t:restServletResponse>
+		</t:resttest>
+    </t:test_case>
+
+
+    <t:test_case testcaseid="ZCS-1006_replaceheader-value" type="bhr" bugids="ZCS-1006">
+        <t:objective>Verify that the execution of the 'replaceheader ... :value' test with i;ascii-numeric negative value is failed.
+           Verify that the execution of tag is cancelled due to the exception.
+      # : command      | type   | comparator      | old header value       | old comparing value        | new header value
+      01: replaceheader| :value | i;ascii-numeric | negative number header | literal (negative number)  | literal (positive number)
+      02: replaceheader| :value | i;ascii-numeric | negative number header | literal (positive number)  | literal (positive number)
+      03: replaceheader| :value | i;ascii-numeric | positive number header | literal (negative number)  | literal (positive number)
+      04: replaceheader| :value | i;ascii-numeric | positive number header | literal (positive number)  | literal (negative number)
+        </t:objective>
+
+        <t:property name="labe_replaceheader_value_rule0701" value="sieve_replaceheader_value_rule0701_label"/>
+        <t:property name="sieve_replaceheader_value_rule0701" value='require ["editheader", "tag", "comparator-i;ascii-numeric", "relational"];
+replaceheader :newname "X-NewHeader" :newvalue "231" :comparator "i;ascii-numeric" :value "ne" "X-OldHeader" "-232";
+tag "always-${labe_replaceheader_value_rule0701}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+            6. verify the X-OldHeader is not replaced by X-NewHeader
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_replaceheader_value_rule0701}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_replaceheader_value_rule0701}</su>
+                        <header name="X-OldHeader">-233</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_replaceheader_value_rule0701}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_replaceheader_value_rule0701}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+        <t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-OldHeader" match="-233" emptyset="0" />
+				<t:select attr="X-NweHeader" emptyset="1" />
+			</t:restServletResponse>
+		</t:resttest>
+
+
+        <t:property name="labe_replaceheader_value_rule0702" value="sieve_replaceheader_value_rule0702_label"/>
+        <t:property name="sieve_replaceheader_value_rule0702" value='require ["editheader", "tag", "comparator-i;ascii-numeric", "relational"];
+replaceheader :newname "X-NewHeader" :newvalue "241" :comparator "i;ascii-numeric" :value "ne" "X-OldHeader" "242";
+tag "always-${labe_replaceheader_value_rule0702}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+            6. verify the X-OldHeader is not replaced by X-NewHeader
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_replaceheader_value_rule0702}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_replaceheader_value_rule0702}</su>
+                        <header name="X-OldHeader">-243</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_replaceheader_value_rule0702}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_replaceheader_value_rule0702}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+        <t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-OldHeader" match="-243" emptyset="0" />
+				<t:select attr="X-NweHeader" emptyset="1" />
+			</t:restServletResponse>
+		</t:resttest>
+
+
+        <t:property name="labe_replaceheader_value_rule0703" value="sieve_replaceheader_value_rule0703_label"/>
+        <t:property name="sieve_replaceheader_value_rule0703" value='require ["editheader", "tag", "comparator-i;ascii-numeric", "relational"];
+replaceheader :newname "X-NewHeader" :newvalue "251" :comparator "i;ascii-numeric" :value "ne" "X-OldHeader" "-252";
+tag "always-${labe_replaceheader_value_rule0703}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify no email tag
+            6. verify the X-OldHeader is not replaced by X-NewHeader
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_replaceheader_value_rule0703}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_replaceheader_value_rule0703}</su>
+                        <header name="X-OldHeader">253</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_replaceheader_value_rule0703}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_replaceheader_value_rule0703}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+        <t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-OldHeader" match="253" emptyset="0" />
+				<t:select attr="X-NweHeader" emptyset="1" />
+			</t:restServletResponse>
+		</t:resttest>
+
+
+        <t:property name="labe_replaceheader_value_rule0704" value="sieve_replaceheader_value_rule0704_label"/>
+        <t:property name="sieve_replaceheader_value_rule0704" value='require ["editheader", "tag","comparator-i;ascii-numeric", "relational"];
+replaceheader :newname "X-NewHeader" :newvalue "-261" :comparator "i;ascii-numeric" :value "ne" "X-OldHeader" "262";
+tag "always-${labe_replaceheader_value_rule0704}";
+'/>
+
+        <t:steps>
+            1. Auth with admin
+            2. set sieve rule in account1
+            3. send mail from admin to account1
+            4. auth with account1
+            5. find and verify email is tag
+            6. verify the X-OldHeader is replaced by X-NewHeader
+        </t:steps>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="modifyaccountrequest1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_replaceheader_value_rule0704}</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message - ${labe_replaceheader_value_rule0704}</su>
+                        <header name="X-OldHeader">263</header>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:Inbox subject:${labe_replaceheader_value_rule0704}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+                <t:select path="//mail:SearchResponse/mail:m" attr="tn" contains="always-${labe_replaceheader_value_rule0704}" emptyset="0"/>
+			</t:response>
+		</t:test>
+
+        <t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="X-OldHeader" emptyset="1" />
+				<t:select attr="X-NewHeader" match="-261" emptyset="0" />
+			</t:restServletResponse>
+		</t:resttest>
+    </t:test_case>
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig to default </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>    
+</t:tests>

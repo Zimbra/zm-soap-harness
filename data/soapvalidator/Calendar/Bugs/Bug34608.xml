@@ -1,0 +1,302 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:property name="organizer1.name" value="organizer1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee1.name" value="invitee1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="verb.accept" value="ACCEPT"/>
+<t:property name="verb.decline" value="DECLINE"/>
+<t:property name="verb.completed" value="COMPLETED"/>
+<t:property name="verb.delgated" value="DELEGATED"/>
+<t:property name="verb.tentative" value="TENTATIVE"/>
+
+<t:property name="ptst.accept" value="AC"/>
+<t:property name="ptst.decline" value="DE"/>
+<t:property name="ptst.completed" value="CO"/>
+<t:property name="ptst.delgated" value="DE"/>
+<t:property name="ptst.tentative" value="TE"/>
+<t:property name="ptst.needs" value="NE"/>
+
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada)"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    <t:steps>
+    	Pinging the server
+    </t:steps>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+    <t:steps>
+    	Logging in as admin
+    	Creating organizer
+    	Creating invitee
+    </t:steps>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Create Organizer -->
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${organizer1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="organizer1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="organizer1.server"/>
+        </t:response>
+    </t:test>
+
+	<!-- Create Invitee-->
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="invitee1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="invitee1.server"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="MeetingStatus_afterMBoxrestart" type="bhr" areas="Calendar,noncluster">
+    <t:objective>Verify participant status is shown to the organizer for an exception to a basic weekly recurrent appointment</t:objective>
+    <t:steps>
+    1. Login as organizer
+    2. Create a meeting request. Set the Request Response as "UNCHECKED" (rsvp=0) and send an invite to the second user.
+    3. Login as invitee and accept the meeting.
+    4. Check the status of the meeting( It should be accepted)
+    5. Restart the mailboxd service
+    6. Login as invitee and verify the status of the meeting. It should still be as accepted.  
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${organizer1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${organizer1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<t:test required="true" >
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>    
+   
+   	<!-- Apt Properties -->
+	<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
+
+	
+	<t:property name="time.08Jun2009100000.gmt" value="1244455200000"/>
+	<t:property name="time.08Jun2009100000.pst" value="${TIME(-8h)[${time.08Jun2009100000.gmt}]}"/>
+
+	<!-- Create Appointment and send invite to invitee -->
+    <t:test required="true" >
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<or a="${organizer1.name}"/>
+							<at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="0"/>
+							<s d="${ICALTIME[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+3h)[${time.08Jun2009100000.pst}]}" tz="${timezone.pst}" />							
+						</comp>
+					</inv>
+					<e a="${invitee1.name}" t="t"/>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>
+            	<!-- <t:select attr="subject" set="organizer1.subject" /> -->
+            	<t:select attr="invId" set="organizer1.appt1.invId"/>
+            	<t:select attr="apptId" set="organizer1.appt1.apptId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	
+    <t:property name="server.zimbraAccount" value="${invitee1.server}"/>
+    <!-- Login as the invitee -->
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${invitee1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="invitee1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<!-- Check if the meeting is added to the cal -->
+	<t:test required="true" >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.08Jun2009100000.gmt}]}" calExpandInstEnd="${TIME(+2d)[${time.08Jun2009100000.gmt}]}" types="appointment">
+				<query>inid:${invitee1.calendar.folder.id}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<!--  <t:select path="//mail:inst[@name='${appointment.exception.subject}']">
+	            	<t:select attr="invId" set="invitee1.exception1.invId"/>
+	            	<t:select attr="compNum" set="invitee1.exception1.compNum"/>
+	            	<t:select attr="name" set="invitee1.exception1.name"/> 
+            	</t:select>-->
+            	
+            	<t:select path="//mail:appt[@name='${appointment.subject}']" attr="ptst" match="NE">
+					<t:select attr="compNum" set="invitee1.compNum.val"/>
+					<t:select attr="invId" set="invitee1.invId.val"/>
+					<t:select attr="id" set="invitee1.id.val"/>				
+					<t:select attr="name" set="invitee1.name.val"/> 
+            		<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/> 
+					<!--  <t:select attr="name" set="org.appt.name"/> -->					 
+        		</t:select>
+            </t:select> 
+        </t:response>
+    </t:test>
+
+
+	<t:property name="verb.response" value="${verb.accept}"/>
+	<t:property name="verb.expected" value="${ptst.accept}"/>
+	
+    <t:test required="true">
+        <t:request>		
+			<SendInviteReplyRequest xmlns="urn:zimbraMail" id="${invitee1.invId.val}" compNum="${invitee1.compNum.val}" verb="${verb.response}" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${invitee1.appt1.or}"/>
+					<su>${verb.response}: ${invitee1.name.val}</su>
+					<mp ct="text/plain">
+						<content>${verb.response}: ${invitee1.name.val}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+	
+	<t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${invitee1.invId.val}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${invitee1.invId.val}']">                      	
+            	<t:select path="//mail:reply[@at='${invitee1.name}']" attr="ptst" match="${ptst.accept}"/>
+            <!--<t:select path="//mail:reply[@at='${invitee1.name}']" emptyset="1"/> --> <!-- expected: no response to the series --> 
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+	<!-- Restart the mailboxd service -->
+	<t:staftask >
+		<t:request>
+			<server>${invitee1.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmailboxdctl}</params>
+		</t:request>
+	</t:staftask>
+
+	<!-- Sleep for 5 minutes to wait for mbox to come up -->
+	<t:delay sec="300"/>
+
+
+	<!-- Verify the status of the meeting. It should show the status as "AC" -->
+	<t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${invitee1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${invitee1.invId.val}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${invitee1.invId.val}']">
+            	<t:select path="//mail:reply[@at='${invitee1.name}']" attr="ptst" match="${ptst.accept}"/>            
+            	<!--  <t:select path="//mail:at[@a='${invitee1.name}']" attr="ptst" match="${ptst.accept}"/> -->
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+</t:tests>

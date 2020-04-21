@@ -1,0 +1,56 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="port.server" value="9443"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug_68394" type="bhr" bugids="68394">
+    <t:objective>Send GetServerRequest and verify default value of zimbraMailSSLClientCertPort = 9443</t:objective>
+    <t:steps>
+        1. Login into Admin
+        2. Send GetServerRequest and verify value of zimbraMailSSLClientCertPort = 9443    
+    </t:steps>
+    
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+     <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="name">${server.zimbraAdmin}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServerResponse/admin:server" attr="name" match="${server.zimbraAdmin}"/>
+            <t:select path="//admin:GetServerResponse/admin:server/admin:a[@n='zimbraMailSSLClientCertPort']" set="port.server"/>
+        </t:response>
+    </t:test>
+     
+</t:test_case>
+
+</t:tests>

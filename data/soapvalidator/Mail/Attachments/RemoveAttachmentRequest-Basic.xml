@@ -1,0 +1,486 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message.content" value="content${TIME}.${COUNTER}"/>
+<t:property name="message.subject" value="subject${TIME}.${COUNTER}"/>
+
+<t:property name="account1.document.textfile" value="${testMailRaw.root}/Contact/contact1.txt"/>
+<t:property name="account3.document1.textfile" value="${testMailRaw.root}/email01/msg01.txt"/>
+<t:property name="account3.document2.textfile" value="${testMailRaw.root}/email01/msg02.txt"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="RemoveAttachmentsRequest_01" type="bhr">
+    <t:objective>Verify that RemoveAttachmentsRequest remove attachment from single attached msg </t:objective>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+               
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account1.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+    
+    <t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attach1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	  
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}">
+			    <upload id="${document.attach1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document1.attachfile.id"/>
+        </t:response>
+    </t:test>
+	
+	<t:test >
+        <t:request>
+			<SaveDraftRequest xmlns="urn:zimbraMail">
+			 <m> 			 
+			    <attach>
+			    <doc id="${document1.attachfile.id}" />
+			    </attach>
+			    <e t="f" a='${account1.name}'/>
+			  </m>
+			</SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="account1.document.attach1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">			
+				<m>
+					<e t="t" a='${account2.name}'/>
+					<su> "Send with attachment" </su>					
+					<mp ct="text/plain" />				
+					 <attach>
+							<mp mid="${account1.document.attach1.id}" part="1" />
+					</attach>				
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sentmsg1.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account2.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>subject:(Send with attachment)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
+	 </t:response>
+	</t:test>
+	
+    <t:test required="true">
+        <t:request>
+            <RemoveAttachmentsRequest xmlns="urn:zimbraMail">
+                 <m id="${msg01.id}" part="2"/>
+            </RemoveAttachmentsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:RemoveAttachmentsResponse/mail:m" />
+		</t:response>
+    </t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="RemoveAttachmentsRequest_02" type="bhr">
+    <t:objective>Verify that RemoveAttachmentsRequest remove attachments from  msg with multiple attachment</t:objective>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+               
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account3.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account3.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+    
+    <t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account3.document1.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account3.document.attach1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account3.document2.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account3.document.attach2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	  
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account3.folder.briefcase.id}">
+			    <upload id="${account3.document.attach1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account3.document1.attachfile.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account3.folder.briefcase.id}">
+			    <upload id="${account3.document.attach2.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account3.document2.attachfile.id"/>
+        </t:response>
+    </t:test>
+	
+	<t:test >
+        <t:request>
+			<SaveDraftRequest xmlns="urn:zimbraMail">
+			 <m> 			 
+			    <attach>
+			    <doc id="${account3.document1.attachfile.id}" />
+			    </attach>
+			    <e t="f" a='${account3.name}'/>
+			  </m>
+			</SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="account3.document.attach1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+			<SaveDraftRequest xmlns="urn:zimbraMail">
+			 <m> 			 
+			    <attach>
+			    <doc id="${account3.document2.attachfile.id}" />
+			    </attach>
+			    <e t="f" a='${account3.name}'/>
+			  </m>
+			</SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="account3.document.attach2.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">			
+				<m >
+					<e t="t" a='${account4.name}'/>
+					<e t="c" a='${account3.name}'/>
+					<su> "Send with attachment" </su>					
+					<mp ct="text/plain" />				
+					 <attach>
+							<mp mid="${account3.document.attach1.id}" part="1" />
+					</attach>											 					
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="account3.sentmsg1.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">			
+				<m origid="${account3.sentmsg1.id}" rt="w">
+					<e t="t" a='${account4.name}'/>
+					<e t="c" a='${account3.name}'/>
+					<su> Fwd: "Send with attachment" </su>					
+					<mp ct="text/plain" />				
+					
+					<attach>
+							<mp mid="${account3.document.attach2.id}" part="1" />
+					</attach>						 					
+				</m>				
+				
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="account3.sentmsg2.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account4.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>subject:(Send with attachment)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account3.msg02.id"/>
+	 </t:response>
+	</t:test>
+	
+    <t:test required="true">
+        <t:request>
+            <RemoveAttachmentsRequest xmlns="urn:zimbraMail">
+                 <m id="${account3.msg02.id}" part="1,2"/>
+            </RemoveAttachmentsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:RemoveAttachmentsResponse/mail:m" />
+		</t:response>
+    </t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="RemoveAttachmentsRequest_03" type="functional">
+    <t:objective>Verify that RemoveAttachmentsRequest return error code for invalid part sent in request</t:objective>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account3.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">			
+				<m id="${document.attach1.aid}">
+					<e t="t" a='${account4.name}'/>
+					<e t="c" a='${account3.name}'/>
+					<su> "Send without attachment" </su>					
+					<mp ct="text/plain" />	
+															 					
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="account3.sentmsg3.id"/>
+		</t:response>
+	</t:test>
+	
+		
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account4.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>subject:(Send without attachment)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account3.msg03.id"/>
+	  </t:response>
+	</t:test>
+	
+    <t:test required="true">
+        <t:request>
+            <RemoveAttachmentsRequest xmlns="urn:zimbraMail">
+                 <m id="${account3.msg03.id}" part="#"/>
+            </RemoveAttachmentsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/>
+		</t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <RemoveAttachmentsRequest xmlns="urn:zimbraMail">
+                 <m id="${account3.msg03.id}" part="5"/>
+            </RemoveAttachmentsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="mail.NO_SUCH_PART"/>
+		</t:response>
+    </t:test>
+	
+</t:test_case>
+</t:tests>

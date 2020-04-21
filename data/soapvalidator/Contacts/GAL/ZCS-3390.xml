@@ -1,0 +1,221 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <t:property name="domain" value="${COUNTER}.${TIME}.testgal.com" />
+
+    <t:property name="galaccount" value="galsync.${COUNTER}.${TIME}" />
+    <t:property name="galdatasource" value="gds.${COUNTER}.${TIME}" />
+    <t:property name="account1" value="syncgal.${COUNTER}.${TIME}" />
+    <t:property name="account2" value="syncgal.${COUNTER}.${TIME}" />
+    <t:property name="account3" value="syncgal.${COUNTER}.${TIME}" />
+
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+
+
+    <t:test_case testcaseid="SyncGalRequest_AccountSetup" type="always">
+        <t:objective>Account Setup </t:objective>
+        <t:steps>
+            1. Login into admin.
+            2. Create test domains.
+            3. Create test galsync account.
+            4. Create accounts for the domain and sync it.
+        </t:steps>
+
+        <t:test id="adminlogin" required="true" depends="Ping">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test id="CreateDomain" required="true" depends="adminlogin">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain}</name>
+                    <a n="zimbraNotes">Domain for testing SyncGalRequest</a>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${galdatasource}" type="zimbra"
+                    domain="${domain}">
+                    <account by="name">${galaccount}@${domain}</account>
+                </CreateGalSyncAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="galaccount.id" />
+            </t:response>
+        </t:test>
+
+        <t:test id="CreateAccount1" required="true" depends="adminlogin">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account1}@${domain}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server" />
+            </t:response>
+        </t:test>
+
+        <t:test id="CreateAccount2" required="true" depends="adminlogin">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account2}@${domain}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SyncGalAccountRequest xmlns="urn:zimbraAdmin">
+                    <account id="${galaccount.id}">
+                        <datasource by="name">${galdatasource}</datasource>
+                    </account>
+                </SyncGalAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:SyncGalAccountResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="SyncGalRequest_deltasync" type="bhr" bugids="ZCS-3390">
+        <t:objective>Verify that using the token results in no further updates
+        </t:objective>
+        <t:steps>
+            1. Login as account1
+            2. Send SyncGalRequest (no token) to get the latest token
+            3. Login as admin
+            4. Delete an account2.
+            5. SyncGalAccount to update galsyc data source.
+            6. Send SyncGalRequest with previous token verify deleted account returned.
+            7. Again Send SyncGalRequest with previous token verify nothing returned.
+        </t:steps>
+
+        <t:property name="server.zimbraAccount" value="${account1.server}" />
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1}@${domain}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+
+        <t:test>
+            <t:request>
+                <SyncGalRequest xmlns="urn:zimbraAccount" idOnly="true" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SyncGalResponse" attr="token" set="token.id" />
+            </t:response>
+        </t:test>
+
+
+        <t:test id="adminlogin" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test required="false">
+            <t:request>
+                <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${account2.id}</id>
+                </DeleteAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:DeleteAccountResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SyncGalAccountRequest xmlns="urn:zimbraAdmin">
+                    <account id="${galaccount.id}">
+                        <datasource by="name" fullSync="TRUE">${galdatasource}</datasource>
+                    </account>
+                </SyncGalAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:SyncGalAccountResponse" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1}@${domain}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}" idOnly="true" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SyncGalResponse" attr="token" set="token.id" />
+                <t:select path="//acct:SyncGalResponse/acct:deleted" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}" idOnly="true" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SyncGalResponse" attr="token" set="token.id" />
+                <t:select path="//acct:SyncGalResponse/acct:deleted" emptyset="1" />
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+
+
+
+</t:tests>

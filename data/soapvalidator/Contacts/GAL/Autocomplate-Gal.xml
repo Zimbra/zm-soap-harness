@@ -1,0 +1,1718 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain" value="testautogal.com${COUNTER}${TIME}"/>
+<t:property name="domain1" value="testautogal1.com${COUNTER}${TIME}"/>
+
+<t:property name="account1" value="accautocomgal1"/>
+<t:property name="account2" value="accautocomgal2"/>
+<t:property name="account3" value="autocomgal3"/>
+<t:property name="account4" value="modiaccautocomgal4"/>
+<t:property name="account5" value="accautocomgal5"/>
+<t:property name="account6" value="accautocomgal6"/>
+<t:property name="account7" value="accautocomgal7"/>
+
+<t:property name="accounthide" value="accautohiddengal"/>
+<t:property name="accounthide1" value="contacthiddengal1"/>
+
+<t:property name="accalias1" value="aliasautocomgal1"/>
+<t:property name="accalias2" value="aliasautocomgal2"/>
+<t:property name="accaliashide1" value="aliashiddengal1"/>
+<t:property name="accaliashide2" value="aliashiddengal2"/>
+<t:property name="aliasaccount4" value="modialiasautocomgal4"/>
+
+<t:property name="list1" value="adlautocomgal1@${domain}"/>
+<t:property name="list2" value="adlautohiddengal2@${domain}"/>
+<t:property name="list3" value="modidlautocomgal4@${domain}"/>
+
+<t:property name="Resource.loc1" value="resourceloc1.${TIME}${COUNTER}@${domain}"/>
+<t:property name="Resource.loc2" value="resourceloc2${TIME}${COUNTER}@${domain}"/>
+
+<t:property name="Resource.eq1" value="resourceeq1${TIME}${COUNTER}@${domain}"/>
+<t:property name="Resource.eq2" value="resourceeq2${TIME}${COUNTER}@${domain}"/>
+
+<t:property name="displayName1" value="resourceloc1${TIME}${COUNTER}@${domain}"/>
+<t:property name="displayName2" value="resourceeq1${TIME}${COUNTER}@${domain}"/>
+<t:property name="displayName3" value="resourceloc2${TIME}${COUNTER}@${domain}"/>
+<t:property name="displayName4" value="resourceeq2${TIME}${COUNTER}@${domain}"/>
+
+<t:property name="Resource.equipment" value="Equipment"/>
+<t:property name="Resource.location" value="Location"/>
+
+<t:property name="active" value="active"/>
+<t:property name="closed" value="closed"/>
+
+<t:property name="acc.search" value="acc"/>
+<t:property name="acc.search1" value="accautocom"/>
+<t:property name="alias.search" value="alias"/>
+<t:property name="dl.search" value="adl"/>
+<t:property name="all.search" value="a"/>
+<t:property name="all.search1" value="modi"/>
+<t:property name="all.search2" value="con"/>
+
+<t:property name="spchar" value="!@^*()_+"/>
+<t:property name="sometext" value="some text"/>
+<t:property name="number" value="1234"/>
+<t:property name="zero" value="0"/>
+<t:property name="negative" value="-2"/>
+<t:property name="decimal" value="2.4"/>
+<t:property name="blank" value=""/>
+<t:property name="space" value="         "/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid = "Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid = "acctSetup1_hideaccounts_gal" type="always">
+    <t:objective>Account Setup </t:objective>
+	<t:steps>
+			1. Login into admin.
+			2. Create test domains.
+			3. Create test account with zimbraHideInGal=true.
+			4. Create test account with zimbraHideInGal=false.
+			5. Create aliases on domain and domain1.
+			6. Create DL with zimbraHideInGal=false. 
+			7. Create DL with zimbraHideInGal=true.
+			8. Create Resource(Location and Equipment) with zimbraHideInGal=false.
+			9. Create Resource(Location and Equipment) with zimbraHideInGal=true.
+	</t:steps>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	    <t:test id="CreateDomain1a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain}</name>
+                <a n="zimbraNotes">Domain for testing Autocomplete Gal</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateDomain1b" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1}</name>
+                <a n="zimbraNotes">Domain1 for testing Autocomplete Gal</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateAccount1a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraHideInGal">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test id="CreateAccount1b" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraHideInGal">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test id="CreateAccount7a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account7}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraContactAutoCompleteMaxResults">2</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account7.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test id="CreateAccount1c" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraHideInGal">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test id="AddAlias1a" required="true" depends="CreateAccount1c">
+        <t:request>
+			<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+				<id>${account3.id}</id>
+				<alias>${accalias1}@${domain}</alias>
+			</AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:AddAccountAliasResponse"/>
+ 		</t:response>
+    </t:test>  
+
+	<t:test id="AddAlias1b" required="true" depends="CreateAccount1c">
+        <t:request>
+			<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+				<id>${account3.id}</id>
+				<alias>${accalias2}@${domain1}</alias>
+			</AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:AddAccountAliasResponse"/>
+ 		</t:response>
+    </t:test>  
+
+	<t:test id="CreateAccount1d" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accounthide}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraHideInGal">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="accounthide.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct_hide.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test id="AddAlias1e" required="true" depends="CreateAccount1d">
+        <t:request>
+			<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+				<id>${accounthide.id}</id>
+				<alias>${accaliashide1}@${domain}</alias>
+			</AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:AddAccountAliasResponse"/>
+ 		</t:response>
+    </t:test>  
+
+	<t:test id="AddAlias1f" required="true" depends="CreateAccount1d">
+        <t:request>
+			<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+				<id>${accounthide.id}</id>
+				<alias>${accaliashide2}@${domain1}</alias>
+			</AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:AddAccountAliasResponse"/>
+ 		</t:response>
+    </t:test>  
+
+
+    <t:test id="CreateDistributionList1a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list1}</name>
+                <a n="description">A test distribution list1</a>
+				<a n="zimbraHideInGal">${globals.false}</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list1.name"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateDistributionList1b" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list2}</name>
+                <a n="description">A test distribution list2</a>
+				<a n="zimbraHideInGal">${globals.true}</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list2.name"/>
+		</t:response>
+    </t:test>
+
+    <t:test id="CreateResource1a" required="true" depends="adminlogin">
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.loc1}</name>
+				<a n="zimbraCalResType">${Resource.location}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+				<a n="zimbraHideInGal">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='mail']" set="resourcelocmail1"/>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resourcelocmail1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateResource1b" required="true" depends="adminlogin">
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.eq1}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName2}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+				<a n="zimbraHideInGal">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='mail']" set="resourceeqmail1"/>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resourceeqmail1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateResource1c" required="true" depends="adminlogin">
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.loc2}</name>
+				<a n="zimbraCalResType">${Resource.location}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName3}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+				<a n="zimbraHideInGal">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='mail']" set="resourcehidelocmail"/>
+			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resourcehidelocmail.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="CreateResource1d" required="true" depends="adminlogin">
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.eq2}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName4}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+				<a n="zimbraHideInGal">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='mail']" set="resourcehideeqmail"/>
+			<t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resourcehideeqmail.id"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal01" type="smoke">
+    <t:objective>Verify that autocomple gal returns correct accounts (having zimbraHideInGal=false) when type="account"	</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for account.
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="account">
+				<name>${acc.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${account1}@${domain}"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${account3}@${domain}" emptyset="1" />
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal02" type="functional">
+    <t:objective>Verify that autocomple gal doesnot returns accounts having zimbraHideInGal= true </t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for account.
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${acc.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${accounthide}@${domain}" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal03" type="bhr">
+    <t:objective>Verify that autocomple gal returns correct aliases created on same domain and different domain  (having zimbraHideInGal=false).</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for alias.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${alias.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${account3}@${domain}"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email2']" match="${accalias1}@${domain}"/>
+			 <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email3']" match="${accalias2}@${domain1}"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal04" type="functional">
+    <t:objective>Verify that autocomple gal doesnot return aliases (created on same domain and different domain) of account having zimbraHideInGal=true.</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for alias.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${alias.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${accounthide}@${domain}" emptyset="1"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email2']" match="${accaliashide1}@${domain}" emptyset="1"/>
+			 <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email3']" match="${accaliashide2}@${domain1}" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal05" type="bhr">
+    <t:objective>Verify that autocomple gal returns correct DL ( having zimbraHideInGal=false).</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for Distribution List.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${dl.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${list1}"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal06" type="functional">
+    <t:objective>Verify that autocomple gal doesnot returns DL having zimbraHideInGal= true.</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for Distribution List.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${dl.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${list2}" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal07" type="bhr">
+    <t:objective>Verify that autocomple gal returns correct items having zimbraHideInGal=false.</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for all items by giving common value.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${all.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${list1}"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${account3}@${domain}"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email2']" match="${accalias1}@${domain}"/>
+			<t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email3']" match="${accalias2}@${domain1}"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${account1}@${domain}"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal08" type="functional">
+    <t:objective>Verify that autocomple gal doesnot return items having zimbraHideInGal=true.</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for all items by giving common value.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${all.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${accounthide}@${domain}" emptyset="1"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${accounthide}@${domain}" emptyset="1"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email2']" match="${accaliashide1}@${domain}" emptyset="1"/>
+			<t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email3']" match="${accaliashide2}@${domain1}" emptyset="1"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${list2}" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal09" type="functional">
+    <t:objective>Verify that after modifying zimbraHideInGal=true, autocomple gal doesnot return account, alias and distrubution list.</t:objective>
+	<t:steps>
+			1. Login into admin.
+			2. Create an account, alias and distribution list zimbraHideInGal= false.
+			3. Verify that autocomplete returns all.
+			4. Login into admin and Modify the account having alias with zimbraHideInGal=true 
+			5. Login into test account.
+			6. Search for all items by giving common value.
+	</t:steps>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateAccount9a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraHideInGal">${globals.false}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+		</t:response>
+    </t:test>  
+	
+	<t:test id="AddAlias9a" required="true" depends="CreateAccount9a">
+        <t:request>
+			<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+				<id>${account4.id}</id>
+				<alias>${aliasaccount4}@${domain}</alias>
+			</AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:AddAccountAliasResponse"/>
+ 		</t:response>
+    </t:test>  
+
+    <t:test id="CreateDistributionList1a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list3}</name>
+                <a n="description">A test distribution list3</a>
+				<a n="zimbraHideInGal">${globals.false}</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list3.id"/>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="name" set="list3.name"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${all.search1}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${list3}"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${account4}@${domain}"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email2']" match="${aliasaccount4}@${domain}"/>
+		</t:response>
+    </t:test>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="ModifyAccount9a" required="true" depends="adminlogin">
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account4.id}</id>
+				<a n="zimbraHideInGal">${globals.true}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" set="account8.id"/>
+		</t:response>
+    </t:test>  
+
+    <t:test id="ModifyDistributionList9a" required="true" depends="adminlogin" >
+        <t:request>
+            <ModifyDistributionListRequest xmlns="urn:zimbraAdmin">
+                <id>${list3.id}</id>
+				<a n="zimbraHideInGal">${globals.true}</a>
+            </ModifyDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDistributionListResponse"/> 
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${all.search1}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${list3}" emptyset="1"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${account4}@${domain}" emptyset="1"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email2']" match="${aliasaccount4}@${domain}" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal10" type="functional">
+    <t:objective>Verify autocomplete GAL with spchar/sometext/number/zero/negative/decimal/blank/space. </t:objective>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${blank}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+ 	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${spchar}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${sometext}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${number}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${zero}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${negative}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${decimal}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${space}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "autocomplate_gal11" type="functional">
+    <t:objective>Verify autocomplete GAL when more than 1 name tags are used. </t:objective>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20">
+				<name>${all.search1}</name>
+				<name>${all.search1}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+ 	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal12" type="functional" bugids="46035">
+    <t:objective>Verify autocomplete GAL returns only one 'cn' tag when limit=1. </t:objective>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount">
+				<name>${all.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+ 	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn[1]"/>
+			<t:select path="//acct:AutoCompleteGalResponse/acct:cn[2]"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal13" type="functional" bugids="46035">
+    <t:objective>Verify autocomplete GAL returns more=1 when response is truncated. </t:objective>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount">
+				<name>${all.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+ 	        <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "autocomplate_gal14" type="functional" bugids="46035">
+    <t:objective>Verify that autocomple gal returns correct accounts (having zimbraHideInGal=false) when type and limit attributes are not given.	</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for account.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount">
+				<name>${acc.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AutoCompleteGalResponse"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "autocomplate_gal14A" type="functional" bugids="46035">
+    <t:objective>Verify that autocomple gal returns correct accounts when zimbraContactAutocompleteMaxResults=2	</t:objective>
+	<t:steps>
+			1. Login into test account.
+			2. Search for account.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account7}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount">
+				<name>${acc.search1}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AutoCompleteGalResponse/acct:cn[1]"/>
+			<t:select path="//acct:AutoCompleteGalResponse/acct:cn[2]"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal15" type="functional">
+    <t:objective>Verify that autocomple gal returns account (zimbraHideInGal=true) when account is added in the personal contact book using SerachRequest with type='Contact' and not using AutoCompleteGalRequest.</t:objective>
+	<t:steps>
+			1. Login into admin.
+			2. Create account1 with zimbraHideInGal=true.
+			3. Login into test account.
+			4. Search for account1.
+			5. Add the account1 in the contacts.
+			6. Now again Search for account1.
+	</t:steps>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateAccount15a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accounthide1}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraHideInGal">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="accounthide1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct_del.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="account">
+				<name>${accounthide1}@${domain}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${accounthide1}@${domain}" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<CreateContactRequest xmlns="urn:zimbraMail">
+				<cn>
+					<a n="lastName">${accounthide1}</a>
+					<a n="email">${accounthide1}@${domain}</a>
+					<a n="fullName">${accounthide1}</a>
+				</cn>
+			</CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="account">
+				<name>${accounthide1}@${domain}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${accounthide1}@${domain}" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" sortBy="nameAsc" offset="0" limit="25" types="contact">
+				<query>${accounthide1}@${domain}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+ 			<t:select path='//mail:SearchResponse/mail:cn/mail:a[@n="email"]' match="${accounthide1}@${domain}"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal16" type="bhr">
+    <t:objective>Verify that autocomplete gal returns resource(Location) with type='resource' when its zimbraHideInGal=false.</t:objective>
+	<t:steps>
+			1. Resource with zimbraHideInGal=false, created in acctSetup1_hideaccounts_gal.
+			2. Login into test account.
+			3. Search for resource using AutoCompleteGalRequest with type='resource'.
+	</t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="resource">
+				<name>${resourcelocmail1}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${resourcelocmail1}"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid = "autocomplate_gal17" type="bhr">
+    <t:objective>Verify that autocomplete gal returns resource(Equipment) with type='resource' when its zimbraHideInGal=false.</t:objective>
+	<t:steps>
+			1. Resource with zimbraHideInGal=false, created in acctSetup1_hideaccounts_gal.
+			2. Login into test account.
+			3. Search for resource using AutoCompleteGalRequest with type='resource'.
+	</t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="resource">
+				<name>${resourceeqmail1}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${resourceeqmail1}" />
+		</t:response>
+    </t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid = "autocomplate_gal18" type="functional">
+    <t:objective>Verify that autocomplete gal doesnot returns resource(Location) with type='resource' when its zimbraHideInGal=true.</t:objective>
+	<t:steps>
+			1. Resource with zimbraHideInGal=true, created in acctSetup1_hideaccounts_gal.
+			2. Login into test account.
+			3. Search for resource using AutoCompleteGalRequest with type='resource'.
+	</t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="resource">
+				<name>${resourcehidelocmail}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${resourcehidelocmail}" emptyset="1"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal19" type="functional">
+    <t:objective>Verify that autocomplete gal doesnot returns resource(Equipment) with type='resource' when its zimbraHideInGal=true.</t:objective>
+	<t:steps>
+			1. Resource with zimbraHideInGal=true, created in acctSetup1_hideaccounts_gal.
+			2. Login into test account.
+			3. Search for resource using AutoCompleteGalRequest with type='resource'.
+	</t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="resource">
+				<name>${resourcehideeqmail}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${resourcehideeqmail}" emptyset="1"/>
+		</t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal20" type="functional">
+    <t:objective>Verify that autocomplete gal returns resource(Location) with type='resource' when its zimbraHideInGal=true is modified to false.</t:objective>
+	<t:steps>
+			1. Resource with zimbraHideInGal=true, created in acctSetup1_hideaccounts_gal.
+			2. Login into admin.
+			3. Modify the resource zimbraHideInGal=false.
+			4. Login into test account.
+			5. Search for resource using AutoCompleteGalRequest with type='resource'.
+	</t:steps>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resourcehidelocmail.id}</id>
+				<a n="zimbraCalResType">${Resource.location}</a>
+				<a n="zimbraHideInGal">${globals.false}</a>
+			</ModifyCalendarResourceRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCalendarResourceResponse/admin:calresource/admin:a[@n='mail']"
+			set="resourcehidelocmail"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="resource">
+				<name>${resourcehidelocmail}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${resourcehidelocmail}" />
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal21" type="functional">
+    <t:objective>Verify that autocomplete gal returns resource(Equipment) with type='resource' when its zimbraHideInGal=true is modified to false.</t:objective>
+	<t:steps>
+			1. Resource with zimbraHideInGal=true, created in acctSetup1_hideaccounts_gal.
+			2. Login into admin.
+			3. Modify the resource zimbraHideInGal=false.
+			4. Login into test account.
+			5. Search for resource using AutoCompleteGalRequest with type='resource'.
+	</t:steps>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resourcehideeqmail.id}</id>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraHideInGal">${globals.false}</a>
+			</ModifyCalendarResourceRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCalendarResourceResponse/admin:calresource/admin:a[@n='mail']"
+			set="resourcehideeqmail"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="resource">
+				<name>${resourcehideeqmail}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${resourcehideeqmail}" />
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal22" type="functional" bugids="15777">
+	<t:objective>To disable zimbraFeatureGalEnabled and verify that permission denied error is returned for AutoCompleteGalRequest</t:objective>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>     
+
+    <t:test  id="autocomplate_gal22a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="autocomplate_gal22b" depends="autocomplate_gal22a">
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n = "zimbraFeatureGalEnabled">FALSE</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test id="autocomplate_gal22c">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test id="autocomplate_gal22d">
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="account">
+				<name>${acc.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.PERM_DENIED"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal23" type="functional" bugids="15777">
+	<t:objective>To disable zimbraFeatureGalAutoCompleteEnabled and verify that permission denied error is returned for
+AutoCompleteGalRequest</t:objective>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>     
+
+    <t:test  id="autocomplate_gal23a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="autocomplate_gal23b" depends="autocomplate_gal23a">
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n = "zimbraFeatureGalEnabled">TRUE</a>
+                <a n = "zimbraFeatureGalAutoCompleteEnabled">FALSE</a>
+			</ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test id="autocomplate_gal23c">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test id="autocomplate_gal23d">
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="account">
+				<name>${acc.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.PERM_DENIED"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "autocomplate_gal24" type="functional" bugids="15777">
+	<t:objective>To enable zimbraFeatureGalEnabled and zimbraFeatureGalAutoCompleteEnabled and verify that permission denied error is returned for AutoCompleteGalRequest</t:objective>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>     
+
+    <t:test  id="autocomplate_gal24a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="autocomplate_gal24b" depends="autocomplate_gal24a">
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n = "zimbraFeatureGalEnabled">TRUE</a>
+                <a n = "zimbraFeatureGalAutoCompleteEnabled">TRUE</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:test id="autocomplate_gal24c">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account1}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test id="autocomplate_gal24d">
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="account">
+				<name>${acc.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${account1}@${domain}"/>
+	        <t:select path="//acct:AutoCompleteGalResponse/acct:cn/acct:a[@n='email']" match="${account3}@${domain}" emptyset="1" />
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="autocomplate_gal25" type="sanity" bugids="36913">
+	<t:objective>Verify first name plus last initial matches GAL</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test id="CreateAccount9a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+		</t:response>
+    </t:test>  
+	
+	<t:test id="CreateAccount9a" required="true" depends="adminlogin">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account6}@${domain}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="displayName">Account6 Lastname</a>
+				<a n="givenName">Account6</a>
+				<a n="sn">Lastname</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account6.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+		</t:response>
+    </t:test>  
+	
+	<t:property name="server.zimbraAccount" value="${account5.server}"/>
+
+	<t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount" >
+                <account by="name">${account5}@${domain}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test id="autocomplate_gal24d">
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="account">
+				<name>Account6 L</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//acct:AutoCompleteGalResponse">
+				<t:select path="//acct:cn/acct:a[@n='email']" match="${account6}@${domain}"/>
+			</t:select>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,456 @@
+<t:tests xmlns:t = "urn:zimbraTestHarness">
+
+<t:property name = "test_account1.name" value = "test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name = "test_account1.password" value = "test123"/>
+
+<t:property name="tag1.name" value="tag1${TIME}${COUNTER}" />
+<t:property name="tag.newname" value="newtag${TIME}${COUNTER}" />
+
+<t:property name="tag2.name" value="tag2${TIME}${COUNTER}" />
+<t:property name="tag2.newname" value="newtag${TIME}${COUNTER}" />
+
+<t:property name="tag3.name" value="tag3${TIME}${COUNTER}" />
+
+<t:property name = "contact1.first" value = "first1${TIME}${COUNTER}"/>
+<t:property name = "contact1.last" value = "last1${TIME}${COUNTER}"/>
+<t:property name = "contact1.email" value = "email1${TIME}${COUNTER}@hotmail.com"/>
+
+<t:property name = "contact2.first" value = "first2${TIME}${COUNTER}"/>
+<t:property name = "contact2.last" value = "last2${TIME}${COUNTER}"/>
+<t:property name = "contact2.email" value = "email2${TIME}${COUNTER}@hotmail.com"/>
+
+
+<t:property name = "contact1.newemail" value = "email${TIME}${COUNTER}@gmail.com"/>
+<t:property name = "contact10.first" value = "first${TIME}${COUNTER}"/>
+<t:property name = "contact10.last" value = "last${TIME}${COUNTER}"/>
+<t:property name = "contact10.email" value = "email${TIME}${COUNTER}@hotmail.com"/>
+<t:property name = "contact10.newemail" value = "email${TIME}${COUNTER}@gmail.com"/>
+<t:property name = "contact2.email" value = "email${TIME}${COUNTER}@hotmail.com"/>
+<t:property name = "contact3.email" value = "email${TIME}${COUNTER}@hotmail.com"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid = "Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test required = "true">
+        <t:request>
+            <PingRequest xmlns = "urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyContactRequest_acctsetup1" type="always">
+    <t:objective>create test account</t:objective>
+    
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Create account1 -->
+    <t:test required = "true">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid = "ModifyContactRequest_acctsetup2" type="always">
+    <t:objective>login as the test account</t:objective>
+    
+    <!-- Login as Account1 -->
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <!-- Create tag1 -->
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag1.name}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag1.id" />
+            <t:select attr="name" match="${tag1.name}" />
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!-- Create tag2 -->
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag2.name}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag2.id" />
+            <t:select attr="name" match="${tag2.name}" />
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "ModifyContactRequest01" bugids="67327" type="smoke">
+    <t:objective>Modify a contact: Apply tag to contact.</t:objective>
+    <t:steps>1. create a new contact without tag. 
+             2. Tag that contact with invalid values of tag.
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+    
+     <!-- Login as Account1 -->
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <!-- Create contact -->
+    <t:test id = "CreateContactRequest1">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact1.first}</a>
+                    <a n = "lastName">${contact1.last}</a>
+                    <a n = "email">${contact1.email}</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!-- Apply tag to contact -->
+    <t:test id = "modifycontactrequest1b" depends = "CreateContactRequest1">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
+                <cn id = "${contact.id}" tn="${tag1.name}">
+                    <a n = "email">${contact1.newemail}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn" attr = "tn" match="${tag1.name}"/>
+        </t:response>
+    </t:test>
+       
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContactRequest02" bugids="67327" type="bhr">
+    <t:objective>Modify a contact: Apply tag to contact.</t:objective>
+    <t:steps>1. create a new contact with tag1. 
+        2. Modify contact, Tag that contact with valid values of tag.
+        3. Verify ModifyContactRequest should respond with both tag1 and tag2 when replace=0.
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+    
+     <!-- Login as Account1 -->
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <!-- Create contact -->
+    <t:test id = "CreateContactRequest2">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn tn="${tag1.name}">
+                    <a n = "firstName">${contact2.first}</a>
+                    <a n = "lastName">${contact2.last}</a>
+                    <a n = "email">${contact2.email}</a>
+                    
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact2.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!-- Apply tag to contact -->
+    <t:test id = "modifycontactrequest1b" depends = "CreateContactRequest2">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" >
+                <cn id = "${contact2.id}" tn="${tag2.name}">
+                    <a n = "email">${contact1.newemail}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn" attr = "tn" match="${tag2.name}"/>
+        </t:response>
+    </t:test>
+       
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContactRequest03" bugids="67327" type="bhr">
+    <t:objective>Modify a contact: Apply tag to contact.</t:objective>
+    <t:steps>1. create a new contact with tag1. 
+        2. Modify contact, do not apply tag.
+        3. Verify ModifyContactRequest should respond with applied tag ie tag1.
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+    
+     <!-- Login as Account1 -->
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <!-- Create contact -->
+    <t:test id = "CreateContactRequest3">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn tn="${tag1.name}">
+                    <a n = "firstName">${contact2.first}</a>
+                    <a n = "lastName">${contact2.last}</a>
+                    <a n = "email">${contact2.email}</a>
+                    
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact2.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!-- Apply tag to contact -->
+    <t:test id = "modifycontactrequest1b" depends = "CreateContactRequest3">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "1" >
+                <cn id = "${contact2.id}">
+                    <a n = "email">${contact1.newemail}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//mail:ModifyContactResponse/mail:cn" attr = "tn" match="${tag1.name}"/>
+        </t:response>
+    </t:test>
+       
+       
+    <!-- Apply tag to contact -->
+    <t:test id = "modifycontactrequest1b" depends = "CreateContactRequest3">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" >
+                <cn id = "${contact2.id}" tn="${tag1.name},${tag2.name}">
+                    <a n = "email">${contact1.newemail}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//mail:ModifyContactResponse/mail:cn" attr = "tn" match="${tag1.name},${tag2.name}"/>
+        </t:response>
+    </t:test>
+    
+ 
+    <t:test id = "modifycontactrequest1b" depends = "CreateContactRequest3">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" >
+                <cn id = "${contact2.id}" tn="${tag1.name}">
+                    <a n = "email">${contact1.newemail}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//mail:ModifyContactResponse/mail:cn" attr = "tn" match="${tag1.name}"/>
+        </t:response>
+    </t:test>
+       
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContactRequest04" bugids="67327" type="bhr">
+    <t:objective>Modify a contact: Apply tag to contact.</t:objective>
+    <t:steps>1. create a new contact. 
+        2. Modify contact, tag that contact with multiple tags.
+        3. Verify ModifyContactRequest should respond with applied tags ie tag1 and tag2.
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+    
+     <!-- Login as Account1 -->
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <!-- Create contact -->
+    <t:test id = "CreateContactRequest3">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact2.first}</a>
+                    <a n = "lastName">${contact2.last}</a>
+                    <a n = "email">${contact2.email}</a>
+                    
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact2.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+       
+    <!-- Apply tag to contact -->
+    <t:test id = "modifycontactrequest1b" depends = "CreateContactRequest3">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" >
+                <cn id = "${contact2.id}" tn="${tag1.name},${tag2.name}">
+                    <a n = "email">${contact1.newemail}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//mail:ModifyContactResponse/mail:cn" attr = "tn"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid = "ModifyContactRequest05" bugids="67327" type="bhr">
+    <t:objective>Modify a contact: Try to apply non existing tag. </t:objective>
+    <t:steps>1. create a new contact. 
+        2. Modify contact, tag that contact with non existing tag.
+        3. Verify ModifyContactRequest should respond with error.
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+    
+     <!-- Login as Account1 -->
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <!-- Create contact -->
+    <t:test id = "CreateContactRequest3">
+        <t:request>
+            <CreateContactRequest xmlns = "urn:zimbraMail">
+                <cn>
+                    <a n = "firstName">${contact2.first}</a>
+                    <a n = "lastName">${contact2.last}</a>
+                    <a n = "email">${contact2.email}</a>
+                    
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateContactResponse/mail:cn">
+            <t:select attr = "id" set = "contact2.id"/>            
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test id = "modifycontactrequest1b" depends = "CreateContactRequest3">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" >
+                <cn id = "${contact2.id}" tn="${tag3.name}">
+                    <a n = "email">${contact1.newemail}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//mail:ModifyContactResponse/mail:cn" attr = "tn" match="${tag3.name}"/>
+        </t:response>
+    </t:test>
+       
+</t:test_case>
+
+
+</t:tests>

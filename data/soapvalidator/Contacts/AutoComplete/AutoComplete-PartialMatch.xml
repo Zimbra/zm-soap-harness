@@ -1,0 +1,169 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="harshada1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="jon1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="displayName.name" value="Jonathan Smith"/>
+<t:property name="givenName.name" value="Jonathan"/>
+<t:property name="initials.name" value="B."/>
+<t:property name="sn.name" value="Smith"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check.</t:objective>
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="Autocomplete_PartialSearchRequest_setup" type="always">
+    <t:objective>Create account </t:objective>
+    
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+	<t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefGalAutoCompleteEnabled">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+       
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                 <a  n="displayName">${displayName.name}</a>
+				 <a  n="givenName">${givenName.name}</a>
+				 <a  n="initials">${initials.name}</a>
+				 <a  n="sn">${sn.name}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>    
+</t:test_case>
+
+<t:test_case testcaseid="Autocomplete_PartialSearchRequest1" type="smoke" bugids="53985">
+    <t:objective>Autocomplete using partial search for first name </t:objective>
+	<t:steps>
+	1. Login to mailclient as test_account1.
+	2. Run a partial search by giving partial first name. Correct search result should be return.
+	</t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	
+	<t:test id = "authreq" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>Jon</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse/mail:match" attr="email" match=".*${displayName.name}.*"/>
+		</t:response>
+    </t:test>  	
+</t:test_case>
+ 
+<t:test_case testcaseid="Autocomplete_PartialSearchRequest2" type="bhr" bugids="53985">
+    <t:objective>Autocomplete using partial search for last name </t:objective>
+	<t:steps>
+	1. Login to mailclient as test_account1.
+	2. Run a partial search by giving partial last name. Correct search result should be return.
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	
+	<t:test id = "authreq" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>Smi</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse/mail:match" attr="email" match=".*${displayName.name}.*"/>
+		</t:response>
+    </t:test>  	
+</t:test_case> 
+
+<t:test_case testcaseid="Autocomplete_PartialSearchRequest3" type="bhr" bugids="53985">
+    <t:objective>Autocomplete using partial search for first last name </t:objective>
+	<t:steps>
+	1. Login to mailclient as test_account1.
+	2. Run a partial search by giving partial first last name. Correct search result should be return.
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	
+	<t:test id = "authreq" required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>Jon Smi</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse/mail:match" attr="email" match=".*${displayName.name}.*"/>
+		</t:response>
+    </t:test>  	
+</t:test_case> 
+</t:tests>	

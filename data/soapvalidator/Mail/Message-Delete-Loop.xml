@@ -1,0 +1,495 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="acct1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct1.server" value="NOT_DEFINED"/>
+
+<t:property name="acct2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct2.server" value="NOT_DEFINED"/>
+
+<t:property name="message.subj" value="${TIME}"/>
+    
+
+<t:property name="op.move" value="move"/>  
+<t:property name="op.delete" value="delete"/>
+
+<t:property name="loop.count" value="1000"/>
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_message_loop" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps> 1. Login to admin.
+              2. Create test account. 
+    </t:steps>
+
+    <t:test required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct1.name}</name>
+                <password>${defaultpassword.value}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="acct2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${acct1.server}"/>
+
+<t:test_case testcaseid="acctSetup2_message_loop" type="always">
+    <t:objective>Login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MessageDeleteLoop01" type="sanity" duration="long" >
+    <t:objective>Send 5000 mails and delete each one immediately after sending</t:objective>
+    <t:steps>
+		1. Loop for 5000 times:
+			A. SendMsgRequets
+			B. Move to trash
+			C. Delete from trash
+	</t:steps>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test_loop count="${loop.count}" timeframeMax="10000">      
+        
+        <t:test id="MessageDeleteLoop01a">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m>
+                        <e t="t" a="${acct2.name}"/>
+                        <su>${message.subj}  ${TIME} ${COUNTER}</su>
+                        <mp ct="text/plain">
+                            <content>Content of mail ${TIME} ${COUNTER}</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>
+            </t:response>
+        </t:test> 
+        
+
+	    <t:test id="MessageDeleteLoop01b" depends="MessageDeleteLoop01a,getFolderRequest">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+	        <t:request>
+	            <MsgActionRequest xmlns="urn:zimbraMail">
+	                <action id="${message.id}" op="${op.move}" l="${trashFolder.id}"/>
+	            </MsgActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.move}"/>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message.id}"/>
+	        </t:response>
+	    </t:test>
+
+
+	    <t:test id="MessageDeleteLoop01c" depends="MessageDeleteLoop01b">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+	        <t:request>
+	            <MsgActionRequest xmlns="urn:zimbraMail">
+	                <action id="${message.id}" op="${op.delete}"/>
+	            </MsgActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.delete}"/>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message.id}"/>
+	        </t:response>
+	    </t:test>
+
+    </t:test_loop>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageDeleteLoop02" type="sanity" duration="long" >
+    <t:objective>Send 5000 mails, then move each one to the trash, then delete them from the trash</t:objective>
+    <t:steps>
+		1. Loop for 5000 times:
+			A. SendMsgRequets
+		2. Loop for 5000 times:
+			A. Move to trash
+		3. Loop for 5000 times:
+			A. Delete from trash
+	</t:steps>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test_loop count="${loop.count}" timeframeMax="10000">      
+        
+        <t:test id="MessageDeleteLoop02a">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m>
+                        <e t="t" a="${acct2.name}"/>
+                        <su>${message.subj}  ${TIME} ${COUNTER}</su>
+                        <mp ct="text/plain">
+                            <content>Content of mail ${TIME} ${COUNTER}</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m"/>
+            </t:response>
+        </t:test> 
+        
+    </t:test_loop>
+
+    <t:test_loop count="${loop.count}" timeframeMax="10000">      
+
+		<t:test id="MessageDeleteLoop02b" depends="MessageDeleteLoop02a">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+		  <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="1">
+			       <query>subject:(${message.subj})</query>
+			</SearchRequest>
+		  </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m[1]" attr="id" set="message.id"/>
+		  </t:response>
+		</t:test>
+
+	    <t:test id="MessageDeleteLoop02c" depends="MessageDeleteLoop02b,getFolderRequest">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+	        <t:request>
+	            <MsgActionRequest xmlns="urn:zimbraMail">
+	                <action id="${message.id}" op="${op.move}" l="${trashFolder.id}"/>
+	            </MsgActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.move}"/>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message.id}"/>
+	        </t:response>
+	    </t:test>
+        
+    </t:test_loop>
+
+    <t:test_loop count="${loop.count}" timeframeMax="10000">      
+
+		<t:test id="MessageDeleteLoop02d">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+		  <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="1">
+			       <query>subject:(${message.subj}) in:trash</query>
+			</SearchRequest>
+		  </t:request>
+		  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m[1]" attr="id" set="message.id"/>
+		  </t:response>
+		</t:test>
+
+	    <t:test id="MessageDeleteLoop02e" depends="MessageDeleteLoop02d">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+	        <t:request>
+	            <MsgActionRequest xmlns="urn:zimbraMail">
+	                <action id="${message.id}" op="${op.delete}"/>
+	            </MsgActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.delete}"/>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message.id}"/>
+	        </t:response>
+	    </t:test>
+
+    </t:test_loop>
+
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="MessageDeleteLoop03" type="sanity" duration="long" >
+    <t:objective>Send 5000 mails, then move each one to the trash, then o one Folder Action to delete all  from the trash</t:objective>
+    <t:steps>
+		1. Loop for 5000 times:
+			A. SendMsgRequets
+			b. Move to trash
+		3. Folder Action Request - Empty Trash
+	</t:steps>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test_loop count="${loop.count}" timeframeMax="10000">      
+        
+        <t:test id="MessageDeleteLoop03a">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m>
+                        <e t="t" a="${acct2.name}"/>
+                        <su>${message.subj}  ${TIME} ${COUNTER}</su>
+                        <mp ct="text/plain">
+                            <content>Content of mail ${TIME} ${COUNTER}</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>
+            </t:response>
+        </t:test> 
+        
+	    <t:test id="MessageDeleteLoop03b" depends="MessageDeleteLoop03a,getFolderRequest">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+	        <t:request>
+	            <MsgActionRequest xmlns="urn:zimbraMail">
+	                <action id="${message.id}" op="${op.move}" l="${trashFolder.id}"/>
+	            </MsgActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.move}"/>
+	            <t:select path="//mail:MsgActionResponse/mail:action" attr="id" match="${message.id}"/>
+	        </t:response>
+	    </t:test>
+        
+    </t:test_loop>
+
+    <t:test >
+        <t:request id="MessageDeleteLoop03c" >
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="empty" id="${trashFolder.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action">
+	            <t:select attr="id" match="${trashFolder.id}"/>
+	            <t:select attr="op" match="empty"/>        
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="MessageDeleteLoop04" type="sanity" duration="long" >
+    <t:objective>Send 5000 mails, remember their id's.  Then, issue one delete for all the id's.</t:objective>
+    <t:steps>
+		1. Loop for 5000 times:
+			A. SendMsgRequets
+		2. Message Action Request - Move to Trash
+		3. Message Action Request - Delete from Trash
+	</t:steps>
+
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trashFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sentFolder.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spamFolder.id"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="draftsFolder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="MessageDeleteLoop04a">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a="${acct2.name}"/>
+                    <su>${message.subj}  ${TIME} ${COUNTER}</su>
+                    <mp ct="text/plain">
+                        <content>Content of mail ${TIME} ${COUNTER}</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>
+        </t:response>
+    </t:test> 
+    
+	<t:property name="message.ids" value="${message.id}"/>
+
+    <t:test_loop count="${loop.count}" timeframeMax="10000">      
+        
+        <t:test id="MessageDeleteLoop03b">
+	        <t:requestContext>
+	            <authToken>${authToken}</authToken>
+
+	            <nonotify/>
+	        </t:requestContext>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m>
+                        <e t="t" a="${acct2.name}"/>
+                        <su>${message.subj}  ${TIME} ${COUNTER}</su>
+                        <mp ct="text/plain">
+                            <content>Content of mail ${TIME} ${COUNTER}</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id"/>
+            </t:response>
+        </t:test> 
+        
+		<t:property name="message.ids" value="${message.ids},${message.id}"/>
+
+        
+    </t:test_loop>
+
+    <t:test id="MessageDeleteLoop03c" depends="MessageDeleteLoop03b,getFolderRequest">
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.ids}" op="${op.move}" l="${trashFolder.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.move}"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="MessageDeleteLoop03c" depends="MessageDeleteLoop03b,getFolderRequest">
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message.ids}" op="${op.delete}" l="${trashFolder.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action" attr="op" match="${op.delete}"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+</t:tests>

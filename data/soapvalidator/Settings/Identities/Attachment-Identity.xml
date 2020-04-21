@@ -1,0 +1,222 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <t:property name="account1.name" value="test1${TIME}@${defaultdomain.name}" />
+    <t:property name="account1.persona" value="account1 persona" />
+    <t:property name="account2.name" value="test2${TIME}@${defaultdomain.name}" />
+    <t:property name="account3.name" value="test3${TIME}@${defaultdomain.name}" />
+    <t:property name="compose.subject" value="Subject${TIME}${COUNTER}" />
+    <t:property name="compose.content" value="Body${TIME}${COUNTER}" />
+    <t:property name="uploadFile.basic" value="${testMailRaw.root}/email27/textAttachment.txt"/>
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>Basic system check</t:objective>
+        <t:test id="ping">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    <t:test_case testcaseid="Account_Setup" type="always">
+        <t:objective>Create user account</t:objective>
+        <t:steps>1. Login to admin. 2. Create test accounts
+        </t:steps>
+        <t:test id="admin_login">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="create_testAccount1">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account1.id" />
+            </t:response>
+        </t:test>
+        <t:test id="create_testAccount2">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account2.id" />
+            </t:response>
+        </t:test>
+        <t:test id="create_testAccount3">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account3.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account"
+                    attr="id" set="account3.id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    <t:test_case testcaseid="bugValidation" type="bhr" bugids="ZBUG-1292">
+        <t:objective>Validate that send message with attachment is allowed for persona</t:objective>
+        <t:steps>
+            1. Add delegate for account 1
+            2. Create persona for account2
+            3. Use persona to send email with attachment
+            4. Validate that the email is sent, is present in recipient's inbox and is deleted from senders draft folder.
+        </t:steps>
+        <t:test id="auth_testAccount1" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="add_delegate">
+            <t:request>
+                <GrantRightsRequest requestId="0" xmlns="urn:zimbraAccount">
+                    <ace d="${account2.name}" right="sendAs" gt="usr" />
+                    <ace d="${account2.name}" right="sendOnBehalfOf" gt="usr" />
+                </GrantRightsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:GrantRightsResponse" />
+            </t:response>
+        </t:test>
+        <t:test id="auth_testAccount2" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="add_persona">
+            <t:request>
+                <CreateIdentityRequest requestId="0" xmlns="urn:zimbraAccount">
+                    <identity name="${account1.persona}">
+                        <a name="zimbraPrefIdentityName">${account1.persona}</a>
+                        <a name="zimbraPrefFromDisplay">${account1.persona}</a>
+                        <a name="zimbraPrefFromAddress">${account1.name}</a>
+                        <a name="zimbraPrefFromAddressType">sendAs</a>
+                        <a name="zimbraPrefReplyToEnabled">FALSE</a>
+                        <a name="zimbraPrefReplyToDisplay" />
+                        <a name="zimbraPrefReplyToAddress" />
+                        <a name="zimbraPrefDefaultSignatureId" />
+                        <a name="zimbraPrefForwardReplySignatureId" />
+                        <a name="zimbraPrefWhenSentToEnabled">FALSE</a>
+                        <a name="zimbraPrefWhenInFoldersEnabled">FALSE</a>
+                    </identity>
+                </CreateIdentityRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="identity.id" />
+            </t:response>
+        </t:test>
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile.basic}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="message0.aid" />
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+        <t:test>
+            <t:request>
+                <SaveDraftRequest xmlns="urn:zimbraMail">
+                    <m idnt="${identity.id}">
+                        <su>${compose.subject}</su>
+                        <mp ct="text/plain">
+                            <content>${compose.content}</content>
+                        </mp>
+                        <attach aid="${message0.aid}"/>
+                    </m>
+                </SaveDraftRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft.id" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m did="${draft.id}" idnt="${identity.id}">
+                        <e t="t" a='${account3.name}' />
+                        <e t="f" a='${account1.name}' p='${account1.persona}' />
+                        <su>${compose.subject}</su>
+                        <mp ct="text/plain">
+                            <content>${compose.content}</content>
+                        </mp>
+                        <attach>
+                            <mp mid="${draft.id}" part="2" />
+                        </attach>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>in:Drafts</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" emptyset="1" />
+            </t:response>
+        </t:test>
+        <t:test id="auth_testAccount3" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account3.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>subject:${compose.subject}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GetMsgRequest xmlns="urn:zimbraMail">
+                    <m id="${msg1.id}" />
+                </GetMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select
+                    path="//mail:GetMsgResponse//mail:mp" attr="filename" match="textAttachment.txt" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+</t:tests>

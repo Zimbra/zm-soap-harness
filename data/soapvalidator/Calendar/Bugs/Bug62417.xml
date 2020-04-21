@@ -1,0 +1,288 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="Resource.equipment" value="Equipment"/>
+<t:property name="Resource.location" value="Location"/>
+
+<t:property name="timezone5" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="resource1.name" value="resource1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource1.displayname" value="resource1.${TIME}"/>
+
+<t:property name="resource2.name" value="resource2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource3.name" value="resource3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource4.name" value="resource4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource5.name" value="resource5.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="location1.name" value="location1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts and calendar resource</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    
+    <!-- Create resource -->
+    <t:test id="CreateCalendarResourceRequest1">
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${resource1.displayname}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>	
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource2.id"/>
+            <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Resources_CreateAppointment_01" type="bhr">
+    <t:objective>Verify that 'null' should not appended in the auto accept response from resource</t:objective>
+    <t:steps>
+		1. Login a account1 and create an appointment with location
+		2. Check the inbox for the response from the resource
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+   
+    <t:property name="appt1.timezone" value="${timezone5}"/>
+    <t:property name="appt1.start.gmt" value="1577880000000"/>						<!-- 1/1/2010 12:00:00 -->
+    <t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>	<!-- 1/1/2010 04:00:00 -->
+    <t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
+    <t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
+    
+    
+    <t:test id="CreateAppointmentRequest1">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m d="${TIME}">
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" >
+                        <at role="REQ" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
+                        <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
+                        <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <e a="${resource1.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appt1.content}</content>
+                    </mp>
+                    <su>${appt1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="calItemId"	set="appt1.calItemId"/>
+            	<t:select attr="invId"		set="appt1.invId"/>
+            	<t:select attr="apptId"		set="appt1.apptId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<!-- delay for the response -->
+	<t:delay sec="15"/>
+	
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.inbox.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>inid:${account1.inbox.folder.id} and subject: ${appt1.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="mail01.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${mail01.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//mail:GetMsgResponse/mail:m" attr="fr" match="^${resource1.displayname} has been scheduled for your appointment."/>
+             <t:select path="//mail:GetMsgResponse/mail:m/mail:fr" match=".*null.*" emptyset="1"/>             
+       </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="Resources_CreateAppointment_02" type="bhr">
+    <t:objective>Verify that 'null'should not appended in the auto decline response from resource</t:objective>
+    <t:steps>
+    	1. Login a account2 and create an appointment with location
+		2. Check the inbox for the response from the resource
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test id="auth2" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+   
+    <t:property name="appt1.timezone" value="${timezone5}"/>
+    <t:property name="appt1.start.gmt" value="1577880000000"/>						<!-- 1/1/2020 12:00:00 -->
+    <t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>	<!-- 1/1/2020 04:00:00 -->
+    <t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
+    <t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
+    
+    
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m d="${TIME}">
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" >
+                        <at role="REQ" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
+                        <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
+                        <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
+                        <or a="${account2.name}"/>
+                    </inv>
+                    <e a="${resource1.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appt1.content}</content>
+                    </mp>
+                    <su>${appt1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" />           	  
+        </t:response>
+    </t:test>
+
+	<!-- delay for the response -->
+	<t:delay sec="15"/>
+	
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.inbox.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>inid:${account2.inbox.folder.id} and subject: ${appt1.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="mail02.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${mail02.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//mail:GetMsgResponse/mail:m" attr="fr" match=".*${resource1.displayname} could not be scheduled.*"/>
+              <t:select path="//mail:GetMsgResponse/mail:m/mail:fr" match=".*null.*" emptyset="1"/> 
+       </t:response>
+    </t:test>
+</t:test_case>
+</t:tests>

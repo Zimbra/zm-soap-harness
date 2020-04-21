@@ -1,0 +1,118 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="accountA1.name" value="multihost.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="accountB1.name" value="multihost.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="accountC1.name" value="multihost.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="COS.name" value="multihostcos${TIME}${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_CreateAcctMultinode3" hostCount="2" type="always" >
+    <t:objective>Account setup </t:objective>
+	<t:steps> 1. Login to admin.
+			  2. Get the Servers.
+			  3. Create COS using the servers.			
+	</t:steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="admin_login" required="true">
+        <t:request>
+            <GetAllServersRequest xmlns="urn:zimbraAdmin"></GetAllServersRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllServersResponse/admin:server[@name='${multihostA.FQDN}']" attr="id" set="serverA.id"/>
+            <t:select path="//admin:GetAllServersResponse/admin:server[@name='${multihostB.FQDN}']" attr="id" set="serverB.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS.name}</name>        
+                <a n="zimbraMailHostPool">${serverA.id}</a>
+				<a n="zimbraMailHostPool">${serverB.id}</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="zimbraId" set="Cos.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAccMultinode3_01" hostCount="2" type="bhr">
+    <t:objective>Verify that the accounts with COS having 2 servers(A and B) in the server Pool are getting created on server A or B but not on C.</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountA1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCOSId">${Cos.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  match="${multihostC.FQDN}" emptyset ="1"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountB1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCOSId">${Cos.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  match="${multihostC.FQDN}" emptyset ="1"/>
+        </t:response>
+    </t:test> 
+	
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountC1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCOSId">${Cos.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  match="${multihostC.FQDN}" emptyset ="1"/>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+</t:tests>

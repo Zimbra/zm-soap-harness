@@ -1,0 +1,228 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="filter1.name" value="filter1.${TIME}.${COUNTER}"/>
+<t:property name="filter2.name" value="filter2.${TIME}.${COUNTER}"/>
+
+<t:property name="account.dir" value="${testMailRaw.root}/email02"/>
+<t:property name="mail.subject" value="Good one"/>
+<t:property name="mail.content" value="Happy weekend"/>
+
+<t:property name="email02a.subject" value="email02A"/>	<!-- 15 May 2005 -->
+<t:property name="email02b.subject" value="email02B"/>	<!--  1 Jun 2005 -->
+<t:property name="email02c.subject" value="email02C"/>	<!-- 15 Jun 2005 -->
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FilterDate_AccountSetup" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+<t:test_case testcaseid="FilterDate_01" type="bhr">
+    <t:objective>Verify messages that match Date: are filtered</t:objective>
+	    <t:steps> 
+			  1. Login to test account 1
+			  2. Create a filter based on "Date before 20050607"
+			  3. Inject a message from with very old date
+			  4. Verify the message is filtered
+        </t:steps>
+        
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	   
+	 <t:test>
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="${filter1.name}" active="1">
+                         <filterTests condition="anyof">
+                        	 <dateTest dateComparison="before" d="1120630458"/>              	     
+                        </filterTests>
+                        <filterActions> 
+                        	<actionFlag flagName="flagged" />    
+                        	<actionStop />                 
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+	<!-- Get the rules to check if it has got created -->
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+     <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+		<foldername>${account.dir}</foldername>
+		<to>${account1.name}</to>
+		<from>${nonZimbraUser.name}</from>
+		<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${email02a.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="FilterDate_02" type="bhr">
+    <t:objective>Verify messages that do not match Date: are not filtered</t:objective>
+	    <t:steps> 
+			  1. Login to test account 1
+			  2. Create a filter based on "Date10/12/2006:"
+			  3. Send a message to itself
+			  4. Verify the message is not filtered
+        </t:steps>
+        
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	   
+	   
+	 <t:test>
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="${filter1.name}" active="1">
+                         <filterTests condition="anyof">
+                            <dateTest dateComparison="before" d="1165904114"/>                          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionFlag flagName="flagged" />    
+                        	<actionStop />                 
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+	<!-- Get the rules to check if it has got created -->
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${account1.name}'/>
+					<su> ${mail.subject} </su>
+					<mp ct="text/plain">
+					<content> ${mail.content} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>Subject:(${mail.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+</t:tests>
+

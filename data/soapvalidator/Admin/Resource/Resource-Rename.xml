@@ -1,0 +1,552 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="Resource.equipment" value="Equipment"/>
+<t:property name="Resource.location" value="Location"/>
+
+<t:property name="displayName1" value="TestName.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="displayName2" value="TestName2.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="displayName3" value="TestName3.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="displayName4" value="TestName4.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="displayName5" value="TestName5.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="Resource1.name" value="testResource1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource2.name" value="testResource2.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource3.name" value="testResource3.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource4.name" value="testResource4.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource5.name" value="testResource5.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="NewName" value="newname.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="NewName1" value="newname.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="ValidName" value="validname.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="blank" value=""/>
+<t:property name="space" value="             "/>
+<t:property name="sometext" value="Some text"/>
+<t:property name="spchar" value=":''&lt;//\\"/>
+<t:property name="negative" value="-1"/>
+<t:property name="zero" value="0"/>
+
+<t:property name="account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="appointment.subject" value="Subject of Resource Rename meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of the Resource Rename message${TIME}.${COUNTER}"/>
+
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="AcctSetup01_resource_rename" type="always" >
+
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+		<t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="admin_login">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">TestCos${TIME}${COUNTER}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameCalendarResource01" type="bhr">
+    <t:objective>  Create a resource and rename it with a valid name  </t:objective>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource1.name}</name>
+				<a n="zimbraCOSId">${cos.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">active</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource1.id}</id>
+				<newName>${NewName}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:RenameCalendarResourceResponse/admin:calresource/admin:a[@n='mail']"  match="${NewName}"/>
+			<t:select path="//admin:RenameCalendarResourceResponse/admin:calresource/admin:a[@n='displayName']"  match="${displayName1}"/>
+			<t:select path="//admin:RenameCalendarResourceResponse/admin:calresource/admin:a[@n='zimbraMailDeliveryAddress']"  match="${NewName}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameCalendarResource02" type="sanity" >
+    <t:objective>  Create a resource and rename it with already existing name  </t:objective>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource2.name}</name>
+				<a n="zimbraCOSId">${cos.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">active</a>
+				<a n="displayName">${displayName2}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource2.id}</id>
+				<newName>${NewName}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameCalendarResource03" type="functional" >
+    <t:objective>  Create a resource and rename it with name as bank/Spchar/Space/sometext/neagtive/zero  </t:objective>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource3.name}</name>
+				<a n="zimbraCOSId">${cos.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">active</a>
+				<a n="displayName">${displayName3}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource3.id}</id>
+				<newName>${blank}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource3.id}</id>
+				<newName>${space}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource3.id}</id>
+				<newName>${sometext}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource3.id}</id>
+				<newName>${spchar}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource3.id}</id>
+				<newName>${negative}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource3.id}</id>
+				<newName>${zero}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameCalendarResource04" type="deprecated" bugids="7601">
+    <t:objective> Verify that on renaming a resource, the user gets a notification message </t:objective>
+	<t:steps>
+		1. Create a Resource with type=location.
+		2. Create two accounts.
+		3. Create an appointment with the resource created above.
+		4. Rename the resource.
+		5. Check that the notification message should be displayed.
+	</t:steps>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource4.name}</name>
+				<a n="zimbraCOSId">${cos.id}</a>
+				<a n="zimbraCalResType">${Resource.location}</a>
+				<a n="zimbraAccountStatus">active</a>
+				<a n="displayName">${displayName4}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource4.id"/>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='zimbraMailDeliveryAddress']" set="MailDelAddress.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>  
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${MailDelAddress.id}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <e a="${account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource4.id}</id>
+				<newName>${ValidName}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:RenameCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" offset="0" limit="25" types="appointment">
+				<query> from:(admin) </query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" offset="0" limit="25" types="appointment">
+				<query> from:(admin) </query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameCalendarResource05" type="sanity" >
+    <t:objective> Verify that the user gets a notification message when he try's to use the original name of a renamed resource </t:objective>
+	<t:steps>
+		1. Create a Resource with type=location.
+		2. Create two accounts.
+		3. Rename the resource.
+		4. Create an appointment with the resource created above. 
+		5. Check that the notification message should be displayed.
+	</t:steps>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource5.name}</name>
+				<a n="zimbraCOSId">${cos.id}</a>
+				<a n="zimbraCalResType">${Resource.location}</a>
+				<a n="zimbraAccountStatus">active</a>
+				<a n="displayName">${displayName5}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource5.id"/>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n='zimbraMailDeliveryAddress']" set="MailDelAddress.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account3" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test id="create_test_account4" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource5.id}</id>
+				<newName>${NewName1}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:RenameCalendarResourceResponse/admin:calresource/admin:a[@n='mail']"  match="${NewName1}"/>
+			<t:select path="//admin:RenameCalendarResourceResponse/admin:calresource/admin:a[@n='zimbraMailDeliveryAddress']"  match="${NewName1}"/>
+        </t:response>
+    </t:test>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${resource5.id}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${account4.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${account3.name}"/>
+                    </inv>
+                    <e a="${account3.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

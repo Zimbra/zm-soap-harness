@@ -1,0 +1,289 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+    <t:test required="true">
+     <t:request>
+       <PingRequest xmlns="urn:zimbraAdmin"/>
+     </t:request>
+      <t:response>
+        <t:select path="//admin:PingResponse"/>
+     </t:response>
+    </t:test>
+</t:test_case>
+<t:test_case testcaseid="admin_auth" type="always" >
+ <t:objective>login as the admin</t:objective>
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+	
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+<t:finally>
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	
+	<t:test id="ModifyConfigRequest1"  depends="admin_login">
+        <t:request>
+           <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+     	  		 <a n="zimbraMessageIdDedupeCacheTimeout"></a>
+     	  		 <a n="zimbraMessageIdDedupeCacheSize"></a>
+     	  		  
+    	   </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+
+</t:finally>
+
+
+<t:test_case testcaseid="zimbraMessageIdDedupeCacheTimeout01" type="bhr">
+ <t:objective>Messages with same message id get injected after zimbraMessageIdDedupeCacheTimeout  </t:objective>
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	
+	<t:test id="ModifyConfigRequest1"  depends="admin_login">
+        <t:request>
+           <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+     	  		 <a n="zimbraMessageIdDedupeCacheTimeout">60s</a>
+    	   </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+       	<t:property name="msg01.file" value="${testMailRaw.root}/cache/msg01.mime" />
+    	
+    	<t:mailinjecttest >
+        	<t:lmtpInjectRequest>
+            	<filename>${msg01.file}</filename>
+				<to>${account1.name}</to>
+				<from>${account2.name}</from>
+				<server>${account1.server}</server>
+        	</t:lmtpInjectRequest>
+    	</t:mailinjecttest>  
+		 
+    	<t:property name="msg02.file" value="${testMailRaw.root}/cache/msg01.mime" />
+    	<t:mailinjecttest >
+        	<t:lmtpInjectRequest>
+            	<filename>${msg02.file}</filename>
+				<to>${account1.name}</to>
+				<from>${account2.name}</from>
+				<server>${account1.server}</server>
+        	</t:lmtpInjectRequest>
+    	</t:mailinjecttest>  
+
+	 <t:delay sec="60" />
+	 
+	  <t:property name="msg03.file" value="${testMailRaw.root}/cache/msg03.mime" />
+    	<t:mailinjecttest >
+        	<t:lmtpInjectRequest>
+            	<filename>${msg03.file}</filename>
+				<to>${account1.name}</to>
+				<from>${account2.name}</from>
+				<server>${account1.server}</server>
+        	</t:lmtpInjectRequest>
+    	</t:mailinjecttest>  
+	 
+    
+    	   <t:property name="server.zimbraAccount" value="${account1.server}"/>
+   
+      <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+
+   	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>subject: test*</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="test1" />
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="test3" />
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="test2" emptyset="1" />
+	 </t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="zimbraMessageIdDedupeCacheTimeout02" type="bhr">
+ <t:objective>Verify zimbraMessageIdDedupeCacheTimeout has precedence over zimbraMessageIdDedupeCacheSize </t:objective>
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	
+	<t:test id="ModifyConfigRequest1"  depends="admin_login">
+        <t:request>
+           <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+     	  		 <a n="zimbraMessageIdDedupeCacheTimeout">50s</a>
+     	  		 <a n="zimbraMessageIdDedupeCacheSize">0</a>
+     	  		  
+    	   </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+       	<t:property name="msg01.file" value="${testMailRaw.root}/cache/msg01.mime" />
+    	
+    	<t:mailinjecttest >
+        	<t:lmtpInjectRequest>
+            	<filename>${msg01.file}</filename>
+				<to>${account2.name}</to>
+				<from>${account2.name}</from>
+				<server>${account2.server}</server>
+        	</t:lmtpInjectRequest>
+    	</t:mailinjecttest>  
+		 
+    	<t:property name="msg02.file" value="${testMailRaw.root}/cache/msg01.mime" />
+    	<t:mailinjecttest >
+        	<t:lmtpInjectRequest>
+            	<filename>${msg02.file}</filename>
+				<to>${account2.name}</to>
+				<from>${account2.name}</from>
+				<server>${account2.server}</server>
+        	</t:lmtpInjectRequest>
+    	</t:mailinjecttest>  
+
+	 
+	  <t:property name="msg03.file" value="${testMailRaw.root}/cache/msg03.mime" />
+    	<t:mailinjecttest >
+        	<t:lmtpInjectRequest>
+            	<filename>${msg03.file}</filename>
+				<to>${account2.name}</to>
+				<from>${account2.name}</from>
+				<server>${account2.server}</server>
+        	</t:lmtpInjectRequest>
+    	</t:mailinjecttest>  
+
+	 <t:delay sec="55" />
+    
+	  <t:property name="msg04.file" value="${testMailRaw.root}/cache/msg04.mime" />
+    	<t:mailinjecttest >
+        	<t:lmtpInjectRequest>
+            	<filename>${msg04.file}</filename>
+				<to>${account2.name}</to>
+				<from>${account2.name}</from>
+				<server>${account2.server}</server>
+        	</t:lmtpInjectRequest>
+    	</t:mailinjecttest>  
+
+    	   <t:property name="server.zimbraAccount" value="${account2.server}"/>
+   
+      <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+
+   	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>subject: test*</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="test1" />
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="test4" />
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="test3" emptyset="1" />
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="test2" emptyset="1" />
+		
+	 </t:response>
+	</t:test>
+	
+   </t:test_case> 
+    
+ </t:tests>
+
+    
+
+
+    
+    
+
+	

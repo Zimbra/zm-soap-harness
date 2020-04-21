@@ -1,0 +1,385 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.name" value="test1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="test2${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="img.file" value="${testMailRaw.root}/bug106162/img1.jpg" />
+<t:property name="img1.file" value="${testMailRaw.root}/bug106162/img.png" />
+<t:property name="img2.file" value="${testMailRaw.root}/bug106162/img2.bmp" />
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+ <t:objective>create test accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug106162_1" type="bhr" bugids="106162">
+    <t:objective>Verify signature names are not case sensitive</t:objective>
+    <t:steps>
+	1. Create signature with html content and inline image.
+	2. Fire GetInfo to have signature value returned.
+	</t:steps>
+
+	<t:property name="signature1.name" value="aaa"/>
+	<t:property name="signature1.type" value="text/html"/>
+	<t:property name="signature1.content" value='&lt;div>Test Sign&lt;/div>&lt;div>&lt;img src="/home/${account1.name}/Briefcase/img1.jpg" dfsrc="doc:Briefcase/img1.jpg" data-mce-src="/home/${account1.name}/Briefcase/img1.jpg">&lt;/div>'/>
+			
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${img.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="img.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}">
+			    <upload id="${img.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document1.attachfile.id"/>
+        </t:response>
+    </t:test>
+	
+    <t:test >
+        <t:request>
+			<CreateSignatureRequest xmlns="urn:zimbraAccount">
+				<signature name="${signature1.name}">
+					<content type="${signature1.type}">${signature1.content}</content>
+					<content type="text/plain"/>
+				</signature>
+			</CreateSignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CreateSignatureResponse"/>
+		</t:response>
+	</t:test>
+		
+	 <t:test >
+        <t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>		
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[1]//acct:content[text()[contains(.,'img src')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[1]//acct:content[text()[contains(.,'dfsrc')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[1]//acct:content[text()[contains(.,'data-mce-src')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[1]//acct:content[text()[contains(.,'Briefcase/img1.jpg')]]" />
+		</t:response>
+    </t:test>		
+	
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="bug106162_2" type="bhr" bugids="106162">
+    <t:objective>Verify signature data correctly returned in GetInfo response</t:objective>
+    <t:steps>
+	1. Create signature with html content and inline image as png.
+	2. Fire GetInfo to have signature value returned.
+	</t:steps>
+
+	<t:property name="signature2.name" value="bbb"/>
+	<t:property name="signature2.type" value="text/html"/>
+	<t:property name="signature2.content" value='&lt;div>Test Sign&lt;/div>&lt;div>&lt;img src="/home/${account1.name}/Briefcase/img.png" dfsrc="doc:Briefcase/img.png" data-mce-src="/home/${account1.name}/Briefcase/img.png">&lt;/div>'/>
+			
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${img1.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="img1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}">
+			    <upload id="${img1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document2.attachfile.id"/>
+        </t:response>
+    </t:test>
+	
+    <t:test >
+        <t:request>
+			<CreateSignatureRequest xmlns="urn:zimbraAccount">
+				<signature name="${signature2.name}">
+					<content type="${signature2.type}">${signature2.content}</content>
+					<content type="text/plain"/>
+				</signature>
+			</CreateSignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CreateSignatureResponse"/>
+		</t:response>
+	</t:test>
+		
+	 <t:test >
+        <t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>		
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[2]//acct:content[text()[contains(.,'img src')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[2]//acct:content[text()[contains(.,'dfsrc')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[2]//acct:content[text()[contains(.,'data-mce-src')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[2]//acct:content[text()[contains(.,'Briefcase/img.png')]]" />
+		</t:response>
+    </t:test>		
+	
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="bug106162_3" type="bhr" bugids="106162">
+    <t:objective>Verify signature data correctly returned in GetInfo response</t:objective>
+    <t:steps>
+	1. Create signature with html content and inline image as bmp.
+	2. Fire GetInfo to have signature value returned.
+	</t:steps>
+
+	<t:property name="signature3.name" value="ccc"/>
+	<t:property name="signature3.type" value="text/html"/>
+	<t:property name="signature3.content" value='&lt;div>Test Sign&lt;/div>&lt;div>&lt;img src="/home/${account1.name}/Briefcase/img2.bmp" dfsrc="doc:Briefcase/img2.bmp" data-mce-src="/home/${account1.name}/Briefcase/img2.bmp">&lt;/div>'/>
+		
+	
+		
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${img2.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="img2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}">
+			    <upload id="${img2.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document3.attachfile.id"/>
+        </t:response>
+    </t:test>
+	
+    <t:test >
+        <t:request>
+			<CreateSignatureRequest xmlns="urn:zimbraAccount">
+				<signature name="${signature3.name}">
+					<content type="${signature3.type}">${signature3.content}</content>
+					<content type="text/plain"/>
+				</signature>
+			</CreateSignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CreateSignatureResponse"/>
+		</t:response>
+	</t:test>
+		
+	 <t:test >
+        <t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>		
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[3]//acct:content[text()[contains(.,'img src')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[3]//acct:content[text()[contains(.,'dfsrc')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[3]//acct:content[text()[contains(.,'data-mce-src')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[3]//acct:content[text()[contains(.,'Briefcase/img2.bmp')]]" />
+		</t:response>
+    </t:test>		
+	
+	
+</t:test_case>
+
+
+
+<t:test_case testcaseid="bug106162_4" type="bhr" bugids="106162">
+    <t:objective>Verify signature data correctly returned in GetInfo response</t:objective>
+    <t:steps>
+	1. Create signature with html content and 2 inline images.
+	2. Fire GetInfo to have signature value returned with both images.
+	</t:steps>
+
+	<t:property name="signature4.name" value="ddd"/>
+	<t:property name="signature4.type" value="text/html"/>
+	<t:property name="signature4.content" value='&lt;div>Test Sign&lt;/div>&lt;div>&lt;img src="/home/${account1.name}/Briefcase/img2.bmp" dfsrc="doc:Briefcase/img2.bmp" data-mce-src="/home/${account1.name}/Briefcase/img2.bmp">&lt;img src="/home/${account1.name}/Briefcase/img.png" dfsrc="doc:Briefcase/img.png" data-mce-src="/home/${account1.name}/Briefcase/img.png"&gt;&lt;/div>'/>
+		
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+	
+	
+    <t:test >
+        <t:request>
+			<CreateSignatureRequest xmlns="urn:zimbraAccount">
+				<signature name="${signature4.name}">
+					<content type="${signature4.type}">${signature4.content}</content>
+					<content type="text/plain"/>
+				</signature>
+			</CreateSignatureRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:CreateSignatureResponse"/>
+		</t:response>
+	</t:test>
+		
+	 <t:test >
+        <t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>		
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[4]//acct:content[text()[contains(.,'img src')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[4]//acct:content[text()[contains(.,'dfsrc')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[4]//acct:content[text()[contains(.,'data-mce-src')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[4]//acct:content[text()[contains(.,'Briefcase/img2.bmp')]]" />
+			<t:select path="//acct:GetInfoResponse/acct:signatures/acct:signature[4]//acct:content[text()[contains(.,'Briefcase/img.png')]]" />
+		</t:response>
+    </t:test>		
+	
+	
+</t:test_case>
+
+</t:tests>

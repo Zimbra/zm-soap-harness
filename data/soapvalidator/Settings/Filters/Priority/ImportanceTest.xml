@@ -1,0 +1,405 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="AcctSetup_importanceTest" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefTimeZoneId">UTC</a>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	            
+</t:test_case>
+
+<t:test_case testcaseid="importanceTest_01" type="bhr" bugids="56446" >
+    <t:objective>Verify that message of high importance is filtered for importanceTest filter </t:objective>
+    
+    <t:steps> 1. Create filter for importanceTest imp="high" for account1 to flag
+			  2. Message of high importance is injected in account1 inbox
+			  3. Verify that message got flagged in account1 inbox
+    </t:steps>    
+	
+   <t:property name="filter_imp_high.name" value="filterImpHigh${TIME}${COUNTER}"/>	
+	
+   <t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_imp_high.name}" active="1">
+						<filterTests condition="allof">
+						<importanceTest imp="high"/>						
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="priority_msg01.file" value="${testMailRaw.root}/bug56446/imp_high_X_priority.txt" />
+	<t:property name="filter_imp_high1.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${priority_msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_imp_high1.subject}</header>               
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_imp_high1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_high1.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>
+    
+    <t:property name="priority_msg02.file" value="${testMailRaw.root}/bug56446/imp_high.txt" />
+	<t:property name="filter_imp_high2.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${priority_msg02.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_imp_high2.subject}</header>               
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_imp_high2.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_high2.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>  
+        
+    <t:property name="priority_msg03.file" value="${testMailRaw.root}/bug56446/imp_high_both.txt" />
+	<t:property name="filter_imp_high3.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${priority_msg03.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_imp_high3.subject}</header>               
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_imp_high3.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_high3.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test> 
+     
+</t:test_case> 
+
+<t:test_case testcaseid="importanceTest_02" type="bhr" bugids="56446" >
+    <t:objective>Verify that message of low importance is filtered for importanceTest filter </t:objective>
+    
+    <t:steps> 1. Create filter for importanceTest imp="low" for account1 to flag
+			  2. Message of low importance is injected in account1 inbox
+			  3. Verify that message got flagged in account1 inbox
+    </t:steps>    
+	
+    <t:property name="filter_imp_low.name" value="filterImpLow${TIME}${COUNTER}"/>	
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_imp_low.name}" active="1">
+						<filterTests condition="allof">
+						<importanceTest imp="low"/>						
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="priority_msg04.file" value="${testMailRaw.root}/bug56446/imp_low_X_priority.txt" />
+	<t:property name="filter_imp_low1.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${priority_msg04.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_imp_low1.subject}</header>               
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_imp_low1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_low1.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>
+    
+    <t:property name="priority_msg05.file" value="${testMailRaw.root}/bug56446/imp_low.txt" />
+	<t:property name="filter_imp_low2.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${priority_msg05.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_imp_low2.subject}</header>               
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_imp_low2.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_low2.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>  
+        
+    <t:property name="priority_msg06.file" value="${testMailRaw.root}/bug56446/imp_low_both.txt" />
+	<t:property name="filter_imp_low3.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${priority_msg06.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_imp_low3.subject}</header>               
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_imp_low3.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_low3.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test> 
+     
+</t:test_case> 
+
+<t:test_case testcaseid="importanceTest_03" type="bhr" bugids="56446" >
+    <t:objective>Verify that message of normal importance is filtered for importanceTest filter </t:objective>
+    
+    <t:steps> 1. Create filter for importanceTest imp="normal" for account1 to flag
+			  2. Message of normal importance is injected in account1 inbox
+			  3. Verify that message got flagged in account1 inbox
+    </t:steps>    
+	
+    <t:property name="filter_imp_normal.name" value="filterImpNormal${TIME}${COUNTER}"/>	
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter_imp_low.name}" active="1">
+						<filterTests condition="allof">
+						<importanceTest imp="normal"/>						
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="priority_msg07.file" value="${testMailRaw.root}/bug56446/imp_normal_X_priority.txt" />
+	<t:property name="filter_imp_normal1.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${priority_msg07.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_imp_normal1.subject}</header>               
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_imp_normal1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_normal1.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>
+    
+    <t:property name="priority_msg08.file" value="${testMailRaw.root}/bug56446/imp_normal.txt" />
+	<t:property name="filter_imp_normal2.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${priority_msg08.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_imp_normal2.subject}</header>               
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_imp_normal2.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_normal2.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test>  
+        
+    <t:property name="priority_msg09.file" value="${testMailRaw.root}/bug56446/imp_normal_both.txt" />
+	<t:property name="filter_imp_normal3.subject" value="filter${TIME}${COUNTER}"/>
+	
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${priority_msg09.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+				<header a="To">${account1.name}</header>
+                <header a="Subject">${filter_imp_normal3.subject}</header>               
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter_imp_normal3.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter_imp_normal3.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m"   attr="f" match=".*f.*" />       
+        </t:response>
+    </t:test> 
+     
+</t:test_case> 
+	
+</t:tests>

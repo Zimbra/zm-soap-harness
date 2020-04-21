@@ -1,0 +1,64 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}.com"/>  
+
+<t:property name="account1.name" value="searchdir.${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="search.validquery" value="(|(cn=*searchdir*)(sn=*searchdir*)(gn=*searchdir*)(displayName=*searchdir*)(zimbraMailAlias=*searchdir*)(zimbraMailAddress=*searchdir*)(zimbraMailDeliveryAddress=*searchdir*))"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="SearchDirectoryRequest_01" type="bhr" >
+    <t:objective>Sanity test for SearchDirectoryRequest</t:objective>
+   
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" applyCos="0">
+                <query>${search.validquery}</query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:account" />   
+        </t:response>
+    </t:test> 
+   
+</t:test_case>
+
+
+</t:tests>

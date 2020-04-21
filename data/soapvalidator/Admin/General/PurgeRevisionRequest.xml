@@ -1,0 +1,116 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="wiki1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="wiki2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account1.document.textfile" value="${testMailRaw.root}/Contact/contact1.txt"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="PurgeRevisionRequest_01" type="bhr" >
+	<t:objective>Sanity test for PurgeRevisionRequest</t:objective>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.textfile.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}" ver="1">
+			    <upload id="${document.textfile.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.textfile.id"/>
+        </t:response>
+    </t:test> 
+	
+  	<t:test >
+		<t:request>
+			<PurgeRevisionRequest xmlns="urn:zimbraMail">
+				<revision id="${document.textfile.id}" ver="1" />
+			</PurgeRevisionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:PurgeRevisionResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

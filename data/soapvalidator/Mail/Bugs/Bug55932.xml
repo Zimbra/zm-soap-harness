@@ -1,0 +1,106 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_filters_save" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+<!--                <a n="zimbraPrefMailDefaultCharset">shift_jis</a>-->
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${account1.server}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="account1.mta.server"/>
+		</t:response>
+   </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="bug55932" type="bhr" bugids="55932" >
+    <t:objective>Verify Message written in CP932 is displayed Properly.</t:objective>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="subject" value="subject${TIME}${COUNTER}" />
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="msg01.file" value="${testMailRaw.root}/Bugs/55932/55932.txt" />
+    <t:smtpinjecttest>
+		<t:smtpInjectRequest>
+			<address>${account1.mta.server}</address>
+			<filename>${msg01.file}</filename>
+			<recipient>${account1.name}</recipient>
+		</t:smtpInjectRequest>
+	</t:smtpinjecttest>
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>号店</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+            <t:select path="//mail:SearchResponse/mail:m/mail:fr" equals="2010/4/2,Ⅱ号店 カオス館,ご本人,1回払い,,'10/05,9960,9960,,,,,"/>
+        </t:response>
+    </t:test>	 
+    
+</t:test_case>
+
+</t:tests>

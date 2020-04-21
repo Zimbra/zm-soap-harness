@@ -1,0 +1,428 @@
+<t:tests xmlns:t = "urn:zimbraTestHarness">
+
+<t:property name = "tag.colorvalid" value = "4"/>
+
+<t:property name="folder1.name" value="forder${TIME}${COUNTER}"/>
+<t:property name="folder.pname" value="1"/>
+<t:property name="folder.negative" value="-1"/>
+
+<t:property name = "test_account1.name" value = "test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name = "test_account1.password" value = "test123"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid = "Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required = "true">
+        <t:request>
+            <PingRequest xmlns = "urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "acct1_setup" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps>1. Login to admin
+             2. Create an account.    
+    </t:steps>
+    
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required = "true">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid = "acct1_login" type="always">
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid = "ItemActionRequest1" type="functional">
+    <t:objective>Delete an Item (contact)</t:objective>
+    <t:steps>1. Create a contact
+             2. Delete the item (contact)
+    </t:steps>
+    
+    <t:test id="itemActionRequest1a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact1.id"/>          
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id = "itemActionRequest1b" depends = "itemActionRequest1a">
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action op = "delete" id = "${contact1.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+                <t:select path = "//mail:ItemActionResponse/mail:action">
+                <t:select attr = "id" match = "${contact1.id}"/>
+                <t:select attr = "op" match = "delete"/>
+                </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "ItemActionRequest2" type="functional"  bugids="11018">
+    <t:objective>Delete an non-existing item (contact)</t:objective>    
+    <t:steps>
+        1. Create a contact
+        2. Delete the contact
+        3. Again delete the deleted contact
+    </t:steps>
+    
+    <t:test id="itemActionRequest2a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>        
+        <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn">
+                <t:select attr="id" set="contact2.id"/>          
+                </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id = "itemActionRequest2b" depends = "itemActionRequest2a">
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action op = "delete" id = "${contact2.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+                <t:select path = "//mail:ItemActionResponse/mail:action">
+                <t:select attr = "id" match = "${contact2.id}"/>
+                <t:select attr = "op" match = "delete"/>
+                </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test depends = "itemActionRequest2b">
+        <t:request>
+            <ItemActionRequest xmlns = "urn:zimbraMail">
+                <action op = "delete" id = "${contact2.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="ItemActionRequest3" type="sanity" >
+    <t:objective>Move an item (contact) to any folder </t:objective>
+    <t:steps>1. Create a folder
+             2. Create a contact
+             3. Move contact to the created folder
+    </t:steps>
+    
+    <t:test  id="itemActionRequest3a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}.${COUNTER}" l="${folder.pname}"/>
+            </CreateFolderRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="itemActionRequest3b">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact3.id"/>          
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test  depends="itemActionRequest3a,itemActionRequest3b">
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${contact3.id}" l="${folder1.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+                <t:select path = "//mail:ItemActionResponse/mail:action">
+                <t:select attr = "id" match = "${contact3.id}"/>
+                <t:select attr = "op" match = "move"/>
+                </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ItemActionRequest4" type="functional" >
+    <t:objective>Move an item (contact) in nonexisting folder </t:objective>
+    <t:steps>1. Create a contact
+             2. Move the contact within the nonexisting folder
+    </t:steps>
+    
+    <t:test id="itemActionRequest4a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact4.id"/>          
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test  depends="itemActionRequest4a">
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${contact4.id}" l="${folder.negative}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ItemActionRequest5" type="sanity" >
+    <t:objective>Mark an item (contact) as read </t:objective>
+    <t:steps>1. Create a contact
+             2. Mark as read
+    </t:steps>
+
+     <t:test id="itemActionRequest5a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact5.id"/>          
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test  depends="itemActionRequest5a">
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action op="read" id="${contact5.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+                <t:select path = "//mail:ItemActionResponse/mail:action">
+                <t:select attr = "id" match = "${contact5.id}"/>
+                <t:select attr = "op" match = "read"/>
+               </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ItemActionRequest6" type="sanity" >
+    <t:objective>Tag an item (contact) </t:objective>
+    <t:steps>1. Create a tag
+             2. Create a contact
+             3. Tag the contact
+    </t:steps>
+
+    <t:test id = "itemActionRequest6a">
+        <t:request>
+            <CreateTagRequest xmlns = "urn:zimbraMail">
+                <tag name = "tag${TIME}.${COUNTER}" color = "${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+                <t:select path = "//mail:CreateTagResponse/mail:tag">
+                <t:select attr = "id" set = "tag6.id"/>
+                <t:select attr = "color" match = "${tag.colorvalid}"/>
+                </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test id="itemActionRequest6b">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>        
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact6.id"/>          
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test  depends="itemActionRequest6a,itemActionRequest6b">
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action op="tag" tag="${tag6.id}"  id="${contact6.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+                <t:select path = "//mail:ItemActionResponse/mail:action">
+                <t:select attr = "id" match = "${contact6.id}"/>
+                <t:select attr = "op" match = "tag"/>
+                </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ItemActionRequest7" type="sanity" >
+    <t:objective>Update an item (contact)</t:objective>
+    <t:steps>1. Create a contact
+             2. Create a tag
+             3. Create a folder
+             4. Update it 
+    </t:steps>
+
+    <t:test id="itemActionRequest7a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>        
+        <t:response>
+                <t:select path="//mail:CreateContactResponse/mail:cn">
+                <t:select attr="id" set="contact7.id"/>          
+                </t:select>    
+        </t:response>
+    </t:test>
+    
+     <t:test id = "itemActionRequest7b">
+        <t:request>
+            <CreateTagRequest xmlns = "urn:zimbraMail">
+                <tag name = "tag${TIME}${COUNTER}" color = "${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+                <t:select path = "//mail:CreateTagResponse/mail:tag">
+                <t:select attr = "id" set = "tag7.id"/>
+                <t:select attr = "color" match = "${tag.colorvalid}"/>
+                </t:select>
+        </t:response>
+    </t:test>
+
+      <t:test  id="itemActionRequest7c">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${TIME}${COUNTER}" l="${folder.pname}"/>
+            </CreateFolderRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder7.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test  depends="itemActionRequest7a,itemActionRequest7b,itemActionRequest7c">
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action op="update" id="${contact7.id}" tag="${tag7.id}" l="${folder7.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+                <t:select path = "//mail:ItemActionResponse/mail:action">
+                <t:select attr = "id" match = "${contact7.id}"/>
+                <t:select attr = "op" match = "update"/>
+                </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+
+</t:tests>

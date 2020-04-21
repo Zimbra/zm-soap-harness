@@ -1,0 +1,920 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="gs.blank" value=""/>
+<t:property name="gs.sometext" value="Some text"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="admin_login" type="always" >
+    <t:objective>Login to Admin Account</t:objective>
+        
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAllConfigRequest1" type="bhr">
+    <t:objective>  Test GetAllConfigRequest </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetAllConfigRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllConfigResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="GetConfigRequest1" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraLmtpBindPort" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraLmtpBindPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraLmtpBindPort"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest2" type="deprecated" bugids="8381">
+    <t:objective>  GetConfigRequest with n="zimbraAccountClientAttr" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAccountClientAttr"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraAccountClientAttr"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest3" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraImapSSLBindPort" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraImapSSLBindPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraImapSSLBindPort"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest4" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraMailPort" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraMailPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraMailPort"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest5" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraImapNumThreads" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraImapNumThreads"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraImapNumThreads"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest6" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraRedoLogArchiveDir" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraRedoLogArchiveDir"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraRedoLogArchiveDir"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest7" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraRedologRolloverFileSizeKB" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraRedoLogRolloverFileSizeKB"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraRedoLogRolloverFileSizeKB"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest8" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraRedologFsyncIntervalMS" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraRedoLogFsyncIntervalMS"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraRedoLogFsyncIntervalMS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest9" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraPop3NumThreads" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraPop3NumThreads"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraPop3NumThreads"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest10" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraLmtpNumThreads" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraLmtpNumThreads"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraLmtpNumThreads"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest11" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraLastLogonTimestampFrequency" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraLastLogonTimestampFrequency"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraLastLogonTimestampFrequency"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest12" type="deprecated">
+    <t:objective>  GetConfigRequest with n="zimbraServerInheritedAttr" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraServerInheritedAttr"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraServerInheritedAttr"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest13" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraRedologLogPath" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraRedoLogLogPath"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraRedoLogLogPath"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest14" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraPop3CleartextLoginEnabled" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraPop3CleartextLoginEnabled"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraPop3CleartextLoginEnabled"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest15" type="deprecated">
+    <t:objective>  GetConfigRequest with n="zimbraServerInheritedAttr" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraServerInheritedAttr"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraServerInheritedAttr"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest16" type="deprecated" bugids="8381">
+    <t:objective>  GetConfigRequest with n="zimbraDomainInheritedAttr" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraDomainInheritedAttr"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraDomainInheritedAttr"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest17" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraPop3SSLBindPort" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraPop3SSLBindPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraPop3SSLBindPort"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest18" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraGalLdapFilterDef" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraGalLdapFilterDef"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraGalLdapFilterDef"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest19" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraSmtpTimeout" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmtpTimeout"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraSmtpTimeout"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest20" type="bhr" bugids="2169">
+    <t:objective>  GetConfigRequest with n="zimbraAttachmentsViewInHtmlOnly" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAttachmentsViewInHtmlOnly"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraAttachmentsViewInHtmlOnly"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest21" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraAttachmentsBlocked" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAttachmentsBlocked"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraAttachmentsBlocked"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest22" type="bhr">
+    <t:objective>  GetConfigRequest with n="objectClass" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="objectClass"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="objectClass"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest23" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraPop3BindPort" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraPop3BindPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraPop3BindPort"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest24" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraVirusDefinitionsUpdateFrequency" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraVirusDefinitionsUpdateFrequency"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraVirusDefinitionsUpdateFrequency"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest25" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraGalLdapAttrMap" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraGalLdapAttrMap"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraGalLdapAttrMap"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest26" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraAdminPort" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAdminPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraAdminPort"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest27" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraPop3SSLServerEnabled" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraPop3SSLServerEnabled"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraPop3SSLServerEnabled"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest28" type="deprecated" bugids="8381">
+    <t:objective>  GetConfigRequest with n="zimbraCOSInheritedAttr" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraCOSInheritedAttr"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraCOSInheritedAttr"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest29" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraImapSSLServerEnabled" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraImapSSLServerEnabled"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraImapSSLServerEnabled"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest30" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraMailSSLPort" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraMailSSLPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraMailSSLPort"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest31" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraPop3ServerEnabled" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraPop3ServerEnabled"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraPop3ServerEnabled"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest32" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraRedologEnabled" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraRedoLogEnabled"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraRedoLogEnabled"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest33" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraImapBindPort" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraImapBindPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraImapBindPort"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest34" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraTableMaintenanceMaxRows" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraTableMaintenanceMaxRows"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraTableMaintenanceMaxRows"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest35" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraImapServerEnabled" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraImapServerEnabled"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraImapServerEnabled"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest36" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraDefaultDomainName" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraDefaultDomainName"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraDefaultDomainName"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest37" type="bhr">
+    <t:objective>  GetConfigRequest with n="cn" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="cn"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="cn"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest38" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraSmtpHostname" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmtpHostname"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraSmtpHostname"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest39" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraGalMaxResults" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraGalMaxResults"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraGalMaxResults"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest40" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraAuthTokenKey" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraAuthTokenKey"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraAuthTokenKey"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest41" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraTableMaintenanceOperation" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraTableMaintenanceOperation"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraTableMaintenanceOperation"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest42" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraTableMaintenanceGrowthFactor" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraTableMaintenanceGrowthFactor"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraTableMaintenanceGrowthFactor"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest43" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraTableMaintenanceMinRows" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraTableMaintenanceMinRows"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraTableMaintenanceMinRows"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest44" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraSmtpPort" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraSmtpPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraSmtpPort"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest45" type="bhr">
+    <t:objective>  GetConfigRequest with n="zimbraImapCleartextLoginEnabled" </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraImapCleartextLoginEnabled"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="n" match="zimbraImapCleartextLoginEnabled"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest46" type="functional">
+    <t:objective>  GetConfigRequest with n= valid value with leading space </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="      zimbraImapCleartextLoginEnabled"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest47" type="functional">
+    <t:objective>  GetConfigRequest with n= valid value with trailing space </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraImapCleartextLoginEnabled      "/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest48" type="functional">
+    <t:objective>  GetConfigRequest with n= invalid value </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="${gs.sometext}"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest49" type="functional">
+    <t:objective>  GetConfigRequest with blank value for n </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="${gs.blank}"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetConfigRequest50" type="functional">
+    <t:objective>  GetConfigRequest without 'n' attribute in 'a' tag </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetConfigRequest51" type="functional">
+    <t:objective>  GetConfigRequest without 'a' tag </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

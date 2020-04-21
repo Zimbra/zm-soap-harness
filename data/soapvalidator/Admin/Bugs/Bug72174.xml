@@ -1,0 +1,98 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+
+<t:property name = "password.new" value = "test1234"/>
+<t:property name="alias.name" value="Alias.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="alias1.name" value="Alias.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="bug72174_01" type="bhr" bugids="72174">
+    <t:objective>Test for MigrateAccountRequest with action="bug72174"</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${test_account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account1.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse">
+	            <t:select path="//admin:mbox" attr="mbxid" set="account1.mailbox.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+	<!-- Login to the user account -->
+  	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+		</t:response>
+	</t:test>
+	
+    <t:test>
+        <t:request>
+            <MigrateAccountRequest xmlns="urn:zimbraAdmin">
+                <migrate action="bug72174" id="${account1.id}"/>
+            </MigrateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:MigrateAccountResponse"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+</t:tests>

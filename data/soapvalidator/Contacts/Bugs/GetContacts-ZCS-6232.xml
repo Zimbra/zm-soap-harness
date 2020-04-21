@@ -1,0 +1,298 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <t:property name="domain" value="${TIME}.zcs6232.com" />
+    <t:property name="admin.dl1.username" value="dl1.admin.${TIME}.${COUNTER}" />
+    <t:property name="admin.dl1.name" value="${admin.dl1.username}@${domain}" />
+    <t:property name="user1" value="user1_${TIME}@${domain}" />
+    <t:property name="user2" value="user2_${TIME}@${domain}" />
+    <t:property name="user3" value="user3_${TIME}@${domain}" />
+    <t:property name="user4" value="user4_${TIME}@${domain}" />
+    
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test id="ping" required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="CreateDLAndAddMembers" type="bhr" bugids="ZCS-6232">
+        <t:objective>CheckRightsRequest Default user rights on DL</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GetAccountRequest xmlns="urn:zimbraAdmin">
+                    <account by="name">${admin.user}</account>
+                </GetAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server" />
+            </t:response>
+        </t:test>
+        <t:test id="CreateDomain1a" required="true" depends="adminlogin">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain}</name>
+                    <a n="zimbraNotes">Domain for testing SyncGalRequest</a>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse" />
+            </t:response>
+        </t:test>
+        
+        <t:property name="domain1.galaccount.datasource.name" value="galaccount${TIME}${COUNTER}" />
+        <t:property name="domain1.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain}" />
+        
+        <t:test>
+            <t:request>
+                <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain1.galaccount.datasource.name}" type="zimbra"
+                    domain="${domain}" server="${account1.server}">
+                    <account by="name">${domain1.galaccount.name}</account>
+                </CreateGalSyncAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id" />
+            </t:response>
+        </t:test>
+        <t:test id="createAccount1">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${user1}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+            </t:response>
+        </t:test>
+        <t:test id="createAccount2">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${user2}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+            </t:response>
+        </t:test>
+        <t:test id="createAccount3">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${user3}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account3.id" />
+            </t:response>
+        </t:test>
+        <t:test id="createAccount4">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${user4}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account4.id" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request id="addDistributionListMemberRequest">
+                <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.dl1.name}</name>
+                    <a n="description">A test distribution list</a>
+                </CreateDistributionListRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id" />
+            </t:response>
+        </t:test>
+        <t:test id="addDistributionListMemberRequest1a" depends="addDistributionListMemberRequest">
+            <t:request>
+                <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                    <id>${list1.id}</id>
+                    <dlm>${user1}</dlm>
+                </AddDistributionListMemberRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AddDistributionListMemberResponse" />
+            </t:response>
+        </t:test>
+        <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest">
+            <t:request>
+                <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                    <id>${list1.id}</id>
+                    <dlm>${user2}</dlm>
+                </AddDistributionListMemberRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AddDistributionListMemberResponse" />
+            </t:response>
+        </t:test>
+        <t:test id="addDistributionListMemberRequest1c" depends="addDistributionListMemberRequest">
+            <t:request>
+                <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                    <id>${list1.id}</id>
+                    <dlm>${user3}</dlm>
+                </AddDistributionListMemberRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AddDistributionListMemberResponse" />
+            </t:response>
+        </t:test>
+        <t:test id="addDistributionListMemberRequest1d" depends="addDistributionListMemberRequest">
+            <t:request>
+                <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                    <id>${list1.id}</id>
+                    <dlm>${user4}</dlm>
+                </AddDistributionListMemberRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AddDistributionListMemberResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SyncGalAccountRequest xmlns="urn:zimbraAdmin">
+                    <account id="${domain1.galaccount.id}">
+                        <datasource by="name">${domain1.galaccount.datasource.name}</datasource>
+                    </account>
+                </SyncGalAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:SyncGalAccountResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="GetContactsDenyView" type="bhr" bugids="ZCS-6232">
+        <t:objective>Denying the user to view DL should not return the DL members in GetContactsResponse</t:objective>
+        <t:steps>
+        1. Deny viewDistList right to user 1 for admin.dl1.name.
+        2. Allow viewDistList right to user 2 for admin.dl1.name.
+        3. SyncGalRequest with user 1 auth token to get the id of admin.dl1.name.
+        4. GetContactsRequest with admin.dl1.name step 3 id to verify members are not returned in response 
+        5. SyncGalRequest with idOnly=false to verify admin.dl1.name has no members returned in SyncGalResponse.
+        6. AuthRequest for user 2.
+        7. GetContactsRequest with admin.dl1.name step 3 id to verify members are returned in response 
+        8. SyncGalRequest with idOnly=false to verify admin.dl1.name has members returned in SyncGalResponse.
+        </t:steps>
+        <t:test required="true">
+            <t:request>
+                <GrantRightRequest xmlns="urn:zimbraAdmin">
+                    <target by="name" type="dl">${admin.dl1.name}</target>
+                    <grantee by="name" type="usr">${user1}</grantee>
+                    <right deny="1">viewDistList</right>
+                </GrantRightRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GrantRightResponse" />
+            </t:response>
+        </t:test>
+        <t:test required="true">
+            <t:request>
+                <GrantRightRequest xmlns="urn:zimbraAdmin">
+                    <target by="name" type="dl">${admin.dl1.name}</target>
+                    <grantee by="name" type="usr">${user2}</grantee>
+                    <right>viewDistList</right>
+                </GrantRightRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:GrantRightResponse" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${user1}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SyncGalRequest xmlns="urn:zimbraAccount" idOnly="true" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SyncGalResponse//acct:cn[5]" attr="id" set="dl_SyncGalId" />
+            </t:response>
+        </t:test>
+        <t:delay msec="4000"/>
+        <t:test>
+            <t:request>
+                <GetContactsRequest xmlns="urn:zimbraMail" sync="1" returnHiddenAttrs="1" maxMembers="100">
+                    <cn id="${dl_SyncGalId}" />
+                </GetContactsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetContactsResponse" />
+                <t:select path="//mail:GetContactsResponse//mail:a[@n='member']" emptyset="1" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SyncGalRequest xmlns="urn:zimbraAccount" idOnly="false" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SyncGalResponse" />
+                <t:select path="//acct:SyncGalResponse//acct:cn[contains(@ref,'${admin.dl1.username}')]//acct:a[@n='member']" emptyset="1" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${user2}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <GetContactsRequest xmlns="urn:zimbraMail" sync="1" returnHiddenAttrs="1" maxMembers="100">
+                    <cn id="${dl_SyncGalId}" />
+                </GetContactsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetContactsResponse" />
+                <t:select path="//mail:GetContactsResponse//mail:a[@n='member']" match="${user1}" />
+                <t:select path="//mail:GetContactsResponse//mail:a[@n='member']" match="${user2}" />
+                <t:select path="//mail:GetContactsResponse//mail:a[@n='member']" match="${user3}" />
+                <t:select path="//mail:GetContactsResponse//mail:a[@n='member']" match="${user4}" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <SyncGalRequest xmlns="urn:zimbraAccount" idOnly="false" />
+            </t:request>
+            <t:response>
+                <t:select path="//acct:SyncGalResponse" />
+                <t:select path="//acct:SyncGalResponse//acct:cn[contains(@ref,'${admin.dl1.username}')]//acct:a[@n='member']" match="${user1}" />
+                <t:select path="//acct:SyncGalResponse//acct:cn[contains(@ref,'${admin.dl1.username}')]//acct:a[@n='member']" match="${user2}" />
+                <t:select path="//acct:SyncGalResponse//acct:cn[contains(@ref,'${admin.dl1.username}')]//acct:a[@n='member']" match="${user3}" />
+                <t:select path="//acct:SyncGalResponse//acct:cn[contains(@ref,'${admin.dl1.username}')]//acct:a[@n='member']" match="${user4}" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+</t:tests>
