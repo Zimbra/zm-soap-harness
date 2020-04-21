@@ -1,0 +1,461 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="account1.name" value="test1${TIME}@${defaultdomain.name}" />
+	<t:property name="account2.name" value="test2${TIME}@${defaultdomain.name}" />
+	<t:property name="account3.name" value="test3${TIME}@${defaultdomain.name}" />
+	<t:property name="account1.alias.user" value="alias${TIME}${COUNTER}" />
+	<t:property name="account1.alias" value="${account1.alias.user}@${defaultdomain.name}" />
+	<t:property name="account1.persona" value="account1Persona" />
+	<t:property name="compose.subject" value="Subject${TIME}${COUNTER}"/>
+	<t:property name="compose.content" value="Body${TIME}${COUNTER}"/>
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>Basic system check</t:objective>
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="Account_Setup" type="always">
+		<t:objective>Create user account</t:objective>
+		<t:steps>1. Login to admin. 2. Create test accounts
+		</t:steps>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test id="create_testAccount1" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"
+					set="account1.id" />
+			</t:response>
+		</t:test>
+		<t:test >
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+		      		<id>${account1.id}</id>
+			        <a n="zimbraSmtpRestrictEnvelopeFrom">FALSE</a>
+	    		</ModifyAccountRequest>
+			</t:request>
+	        <t:response>
+	            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+	        </t:response>
+	    </t:test>
+		<t:test>
+			<t:request>
+				<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<alias>${account1.alias}</alias>
+				</AddAccountAliasRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AddAccountAliasResponse" />
+			</t:response>
+		</t:test>
+		<t:test id="create_testAccount2" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"
+					set="account2.id" />
+			</t:response>
+		</t:test>
+		<t:test id="create_testAccount3" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account3.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"
+					set="account3.id" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="assign_identity" type="smoke">
+		<t:objective>Set persona for account 1</t:objective>
+		<t:steps>
+		1. Log in with account 1
+		2. set persona for account1
+		</t:steps>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+			<t:request>
+				<CreateIdentityRequest xmlns="urn:zimbraAccount">
+					<identity name="${account1.persona}">
+						<a name="zimbraPrefIdentityName">${account1.persona}</a>
+						<a name="zimbraPrefFromAddress">${account1.alias}</a>
+						<a name="zimbraPrefFromAddressType">sendAs</a>
+						<a name="zimbraPrefReplyToEnabled">TRUE</a>
+						<a name="zimbraPrefReplyToDisplay">${account1.persona}</a>
+						<a name="zimbraPrefReplyToAddress">${account1.alias}</a>
+						<a name="zimbraPrefWhenSentToEnabled">FALSE</a>
+						<a name="zimbraPrefWhenInFoldersEnabled">FALSE</a>
+					</identity>
+				</CreateIdentityRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:CreateIdentityResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="positiveFlow" type="bhr" bugids="ZCS-5909">
+		<t:objective>Send email using persona and verify return path and reply path when
+			zimbraSmtpRestrictEnvelopeFrom = false</t:objective>
+		<t:steps> 
+		1. Send an email to account2 from account 1 using persona1 
+		2. Log in with account 2 and check headers of the message sent by account 1
+		</t:steps>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail" fetchSavedMsg="1">
+					<m>
+						<e t="t" a='${account2.name}' />
+						<e t="f" a='${account1.name}' />
+						<e t="r" a='${account1.alias}' />
+						<su>${compose.subject}</su>
+						<mp ct="text/plain">
+							<content>${compose.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse" />
+			</t:response>
+		</t:test>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:delay sec="2"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:${compose.subject}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su"
+					match="${compose.subject}" />
+				<t:select path="//mail:SearchResponse/mail:m" attr="id"
+					set="msg1.id" />
+			</t:response>
+		</t:test>
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg1.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="Return-Path" match=".?${account1.alias}.?"/>
+				<t:select attr="Reply-To" match=".?${account1.alias}.?"/>
+			</t:restServletResponse>
+		</t:resttest>
+	</t:test_case>
+	
+	<t:test_case testcaseid="positiveFlow2" type="bhr" bugids="ZCS-5909">
+		<t:objective>Send email using primary email and verify return path and reply path when
+			zimbraSmtpRestrictEnvelopeFrom = false</t:objective>
+		<t:steps> 
+		1. Send an email to account2 from account 1 using primary email 
+		2. Log in with account 2 and check headers of the message sent by account 1
+		</t:steps>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail" fetchSavedMsg="1">
+					<m>
+						<e t="t" a='${account2.name}' />
+						<e t="f" a='${account1.name}' />
+						<su>${compose.subject}2</su>
+						<mp ct="text/plain">
+							<content>${compose.content}2</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse" />
+			</t:response>
+		</t:test>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:delay sec="2"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:${compose.subject}2</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su"
+					match="${compose.subject}2" />
+				<t:select path="//mail:SearchResponse/mail:m" attr="id"
+					set="msg2.id" />
+			</t:response>
+		</t:test>
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg2.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="Return-Path" match=".?${account1.name}.?"/>
+			</t:restServletResponse>
+		</t:resttest>
+	</t:test_case>
+	
+	<t:test_case testcaseid="negativeFlow1" type="bhr" bugids="ZCS-5909">
+		<t:objective>Send email using persona and verify return path and reply path when
+			zimbraSmtpRestrictEnvelopeFrom = true</t:objective>
+		<t:steps> 
+		1. Send an email to account2 from account 1 using persona1 
+		2. Log in with account 2 and check headers of the message sent by account 1
+		</t:steps>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test >
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+		      		<id>${account1.id}</id>
+			        <a n="zimbraSmtpRestrictEnvelopeFrom">TRUE</a>
+	    		</ModifyAccountRequest>
+			</t:request>
+	        <t:response>
+	            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+	        </t:response>
+	    </t:test>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail" fetchSavedMsg="1">
+					<m>
+						<e t="t" a='${account2.name}' />
+						<e t="f" a='${account1.name}' />
+						<e t="r" a='${account1.alias}' />
+						<su>${compose.subject}</su>
+						<mp ct="text/plain">
+							<content>${compose.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse" />
+			</t:response>
+		</t:test>
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:delay sec="2"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:${compose.subject}</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su"
+					match="${compose.subject}" />
+				<t:select path="//mail:SearchResponse/mail:m" attr="id"
+					set="msg3.id" />
+			</t:response>
+		</t:test>
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg3.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="Return-Path" match=".?${account1.name}.?"/>
+				<t:select attr="Reply-To" match=".?${account1.alias}.?"/>
+			</t:restServletResponse>
+		</t:resttest>
+	</t:test_case>
+
+	<t:test_case testcaseid="negativeFlow2" type="bhr" bugids="ZCS-5909">
+		<t:objective>Send email from account whose persona is not set and verify return path and reply path when
+			zimbraSmtpRestrictEnvelopeFrom = true</t:objective>
+		<t:steps> 
+		1. Send an email to account3 from account 2 
+		2. Log in with account 2 and check headers of the message sent by account 1
+		</t:steps>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test >
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+		      		<id>${account3.id}</id>
+			        <a n="zimbraSmtpRestrictEnvelopeFrom">TRUE</a>
+	    		</ModifyAccountRequest>
+			</t:request>
+	        <t:response>
+	            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+	        </t:response>
+	    </t:test>
+
+		<t:test id="auth_testAccount3" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail" fetchSavedMsg="1">
+					<m>
+						<e t="t" a='${account2.name}' />
+						<e t="f" a='${account3.name}' />
+						<su>${compose.subject}3</su>
+						<mp ct="text/plain">
+							<content>${compose.content}</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse" />
+			</t:response>
+		</t:test>
+		<t:test id="auth_testAccount2" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+		<t:delay sec="2"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox subject:${compose.subject}3</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su"
+					match="${compose.subject}3" />
+				<t:select path="//mail:SearchResponse/mail:m" attr="id"
+					set="msg3.id" />
+			</t:response>
+		</t:test>
+		<t:resttest>
+			<t:restServletRequest>
+				<id>${msg3.id}</id>
+			</t:restServletRequest>
+			<t:restServletResponse>
+				<t:select attr="Return-Path" match=".?${account3.name}.?"/>
+				<t:select attr="Reply-To" emptyset="1"/>
+			</t:restServletResponse>
+		</t:resttest>
+	</t:test_case> 
+</t:tests>

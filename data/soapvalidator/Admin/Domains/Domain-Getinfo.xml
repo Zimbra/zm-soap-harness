@@ -1,0 +1,447 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="test${TIME}${COUNTER}"/>
+<t:property name="domain2.name" value="test${TIME}${COUNTER}"/>
+
+<t:property name="domain.dummy.name" value="globalconfig"/>
+<t:property name="domain.dummy.id" value="globalconfig-dummy-id"/>
+
+<t:property name="domain.blank" value=""/>
+<t:property name="domain.space" value="        "/>
+<t:property name="domain.sometext" value="some text"/>
+<t:property name="domain.spchar" value="//|.'\\-"/>
+<t:property name="domain.negative" value="-1"/>
+<t:property name="domain.zero" value="0"/>
+<t:property name="account1.user" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+    
+	<t:test id="ping" required="false">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+	
+	 <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="GetDomainInfoRequest01" type="bhr" bugids="10969">
+	<t:objective> Send GetDomainInfoRequest without an authToken </t:objective>
+
+	<t:test>
+        <t:request>
+            <GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+                <domain by="name">${defaultdomain.name}</domain>                 
+            </GetDomainInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${defaultdomain.name}"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup_domains_getinfo" type="always" >
+	<t:objective>Login to Admin Account</t:objective>
+    
+	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+                <a n="zimbraNotes">test of adding via SOAP</a>
+                <a n="zimbraFeatureResetPasswordStatus">enabled</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
+        </t:response>        
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain2.name}</name>
+                <a n="zimbraNotes">test domain2 of adding via SOAP</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetDomainInfoRequest02" type="bhr" bugids="10969,zcs-7675">
+	<t:objective> Get domaininfo by id/name/virtualHostname</t:objective>
+  
+    <t:test>
+        <t:request>
+            <GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain1.id}</domain>
+            </GetDomainInfoRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id"  match="^${domain1.id}$"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain/admin:a[@n='zimbraFeatureResetPasswordStatus']" match="enabled"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="name">${domain1.name}</domain>
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id"  match="^${domain1.id}$"/>
+		</t:response>
+	</t:test>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="GetDomainInfoRequest03" type="sanity">
+    <t:objective>Get the domain-info by both domain name and id.</t:objective>     
+    
+    <t:test>
+        <t:request>
+            <GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain1.id}</domain>
+                <domain by="name">${domain1.name}</domain>
+            </GetDomainInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain1.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain1.id}"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="GetDomainInfoRequest04" type="sanity">
+    <t:objective> Get the domain-info by both domain name/id of another domain and visa-versa. </t:objective>     
+    
+    <t:test>
+        <t:request>
+            <GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain2.id}</domain>
+                <domain by="name">${domain1.name}</domain>
+            </GetDomainInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain2.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain2.id}"/>  
+		</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain1.id}</domain>
+                <domain by="name">${domain2.name}</domain>
+            </GetDomainInfoRequest>
+        </t:request>
+        <t:response> 
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain1.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain1.id}"/>  
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetDomainInfoRequest05" type="functional">
+    <t:objective>Get the domain-info by invalid values (blank/spaces/sometext/spchar/negative/zero) for name of a domain.</t:objective> 
+    
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="name">${domain.blank}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="name">${domain.space}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="name">${domain.sometext}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="name">${domain.negative}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="name">${domain.zero}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetDomainInfoRequest06" type="functional">
+    <t:objective>Get the domain-info by invalid values (blank/spaces/sometext/spchar/negative/zero) for name of a domain.</t:objective> 
+    
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="id">${domain.blank}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="id">${domain.space}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="id">${domain.sometext}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="id">${domain.negative}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+				<domain by="id">${domain.zero}</domain>                          
+			</GetDomainInfoRequest>
+		</t:request>
+		<t:response> 
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetDomainInfoRequest07" type="functional">
+    <t:objective>Get the domain-info with the id of deleted domain </t:objective>  
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>test${TIME}${COUNTER}</name>
+                <a n="zimbraNotes">test of adding via SOAP</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain3.id"/>
+        </t:response>        
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain3.id}</id>
+            </DeleteDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDomainResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain3.id}</domain>                 
+            </GetDomainInfoRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="name" match="${domain.dummy.name}"/>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain.dummy.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetDomainInfoRequest08" type="sanity" bugids="10969">
+    <t:objective>Verify zimbraWebClientLoginURL, zimbraWebClientLogoutURL attributes if set on the domain, the response returns their correct value.</t:objective>  
+
+<t:property name="login.URL" value="http://${defaultdomain.name}"/>
+<t:property name="logout.URL" value="http://${defaultdomain.name}/downloads/index.html"/>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>test${TIME}${COUNTER}</name>
+                <a n="zimbraNotes">test domain </a>
+                <a n="zimbraGalMaxResults">20</a>    
+                <a n="zimbraGalMode">both</a>
+                 <a n="description">description</a>
+                 <a n="zimbraAuthMech">zimbra</a>   
+                 <a n="zimbraWebClientLoginURL">${login.URL}</a> 
+                 <a n="zimbraWebClientLogoutURL">${logout.URL}</a>   
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain4.id"/>
+            <t:select path='//admin:CreateDomainResponse/admin:domain/admin:a[@n="zimbraWebClientLoginURL"]' match="${login.URL}"/>
+            <t:select path='//admin:CreateDomainResponse/admin:domain/admin:a[@n="zimbraWebClientLogoutURL"]' match="${logout.URL}"/>
+        </t:response>        
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <GetDomainInfoRequest xmlns="urn:zimbraAdmin" applyConfig="1">
+                <domain by="id">${domain4.id}</domain>                 
+            </GetDomainInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain4.id}"/>  
+            <t:select path='//admin:GetDomainInfoResponse/admin:domain/admin:a[@n="zimbraWebClientLoginURL"]' match="${login.URL}"/>
+            <t:select path='//admin:GetDomainInfoResponse/admin:domain/admin:a[@n="zimbraWebClientLogoutURL"]' match="${logout.URL}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetDomainInfoRequest09" type="bhr">
+    <t:objective>Verify GetDomainInfoRequest can be sent with client authtoken. Note - Expected behavior changed. We get domain details now </t:objective>  
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+  <t:test>
+        <t:request>
+            <GetDomainInfoRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain2.id}</domain>                 
+            </GetDomainInfoRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetDomainInfoResponse/admin:domain" attr="id" match="${domain2.id}"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>
+

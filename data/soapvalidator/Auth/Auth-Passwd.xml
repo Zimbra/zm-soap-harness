@@ -1,0 +1,150 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="valid_user1" value="Test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="valid_password1" value="#@!/98d7s'sd/\s\\sdsd*([]["/>
+<t:property name="valid_user2" value="Test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="valid_password2" value="hello 123"/>
+
+<t:property name="valid_user3" value="Test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="valid_password3" value="åçè123"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Setup_AuthPasswd" type="always" >
+    <t:objective>Create a test account with some complex password </t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${valid_user1}</name>
+	        <password>${valid_password1}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${valid_user2}</name>
+	        <password>${valid_password2}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+	 <t:test id="create_test_account1"  required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${valid_user3}</name>
+	        <password>${valid_password3}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="AuthPasswd01" type="bhr">
+ <t:objective> Verify complex password works </t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${valid_user1}</account>
+				<password>${valid_password1}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthPasswd02" type="bhr" bugids="23451" >
+ <t:objective> Verify password with spaces works </t:objective>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${valid_user2}</account>
+				<password>${valid_password2}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="AuthPasswd03" type="bhr" bugids="45548" >
+ <t:objective> Verify password with spaces works </t:objective>
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${valid_user3}</account>
+				<password>${valid_password3}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

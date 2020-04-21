@@ -1,0 +1,556 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+
+<t:test_case testcaseid="RestServlet_AuthCombo_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account4.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="RestServlet_AccountStatus_01" type="sanity" >
+	<t:objective>Verify if account status = active, that the rest servlet is active for the account</t:objective>
+	<t:steps>
+	1. Login account (remember the authtoken) and create a message
+	2. Login to admin, put the account in active status
+	3. Login account and get the message - verify 200 ok
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="account1.authToken" value="${authToken}"/>
+
+
+    <t:test >
+        <t:request>
+			<GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.inbox.folder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.inbox.folder.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account1.message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test  >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n="zimbraAccountStatus">active</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse">
+            	<t:select path="//admin:a[@n='zimbraAccountStatus']" match="active"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="server.restServlet" value="${account1.server}"/>
+	
+	<t:property name="authToken" value="${account1.authToken}"/>
+
+
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account1.message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_AccountStatus_02" type="sanity" bugids="17327" >
+	<t:objective>Verify if account status = maintenance, that the rest servlet is not active for the account</t:objective>
+	<t:steps>
+	1. Login account and create a message
+	2. Login to admin, put the account in maintenance status
+	3. Login account and get the message - verify 404 permission denied
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="account2.authToken" value="${authToken}"/>
+
+
+    <t:test >
+        <t:request>
+			<GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account2.inbox.folder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account2.inbox.folder.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account2.message1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account2.message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test  >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <a n="zimbraAccountStatus">maintenance</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse">
+            	<t:select path="//admin:a[@n='zimbraAccountStatus']" match="maintenance"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+	<t:property name="authToken" value="${account2.authToken}"/>
+
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account2.message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="401"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_AccountStatus_03" type="sanity" bugids="17327" >
+	<t:objective>Verify if account status = locked, that the rest servlet is not active for the account</t:objective>
+	<t:steps>
+	1. Login account and create a message
+	2. Login to admin, put the account in locked status
+	3. Login account and get the message - verify 404 permission denied
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	<t:property name="server.restServlet" value="${account3.server}"/>
+
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="account3.authToken" value="${authToken}"/>
+
+
+    <t:test >
+        <t:request>
+			<GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account3.inbox.folder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account3.inbox.folder.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account3.message1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account3.message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test  >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <a n="zimbraAccountStatus">locked</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse">
+            	<t:select path="//admin:a[@n='zimbraAccountStatus']" match="locked"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	<t:property name="server.restServlet" value="${account3.server}"/>
+
+	<t:property name="authToken" value="${account3.authToken}"/>
+
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account3.message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="401"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RestServlet_AccountStatus_04" type="sanity" bugids="17327" >
+	<t:objective>Verify if account status = closed, that the rest servlet is not active for the account</t:objective>
+	<t:steps>
+	1. Login account and create a message
+	2. Login to admin, put the account in closed status
+	3. Login account and get the message - verify 404 permission denied
+	</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	<t:property name="server.restServlet" value="${account4.server}"/>
+
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="account4.authToken" value="${authToken}"/>
+
+
+    <t:test >
+        <t:request>
+			<GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account4.inbox.folder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account4.inbox.folder.id}">
+                    <content>From: foo@foo.com 
+To: foo@foo.com 
+Subject: email01A
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Transfer-Encoding: 7bit
+
+simple text string in the body
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account4.message1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account4.message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test  >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account4.id}</id>
+                <a n="zimbraAccountStatus">closed</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse">
+            	<t:select path="//admin:a[@n='zimbraAccountStatus']" match="closed"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	<t:property name="server.restServlet" value="${account4.server}"/>
+
+	<t:property name="authToken" value="${account4.authToken}"/>
+
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account4.message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="401"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+</t:test_case>
+
+
+</t:tests>

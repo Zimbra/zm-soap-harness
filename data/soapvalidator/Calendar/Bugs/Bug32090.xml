@@ -1,0 +1,344 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+ 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+ 
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
+<t:property name="domain1.name" value="domain${TIME}${COUNTER}"/>
+    
+<t:property name="account1.name" value="organizer.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="invitee.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test.name" value="itest.${TIME}.${COUNTER}@${domain1.name}"/>
+
+<t:property name="organizer1.name" value="organizer.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee1.name" value="invitee.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee2.name" value="invitee.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.read"			value="read"/>
+<t:property name="op.unread"		value="!read"/>
+<t:property name="op.flag"			value="flag"/>
+<t:property name="op.unflag"		value="!flag"/>
+<t:property name="op.tag"			value="tag"/>
+<t:property name="op.untag"			value="!tag"/>
+<t:property name="op.move"			value="move"/>
+<t:property name="op.delete"		value="delete"/>
+
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.grp"			value="grp"/>
+<t:property name="grant.dom"			value="dom"/>
+<t:property name="grant.cos"			value="cos"/>
+<t:property name="grant.all"			value="all"/>
+<t:property name="grant.pub"			value="pub"/>
+<t:property name="grant.guest"			value="guest"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.private"		value="p"/>
+<t:property name="rights.rp"			value="${rights.read}${rights.private}"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="rights.managerwp" 	value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}${rights.private}"></t:property>
+
+<t:property name="view.conversation"	value="conversation"/>
+<t:property name="view.message"			value="message"/>
+<t:property name="view.contact"			value="contact"/>
+<t:property name="view.appointment"		value="appointment"/>
+<t:property name="view.note"			value="note"/>
+
+<t:property name="verb.accept" value="ACCEPT"/>
+<t:property name="verb.decline" value="DECLINE"/>
+<t:property name="verb.completed" value="COMPLETED"/>
+<t:property name="verb.delgated" value="DELEGATED"/>
+<t:property name="verb.tentative" value="TENTATIVE"/>
+
+<t:property name="ptst.accept" value="AC"/>
+<t:property name="ptst.decline" value="DE"/>
+<t:property name="ptst.completed" value="CO"/>
+<t:property name="ptst.delgated" value="DE"/>
+<t:property name="ptst.tentative" value="TE"/>
+<t:property name="ptst.needs" value="NE"/>
+
+
+
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada)"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always">
+    <t:objective>Create test accounts</t:objective>
+    <t:steps>
+        1. Login to admin.
+        2. Create accounts
+    </t:steps>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>        
+    </t:test>
+    
+    <!-- Creating a Domain -->
+     <t:test id="createDomRequest">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>               
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+    
+	<!-- Creating a user in a specific domain in the same server -->
+    <t:test depends="createAccountRequest159a">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${organizer1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!-- Appointment Properties -->
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+<t:property name="appointmentpub.exception.subject" value="publicexception${TIME}.${COUNTER}"/>
+<t:property name="appointmentpub.exception.content" value="public content modified by invitee1${TIME}.${COUNTER}"/>
+<t:property name="appointment.exception.subject" value="exception${TIME}.${COUNTER}"/>	
+
+
+<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
+	
+<t:property name="appointment1.subject" value="Fsubject${TIME}.${COUNTER}"/>
+<t:property name="appointment1.location" value="Flocation${TIME}.${COUNTER}"/>
+<t:property name="appointment1.content" value="Fcontent${TIME}.${COUNTER}"/>
+
+	
+<t:property name="time.22Dec2009100000.gmt" value="1261476000000"/>
+<t:property name="time.22Dec2009100000.pst" value="${TIME(-8h)[${time.22Dec2009100000.gmt}]}"/>
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="CalShareAllSetup" type="always" >
+    <t:objective>create test account</t:objective>
+
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${organizer1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  	
+	 <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="organizer.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="organizer.folder.root"/>
+        </t:response>
+    </t:test>
+
+	<!-- Sharing the calendar with invitee1 giving Rights Private and Read rights  -->
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${organizer.folder.calendar}" op="${op.grant}">
+                    <grant gt="${grant.all}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
+        </t:response>
+    </t:test>	
+    
+    <!-- Create a series of appointment as public -->
+    <t:test required="true" >
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m l="${organizer.folder.calendar}">
+					<inv>
+						<comp status="CONF" fb="B" transp="O" class="PUB" allDay="0" name="${appointment.subject}">
+							<or a="${organizer1.name}"/>							
+							<s d="${ICALTIME[${time.22Dec2009100000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+3h)[${time.22Dec2009100000.pst}]}" tz="${timezone.pst}" />
+							<recur>
+								<add>
+									<rule freq="DAI">
+										<interval ival="1"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<!--  <e a="${invitee1.name}" t="t"/> -->
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>            	
+            	<t:select attr="invId" set="organizer1.appt1.invId"/>
+            	<t:select attr="apptId" set="organizer1.appt1.apptId"/>
+            </t:select>
+        </t:response>
+    </t:test>	
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_ShareAll_Calendar_html_01" type="smoke">
+    <t:objective>Verify a calendar shared with read rights to all authenticated users returns data for authenticated users</t:objective>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+	
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${invitee2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+		
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${organizer1.name}</user>
+			<folder>Calendar</folder>
+			<fmt>ics</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		<!-- 	<t:select attr="SUMMARY" match="${appt01.subject}"/>  -->
+		</t:restServletResponse>
+	</t:resttest>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_ShareAll_Calendar_html_02" type="bhr">
+    <t:objective>Verify a calendar item shared with read rights to all authenticated users returns data for authenticated users</t:objective>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+	
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+		
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${organizer1.name}</user>
+			<id>${organizer1.appt1.apptId}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>		
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_ShareAll_Calendar_html_03" type="bhr">
+    <t:objective>Verify a calendar shared with read rights to all authenticated users returns 401 for non-authenticated users</t:objective>
+
+	<t:property name="authToken" value=""/>
+		
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${organizer1.name}</user>
+			<folder>Calendar</folder>
+			<fmt>ics</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="401"/>		
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+  
+</t:tests>

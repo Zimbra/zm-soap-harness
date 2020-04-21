@@ -1,0 +1,356 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="acc.search" value="gal"/>
+<t:property name="domain0.name" value="testautogal.${COUNTER}.${TIME}.com"/>
+
+<t:property name="account1.name" value="gal.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="gal.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="gal.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account4" value="gal.${TIME}${COUNTER}"/>
+<t:property name="account4.name" value="${account4}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="gal.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.name" value="gal.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account7.name" value="gal.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account8.name" value="gal.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="lastname" value="last${TIME}${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="AutocompleteGalRequest_01" type="smoke" >
+    <t:objective>Sanity test for AutocompleteGalRequest</t:objective>
+   
+    <t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<!-- Remember these values for later -->
+	<t:property name="authToken.admin" value="${authToken}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:delay msec="20000"/>
+    <t:test >
+		<t:requestContext>
+			<authToken>${authToken.admin}</authToken>
+			<account by="id">${account1.id}</account>
+		</t:requestContext>
+        <t:request>
+			<AutoCompleteGalRequest xmlns="urn:zimbraAccount" limit="20" type="account">
+				<name>${acc.search}</name>
+			</AutoCompleteGalRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AutoCompleteGalResponse">
+            	<t:select path="//acct:cn/acct:a" />
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchGalRequest_01" type="smoke" >
+    <t:objective>Sanity test for SearchGalRequest</t:objective>
+   
+   <t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<!-- Remember these values for later -->
+	<t:property name="authToken.admin" value="${authToken}"/>
+
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+     <t:test >
+		<t:requestContext>
+			<authToken>${authToken.admin}</authToken>
+			<account by="id">${account2.id}</account>
+		</t:requestContext>
+        <t:request> 
+            <SearchGalRequest xmlns="urn:zimbraAccount">
+				<name>${account2.name}</name>
+			</SearchGalRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:SearchGalResponse"/>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SyncGalRequestt_01" type="bhr" >
+    <t:objective>Sanity test for SyncGalRequest</t:objective>
+   
+   <t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<!-- Remember these values for later -->
+	<t:property name="authToken.admin" value="${authToken}"/>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<!-- Remember these values for later -->
+	<t:property name="account3.authToken" value="${authToken}"/>
+	
+	<t:test>
+		<t:request>
+			<SyncGalRequest xmlns="urn:zimbraAccount"/> 
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:SyncGalResponse" attr="token" set="token.id"/>
+		</t:response>
+    </t:test>  
+	
+     
+     <!-- change to the admin auth token -->
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="authToken" value="${authToken.admin}"/>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                 <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+		</t:response>
+    </t:test>  
+	<t:delay sec="210"/>
+	
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	<t:property name="authToken" value="${account3.authToken}"/>
+
+	<t:test>
+		<t:request>
+			<SyncGalRequest xmlns="urn:zimbraAccount" token="${token.id}"/> 
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:SyncGalResponse/acct:cn">
+ 				<t:select path="//acct:a[@n='email']" match="${account4.name}"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_01" type="smoke" >
+   <t:objective>Sanity test for AutoCompleteRequest</t:objective>
+   
+   <t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<!-- Remember these values for later -->
+	<t:property name="authToken.admin" value="${authToken}"/>
+
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account6.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefGalAutoCompleteEnabled">${globals.true}</a>
+                <a n="zimbraPrefSharedAddrBookAutoCompleteEnabled">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account6.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account7.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="displayName">${firstname} ${lastname}</a>
+				<a n="givenName">${firstname}</a>
+				<a n="sn">${lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account7.server"/>
+        </t:response>
+    </t:test>
+    
+     <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account8.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="displayName">${firstname} ${lastname}</a>
+				<a n="givenName">${firstname}</a>
+				<a n="sn">${lastname}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account8.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>               
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account8.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account7.name}"/>
+					<su>subject${TIME}${COUNTER}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>${firstname}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match[1]" attr="email" match=".*${account7.name}.*"/>
+ 				<t:select path="//mail:match[2]" attr="email" match=".*${account8.name}.*"/>
+ 			</t:select>
+		</t:response>
+    </t:test> 
+
+</t:test_case>
+
+</t:tests>

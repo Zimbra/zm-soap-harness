@@ -1,0 +1,116 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <t:property name="domain.name" value="domain${TIME}${COUNTER}.com" />
+    <t:property name="domain2.name" value="domain2${TIME}${COUNTER}.com" />
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test>
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test id="CreateDomainRequest">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain.name}</name>
+                    <a n="zimbraFeatureResetPasswordStatus">disabled</a>
+                    <a n="zimbraSkinBackgroundColor">RED</a>
+                    <a n="zimbraSkinFavicon">test</a>
+                    <a n="zimbraSkinForegroundColor">RED</a>
+                    <a n="zimbraSkinLogoAppBanner">test</a>
+                    <a n="zimbraSkinLogoLoginBanner">test</a>
+                    <a n="zimbraSkinLogoURL">http://www.zimbra.com</a>
+                    <a n="zimbraSkinSecondaryColor">RED</a>
+                    <a n="zimbraSkinSelectionColor">RED</a>
+                    <a n="zimbraWebClientLoginURL">http://www.zimbra.com</a>
+                    <a n="zimbraWebClientLogoutURL">http://www.zimbra.com</a>
+                    <a n="zimbraWebClientStaySignedInDisabled">FALSE</a>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"
+                    set="domain.id" />
+            </t:response>
+        </t:test>
+                <t:test id="CreateDomainRequest">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>${domain2.name}</name>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"
+                    set="domain2.id" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+    <t:test_case testcaseid="clientInfoRequest" type="smoke" bugids="ZimbraX">
+        <t:objective>Client info request validation</t:objective>
+        <t:test>
+            <t:request>
+                <ClientInfoRequest xmlns="urn:zimbraAccount">
+                    <domain by="name">${domain.name}</domain>
+                </ClientInfoRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraFeatureResetPasswordStatus']" match="disabled" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinBackgroundColor']" match="RED" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinFavicon']" match="test" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinForegroundColor']" match="RED" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinLogoAppBanner']" match="test" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinLogoLoginBanner']" match="test" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinLogoURL']" match="http://www.zimbra.com" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinSecondaryColor']" match="RED" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinSelectionColor']" match="RED" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraWebClientLoginURL']" match="http://www.zimbra.com" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraWebClientLogoutURL']" match="http://www.zimbra.com" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraWebClientStaySignedInDisabled']" match="false" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ClientInfoRequest xmlns="urn:zimbraAccount">
+                    <domain by="id">${domain.id}</domain>
+                </ClientInfoRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraFeatureResetPasswordStatus']" match="disabled" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinBackgroundColor']" match="RED" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinFavicon']" match="test" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinForegroundColor']" match="RED" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinLogoAppBanner']" match="test" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinLogoLoginBanner']" match="test" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinLogoURL']" match="http://www.zimbra.com" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinSecondaryColor']" match="RED" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinSelectionColor']" match="RED" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraWebClientLoginURL']" match="http://www.zimbra.com" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraWebClientLogoutURL']" match="http://www.zimbra.com" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraWebClientStaySignedInDisabled']" match="false" />
+            </t:response>
+        </t:test>
+        <t:test>
+            <t:request>
+                <ClientInfoRequest xmlns="urn:zimbraAccount">
+                    <domain by="id">${domain2.id}</domain>
+                </ClientInfoRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraSkinLogoURL']" match="http://www.zimbra.com" />
+                <t:select path="//acct:ClientInfoResponse//acct:attr[@name='zimbraWebClientStaySignedInDisabled']" match="false" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+</t:tests>

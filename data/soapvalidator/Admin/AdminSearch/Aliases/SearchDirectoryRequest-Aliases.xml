@@ -1,0 +1,170 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.alias.first" value="test${TIME}${COUNTER}"/>
+<t:property name="account1.alias" value="${account1.alias.first}@${defaultdomain.name}"/>
+
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account3.name.first" value="test.${TIME}.${COUNTER}"/>
+<t:property name="account3.name" value="${account3.name.first}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="admin_search_aliases_account_setup" type="always" >
+    <t:objective>login as the admin</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+        </t:response>
+    </t:test>  
+
+
+    <t:test >
+        <t:request>
+			<AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+				<id>${account1.id}</id>
+				<alias>${account1.alias}</alias>
+			</AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+        </t:response>
+    </t:test>  
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AdminSearch_Aliases_Basic_01" type="smoke">
+    <t:objective>Search for an alias that exists (standard query used by admin console)</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" sortBy="name" sortAscending="1" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraAliasTargetId" types="aliases">
+				<query>(|(uid=*${account1.alias.first}*)(cn=*${account1.alias.first}*)(sn=*${account1.alias.first}*)(gn=*${account1.alias.first}*)(displayName=*${account1.alias.first}*)(zimbraId=${account1.alias.first})(mail=*${account1.alias.first}*)(zimbraMailAlias=*${account1.alias.first}*)(zimbraMailDeliveryAddress=*${account1.alias.first}*)(zimbraDomainName=*${account1.alias.first}*))</query>
+			</SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:alias[@name='${account1.alias}']">
+            	<t:select path="//admin:a[@n='zimbraAliasTargetId']" match="${account1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:test_case testcaseid="AdminSearch_Aliases_Basic_02" type="bhr">
+    <t:objective>Search for an alias that exists (simplified query)</t:objective>
+
+    <t:test >
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" sortBy="name" sortAscending="1" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraAliasTargetId" types="aliases">
+				<query>(uid=*${account1.alias.first}*)</query>
+			</SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:alias[@name='${account1.alias}']">
+            	<t:select path="//admin:a[@n='zimbraAliasTargetId']" match="${account1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:test_case testcaseid="AdminSearch_Aliases_Basic_03" type="bhr">
+    <t:objective>Search for an alias that does not exist</t:objective>
+
+    <t:test >
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" sortBy="name" sortAscending="1" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus,zimbraCalResType,zimbraDomainType,zimbraDomainName" types="aliases">
+				<query>(uid=*test.${TIME}.${COUNTER}*)</query>
+			</SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:alias" emptyset="1"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:test_case testcaseid="AdminSearch_Aliases_Basic_04" type="bhr">
+    <t:objective>Search for an alias, but specify an existing account name</t:objective>
+
+    <t:test >
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" offset="0" limit="25" sortBy="name" sortAscending="1" attrs="displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraMailStatus,zimbraCalResType,zimbraDomainType,zimbraDomainName" types="aliases">
+				<query>(uid=*${account3.name.first}*)</query>
+			</SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:alias" emptyset="1"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+   
+</t:tests>
+

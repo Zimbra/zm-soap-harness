@@ -1,0 +1,100 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="waitset.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="interest.all" value="all"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="WaitSetRequest_01" type="smoke">
+    <t:objective>Sanity test for CreateWaitSetRequest, WaitSetRequest and DestroyWaitSetRequest</t:objective>
+   
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="${interest.all}" >
+				<add>
+					<a id="${account1.id}" />
+				</add>
+			</CreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateWaitSetResponse" attr="seq" set="account1.waitset.seq"/>
+            <t:select path="//mail:CreateWaitSetResponse" attr="waitSet" set="account1.waitset.waitSet"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:test >
+        <t:request>
+			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account1.waitset.waitSet}" seq="${account1.waitset.seq}"  >
+			</WaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:WaitSetResponse">
+            	<t:select path="//mail:a" attr="id" match="${account1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+            
+    <t:test >
+        <t:request>
+			<DestroyWaitSetRequest xmlns="urn:zimbraMail" waitSet="${account1.waitset.waitSet}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DestroyWaitSetResponse" />
+        </t:response>
+    </t:test>
+        
+</t:test_case>
+
+</t:tests>

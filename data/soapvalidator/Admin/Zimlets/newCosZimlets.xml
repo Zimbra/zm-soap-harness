@@ -1,0 +1,108 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+<t:property name="account.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="COS.name" value="cos${TIME}${COUNTER}"/>
+
+<t:property name="adminServer" value="NOT_DEFINED"/>
+<t:property name="acctServer" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Setup" type="always" >
+    <t:objective>Setup server connection </t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:test id = "newCosZimlets_CreateCos" required="true" depends="admin_login">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="Cos.id"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<!--t:test_case testcaseid="newCosZimletsGetZimletStatus" type="bhr" areas="dev_sanity">
+    <t:objective> Check no zimlets are installed for a new COS </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response> 
+            <t:select emptyset="1" path='//admin:GetZimletStatusResponse/admin:cos[@name="${COS.name}"]/admin:zimlet' match=".*"/>
+        </t:response>
+    </t:test>
+</t:test_case-->
+
+<t:test_case testcaseid="newCosZimletsGetZimletStatus" type="bhr" areas="dev_sanity">
+    <t:objective> Check that zimlets from default are copied to a new COS when the COS is created </t:objective>
+    <!-- The assumption is that the zimlets are listed in the same order in both coses-->
+    
+    <t:test>
+        <t:request>
+            <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response> 
+            <t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[1]' attr="name" set="Zimlet1"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[2]' attr="name" set="Zimlet2"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[3]' attr="name" set="Zimlet3"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[4]' attr="name" set="Zimlet4"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[5]' attr="name" set="Zimlet5"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="default"]/admin:zimlet[5]' attr="name" set="Zimlet6"/>
+		</t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetZimletStatusRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response> 
+            <t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="${COS.name}"]/admin:zimlet' attr="name" match="${Zimlet1}"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="${COS.name}"]/admin:zimlet' attr="name" match="${Zimlet2}"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="${COS.name}"]/admin:zimlet' attr="name" match="${Zimlet3}"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="${COS.name}"]/admin:zimlet' attr="name" match="${Zimlet4}"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="${COS.name}"]/admin:zimlet' attr="name" match="${Zimlet5}"/>
+			<t:select emptyset="0" path='//admin:GetZimletStatusResponse/admin:cos[@name="${COS.name}"]/admin:zimlet' attr="name" match="${Zimlet6}"/>	
+		
+		</t:response>
+    </t:test>
+</t:test_case>
+
+<!--t:test_case testcaseid="newCosZimletsGetZimlets" type="bhr" areas="dev_sanity">
+    <t:objective> Check no zimlets are installed for a new COS </t:objective>
+    
+    <t:test>
+        <t:request>
+            <GetAdminExtensionZimletsRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response> 
+            <t:select emptyset="0" path='//admin:GetAdminExtensionZimletsResponse/admin:cos[@name="${COS.name}"]/admin:zimlet' match=".*"/>
+        </t:response>
+    </t:test>
+</t:test_case-->
+</t:tests>

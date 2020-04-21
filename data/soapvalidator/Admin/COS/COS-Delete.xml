@@ -1,0 +1,570 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="COS.name" value="cosformodification${TIME}${COUNTER}"/>
+<t:property name="COS1.name" value="cosformodification${TIME}${COUNTER}"/>
+<t:property name="COS2.name" value="cosformodification${TIME}${COUNTER}"/>
+<t:property name="COS3.name" value="cosformodification${TIME}${COUNTER}"/>
+<t:property name="COS4.name" value="cosformodification${TIME}${COUNTER}"/>
+<t:property name="COS4.newName" value="cosformodification${TIME}${COUNTER}"/>
+<t:property name="COS5.name" value="cosformodification${TIME}${COUNTER}"/>
+<t:property name="COS6.name" value="cosformodification${TIME}${COUNTER}"/>
+<t:property name="COS7.name" value="cosformodification${TIME}${COUNTER}"/>
+<t:property name="COS8.name" value="cosformodification${TIME}${COUNTER}"/>
+
+<t:property name="COS.blank" value=""/>
+<t:property name="COS.space" value="             "/>
+<t:property name="COS.spchar" value=":''&lt;//\\"/>
+<t:property name="COS.sometext" value="some text"/>
+<t:property name="COS.negative" value="-1"/>
+<t:property name="COS.zero" value="0"/>
+<t:property name="COS.largenumber" value="1234567890"/>
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="alias.name" value="Alias.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_cos_delete" type="always" >
+    <t:objective>Login to admin account and create cos.</t:objective>
+    <t:steps>1. Login to admin account.
+             2. create cos. 
+    </t:steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS1.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS1.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS2.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS2.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS3.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS3.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS4.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS4.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS4.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest1" type="bhr" areas="dev_sanity">
+    <t:objective> Delete a COS with valid id </t:objective>
+    
+    <t:test id="deletecosrequest1b">
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.id}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest2" type="functional" >
+    <t:objective> Delete a non existing id </t:objective>
+    
+    <t:test depends="deletecosrequest1b">
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.id}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest3" type="functional" >
+    <t:objective> Delete a COS with blank id  </t:objective>
+
+    <t:test>
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.blank}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest4" type="functional" >
+    <t:objective> Delete a COS with some text at id  </t:objective>
+
+    <t:test>
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.sometext}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest5" type="functional" >
+    <t:objective> Delete a COS with special character at id  </t:objective>
+
+    <t:test>
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.spchar}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest6" type="functional" >
+    <t:objective> Delete a COS with negative number at id  </t:objective>
+
+    <t:test>
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.negative}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest7" type="functional" >
+    <t:objective> Delete a COS with zero at id  </t:objective>
+
+    <t:test>
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.zero}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest8" type="functional" >
+    <t:objective> Delete a COS with largenumber at id  </t:objective>
+
+    <t:test>
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS.largenumber}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest9" type="sanity" >
+    <t:objective> Create a cos with same name as deleted cos.</t:objective>
+    <t:steps>1. Delete a cos.
+             2. Create a cos with same name as deleted cos.
+    </t:steps>
+
+    <t:test id="deleteCosRequest10a">
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS1.id}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="deleteCosRequest10a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS1.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS1.name}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest10" type="functional" >
+    <t:objective> Delete a cos without id tag.</t:objective>
+
+    <t:test>
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest11" type="functional" >
+    <t:objective> Delete a cos with leading spaces in id.</t:objective>
+
+    <t:test>
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>                    ${COS2.id}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest12" type="functional" >
+    <t:objective> Delete a cos with trailing spaces in id.</t:objective>
+
+    <t:test>
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS3.id}                    </id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest13" type="sanity">
+    <t:objective> Delete a COS assigned to an account</t:objective>
+    <t:steps>
+            1. Create a COS.
+            2. Create an account with that COS.
+            3. Delete that COS.
+    </t:steps>
+
+    <t:test id="deletecosrequest13a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS5.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS5.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS5.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="deletecosrequest13a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${COS5.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
+        </t:response>
+    </t:test>  
+    
+    <t:test depends="deletecosrequest13a">
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS5.id}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest14" type="sanity" bugids="4233">
+    <t:objective> Verify that the account is assigned to default COS id when its COS is deleted.</t:objective>
+    <t:steps>
+            1. Create a COS.
+            2. Create an account with that COS.
+            3. Delete that COS.
+            4. Check COS of that account.
+    </t:steps>
+
+    <t:test id="deletecosrequest14a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS6.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS6.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS6.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="deletecosrequest14b" depends="deletecosrequest14a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${COS6.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid2.id"/>
+        </t:response>
+    </t:test>  
+    
+    <t:test id = "deletecosrequest14c" depends="deletecosrequest14a">
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS6.id}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="deletecosrequest14b,deletecosrequest14c">
+        <t:request>
+            <GetAccountRequest xmlns="urn:zimbraAdmin">
+                <account by="id">${test_accountid2.id}</account>
+            </GetAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAccountResponse/admin:account/admin:a" attr="id" match="${COS6.id}" emptyset="1"/>
+        </t:response>
+    </t:test>
+  
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest15" type="sanity" bugids="4233">
+    <t:objective> Verify that the alias is assigned to default COS id when its COS is deleted.</t:objective>
+    <t:steps>
+            1. Create a COS.
+            2. Create an account with that COS.
+            3. Create alias of that account.
+            4. Delete that COS.
+            5. Check COS of that alias.
+    </t:steps>
+
+    <t:test id="deletecosrequest15a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS7.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS7.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS7.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="deletecosrequest15b" depends="deletecosrequest15a" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${COS7.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+        </t:response>
+    </t:test>  
+    
+    <t:test  id="deletecosrequest15c" depends="deletecosrequest15b"  >
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account3.id}</id>
+                <alias>${alias.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>  
+    
+    <t:test id = "deletecosrequest15d" depends="deletecosrequest15a">
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS7.id}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="deletecosrequest15c,deletecosrequest15d">
+        <t:request>
+            <GetAccountRequest xmlns="urn:zimbraAdmin">
+                <account by="name">${alias.name}</account>
+            </GetAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAccountResponse/admin:account/admin:a" attr="id" match="${COS7.id}" emptyset="1"/>
+        </t:response>
+    </t:test>
+  
+</t:test_case>
+
+
+<t:test_case testcaseid="DeleteCosRequest16" type="functional">
+    <t:objective> Create an account with deleted COS.</t:objective>
+    <t:steps>
+            1. Create a COS. 
+            2. Delete that COS.
+            3. Create an account with that COS.
+    </t:steps>
+
+    <t:test id="deletecosrequest16a">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS8.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS8.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="COS8.id"/>
+        </t:response>
+    </t:test>
+     
+    <t:test id = "deletecosrequest16b" depends="deletecosrequest16a">
+        <t:request>
+            <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                <id>${COS8.id}</id>
+            </DeleteCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCosResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="deletecosrequest16a,deletecosrequest16b" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${COS8.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>  
+
+
+</t:test_case>
+
+
+</t:tests>

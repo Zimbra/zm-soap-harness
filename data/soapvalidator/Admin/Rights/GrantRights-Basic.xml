@@ -1,0 +1,413 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="domain.name" value="right.${COUNTER}${TIME}"/>
+<t:property name="admin1.account" value="admin1.${COUNTER}${TIME}"/>
+<t:property name="admin2.account" value="admin2.${COUNTER}${TIME}"/>
+<t:property name="account1.name" value="right1.${TIME}${COUNTER}"/>
+<t:property name="account2.name" value="right2.${TIME}${COUNTER}"/>
+<t:property name="password.new" value="tingtong"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+<!-- Create a testdomain and an account in it -->
+
+    <t:test id="CreateDomainRequest0a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}@${domain.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="account1.fullName"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+  
+      <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}@${domain.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="account2.fullName"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${admin1.account}@${domain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="admin1.fullName"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${admin2.account}@${domain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name" set="admin2.fullName"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="admin2.server"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllRightsRequest01" type="bhr"  bugids="43391" >
+<t:objective> Basic test case to verify GrantRightRequest </t:objective>
+	<t:steps>
+	1. Create a regular admin account (created in above request)
+	2. Grant right to setPassword
+	3. Authenticate with regular admin account
+	4. Send SetPasswordRequest to set password. Success
+	</t:steps>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${domain.name}</target>
+				<grantee type="usr" by="name">${admin1.fullName}</grantee>
+				<right>setAccountPassword</right>
+				</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${domain.name}</target>
+				<grantee type="usr" by="name">${admin1.fullName}</grantee>
+				<right>getAccountInfo</right>
+				</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin1.fullName}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <SetPasswordRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <newPassword>${password.new}</newPassword>
+            </SetPasswordRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:SetPasswordResponse"/>
+        </t:response>
+    </t:test>
+
+<!-- try sending other requests and it should fail as no rights assigned -->
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account1.id}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:a[@n='zimbraFeatureSkinChangeEnabled' and @pd='1']"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAllRightsRequest02" type="sanity" >
+<t:objective> Granting rights by using attr "id" instead of "name" </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="id">${domain.id}</target>
+				<grantee type="usr" by="id">${admin1.id}</grantee>
+				<right>getAccount</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin1.fullName}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account1.id}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllRightsRequest03" type="bhr" bugids="36257">
+<t:objective> Verify 'canDelegate'  </t:objective>
+
+	<t:steps>
+	1. Grant right to admin1 with canDelegate="1"
+	2. Login as admin1
+	3. admin1 tried to grant the same right to admin2. Successfull
+	</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${domain.name}</target>
+				<grantee type="usr" by="name">${admin1.fullName}</grantee>
+				<right canDelegate="1">getDomain</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin1.fullName}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${domain.name}</target>
+				<grantee type="usr" by="name">${admin2.fullName}</grantee>
+				<right>getDomain</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllRightsRequest04" type="bhr" bugids="36396">
+<t:objective> Verify 'deny = 1' works </t:objective>
+
+<t:steps>
+1. Grant admin1 the modifyAccount right on domain domain.com (grant1) 
+2. Grant admin1 the negative (deny) modifyAccount  right on domain for ${account1.fullName} (grant2) 
+3. Login as admin1 and try to send modifyAccount  for account1. (Should fail)
+4. Login as admin1 and try to send modifyAccount  for account1. (Success)
+</t:steps>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${domain.name}</target>
+				<grantee type="usr" by="name">${admin1.fullName}</grantee>
+				<right>modifyAccount</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="account" by="name">${account1.fullName}</target>
+				<grantee type="usr" by="name">${admin1.fullName}</grantee>
+				<right deny="1">modifyAccount</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${admin1.fullName}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n="zimbraAccountStatus">maintenance</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account2.id}</id>
+                <a n="zimbraAccountStatus">maintenance</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse/admin:account/admin:a[@n='zimbraAccountStatus']" match="maintenance"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllRightsRequest05" type="bhr" bugids="36396">
+<t:objective> Verify sending invalid rights. should throw "NO_SUCH_RIGHT" </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="account" by="name">${account1.fullName}</target>
+				<grantee type="usr" by="name">${admin1.fullName}</grantee>
+				<right deny="1">SetPasswordRequest </right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^account.NO_SUCH_RIGHT" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>

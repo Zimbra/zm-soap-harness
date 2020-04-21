@@ -1,0 +1,32 @@
+<t:tests xmlns:t="urn:zimbraTestHarness" concurrent="true">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="PASS-CheckXMLConcurrencyB_01" type="sanity" areas="selfcheck" >
+    <t:objective>SOAP Harness -- CheckTestCase - Verify the required t:test_case attributes</t:objective>
+    
+    <t:test >
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:delay sec="10"/>
+	
+	<t:test >
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

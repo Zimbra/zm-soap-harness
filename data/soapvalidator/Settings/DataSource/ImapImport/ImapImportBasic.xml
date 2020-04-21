@@ -1,0 +1,225 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ImapImport_CreateAccount" type="always" >
+    <t:objective>Create a pop3 account with all valid values</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ImapImport_Basic_01" type="smoke">
+    <t:objective>Import an IMAP account (From Zimbra) into a zimbra account - messages</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Add a few messages to account1
+	3. Login as account2
+	4. Create a new data source to account1
+	5. Import data
+	6. Verify messages appear correctly
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="mime.folder.name" value="${testMailRaw.root}/email01"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:mailinjecttest required="true" >
+        <t:lmtpInjectRequest>
+            <foldername>${mime.folder.name}</foldername>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inboxFolder.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="account2.datasource1.name" value="datasource${TIME}${COUNTER}"/>
+	<t:property name="account2.folder1.name" value="folder${TIME}${COUNTER}"/>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account2.folder1.name}" l="${inboxFolder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse">
+            	<t:select path="//mail:folder" attr="id" set="account2.folder1.id"/>
+        	</t:select>
+        </t:response>
+	</t:test>
+
+    <t:test required="true" >
+        <t:request>
+			<CreateDataSourceRequest xmlns="urn:zimbraMail">
+				<imap name="${account2.datasource1.name}" isEnabled="true" 
+					emailAddress="${account1.name}" host="${account1.server}" 
+					port="993" username="${account1.name}" password="${defaultpassword.value}"
+					l="${account2.folder1.id}" connectionType="ssl" pollingInterval="0" 
+					leaveOnServer="true" fromAddress="${account1.name}"/>
+			 </CreateDataSourceRequest>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:CreateDataSourceResponse">
+            	<t:select path="mail:imap" attr="id" set="account2.datasource1.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+			<ImportDataRequest xmlns="urn:zimbraMail">
+				<imap id="${account2.datasource1.id}"/>
+			</ImportDataRequest>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:ImportDataResponse"/>
+        </t:response>
+    </t:test>
+
+
+
+	<!-- Bug 51335 ImportDataRequest is now asynchronous so added loop to query till mails get imported. -->
+	<t:for start="1" end="20" break="response">
+		<t:delay msec="2000"/>
+		<t:test >
+        	<t:request>
+				<GetImportStatusRequest xmlns="urn:zimbraMail">
+				</GetImportStatusRequest>
+        	</t:request>
+        	<t:response>              
+            	<t:select path="//mail:GetImportStatusResponse/mail:imap[@isRunning='0']"  query="response"/>
+           	</t:response>
+    	</t:test>
+	</t:for>	
+    
+    <t:test required="true" >
+        <t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail">
+				<folder id="${account2.folder1.id}"/>
+			</GetFolderRequest>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:folder[@name='INBOX']" attr="id" set="account2.datasource.inbox.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" limit="100">
+				<query>inid:${account2.datasource.inbox.id}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m/mail:su" match="email01A"/>
+            	<t:select path="//mail:m/mail:su" match="email01B"/>
+            	<t:select path="//mail:m/mail:su" match="email01C"/>
+            	<t:select path="//mail:m/mail:su" match="email01D"/>
+            	<t:select path="//mail:m/mail:su" match="email01E"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+</t:tests>

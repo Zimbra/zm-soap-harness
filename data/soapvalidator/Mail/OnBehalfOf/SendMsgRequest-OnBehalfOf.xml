@@ -1,0 +1,493 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain.name" value="${TIME}.${COUNTER}.${defaultdomain.name}"/>
+
+<t:property name="account1.name" value="onbehalf1.${TIME}.${COUNTER}@${domain.name}"/>
+<t:property name="account2.name" value="onbehalf2.${TIME}.${COUNTER}@${domain.name}"/>
+<t:property name="account3.name" value="onbehalf3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="onbehalf4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="onbehalf4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test id="ping" required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acctSetup1_send_message" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<!-- Remember these values for later -->
+	<t:property name="authToken.admin" value="${authToken}"/>
+
+
+    <t:test id="CreateDomainRequest0a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+				<a n="zimbraIsDomainAdminAccount">${globals.true}</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account4.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account5.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="GrantRightRequest1"  required="true" >
+			<t:request>
+				<GrantRightRequest xmlns="urn:zimbraAdmin">
+			      <target by="name" type="account">${account4.name}</target>
+			      <grantee by="name" type="usr">${account3.name}</grantee>
+			      <right>sendOnBehalfOf</right>
+			    </GrantRightRequest>
+			</t:request>
+			<t:response>
+			<t:select path="//admin:GrantRightResponse"/>	
+			</t:response>
+		</t:test>
+		
+	<t:test id="GrantRightRequest2" required="true" >
+			<t:request>
+				<GrantRightRequest xmlns="urn:zimbraAdmin">
+			      <target by="name" type="account">${account2.name}</target>
+			      <grantee by="name" type="usr">${account1.name}</grantee>
+			      <right>sendOnBehalfOf</right>
+			    </GrantRightRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GrantRightResponse"/>
+			</t:response>
+		</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:property name="message.subject" value="Subject${TIME}${COUNTER}"/>
+
+	<t:test id="domain_admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="account1.authToken"/>
+
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="OnBehalfOf_SendMsgRequest_01" type="bhr" bugids="15766" >
+	<t:objective>Verify that a copy of a sent-as message is saved in the "From:" user's sent folder</t:objective>
+	<t:steps>
+	1. Account3 executes SendMsgRequest with "account by=id" for account4
+	2. Account3 verifies the message is saved in Account3's sent folder
+	3. Account4 verifies the message is saved in Account4's sent folder
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+	<t:property name="message.subject" value="Subject${TIME}${COUNTER}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account3.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request> 
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse">
+            	<t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account3.folder.sent.id"/>
+            </t:select>
+        </t:response>
+	</t:test>
+
+    <t:test >
+		<t:requestContext>
+			<authToken>${authToken}</authToken>
+
+			<account by="id">${account4.id}</account>
+		</t:requestContext>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account5.name}"/>
+					<e t="f" a="${account4.name}"/>
+					<e t="s" a="${account3.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>Content ${TIME} ${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse">
+            	<t:select path="//mail:m" attr="id" match="${regex.id}" emptyset="1"/>
+            </t:select>
+		</t:response>
+	</t:test>
+
+	
+
+	<t:delay sec="10"/>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request> 
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse">
+            	<t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="account4.folder.sent.id"/>
+            </t:select>
+        </t:response>
+	</t:test>
+
+	<t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m[@l='${account3.folder.sent.id}']" attr="id" set="account4.message.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test id="MsgGetRequest1b" depends="MsgGetRequest1a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account4.message.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${account4.message.id}']">
+            	<t:select path="//mail:e[@t='f']" attr="a" match="${account4.name}"/>
+            	<t:select path="//mail:e[@t='s']" attr="a" match="${account3.name}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="OnBehalfOf_SendMsgRequest_02" type="sanity" >
+	<t:objective>Verify that an Admin sending message on-behalf-off appears as if the user account sent the message directly</t:objective>
+	<t:steps>
+	1. Admin executes SendMsgRequest with "account by=id" for account2
+	2. Account4 logs in and verifies receipt of message
+	3. No "on-behalf-off" settings should appear in the message
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${zimbraServer.name}"/>
+
+	<t:property name="message.subject" value="Subject${TIME}${COUNTER}"/>
+
+    <t:test >
+		<t:requestContext>
+			<authToken>${authToken.admin}</authToken>
+
+			<account by="id">${account3.id}</account>
+		</t:requestContext>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account4.name}"/>
+					<e t="f" a="${account3.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>Content ${TIME} ${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse">
+            	<t:select path="//mail:m" attr="id" match="${regex.id}" emptyset="1"/>
+            </t:select>
+		</t:response>
+	</t:test>
+
+	<t:delay sec="10"/>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	<t:property name="server.restServlet" value="${account4.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="account4.message.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account4.message.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="To" match="${account4.name}"/>
+			<t:select attr="From" match="${account3.name}"/>
+			<t:select attr="Sender" match="${admin.user}" emptyset="1"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+    <t:test id="MsgGetRequest1b" depends="MsgGetRequest1a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account4.message.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${account4.message.id}']">
+            	<t:select path="//mail:e[@t='f']" attr="a" match="${account3.name}"/>
+            	<t:select path="//mail:e[@t='s']" attr="a" match="${admin.user}" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="OnBehalfOf_SendMsgRequest_03" type="sanity" >
+	<t:objective>Verify that a DomainAdmin sending message on-behalf-off appears as if the user account sent the message directly</t:objective>
+	<t:steps>
+	1. Domain Admin executes SendMsgRequest with "account by=id" for account2
+	2. Account4 logs in and verifies receipt of message
+	3. No "on-behalf-off" settings should appear in the message
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:property name="message.subject" value="Subject${TIME}${COUNTER}"/>
+
+    <t:test >
+		<t:requestContext>
+			<authToken>${account1.authToken}</authToken>
+
+			<account by="id">${account2.id}</account>
+		</t:requestContext>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account4.name}"/>
+					<e t="f" a="${account2.name}"/>
+					<e t="s" a="${account1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>Content ${TIME} ${COUNTER}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse">
+            	<t:select path="//mail:m" attr="id" match="${regex.id}" emptyset="1"/>
+            </t:select>
+		</t:response>
+	</t:test>
+
+	
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	<t:property name="server.restServlet" value="${account4.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account4.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="account4.message.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${account4.message.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="To" match="${account4.name}"/>
+			<t:select attr="From" match="${account2.name}"/>
+			<t:select attr="Sender" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+    <t:test id="MsgGetRequest1b" depends="MsgGetRequest1a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account4.message.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${account4.message.id}']">
+            	<t:select path="//mail:e[@t='f']" attr="a" match="${account2.name}"/>
+            	<t:select path="//mail:e[@t='s']" attr="a" match="${account1.name}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+
+
+
+
+
+
+
+

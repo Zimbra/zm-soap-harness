@@ -1,0 +1,215 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="test123" />
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.password" value="test123" />  
+<t:property name="appt1.filename" value="${testMailRaw.root}/Bugs/38236/msg01.txt"/>
+<t:property name="appt1.subject" value=""/>
+<t:property name="appt1.start" value="1243036800000"/>
+<t:property name="search.string" value="BO aruanded" />
+<t:property name="appt1.id" value="257"/> 
+<t:property name="body.content" value="Testing with changed content in the mail body"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+
+<t:test_case testcaseid="NonUSChar_Cal_Accept" type="always">
+    <t:objective>Create test account and inject messages</t:objective>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+	
+    <t:test required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${appt1.filename}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${account1.server}</server>
+            <modify>
+                <header a="From">=?utf-8?B?SXZhciBIw7x0dA==?= &lt;${account2.name}&gt;</header>
+            </modify>            
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="utf16Char_bug38236" type="bhr" bugids="50942, 51142">
+    <t:objective>Checking for Java utf16 chars </t:objective>
+	<t:steps>
+		1.Login to account
+		2.Search for the injected message (contains appt request)
+		3.Get the msg id and send response to the appointment request
+		4.There was a problem in replying to such appts since it had non us 
+		  ascii chars and its been fixed
+		5. After sending the response test if the meeting is in "AC" state. 
+		   This proves that the response was successfully sent
+		(Note: The message has been modified such that the return 
+		 path and from is admin@qa62.lab.zimbra.com for testing purposes)	
+		 	 
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     	   
+    <t:test>
+        <t:request>			
+			<SearchRequest xmlns="urn:zimbraMail" types="message">				
+				<query>subject:(BO aruanded)</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse/mail:m" >
+               	<t:select attr="id" set="account1.msg.Id"/>
+            	<t:select path="//mail:inv/mail:comp" attr="name" set="account1.msg.subject"/>            	
+            </t:select>               
+        </t:response>
+    </t:test>
+    
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:GetFolderResponse">
+	            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inbox.id"/>
+	            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="calendar.id"/>
+	        </t:select>
+        </t:response>
+    </t:test>	
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.msg.Id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+           	<t:select path="//mail:GetMsgResponse/mail:m" />
+        </t:response>
+    </t:test>		
+		
+  	<t:test >
+        <t:request>
+			<SendInviteReplyRequest xmlns="urn:zimbraMail" id="${account1.msg.Id}" compNum="0" verb="ACCEPT" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${account2.name}"/>
+					<su>Accept: ${account1.msg.subject}</su>
+					<mp ct="text/plain">
+						<content>${body.content}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse" attr="invId" set="appt1.invId" >
+            	<select path="//mail:m" attr="id" set="response.msg.id" />
+            </t:select>
+        </t:response>
+    </t:test> 
+		
+		
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	
+	<t:test>
+        <t:request>			
+			<SearchRequest xmlns="urn:zimbraMail" types="message">				
+				<query>subject:(äriline vaade)</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse/mail:m" >
+               	<t:select attr="id" set="account1.msg1.Id"/>            	            	
+            </t:select>               
+        </t:response>
+    </t:test>
+		
+	<t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.msg1.Id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>           	  
+           	<t:select path="//mail:GetMsgResponse/mail:m/mail:mp">           	
+           		<t:select path="//mail:mp" attr="content" match="${body.content}"/>	
+        				           			
+           	</t:select>
+        </t:response>
+    </t:test>   	
+	
+</t:test_case>
+       
+</t:tests>

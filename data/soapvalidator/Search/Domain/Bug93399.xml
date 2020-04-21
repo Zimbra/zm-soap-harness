@@ -1,0 +1,52 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="test_account.name" value="testAccount1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account.password" value="${defaultpassword.value}"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="testcase_setup" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+               <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+</t:test_case>   
+
+<!-- browseBy tests -->
+<t:test_case testcaseid="bug93399" type="bhr" bugids="93399">
+ <t:objective>BrowseRequest regex expression used blindly gives an error</t:objective>
+
+	<t:test>
+	 <t:request>
+	   <BrowseRequest regex=".*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*.*822" browseBy="domains" xmlns="urn:zimbraMail"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//zimbra:Code" match="service.INTERRUPTED"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

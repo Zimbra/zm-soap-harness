@@ -1,0 +1,549 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="account1.name"
+		value="test1${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="account2.name"
+		value="test2${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="limit_value_1" value="4" />
+	<t:property name="limit_value_2" value="2" />
+	<t:property name="limit_value_3" value="1" />
+	<t:property name="default_gal_limit" value="30000" />
+	<t:property name="gal_limit" value="2" />
+
+	<t:property name="user"
+		value="galuser.${COUNTER}.${TIME}@${defaultdomain.name}" />
+	<t:property name="user1"
+		value="galuser1.${COUNTER}.${TIME}@${defaultdomain.name}" />
+	<t:property name="user2"
+		value="galuser2.${COUNTER}.${TIME}@${defaultdomain.name}" />
+	<t:property name="user3"
+		value="galuser3.${COUNTER}.${TIME}@${defaultdomain.name}" />
+	<t:property name="user4"
+		value="galuser4.${COUNTER}.${TIME}@${defaultdomain.name}" />
+	<t:property name="user5"
+		value="galuser5.${COUNTER}.${TIME}@${defaultdomain.name}" />
+	<t:property name="user6"
+		value="galuser6.${COUNTER}.${TIME}@${defaultdomain.name}" />
+	<t:property name="user7"
+		value="galuser7.${COUNTER}.${TIME}@${defaultdomain.name}" />
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="SyncGalRequest_AccountSetup_00"
+		type="deprecated">
+		<t:objective>Account Setup </t:objective>
+		<t:steps>
+			1. Login into admin.
+			2. Create test accounts.
+			3. Create account
+			user 1 who will be performing SyncGalRequest.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyConfigRequest xmlns="urn:zimbraAdmin">
+					<a n="zimbraGalSyncSizeLimit">${default_gal_limit}</a>
+				</ModifyConfigRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyConfigResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account2.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="bug104578_SyncGal_test1" type="deprecated"
+		bugids="bug104578">
+		<t:objective>Perform the normal SyncGal request.
+		</t:objective>
+		<t:steps>
+			1. Fire sync gal request for account 2 user
+			2. Verify the
+			response contains the all the results from the gal.
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="baseToken" />
+				<t:select path="//acct:SyncGalResponse" attr="ldapOffset"
+					set="baseLdapOffset" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="0" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<!-- Add delay of few sec before creating new accounts -->
+	<t:delay msec="3000" />
+
+	<t:test_case testcaseid="SyncGalRequest_AccountSetup_01"
+		type="always">
+		<t:objective>Account Setup </t:objective>
+		<t:steps>
+			1. Login into admin.
+			2. Create test accounts.
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${user}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="user.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="user.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${user1}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="user1.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="user1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${user2}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="user2.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="user2.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${user3}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="user3.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="user3.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${user4}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="user4.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="user4.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${user5}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="user5.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="user5.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${user6}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="user6.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="user6.server" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${user7}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="user7.id" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="user7.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="bug104578_SyncGal_test2" type="deprecated"
+		bugids="bug104578">
+		<t:objective>Perform the SyncGal request with limit=4 and ldapOffset
+			and token derived from the
+			previous sync request.
+		</t:objective>
+		<t:steps>
+			1. Fire sync gal request for account 2 user
+			2. Verify the
+			response contains only 4 results from GAL.
+			3. Verify the response
+			contains more=1
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_1}</limit>
+					<token>${baseToken}</token>
+					<ldapOffset>${baseLdapOffset}</ldapOffset>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token1" />
+				<t:select path="//acct:SyncGalResponse" attr="ldapOffset"
+					set="ldapOffset1" />
+				<t:select path="//acct:SyncGalResponse[count(acct:cn)=${limit_value_1}]" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="bug104578_SyncGal_test3" type="deprecated"
+		bugids="bug104578">
+		<t:objective>Perform the SyncGal request with limit=4 and ldapOffset
+			and token derived from the
+			previous sync request.
+		</t:objective>
+		<t:steps>
+			1. Fire sync gal request for account 2 user
+			2. Verify the
+			response contains only 4 results from GAL.
+			3. Verify the response
+			contains more=1
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_1}</limit>
+					<token>${token1}</token>
+					<ldapOffset>${ldapOffset1}</ldapOffset>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token2" />
+				<t:select path="//acct:SyncGalResponse" attr="ldapOffset"
+					set="ldapOffset2" />
+				<t:select path="//acct:SyncGalResponse[count(acct:cn)=${limit_value_1}]" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="bug104578_SyncGal_test4" type="deprecated"
+		bugids="bug104578">
+		<t:objective>Perform the SyncGal request with limit=4 and ldapOffset
+			and token derived from the
+			previous sync request.
+		</t:objective>
+		<t:steps>
+			1. Fire sync gal request for account 2 user
+			2. Verify the
+			response contains only 2 results from GAL.
+			3. Verify the response
+			contains more=0
+		</t:steps>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_1}</limit>
+					<token>${token2}</token>
+					<ldapOffset>${ldapOffset2}</ldapOffset>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token3" />
+				<t:select path="//acct:SyncGalResponse" attr="ldapOffset"
+					set="ldapOffset3" />
+				<t:select path="//acct:SyncGalResponse[count(acct:cn)=${limit_value_2}]" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="0" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="bug104578_SyncGal_test5" type="deprecated"
+		bugids="bug104578">
+		<t:objective>Modify zimbraGalSyncSizeLimit=2.Perform the SyncGal
+			request with limit=4 and ldapOffset
+			and token derived from the
+			previous sync request.
+		</t:objective>
+		<t:steps>
+			1. Fire sync gal request for account 2 user
+			2. Verify the
+			response contains only 2 result from GAL.
+			3. Verify the response
+			contains more=1
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyConfigRequest xmlns="urn:zimbraAdmin">
+					<a n="zimbraGalSyncSizeLimit">${gal_limit}</a>
+				</ModifyConfigRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyConfigResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_1}</limit>
+					<token>${baseToken}</token>
+					<ldapOffset>${baseLdapOffset}</ldapOffset>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token4" />
+				<t:select path="//acct:SyncGalResponse" attr="ldapOffset"
+					set="ldapOffset4" />
+				<t:select path="//acct:SyncGalResponse[count(acct:cn)=${limit_value_2}]" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="bug104578_SyncGal_test6" type="deprecated"
+		bugids="bug104578">
+		<t:objective>Modify zimbraGalSyncSizeLimit=2.Perform the SyncGal
+			request with limit=1 and ldapOffset
+			and token derived from the
+			previous sync request.
+		</t:objective>
+		<t:steps>
+			1. Fire sync gal request for account 2 user
+			2. Verify the
+			response contains only 1 result from GAL.
+			3. Verify the response
+			contains more=1
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<ModifyConfigRequest xmlns="urn:zimbraAdmin">
+					<a n="zimbraGalSyncSizeLimit">${gal_limit}</a>
+				</ModifyConfigRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyConfigResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SyncGalRequest xmlns="urn:zimbraAccount">
+					<limit>${limit_value_3}</limit>
+					<token>${baseToken}</token>
+					<ldapOffset>${baseLdapOffset}</ldapOffset>
+				</SyncGalRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:SyncGalResponse" attr="token" set="token4" />
+				<t:select path="//acct:SyncGalResponse" attr="ldapOffset"
+					set="ldapOffset4" />
+				<t:select path="//acct:SyncGalResponse[count(acct:cn)=${limit_value_3}]" />
+				<t:select path="//acct:SyncGalResponse" attr="more" match="1" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+</t:tests>

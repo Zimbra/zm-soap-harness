@@ -1,0 +1,611 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="op.tag" value="tag"/>
+<t:property name="op.update" value="update"/>
+<t:property name="tag.number" value="5"/>
+
+<t:property name="tag.color.default" value="5"/>
+
+<t:property name="tag1.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag2.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag3.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag4.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag5.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag6.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag7.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag8.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag9.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag10.name" value="tag${TIME}${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_tag_mail" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+  
+    <t:test id="getFolderRequest">
+        <t:request>
+            <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/> 
+        </t:response>
+    </t:test>   
+
+</t:test_case>
+
+
+<t:test_case testcaseid="mail_TagActionRequest1" type="bhr" bugids="6473">
+    <t:objective>search for a tagged email (MsgActionRequest - tag)</t:objective>
+    <t:steps> 
+                1. Add an email.  
+                2. Create a new tag;
+                3. Tag the email; 
+                4. Search for the tag
+                5. Verify that the correct email was returned
+    </t:steps>
+
+    <t:test>
+        <t:request>
+	        <AddMsgRequest xmlns="urn:zimbraMail">
+		        <m l="${folder.inbox}">   
+		        <content>Subject: hello1
+do it
+    		    </content></m>
+	        </AddMsgRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+	        <AddMsgRequest xmlns="urn:zimbraMail">
+		        <m l="${folder.inbox}">
+                <content>Subject: hello2
+                
+do it
+    		    </content></m>
+	        </AddMsgRequest>
+	    </t:request>
+        <t:response>
+	        <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag1.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+	        <t:select attr="id" set="tag.id"/>
+	        <t:select attr="color" match="${tag.color.default}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="${op.tag}" tag="${tag.id}"/>
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>tag:"${tag1.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="id" match="${message1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                <action id="${message2.id}" op="${op.tag}" tag="${tag.id}"/>
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message2.id}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>tag:"${tag1.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" match="${message1.id}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" match="${message2.id}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="mail_TagActionRequest2" type="bhr" bugids="2358, 6473" >
+    <t:objective>search for a tagged email (MsgActionRequest - update)</t:objective>
+    <t:steps> 
+              1. Add an email.  
+              2. Create a new tag; 
+              3. Tag the email; 
+              4. Search for the tag
+              5. Verify that the correct email was returned
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.inbox}">
+                <content>Subject: hello3
+do it
+                </content></m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.inbox}">
+                <content>Subject: hello4
+do it
+                </content></m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag2.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag.id"/>
+            <t:select attr="name" set="tag2.name"/>
+            <t:select attr="color" match="${tag.color.default}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="${op.update}" t="${tag.id}"/>
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "${op.update}"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>tag:"${tag2.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="id" match="${message1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="mail_TagActionRequest3" type="bhr" bugids="6473">
+    <t:objective>search for a tagged email (ItemActionRequest - tag)</t:objective>
+    <t:steps> 
+              1. Add an email.  
+              2. Create a new tag;
+              3. Tag the email; 
+              4. Search for the tag
+              5. Verify that the correct email was returned
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.inbox}">
+                <content>Subject: hello5
+
+    do it
+                </content></m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.inbox}">
+                <content>Subject: hello6
+
+do it
+                </content></m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag3.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag.id"/>
+            <t:select attr="color" match="${tag.color.default}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest  xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="${op.tag}" tag="${tag.id}"/>
+            </ItemActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>tag:"${tag3.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="id" match="${message1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="mail_TagActionRequest4" type="bhr" bugids="6473">
+    <t:objective>search for a tagged email (ItemActionRequest - update)</t:objective>
+    <t:steps> 
+              1. Add an email.  
+              2. Create a new tag;
+              3. Tag the email; 
+              4. Search for the tag
+              5. Verify that the correct email was returned
+    </t:steps>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.inbox}">
+                <content>Subject: hello7
+do it
+                </content></m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.inbox}">
+                <content>Subject: hello8
+do it
+                </content></m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag4.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag.id"/>
+            <t:select attr="color" match="${tag.color.default}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest  xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="${op.update}" t="${tag.id}"/>
+            </ItemActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.update}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>tag:"${tag4.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="id" match="${message1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="mail_TagActionRequest5" type="functional" >
+    <t:objective>Tagging a email </t:objective>
+    <t:steps> 
+               1. Add a email.  
+               2. Create a new tag;
+               3. Tag the email with invalid attibutes; 
+    </t:steps>
+
+    <t:test>
+        <t:request>
+	        <AddMsgRequest xmlns="urn:zimbraMail">
+		        <m l="${folder.inbox}">   
+		        <content>Subject: hello1
+do it
+    		    </content></m>
+	        </AddMsgRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag6.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+	        <t:select attr="id" set="tag.id"/>
+	        <t:select attr="color" match="${tag.color.default}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <!-- missing action -->
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                 
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match = "service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+    <!-- missing op and tag attribute -->
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                <action id="${message1.id}" />
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match = "service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+    <!-- missing tag attribute -->
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="${op.tag}" />
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match = "service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+    <!-- missing id attribute -->
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                <action op="${op.tag}" tag="${tag.id}"/>
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match = "service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="mail_TagActionRequest6" type="functional" >
+    <t:objective>Tagging a non existing email </t:objective>
+    <t:steps> 
+               1. Create a new tag;
+               2. Tag the email.
+    </t:steps>
+
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag7.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+	        <t:select attr="id" set="tag.id"/>
+	        <t:select attr="color" match="${tag.color.default}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                 <action id="${tag.number}" op="${op.tag}" tag="${tag.id}"/>
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_MSG$" />
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="mail_TagActionRequest7" type="functional" >
+    <t:objective>Trying to tag a email with non existing tag</t:objective>
+    <t:steps> 
+               1. Add an email.  
+               2. Tag the email with non existing tag
+    </t:steps>
+
+    <t:test>
+        <t:request>
+	        <AddMsgRequest xmlns="urn:zimbraMail">
+		        <m l="${folder.inbox}">   
+		        <content>Subject: hello1
+do it
+    		    </content></m>
+	        </AddMsgRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest  xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="${op.tag}" tag="${tag.number}"/>
+            </MsgActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_TAG$" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

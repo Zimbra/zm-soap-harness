@@ -1,0 +1,388 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>
+<t:property name="test_acct4.server" value="NOT_DEFINED"/>
+<t:property name="test_acct5.server" value="NOT_DEFINED"/>
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+
+<t:property name="test_account3.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.password" value="test123"/>
+
+<t:property name="test_account4.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.password" value="test123"/>
+
+<t:property name="test_account5.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account5.password" value="test123"/>
+
+
+<t:property name="tag.name" value="zimbra"/>
+<t:property name="tag.newname" value="test"/>
+
+<t:property name="search.name" value="Satish"/>
+<t:property name="search.query" value="from:satish"/>
+
+<t:property name="search.newname" value="Unread"/>
+<t:property name="search.newquery" value="is:unread"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+        <t:test required="true">
+         <t:request>
+           <PingRequest xmlns="urn:zimbraAdmin"/>
+         </t:request>
+          <t:response>
+                <t:select path="//admin:PingResponse"/>
+         </t:response>
+        </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+ <t:objective>create test accounts</t:objective>
+
+        <t:test required="true" >
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAdmin">
+            <name>${admin.user}</name>
+            <password>${admin.password}</password>
+          </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+         </t:response>
+        </t:test>
+
+
+        <t:test required="true">
+         <t:request>
+          <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account1.name}</name>
+            <password>${test_account1.password}</password>
+          </CreateAccountRequest>
+         </t:request>
+         <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+         </t:response>
+        </t:test>
+
+        <t:test required="true">
+         <t:request>
+          <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account2.name}</name>
+            <password>${test_account2.password}</password>
+          </CreateAccountRequest>
+         </t:request>
+         <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+         </t:response>
+        </t:test>
+
+        <t:test required="true">
+         <t:request>
+          <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account3.name}</name>
+            <password>${test_account3.password}</password>
+          </CreateAccountRequest>
+         </t:request>
+         <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+         </t:response>
+        </t:test>
+
+        <t:test required="true">
+         <t:request>
+          <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account4.name}</name>
+            <password>${test_account4.password}</password>
+          </CreateAccountRequest>
+         </t:request>
+         <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+         </t:response>
+        </t:test>
+
+        <t:test required="true">
+         <t:request>
+          <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${test_account5.name}</name>
+            <password>${test_account5.password}</password>
+          </CreateAccountRequest>
+         </t:request>
+         <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account5.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
+         </t:response>
+        </t:test>
+
+</t:test_case>
+
+
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+<t:test_case testcaseid="CreateSearchFolderRequest1" type="smoke">
+ <t:objective> Create a saved search
+ </t:objective>
+
+
+	<t:test id="createsearchfolderrequest1a">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${test_account2.name}</account>
+	    <password>${test_account2.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test depends="createsearchfolderrequest1a">
+	 <t:request>
+	   <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+	     <search name="${search.name}" query="${search.query}" l="1"/>
+	   </CreateSearchFolderRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateSearchFolderResponse/mail:search">
+		  <t:select attr="id" set="search.id"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+<t:test_case testcaseid="ModifySearchFolderRequest1" type="smoke">
+ <t:objective> Modify a saved search
+ </t:objective>
+
+
+	<t:test id="createsearchfolderrequest1a">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${test_account3.name}</account>
+	    <password>${test_account3.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test id="createsearchfolderrequest1b" depends="createsearchfolderrequest1a">
+	 <t:request>
+	   <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+	     <search name="${search.name}" query="${search.query}" l="1"/>
+	   </CreateSearchFolderRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateSearchFolderResponse/mail:search">
+		  <t:select attr="id" set="search.id"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<!-- Modify the name and the query (Same request) -->
+	<t:test depends="createsearchfolderrequest1b">
+	 <t:request>
+	   <ModifySearchFolderRequest xmlns="urn:zimbraMail">
+	     <search id="${search.id}" name="${search.newname}" query="${search.newquery}"/>
+	   </ModifySearchFolderRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:ModifySearchFolderResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+<t:test_case testcaseid="GetSearchFolderRequest1" type="bhr">
+ <t:objective> Query using a saved search
+ </t:objective>
+
+	<t:test id="getsearchfolderrequest1a">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${test_account4.name}</account>
+	    <password>${test_account4.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test id="getsearchfolderrequest1b" depends="getsearchfolderrequest1a">
+	 <t:request>
+	   <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+	     <search name="${search.name}" query="${search.query}" l="1"/>
+	   </CreateSearchFolderRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateSearchFolderResponse/mail:search">
+		  <t:select attr="id" set="search.id"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<!-- query the search folder -->
+	<t:test depends="getsearchfolderrequest1b">
+	 <t:request>
+	   <GetSearchFolderRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetSearchFolderResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+
+<t:test_case testcaseid="FolderActionRequest1" type="bhr">
+ <t:objective> Delete a search folder, then hard delete it
+ </t:objective>
+
+
+	<t:test id="folderactionrequest1a">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${test_account5.name}</account>
+	    <password>${test_account5.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test id="folderactionrequest1b" depends="folderactionrequest1a">
+	 <t:request>
+	   <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+	     <search name="${search.name}" query="${search.query}" l="1"/>
+	   </CreateSearchFolderRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateSearchFolderResponse/mail:search">
+		  <t:select attr="id" set="search.id"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<t:test id="folderactionrequest1c" depends="folderactionrequest1b">
+	 <t:request>
+	   <FolderActionRequest xmlns="urn:zimbraMail">
+	     <action op="move" id="${search.id}" l="3"/>
+	   </FolderActionRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:FolderActionResponse"/>
+	 </t:response>
+	</t:test>
+
+
+	<!-- Now, hard delete the search folder -->
+	<t:test depends="folderactionrequest1c">
+	 <t:request>
+	   <FolderActionRequest xmlns="urn:zimbraMail">
+	     <action op="delete" id="${search.id}"/>
+	   </FolderActionRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:FolderActionResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:test_case testcaseid="FolderActionRequest2" type="bhr">
+ <t:objective> Create a new folder and immediately hard delete it - From Trash to oblivion.
+ </t:objective>
+
+
+	<t:test id="folderactionrequest2a">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${test_account1.name}</account>
+	    <password>${test_account1.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+
+
+	<t:test id="folderactionrequest2b" depends="folderactionrequest2a">
+	 <t:request>
+	   <CreateSearchFolderRequest xmlns="urn:zimbraMail">
+	     <search name="${search.name}" query="${search.query}" l="1"/>
+	   </CreateSearchFolderRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:CreateSearchFolderResponse/mail:search">
+		  <t:select attr="id" set="search.id"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<t:test depends="folderactionrequest2b">
+	 <t:request>
+	   <FolderActionRequest xmlns="urn:zimbraMail">
+	     <action op="delete" id="${search.id}"/>
+	   </FolderActionRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:FolderActionResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>

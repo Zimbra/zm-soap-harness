@@ -1,0 +1,1481 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.document.textfile" value="${testMailRaw.root}/Contact/contact1.txt"/>
+<t:property name="account1.document.htmlfile" value="${testMailRaw.root}/wiki01/basic.html"/>
+
+<t:property name="account1.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.server" value="NOT_DEFINED"/>
+<t:property name="account1.folder1.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="account1.folder2.name" value="folder.${TIME}.${COUNTER}"/>
+
+<t:property name="account2.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.server" value="NOT_DEFINED"/>
+<t:property name="account2.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+
+<t:property name="account3.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account4.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.server" value="NOT_DEFINED"/>
+<t:property name="account4.folder1.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="account4.folder2.name" value="folder.${TIME}.${COUNTER}"/>
+
+<t:property name="account5.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.server" value="NOT_DEFINED"/>
+<t:property name="account5.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+
+<t:property name="account6.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.server" value="NOT_DEFINED"/>
+<t:property name="account6.folder1.name" value="folder1.${TIME}.${COUNTER}"/>
+<t:property name="account6.folder2.name" value="folder2.${TIME}.${COUNTER}"/>
+
+<t:property name="account7.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account7.server" value="NOT_DEFINED"/>
+<t:property name="account7.folder.shared.name" value="share.${TIME}.${COUNTER}"/>
+<t:property name="account7.message2.content" value="content.${TIME}.${COUNTER}"/>
+
+<t:property name="account8.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account8.server" value="NOT_DEFINED"/>
+<t:property name="account8.folder1.name" value="folder1.${TIME}.${COUNTER}"/>
+<t:property name="account8.folder2.name" value="folder2.${TIME}.${COUNTER}"/>
+<t:property name="account8.folder3.name" value="folder3.${TIME}.${COUNTER}"/>
+
+<t:property name="account9.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account9.server" value="NOT_DEFINED"/>
+<t:property name="account9.folder1.shared.name" value="share1.${TIME}.${COUNTER}"/>
+<t:property name="account9.folder3.shared.name" value="share3.${TIME}.${COUNTER}"/>
+
+<t:property name="account10.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account10.server" value="NOT_DEFINED"/>
+
+<t:property name="account11.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account11.server" value="NOT_DEFINED"/>
+<t:property name="account11.folder1.shared.name" value="share1.${TIME}.${COUNTER}"/>
+
+<t:property name="account12.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account12.server" value="NOT_DEFINED"/>
+<t:property name="account12.folder1.name" value="folder.${TIME}.${COUNTER}"/>
+
+<t:property name="account13.name" value="sharing.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account13.server" value="NOT_DEFINED"/>
+<t:property name="account13.folder1.shared.name" value="share1.${TIME}.${COUNTER}"/>
+<t:property name="account13.folder2.name" value="folder2.${TIME}.${COUNTER}"/>
+
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.move"			value="move"/>
+<t:property name="op.flag"			value="flag"/>
+<t:property name="op.delete"		value="delete"/>
+
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.grp"			value="grp"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="view.document"	value="document"/>
+
+
+
+<t:test_case testcaseid="SharingFoldersInheritBasic_AccountSetup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+    
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account1.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account2.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account3" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account3.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account4" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account4.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account5" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account5.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account6" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account6.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account7" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account7.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account7.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account7.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account8" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account8.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account8.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account8.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account9" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account9.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account9.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account9.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account10" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account10.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account10.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account10.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account11" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account11.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account11.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account11.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account12" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account12.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account12.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account12.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="create_test_account13" required="false" depends="admin_login">
+        <t:request>
+        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+            <name>${account13.name}</name>
+            <password>${defaultpassword.value}</password>
+        </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account13.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account13.server"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_01" type="bhr">
+    <t:objective>Verify flags="i" does not allow subfolders to be read</t:objective>
+	<t:steps>
+		1. Login as account1
+		 A. Inbox/subfolder1/briefcasefolder01
+		 B. Inbox/subfolder1/subfolder2/briefcasefolder02 
+		2. Share sbufolder1 with account2 (flags="i")
+		3. Login as account2
+		4. Mount the drive, success.
+		5. Get briefcasefolder01 (success)
+		5. Get briefcasefolder02 (PERM_DENIED)
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="uploadServletServer" value="${account1.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account1.folder1.name}" l="${account1.folder.briefcase.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder1.id"/>
+        </t:response>
+    </t:test >
+    
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account1.folder2.name}" l="${account1.folder1.id}" f="i"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.folder2.id"/>
+        </t:response>
+    </t:test >
+    
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account1.document1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder1.id}">
+			    <upload id="${account1.document1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document1.id"/>        
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.htmlfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account1.document2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+     <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder2.id}">
+			    <upload id="${account1.document2.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account1.document2.id"/>        
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account1.folder1.id}">
+					<grant gt="${grant.usr}" d="${account2.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account2.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.briefcase.id}" name="${account2.folder.shared.name}" zid="${account1.id}" rid="${account1.folder1.id}" view="${view.document}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']/mail:link[@name='${account2.folder.shared.name}']" attr="id" match="${account2.folder.shared.id}"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']/mail:link[@name='${account2.folder.shared.name}']/mail:folder" emptyset="1"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">
+				<query>in:"${globals.briefcase}/${account2.folder.shared.name}"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account2.document1.id"/>
+		</t:response>
+	</t:test>
+	
+	<!--
+		A search for an existing folder (but no permissions) and a non-existant folder
+		should return similar results.  In this case, an empty SearchResponse
+	-->
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">
+				<query>in:"${globals.briefcase}/${account2.folder.shared.name}/nonexistantfolder"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">
+				<query>in:"${globals.briefcase}/${account2.folder.shared.name}/${account1.folder2.name}"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+    <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account2.document1.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetItemResponse/mail:doc"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account1.id}:${account1.document2.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+            <t:select path="//mail:GetItemResponse/mail:doc" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_02" type="bhr">
+    <t:objective>Verify by default subfolders are allowed to be read</t:objective>
+	<t:steps>
+		1. Login as account4
+		 A. Inbox/subfolder1/document1
+		 B. Inbox/subfolder1/subfolder2/document2 
+		2. Share subfolder1 with account5
+		3. Login as account5
+		4. Mount the drive, success.
+		5. Get document1 (success)
+		5. Get document2 (success)
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	<t:property name="uploadServletServer" value="${account4.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account4.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account4.folder1.name}" l="${account4.folder.briefcase.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account4.folder1.id"/>
+        </t:response>
+    </t:test >
+    
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account4.folder2.name}" l="${account4.folder1.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account4.folder2.id"/>
+        </t:response>
+    </t:test >
+    
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account4.document1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+     <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder1.id}">
+			    <upload id="${account4.document1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account4.document1.id"/>        
+        </t:response>
+    </t:test>
+
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.htmlfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account4.document2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+     <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account4.folder2.id}">
+			    <upload id="${account4.document2.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account4.document2.id"/>        
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account4.folder1.id}">
+					<grant gt="${grant.usr}" d="${account5.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account5.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account5.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account5.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account5.folder.briefcase.id}" name="${account5.folder.shared.name}" zid="${account4.id}" rid="${account4.folder1.id}" view="${view.document}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account5.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']/mail:link[@name='${account5.folder.shared.name}']" attr="id" match="${account5.folder.shared.id}"/>
+			<!--
+			TODO: Should the subfolder structure be returned, too?
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']/mail:link[@name='${account5.folder.shared.name}']/mail:folder[@name='${account4.folder2.name}']"/>
+			-->
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account4.id}:${account4.document1.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetItemResponse/mail:doc"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account4.id}:${account4.document2.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetItemResponse/mail:doc"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+
+
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_03" type="bhr">
+    <t:objective> Verify that newly-created subfolders will automatically inherit granted rights as appropriate</t:objective>
+	<t:steps>
+		1. Login as account6
+		2. Create Inbox/subfolder1/document1
+		3. Share subfolder1 with account7 
+		4. Login as account7
+		5. Mount the drive, success.
+		6. Get document1 (success)
+		7. Login as account6
+		8. Create Inbox/subfolder1/subfolder2/document02
+		9. Login as account7
+		10. Get document2 (success)
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+	<t:property name="uploadServletServer" value="${account6.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account6.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account6.folder1.name}" l="${account6.folder.briefcase.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder1.id"/>
+        </t:response>
+    </t:test >
+    
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account6.document1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+     <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account6.folder1.id}">
+			    <upload id="${account6.document1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account6.document1.id"/>        
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account6.folder1.id}">
+					<grant gt="${grant.usr}" d="${account7.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account7.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account7.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account7.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account7.folder.briefcase.id}" name="${account7.folder.shared.name}" zid="${account6.id}" rid="${account6.folder1.id}" view="${view.document}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account7.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']/mail:link[@name='${account7.folder.shared.name}']" attr="id" match="${account7.folder.shared.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">
+				<query>in:"${globals.briefcase}/${account7.folder.shared.name}"</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc" attr="id" set="account7.document1.id"/>
+		</t:response>
+	</t:test>
+	
+    <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account7.document1.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetItemResponse/mail:doc"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account6.server}"/>
+	<t:property name="uploadServletServer" value="${account6.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account6.folder2.name}" l="${account6.folder1.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account6.folder2.id"/>
+        </t:response>
+    </t:test >
+    
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.htmlfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account6.document2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+     <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account6.folder2.id}">
+			    <upload id="${account6.document2.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account6.document2.id"/>        
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account7.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account7.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']/mail:link[@name='${account7.folder.shared.name}']"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account6.id}:${account6.document2.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetItemResponse/mail:doc"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+
+
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_04" type="bhr">
+    <t:objective>
+    	Verify that Existing briefcase folders
+		moved to a different point in the folder hierarchy will also reinterpret
+		their inherited permissions in the context of their new location.
+	</t:objective>
+	<t:steps>
+		1. Login as account8
+			A. Create Briefcase/subfolder1/subfolder2/document01
+			A. Create Briefcase/subfolder3/
+		3. Share subfolder1 with account9 (admin rights)
+		3. Share subfolder3 with account9 (read rights)
+		4. Login as account9
+		5. Mount the drive, success.
+		7. Login as account8
+		8. Move subfolder2 to subfolder3
+		9. Login as account9
+		10. Get document01 (success)
+		11. Flag document01 (PERM_DENIED)
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account8.server}"/>
+	<t:property name="uploadServletServer" value="${account8.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account8.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account8.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account8.folder1.name}" l="${account8.folder.briefcase.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder1.id"/>
+        </t:response>
+    </t:test >
+    
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account8.folder2.name}" l="${account8.folder1.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder2.id"/>
+        </t:response>
+    </t:test >
+    
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account8.folder3.name}" l="${account8.folder.briefcase.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account8.folder3.id"/>
+        </t:response>
+    </t:test >
+    
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account8.document1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+     <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account8.folder2.id}">
+			    <upload id="${account8.document1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account8.document1.id"/>        
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account8.folder1.id}">
+					<grant gt="${grant.usr}" d="${account9.name}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account8.folder3.id}">
+					<grant gt="${grant.usr}" d="${account9.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account9.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account9.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account9.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account9.folder.briefcase.id}" name="${account9.folder1.shared.name}" zid="${account8.id}" rid="${account8.folder1.id}" view="${view.document}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account9.folder1.shared.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account9.folder.briefcase.id}" name="${account9.folder3.shared.name}" zid="${account8.id}" rid="${account8.folder3.id}" view="${view.document}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account9.folder3.shared.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse"/>
+		</t:response>
+	</t:test>
+
+    <t:test depends="Send_mail">
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account8.id}:${account8.document1.id}"/>
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetItemResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account8.server}"/>
+	<t:property name="uploadServletServer" value="${account8.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account8.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+         <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${account8.folder2.id}" l="${account8.folder3.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse"/>      
+        </t:response>
+    </t:test>
+
+
+
+	<t:property name="server.zimbraAccount" value="${account9.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account9.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test depends="Send_mail">
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account8.id}:${account8.document1.id}"/>
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetItemResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="Send_mail">
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action id="${account8.id}:${account8.document1.id}" op="${op.flag}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_05" type="bhr">
+    <t:objective>Verify by default read permission applies to multiple levels (4 levels) of subfolders</t:objective>
+	<t:steps>
+		1. Login as account10
+		 A. Inbox/subfolder1/subfolder2/subfolder3/subfolder4/subfolder5/docuement01
+		2. Share subfolder1 with account11
+		3. Login as account11
+		4. Mount the drive, success.
+		5. Get document01 (success)
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account10.server}"/>
+	<t:property name="uploadServletServer" value="${account10.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account10.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account10.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder.${COUNTER}.${TIME}" l="${account10.folder.briefcase.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder1.id"/>
+        </t:response>
+    </t:test >
+    
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder.${COUNTER}.${TIME}" l="${account10.folder1.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder2.id"/>
+        </t:response>
+    </t:test >
+    
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder.${COUNTER}.${TIME}" l="${account10.folder2.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder3.id"/>
+        </t:response>
+    </t:test >
+    
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder.${COUNTER}.${TIME}" l="${account10.folder3.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder4.id"/>
+        </t:response>
+    </t:test >
+    
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder.${COUNTER}.${TIME}" l="${account10.folder4.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account10.folder5.id"/>
+        </t:response>
+    </t:test >
+        
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="account10.document1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+     <t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account10.folder5.id}">
+			    <upload id="${account10.document1.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>           
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="account10.document1.id"/>        
+        </t:response>
+    </t:test>
+
+    
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account10.folder1.id}">
+					<grant gt="${grant.usr}" d="${account11.name}" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account11.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account11.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account11.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account11.folder.briefcase.id}" name="${account11.folder1.shared.name}" zid="${account10.id}" rid="${account10.folder1.id}" view="${view.document}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account11.folder.shared.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account10.id}:${account10.document1.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetItemResponse/mail:doc"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="BriefcaseFoldersSharingInheritBasic_06" type="bhr">
+    <t:objective>Verify that one subfolder with perm=none and flags="i" breaks the inherit properties of all subfolders</t:objective>
+	<t:steps>
+		1. From SharingFoldersInheritBasic_05:
+			1. Login as account10
+			 A. Inbox/subfolder1/subfolder2/subfolder3/subfolder4/subfolder5/document01
+			2. Share subfolder1 with account11
+			3. Login as account11
+			4. Mount the drive, success.
+			5. Get document01 (success)
+		2. Login as account10
+		3. Share subfolder3 with account11 (perm=none)
+		4. Login as account11
+		5. Get document01 (PERM_DENIED)
+		
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account10.server}"/>
+	<t:property name="uploadServletServer" value="${account10.server}"/>
+
+    <t:test  required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account10.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account10.folder3.id}">
+					<grant gt="${grant.usr}" d="${account11.name}" perm="${rights.none}" flags="i"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+
+
+
+	<t:property name="server.zimbraAccount" value="${account11.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account11.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+
+    <t:test >
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${account10.id}:${account10.document1.id}" />
+            </GetItemRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+</t:tests>

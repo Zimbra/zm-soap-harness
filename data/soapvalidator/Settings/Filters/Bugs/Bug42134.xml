@@ -1,0 +1,169 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="AcctSetup1_filters_save" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="bug_42134" type="bhr" bugids="42134">
+    <t:objective>Create a filter with value contains backslash </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter1.subject" value="filter \\${TIME}${COUNTER}\\"/>
+
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter1.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" value="${filter1.subject}" />
+						</filterTests>
+						<filterActions>
+							<actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+		<t:request>
+			<GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"> 
+            	<t:select path="//mail:filterRule[@name='${filter1.name}']"/>       	
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter2.subject" value="\\filter\\${TIME}${COUNTER}\\"/>	
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter2.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" value="${filter2.subject}" />
+						</filterTests>
+						<filterActions>
+							<actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"> 
+            <t:select path="//mail:filterRule[@name='${filter2.name}']"/>              	
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter3.subject" value="\\"/>	
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter3.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" value="${filter3.subject}" />
+						</filterTests>
+						<filterActions>
+							<actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFilterRulesResponse">
+            	<t:select path="//mail:filterRule[@name='${filter3.name}']"/>           	
+            </t:select>
+        </t:response>
+    </t:test>
+		
+</t:test_case>
+
+
+</t:tests>

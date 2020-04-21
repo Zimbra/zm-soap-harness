@@ -1,0 +1,382 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="organizer1.name" value="organizer1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource1.name" value="laptop.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee1.name" value="invitee1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource.equipment" value="Equipment"/>
+
+<t:property name="verb.accept" value="ACCEPT"/>
+<t:property name="verb.decline" value="DECLINE"/>
+<t:property name="verb.completed" value="COMPLETED"/>
+<t:property name="verb.delgated" value="DELEGATED"/>
+<t:property name="verb.tentative" value="TENTATIVE"/>
+
+<t:property name="ptst.accept" value="AC"/>
+<t:property name="ptst.decline" value="DE"/>
+<t:property name="ptst.completed" value="CO"/>
+<t:property name="ptst.delgated" value="DE"/>
+<t:property name="ptst.tentative" value="TE"/>
+<t:property name="ptst.needs" value="NE"/>
+
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada)"/>
+
+<t:property name="time.08Jul2020100000.gmt" value="1594170000000"/>
+<t:property name="time.08Jul2020100000.pst" value="${TIME(-8h)[${time.08Jul2020100000.gmt}]}"/>
+
+<t:property name="TimeRangeStart" value="${TIME(-3d)[${time.08Jul2020100000.pst}]}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+2d)[${time.08Jul2020100000.pst}]}"/>
+
+   	<!-- Apt Properties -->
+<t:property name="appointment.subject" value="subject${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    <t:steps>
+    	Pinging the server
+    </t:steps>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+    <t:steps>
+    	Logging in as admin
+    	Creating organizer
+		Creating resource    	 
+    </t:steps>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Create Organizer -->
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${organizer1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="organizer1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="organizer1.server"/>
+        </t:response>
+    </t:test>
+
+	<!-- Creating resource -->
+	<t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${resource1.name}</a>
+				<a n="zimbraCalResAutoAcceptDecline">TRUE</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">TRUE</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource1.id"/>
+            <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="resource1.server"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="ResourceStatus_Overlap_01" type="bhr" areas="Calendar">
+    <t:objective>Verify resources don't have any other status other than Busy</t:objective>
+    <t:steps>
+    Steps:
+		1. Book resource for a time with intended free/busy of free or tentative, or with transparency of transparent.
+		2. Resource auto accepts.
+		3. Book the resource for overlapping time.
+			Expected: Resource auto declines.
+			Actual: Resource auto accepts.		
+
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${organizer1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${organizer1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	<t:test required="true" >
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>    
+   
+	<!-- Create Series of Appointment with a resource as Tentative -->
+    <t:test required="true">
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="T" transp="O" class="PUB" allDay="0" name="${appointment.subject}">
+							<or a="${organizer1.name}"/>
+							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
+							<s d="${ICALTIME[${time.08Jul2020100000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+2h)[${time.08Jul2020100000.pst}]}" tz="${timezone.pst}" />
+						</comp>
+					</inv>
+					<!--  <e a="${invitee1.name}" t="t"/> -->
+					<e a="${resource1.name}" t="t"/>					
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>
+            	<!-- <t:select attr="subject" set="organizer1.subject" /> -->
+            	<t:select attr="invId" set="organizer1.appt1.invId"/>
+            	<t:select attr="apptId" set="organizer1.appt1.apptId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!-- Create an Overlap event which is tentative trying to book the same resource -->
+    <t:property name="appointment.overlap.subject" value="overlap${TIME}.${COUNTER}"/>
+    <t:test required="true" delay="1000">
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="T" transp="O" allDay="0" name="${appointment.overlap.subject}">
+							<or a="${organizer1.name}"/>							
+							<at role="NON" ptst="NE" cutype="RES" a="${resource1.name}" rsvp="1"/>
+							<s d="${ICALTIME(+1h)[${time.08Jul2020100000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+4h)[${time.08Jul2020100000.pst}]}" tz="${timezone.pst}" />
+						</comp>
+					</inv>					
+					<e a="${resource1.name}" t="t"/>
+					<su>${appointment.overlap.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">        	
+	          	<t:select attr="calItemId" set="organizer1.over.appt1.calItemId"/>   	
+            	<t:select attr="invId" set="organizer1.over.appt1.invId"/>
+            	<t:select attr="apptId" set="organizer1.over.appt1.apptId"/>
+            	
+            </t:select>
+        </t:response>
+    </t:test>
+        
+    
+    <!--  Login as the resource to check if the appointment is Declined -->
+    <t:property name="server.zimbraAccount" value="${resource1.server}"/>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${resource1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>    
+        
+    <t:delay msec="3000"/>
+    <!-- Search for the Overlap Appointment -->    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}" fetch="all">
+				<query>${appointment.overlap.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment.overlap.subject}">
+            	<t:select attr="invId" set="msgapt.id" />
+            </t:select>
+        </t:response>
+    </t:test>
+             
+        
+    <!--  Do a GetMsgRequest to know the status of the overlap appointment -->
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msgapt.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${msgapt.id}']">
+            	 <t:select path="//mail:at[@a='${resource1.name}']" attr="ptst" match="${ptst.decline}"/> 
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    
+    <!-- Testing for "Free" status of the resource  -->
+    <t:property name="server.zimbraAccount" value="${organizer1.server}"/>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${organizer1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Create an appt with the resource and mark the appt as Free -->
+    <t:test required="true" >
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="F" transp="O" class="PUB" allDay="0" name="${appointment.subject}">
+							<or a="${organizer1.name}"/>
+							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
+							<s d="${ICALTIME(+5h)[${time.08Jul2020100000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+7h)[${time.08Jul2020100000.pst}]}" tz="${timezone.pst}" />
+						</comp>
+					</inv>
+					<!--  <e a="${invitee1.name}" t="t"/> -->
+					<e a="${resource1.name}" t="t"/>					
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="calItemId" set="organizer1.appt2.calItemId"/>
+            	<!-- <t:select attr="subject" set="organizer1.subject" /> -->
+            	<t:select attr="invId" set="organizer1.appt2.invId"/>
+            	<t:select attr="apptId" set="organizer1.appt2.apptId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!-- Create an Overlap event as "Free" trying to book the same resource -->
+    <t:property name="appointment.overlap.subject2" value="sub2overlap${TIME}.${COUNTER}"/>
+    
+    <t:test required="true" delay="1000">
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="F" transp="O" allDay="0" name="${appointment.overlap.subject2}">
+							<or a="${organizer1.name}"/>							
+							<at role="NON" ptst="NE" cutype="RES" a="${resource1.name}" rsvp="1"/>
+							<s d="${ICALTIME(+6h)[${time.08Jul2020100000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+8h)[${time.08Jul2020100000.pst}]}" tz="${timezone.pst}" />
+						</comp>
+					</inv>					
+					<e a="${resource1.name}" t="t"/>
+					<su>${appointment.overlap.subject2}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">        	
+	          	<t:select attr="calItemId" set="organizer1.over.appt2.calItemId"/>   	
+            	<t:select attr="invId" set="organizer1.over.appt2.invId"/>
+            	<t:select attr="apptId" set="organizer1.over.appt2.apptId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+            
+    <!--  Login as the resource to check if the appt is declined -->
+    <t:property name="server.zimbraAccount" value="${resource1.server}"/>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${resource1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+	<t:delay msec="3000"/>
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}" fetch="all">
+				<query>${appointment.overlap.subject2}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment.overlap.subject2}">
+            	<t:select attr="invId" set="msgapt2.id" />
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <!--  Do a GetMsgRequest to know the status of the overlap appointment -->
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msgapt2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${msgapt2.id}']">
+            	 <t:select path="//mail:at[@a='${resource1.name}']" attr="ptst" match="${ptst.decline}"/> 
+            </t:select>
+        </t:response>
+    </t:test>   
+      
+</t:test_case>
+
+</t:tests>

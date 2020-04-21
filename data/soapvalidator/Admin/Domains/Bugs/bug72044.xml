@@ -1,0 +1,105 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+ 
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+ 
+<t:property name="testdomain1.name" value="${TIME}.domain${COUNTER}.com"/>    
+<t:property name="testdomain1_new.name" value="new${TIME}.domain${COUNTER}.com"/>    
+    
+<t:property name="account1.name" value="amavis${COUNTER}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug72044" type="bhr">
+    <t:objective>RenameDomain (zmprov -l rd) should rename the value in zimbraAmavisQuarantineAccount</t:objective>
+    <t:steps>
+
+    </t:steps>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    
+	<t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${testdomain1.name}</name>
+                <a n="zimbraNotes">test of adding via SOAP</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
+        </t:response>        
+    </t:test>
+    
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}@${testdomain1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+	
+	 <t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraAmavisQuarantineAccount">${account1.name}@${testdomain1.name}</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov -l rd ${testdomain1.name} ${testdomain1_new.name} '" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+
+	 <t:test required="true">
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+            	<a n="zimbraAmavisQuarantineAccount"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse">
+            	<t:select path="//admin:a[@n='zimbraAmavisQuarantineAccount']" match="${account1.name}@${testdomain1_new.name}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+	</t:test_case>	
+
+
+
+</t:tests>	

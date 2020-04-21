@@ -1,0 +1,497 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="alias3.name"   value="alias3${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="list1.name"    value="list1${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account3.name" value="account3${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="account4${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="alias5.name"   value="alias5${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="alias6.name"   value="alias6${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="list2.name"    value="list2${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_CreateMountpoint" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps>
+            1. Login to admin.
+            2. Create two accounts.
+            3. Get those accounts.
+            4. Get auth token of the 2 accounts created.
+    </t:steps>
+   
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test  id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  id="create_test_account2" required="true" depends="admin_login" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  id="create_test_account3" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test  id="create_test_account4" required="true" depends="admin_login" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+         
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list1.name}</name>
+                <a n="description">description${TIME}${COUNTER}</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest1a">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${account1.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="addDistributionListMemberRequest1b" depends="addDistributionListMemberRequest1a">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <dlm>${account2.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list2.name}</name>
+                <a n="description">description${TIME}${COUNTER}</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="addDistributionListMemberRequest2b" >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${account3.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="addDistributionListMemberRequest2b">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${account4.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <alias>${alias5.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListAliasResponse"/>
+        </t:response>
+    </t:test>  
+    
+    
+    
+    
+    
+    
+     
+</t:test_case>
+  
+<t:test_case testcaseid="CreateMountpoint_Bug_40759_01" type="bhr" bugids="40759">
+    <t:objective>Verify error does not occur: system failure: java.lang.ClassCastException: [Ljava.lang.String;</t:objective>
+    <t:steps>
+1) Create a Zimbra distribution list (zimbraDistributionList).
+2) Assign UserA and UserB as members to the DL.
+3) Open mailbox for UserA. Share any calendar or mail item folder with the DL.
+Sharing /Calendar here.
+4) Logout of UserA mailbox.
+5) Add an alias to the DL.
+6) Open UserA mailbox.
+7) Observe hang at "Loading..." (GetFolderRequest)
+8) Open UserB mailbox
+9) CreateMountpointRequest
+    </t:steps>
+     
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test depends="create_test_account1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest" required="true">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>             
+        </t:response>
+    </t:test>
+   
+    
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${folder.inbox}" name="folder${COUNTER}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder1.id}" op="grant">
+                    <grant d="${list1.name}" gt="grp" perm="rwidax"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <alias>${alias3.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test depends="create_test_account1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest" >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse"/>             
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test depends="create_test_account1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest" required="true">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>             
+        </t:response>
+    </t:test>
+   
+    <t:test>
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${folder.inbox}" name="mount${TIME}${COUNTER}" view="message" rid="${folder1.id}" zid="${account1.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CreateMountpoint_Bug_40759_02" type="bhr" bugids="40759">
+    <t:objective>Verify error does not occur: system failure: java.lang.ClassCastException: [Ljava.lang.String;</t:objective>
+    <t:steps>
+1) Create a Zimbra distribution list (zimbraDistributionList) *add alias to it*.
+2) Assign UserA and UserB as members to the DL.
+3) Open mailbox for UserA. Share any calendar or mail item folder with the *DL alias*.
+Sharing /Calendar here.
+4) Logout of UserA mailbox.
+5) Add an alias to the DL.
+6) Open UserA mailbox.
+7) Observe hang at "Loading..." (GetFolderRequest)
+8) Open UserB mailbox
+9) CreateMountpointRequest
+    </t:steps>
+     
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test depends="create_test_account3" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest" required="true">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>             
+        </t:response>
+    </t:test>
+   
+    
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${folder.inbox}" name="folder${COUNTER}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${folder1.id}" op="grant">
+                    <grant d="${alias5.name}" gt="grp" perm="rwidax"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <alias>${alias6.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test depends="create_test_account1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest" >
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse"/>             
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test depends="create_test_account4" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest" required="true">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>             
+        </t:response>
+    </t:test>
+   
+    <t:test>
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${folder.inbox}" name="mount${TIME}${COUNTER}" view="message" rid="${folder1.id}" zid="${account3.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+  
+</t:tests>
+  

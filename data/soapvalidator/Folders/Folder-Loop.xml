@@ -1,0 +1,349 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="folder1.name" value="Namefolder1{COUNTER}"/>
+<t:property name="folder2.name" value="Namefolder2{COUNTER}"/>
+<t:property name="folder3.name" value="Namefolder3{COUNTER}"/>
+<t:property name="folder4.name" value="Namefolder4{COUNTER}"/>
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_folder_loop" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps> 1. Login to admin.
+              2. Create test account. 
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:test_case testcaseid="acctSetup2_folder_loop" type="always">
+    <t:objective>Login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="folder_loop1" type="sanity" duration="long">
+    <t:objective>Creating 5000 folders at root level </t:objective>
+    <t:steps> 1. Get the id of root folder
+              2. Create folders
+              3. Send GetInfoRequest        
+    </t:steps>    
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder[@name='${globals.root}']" attr="id" set="folder.pname"/>
+        </t:response>
+    </t:test>
+
+    <t:test_loop count="5000">      
+        
+        <t:test>
+            <t:request>
+                <CreateFolderRequest xmlns="urn:zimbraMail">
+                    <folder name="folder${COUNTER}" l="${folder.pname}"/>
+                </CreateFolderRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateFolderResponse/mail:folder"/>
+            </t:response>
+        </t:test> 
+        
+    </t:test_loop>
+
+    <t:test timeframeMax="3000">
+        <t:request>
+            <GetInfoRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetInfoResponse/acct:name"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!--- Performing various operation in an account with huge folder list-->  
+
+<t:test_case testcaseid="acctSetup3_folder_loop" type="sanity" duration="long">
+    <t:objective>Creating a folder to test various operation </t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+    
+    
+<t:test_case testcaseid="folder_loop2" type="sanity" duration="long">
+    <t:objective>Basic test of GetFolderRequest</t:objective>
+
+    <t:test timeframeMax="3000">
+        <t:request>
+            <GetFolderRequest id="${folder.pname}"  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder" attr="id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="folder_loop3" type="sanity" duration="long">
+    <t:objective>Creating a duplicate folder</t:objective>
+
+    <t:test  timeframeMax="3000">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+    
+    
+<t:test_case testcaseid="folder_loop4" type="sanity" duration="long">
+    <t:objective>Rename a folder</t:objective>
+    
+    <t:test timeframeMax="3000">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="rename" id="${folder.id}" name="${folder2.name}"/>
+            </FolderActionRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="rename"/>                
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="folder_loop5" type="sanity" duration="long">
+    <t:objective>Move a folder</t:objective>
+    <t:steps>1. Create a folder
+             2. Move into some existing folder        
+    </t:steps>
+
+    <t:test id="folder_loop5a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="folder_loop5a" timeframeMax="3000">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${folder2.id}" l="${folder.id}"/>
+            </FolderActionRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="move"/>             
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+ 
+<t:test_case testcaseid="folder_loop6" type="sanity"  duration="long">
+    <t:objective>Empty a folder </t:objective>    
+    <t:steps>1.Add a mail to the newly created folder.
+             2. Search the mail
+             3.Empty the folder.
+             4.Search the mail in the newly created folder (Should not exist).
+             5. Search for the emptied folder (Should still exist).
+    </t:steps>
+    
+    <t:test id="folder_loop6a">
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${folder.id}">
+                    <content Subject="hello" />
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="folder_loop6a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>is:anywhere</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="folder_loop6b" timeframeMax="3000">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="empty" id="${folder.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="empty"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="folder_loop6b">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>is:anywhere</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="folder_loop6b">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail" />
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@id='${folder.id}']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="folder_loop7" type="sanity"  duration="long">
+    <t:objective>Empty a folder having a sub folder in it. </t:objective>
+    <t:steps>1.Create a sub folder in any existing folder.
+             2.Empty the parent folder.
+             3.Check whether the sub folder exists (Should not exist).             
+    </t:steps>
+
+    <t:test id="folder_loop7a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder4.name}"  l="${folder.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="subfolder.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="folder_loop7b" depends="folder_loop7a" timeframeMax="3000">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="empty" id="${folder.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="empty"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="folder_loop7b">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail" />
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder/mail:folder[@id='${subfolder.id}']" emptyset="1"/>                
+            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@id='${folder.id}']"/> 
+        </t:response>
+    </t:test>    
+        
+</t:test_case>   
+    
+    
+<t:test_case testcaseid="folder_loop8" type="sanity" duration="long">
+    <t:objective>Delete a folder</t:objective>
+    
+    <t:test timeframeMax="3000">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="delete" id="${folder.id}"/>
+            </FolderActionRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="op" match="delete"/>                
+        </t:response>
+    </t:test>
+
+</t:test_case>    
+    
+    
+</t:tests>

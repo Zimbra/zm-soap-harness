@@ -1,0 +1,478 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="foreignPrincipal.Attr.name" value="zimbraForeignPrincipal"/>
+
+
+<t:property name="account1.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+    
+<t:property name="account2.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
+<t:property name="account2.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
+    
+<t:property name="account3.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+
+<t:property name="account4.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+
+<t:property name="account5.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+
+<t:property name="account6.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+
+<t:property name="account7.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account7.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+
+<t:property name="foreignPrincipal.blank" value=""/>
+<t:property name="foreignPrincipal.space" value="             "/>
+<t:property name="foreignPrincipal.spchar" value=":''&lt;//\\"/>
+<t:property name="foreignPrincipal.sometext" value="some text"/>
+<t:property name="foreignPrincipal.negative" value="-1"/>
+<t:property name="foreignPrincipal.zero" value="0"/>
+<t:property name="foreignPrincipal.largenumber" value="01288888887410258963"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_01" type="bhr">
+    <t:objective>Get an account by id = foreign principal attribute</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account1.foreignPrincipal}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${account1.foreignPrincipal}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account1.id}"/>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraForeignPrincipal']" match="${account1.foreignPrincipal}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_02" type="bhr">
+    <t:objective>Get an account with two foreign principal attributes by id = foreign principal</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account2.foreignPrincipal1}</a>
+				<a n="zimbraForeignPrincipal">${account2.foreignPrincipal2}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${account2.foreignPrincipal1}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account2.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${account2.foreignPrincipal2}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account2.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_03" type="bhr">
+    <t:objective>Verify that an account with a foreign principal can still be searched by name and zimbra ID</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account3.foreignPrincipal}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account3.id}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account3.id}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="name">${account3.name}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account3.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_04" type="sanity">
+	<t:objective> GetAccountRequest by "id = foreignPrincipal" and applyCos=1  </t:objective>
+	
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account4.foreignPrincipal}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+		    <GetAccountRequest xmlns="urn:zimbraAdmin" applyCos="1">
+				<account by="foreignPrincipal">${account4.foreignPrincipal}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraFeatureGalEnabled']" match="TRUE|FALSE" />
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_05" type="sanity">
+	<t:objective>Get a deleted account by "id = foreignPrincipal" - should return NO_SUCH_ACCOUNT</t:objective>
+	
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account5.foreignPrincipal}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account5.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:DeleteAccountResponse" />
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+		    <GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${account5.foreignPrincipal}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_ACCOUNT$"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="ForeignPrincipal_AccountGet_06" type="sanity" bugids="8347, 27966">
+    <t:objective>Get accounts with the same foreign principal attributes</t:objective>
+	<t:steps>
+		1. Create account1 with foreignPrincipal1 (success)
+		2. Create account2 with foreignPrincipal1 (success)		
+		3. Get accounts with foreignPrincipal1 (MULTIPLE_ACCOUNTS_MATCHED)		
+	</t:steps>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account6.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account6.foreignPrincipal}</a>
+           </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account7.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account6.foreignPrincipal}</a>
+				<a n="zimbraForeignPrincipal">${account7.foreignPrincipal}</a>
+           </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+		    <GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${account6.foreignPrincipal}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+            <t:select path= "//zimbra:Code" match="^service.FAILURE$"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<!-- Since foreignPrincipal must be unique, how can the accounts be recreated? -->
+<t:test_case testcaseid="ForeignPrincipal_AccountCreate_10" type="deprecated" >
+    <t:objective>Create an account with zimbraForeignPrincipal as spaces/blank/spchar/sometext/negative/zero/largenumber</t:objective>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>fp.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${foreignPrincipal.blank}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${foreignPrincipal.blank}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account.id}"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>fp.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${foreignPrincipal.space}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${foreignPrincipal.space}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account.id}"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>fp.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${foreignPrincipal.spchar}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${foreignPrincipal.spchar}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account.id}"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>fp.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${foreignPrincipal.sometext}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${foreignPrincipal.sometext}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account.id}"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>fp.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${foreignPrincipal.negative}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${foreignPrincipal.negative}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account.id}"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>fp.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${foreignPrincipal.zero}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${foreignPrincipal.zero}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account.id}"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>fp.${TIME}.${COUNTER}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${foreignPrincipal.largenumber}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.id"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${foreignPrincipal.largenumber}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>
+
+
+
+

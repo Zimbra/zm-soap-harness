@@ -1,0 +1,179 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="grantee.account" value="admin1.${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="delegate.right" value="accessGAL"/>
+<t:property name="target.equipment" value="targetdomain.${COUNTER}${TIME}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="acctSetup_bug38320" type="always" >
+ <t:objective> Account setup </t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+ 
+	<t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${grantee.account}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDelegatedAdminAccount">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="grantee.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="grantee.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:test>
+		<t:request >
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name" >${defaultdomain.name}</target>
+				<grantee type="usr" by="name">${grantee.account}</grantee>
+				<right>domainAdminRights</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${target.equipment}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">Equipment</a>
+				<a n="displayName">${target.equipment}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="equipment.id"/>
+            <t:select path='//admin:CreateCalendarResourceResponse/admin:calresource/admin:a[@n="zimbraMailHost"]' set="equipment.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Bug38320" type="bhr" bugids="38320">
+ <t:objective> Verify Get*** SOAP calls send the list of attributes and get proper response. </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${grantee.account}</name>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
+                <a n="zimbraLmtpBindPort"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse/admin:a" attr="pd" match="1"/>
+        </t:response>
+    </t:test>
+
+	
+    <t:test>
+        <t:request >
+            <GetCosRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
+                <cos by="name">default</cos>
+            </GetCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCosResponse/admin:cos/admin:a" attr="pd" match="1"/>
+        </t:response>
+    </t:test>
+
+<!-- pd="1" should be absent as "domainAdminRights" has given. -->
+
+    <t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
+                <domain by="name">${defaultdomain.name}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
+                <server by="name">${defaultdomain.name}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+<!-- pd="1" should be absent as "domainAdminRights" has given. -->
+
+ 	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled" >
+				<account by="id">${grantee.id}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account/admin:a" attr="pd" emptyset="1" />
+		</t:response>
+	</t:test>
+
+<!-- pd="1" should be absent as "domainAdminRights" has given. -->
+
+ 	<t:test>
+		<t:request>
+			<GetCalendarResourceRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
+			  <calresource by="id">${equipment.id}</calresource>
+			</GetCalendarResourceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:calresource/admin:a" attr="pd" emptyset="1"/>
+		</t:response>
+	</t:test>
+
+ 	<t:test>
+		<t:request>
+			<GetZimletRequest xmlns="urn:zimbraAdmin" attrs="zimbraPrefIMToasterEnabled">
+			  <zimlet name="com_zimbra_date"/>
+			</GetZimletRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+</t:tests>

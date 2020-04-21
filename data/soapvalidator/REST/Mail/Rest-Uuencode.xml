@@ -1,0 +1,196 @@
+<t:tests xmlns:t = "urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name"		value="uuencode${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password"	value="${defaultpassword.value}"/>
+<t:property name="account2.name"		value="uuencode${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.password"	value="${defaultpassword.value}"/>
+
+<t:property name="root"				value="${testMailRaw.root}/uuencode/"/>
+<t:property name="msg01.file"		value="${root}/uuencode01.txt"/>
+<t:property name="msg01.content"	value="Western Digital WD800JB 80GB 8MB Buffer"/>
+<t:property name="msg02.file"		value="${root}/uuencode02.txt"/>
+<t:property name="msg02.content"	value="Lucky Craft PT65-803BRT Pointer"/>
+
+<t:property name="account1.server" value="NOT_DEFINED"/>
+<t:property name="account2.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid = "Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id = "ping">
+        <t:request>
+            <PingRequest xmlns = "urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "acct1_setup" type="always">
+    <t:objective>create test account</t:objective>
+    
+    <t:test id = "admin_login" required = "true" depends = "ping">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id = "create_test_account1" required = "true" depends = "admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id = "create_test_account2" required = "true" depends = "admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${account2.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "RestServlet_searchUuencode01" type="functional" bugids="1246"  areas="verity">
+    <t:objective>
+		Verify that a search for content in adobe PDF is successful
+	</t:objective>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<!-- There should only be one message in the inbox, so take that ID as the id of the message -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>in:inbox</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg01.id"/>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>content:(${msg01.content})</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${msg01.id}"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:hp" attr="part" match="2"/>
+	 </t:response>
+	</t:test>
+
+	<!-- TODO: improve content servlet to be able to match content to a known source -->
+	
+</t:test_case>
+
+
+<t:test_case testcaseid = "RestServlet_lmtpUuencode01" type="functional" bugids="1246,700"  areas="verity">
+    <t:objective>inject a mime message with a uuencoded attachment using LMTP</t:objective>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg02.file}</filename>
+			<to>${account2.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account2.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${account2.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<!-- There should only be one message in the inbox, so take that ID as the id of the message -->
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>in:inbox</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg02.id"/>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>content:(${msg02.content})</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${msg01.id}"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:hp" attr="part" match="2"/>
+	 </t:response>
+	</t:test>
+
+	<!-- TODO: improve content servlet to be able to match content to a known source -->
+
+</t:test_case>
+
+
+
+</t:tests>

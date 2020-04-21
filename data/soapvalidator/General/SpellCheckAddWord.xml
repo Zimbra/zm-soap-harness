@@ -1,0 +1,319 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="spellcheck.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="spellcheck.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="spellcheck.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="check.word1" value="abc"/>
+<t:property name="check.word2" value="xyz lmn"/>
+<t:property name="check.word3" value="efg"/>
+<t:property name="check.word3.cap" value="EFG"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Login to admin </t:objective>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>   
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>              
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+	
+</t:test_case> 
+
+
+<t:test_case testcaseid="SpellCheck_AddWord_01" type="bhr" bugids="4495">
+    <t:objective>Add word to personal dictionary.</t:objective>
+    <t:steps>
+	1. Do a spell check on unknown word
+	2. Add the word to personal dictionary
+	3. Do a spell check again and check that the word is not misspelled
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word1}</CheckSpellingRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CheckSpellingResponse">
+            	<t:select path="//mail:misspelled" attr="word" match="${check.word1}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+	<t:request>
+		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+			<pref xmlns="" name="zimbraPrefSpellIgnoreWord">${check.word1}</pref>
+		</ModifyPrefsRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//acct:ModifyPrefsResponse"/>
+	</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word1}</CheckSpellingRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CheckSpellingResponse">
+            	<t:select path="//mail:misspelled" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SpellCheck_AddWord_02" type="bhr" bugids="4495">
+    <t:objective>Add word to personal dictionary. Verify that spell check is case sensitive.</t:objective>
+    <t:steps>
+	1. Do a spell check on unknown word
+	2. Add the word to personal dictionary
+	3. Do a spellcheck again checking the word in capital and check that the word is misspelled
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+	<t:request>
+		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+			<pref xmlns="" name="zimbraPrefSpellIgnoreAllCaps">${globals.false}</pref>
+		</ModifyPrefsRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//acct:ModifyPrefsResponse"/>
+	</t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word3}</CheckSpellingRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CheckSpellingResponse">
+            	<t:select path="//mail:misspelled" attr="word" match="${check.word3}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+	<t:request>
+		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+			<pref xmlns="" name="zimbraPrefSpellIgnoreWord">${check.word3}</pref>
+		</ModifyPrefsRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//acct:ModifyPrefsResponse"/>
+	</t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word3.cap}</CheckSpellingRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CheckSpellingResponse">
+            	<t:select path="//mail:misspelled" attr="word" match="${check.word3.cap}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SpellCheck_AddWord_03" type="bhr" bugids="4495">
+    <t:objective>Add multiple word to personal dictionary.</t:objective>
+    <t:steps>
+	1. Do a spell check on 2 unknown words
+	2. Add the words to personal dictionary
+	3. Do a spell check again and check that the words are not misspelled.
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${account3.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word2}</CheckSpellingRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CheckSpellingResponse/mail:misspelled" attr="word" match="xyz"/>
+            <t:select path="//mail:CheckSpellingResponse/mail:misspelled" attr="word" match="lmn"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+	<t:request>
+		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+			<pref name="+zimbraPrefSpellIgnoreWord">xyz</pref>
+		</ModifyPrefsRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//acct:ModifyPrefsResponse"/>
+	</t:response>
+    </t:test>
+	
+    <t:test>
+	<t:request>
+		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+			<pref name="+zimbraPrefSpellIgnoreWord">lmn</pref>
+		</ModifyPrefsRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//acct:ModifyPrefsResponse"/>
+	</t:response>
+    </t:test>
+
+   <t:test>
+        <t:request>
+            <CheckSpellingRequest xmlns="urn:zimbraMail">xyz</CheckSpellingRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CheckSpellingResponse/mail:misspelled" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="SpellCheck_AddWord_04" type="bhr" bugids="76367">
+    <t:objective>Verify zimbraPrefSpellIgnoreAllCaps ignores string in ALL CAPS in CheckSpellingRequest.</t:objective>
+
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+	<t:request>
+		<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+			<pref xmlns="" name="zimbraPrefSpellIgnoreAllCaps">${globals.true}</pref>
+		</ModifyPrefsRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//acct:ModifyPrefsResponse"/>
+	</t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CheckSpellingRequest xmlns="urn:zimbraMail">${check.word3.cap}</CheckSpellingRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CheckSpellingResponse" attr="available" match="1">
+            	<t:select path="//mail:misspelled"  emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

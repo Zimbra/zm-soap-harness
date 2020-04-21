@@ -1,0 +1,443 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="flagged" value="flagged"/>
+<t:property name="unflagged" value="unflagged"/>
+<t:property name="read" value="read"/>
+<t:property name="unread" value="unread"/>
+<t:property name="replied" value="replied"/>
+<t:property name="forwarded" value="forwarded"/>
+
+
+
+<t:property name="nonexisting.flags" value="nonexisting"/>
+
+
+<t:property name="blank.flags" value=""/>
+<t:property name="space.flags" value=" "/>
+<t:property name="digits.flags" value="1234"/>
+<t:property name="specialsymbol.flags" value="#%^"/>
+<t:property name="capitalletter.flags" value="FLAGGED"/>
+<t:property name="capitalsmallletter.flags" value="FlAgGeD"/>
+<t:property name="positive.flags" value="+123"/>
+<t:property name="negative.flags" value="-123"/>
+<t:property name="alphanumeric.flags" value="test123"/>
+<t:property name="emailid.flags" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+<t:test id="ping" required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+ <t:objective>create test account</t:objective>
+
+<t:test id="admin_login" required="true" >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAdmin">
+    <name>${admin.user}</name>
+    <password>${admin.password}</password>
+  </AuthRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+ </t:response>
+</t:test>
+
+<t:test required="true" >
+ <t:request>
+  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+    <name>${test_account1.name}</name>
+    <password>${test_account1.password}</password>
+    <!-- 
+    <a n="zimbraMailDeliveryAddress">${test_account1.name}</a>
+    <a n="zimbraMailStatus">enabled</a>
+    <a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+    <a n="zimbraPasswordMinAge">7</a>
+    Commenting out the optional attributes and sending the request with minimal requirement
+    -->
+  </CreateAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+       <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+<t:test_case testcaseid="acct1_login" type="always" >
+ <t:objective>login as the test account</t:objective>
+
+<t:test required="true">
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${test_account1.name}</account>
+    <password>${test_account1.password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest1" type="bhr">
+ <t:objective>Search with flagged mails. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${flagged}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+
+  </t:response>
+</t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest2" type="bhr">
+ <t:objective>Search with nonexisting flag name. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${nonexisting.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest3" type="functional" >
+ <t:objective>Search with blank as flag name.</t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${blank.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest4" type="functional" >
+ <t:objective>Search with space as flag name. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${space.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest5" type="functional" >
+ <t:objective>Search with only digits as flag name. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${digits.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest6" type="functional" >
+ <t:objective>Search with only special symbols as flag name. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${specialsymbol.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest7" type="functional" >
+ <t:objective>Search with existing flag name in Capital letters.</t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${capitalletter.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest8" type="functional" >
+ <t:objective>Search with existing flag name in both Capital and small letters.</t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${capitalsmallletter.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest9" type="functional" >
+ <t:objective>Search with 0 as flag name </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:0 </query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest10" type="functional" >
+ <t:objective>Search with a positive value as flag name.</t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${positive.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest11" type="functional" >
+ <t:objective>Search with a negative value as flag name.</t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${negative.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest12" type="functional" >
+ <t:objective>Search with alphanumeric value as flag name.</t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${alphanumeric.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest13" type="functional" >
+ <t:objective>Search with email id as flag name. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${emailid.flags}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest14" type="sanity" >
+ <t:objective>Search with a mail which is flagged/unflagged and read/unread and replied and forwarded as flag name.</t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:unflagged is:read is:replied is:forwarded</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest15" type="bhr">
+ <t:objective>Search for unflagged mails. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${unflagged}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest16" type="bhr">
+ <t:objective>Search for read mails. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${read}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest17" type="bhr">
+ <t:objective>Search for unread mails. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${unread}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest18" type="bhr">
+ <t:objective>Search for replied mails. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${replied}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest19" type="bhr">
+ <t:objective>Search for forwarded mails. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query> is:${forwarded}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+</t:tests>
+
+
+
+
+
+
+
+
+
+
+
+
+

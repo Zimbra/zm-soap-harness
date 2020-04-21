@@ -1,0 +1,56 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetVersionInfo01" type="smoke">
+    <t:objective>Get Version Information</t:objective>
+    <t:steps>
+        1. Login into Admin
+        2. Get Version Info    
+    </t:steps>
+    
+    <t:test id="getVersionInfo01a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="admin.authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="getVersionInfo01a">
+        <t:request>
+            <GetVersionInfoRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="version"/>            
+            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="release" match="^\d+$"/>
+            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="buildDate" match="[0-9\-]*"/>
+            <t:select path="//admin:GetVersionInfoResponse/admin:info" attr="host"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+</t:tests>

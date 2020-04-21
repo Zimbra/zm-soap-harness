@@ -1,0 +1,248 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="mail1.subject" value="email06A"/>
+<t:property name="mail2.subject" value="email06B"/>
+<t:property name="mail3.subject" value="email06C"/>
+<t:property name="mail4.subject" value="email06D"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account06.user" value="account06.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account06.password" value="${defaultpassword.value}"/>
+<t:property name="account06.dir" value="${testMailRaw.root}/email06"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>account setup</t:objective>
+    <t:steps> 
+                1.Admin login
+                2.Create test account
+                3.Use lmtp inject to inject the message
+    </t:steps> 
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account06.user}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  match="${account06.user}"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+		    <foldername>${account06.dir}</foldername>
+		    <to>${account06.user}</to>
+		    <from>${nonZimbraUser.name}</from>
+		    <server>${test_acct.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="SearchAuthRequest" type="sanity" >
+    <t:objective> Create setup for the Search </t:objective>
+    <t:steps>1. Login to the account.
+             2. Search a mail to get the message-id (This step is needed to capture the message-id which is used in step 3).
+             3. Flag the mail.
+    </t:steps>
+
+    <t:test id="login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account06.user}</account>
+                <password>${account06.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="searchRequest1">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail1.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail1.subject}$"/>
+            <t:select attr="id" set="message.id1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchRequest2">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail2.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail2.subject}$"/>
+            <t:select attr="id" set="message.id2"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchRequest3">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail3.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail3.subject}$"/>
+            <t:select attr="id" set="message.id3"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="searchRequest4">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(${mail4.subject}) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            <t:select attr="su" match="^${mail4.subject}$"/>
+            <t:select attr="id" set="message.id4"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test id="msgActionRequest1" depends="searchRequest1">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id1}" op = "flag"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "flag"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id1}"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test id="msgActionRequest2" depends="searchRequest2">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message.id3}" op = "flag"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "flag"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message.id3}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="flag_SearchRequest1" type="sanity" >
+    <t:objective> Verify that a search for flagged mail is successful </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:flagged </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="flag_SearchRequest2" type="sanity" bugids="2277">
+    <t:objective> Verify that a search for unflagged mail is successful </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:unflagged </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="flag_SearchRequest3" type="sanity">
+    <t:objective> Verify that a search for flagged mail OR unflagged mail is successful </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> is:flagged OR is:unflagged </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id1}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id2}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id3}']"/>
+            <t:select path="//mail:SearchResponse/mail:m[@id='${message.id4}']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="flag_SearchRequest4" type="sanity" bugids="2277, 2426">
+    <t:objective> Verify that a search for flagged mail AND unflagged mail is successful </t:objective>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" limit="1">
+                <query> is:unflagged AND is:flagged </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse" attr="more" match="^0$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

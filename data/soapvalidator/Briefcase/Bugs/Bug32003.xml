@@ -1,0 +1,255 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain.name" value="dom${TIME}${COUNTER}.com"/>
+<t:property name="domain.zimbra" value="zimbra"/>
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${domain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${domain.name}"/>
+
+<!-- Properties of external user who will access the share -->
+<t:property name="perm.guest"		value="guest"/>	
+<t:property name="guest2.name" value="guest2${TIME}.${COUNTER}@bar.com"/>
+<t:property name="guest2.password" value="guest2password"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="admin_auth_account_create" type="always" >
+    <t:objective>login as the admin</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DocDisableBriefShare_bug32003" type="deprecated" >
+    <t:objective>Verify COS settings are applied to a new account.</t:objective>
+	<t:steps>
+		1. Create COS with Documents disabled
+		2. Create Domain with the above cos
+		3. Create user in the above domain.
+		4. Check if the COS of the user is the same as the cos id created in step 1.			
+		5. Login as the user
+		6. Create a briefcase folder and share it with external user
+		7. Check if unauthorized access is possible
+		8. Check if the external user is able to access it
+	</t:steps>
+		
+	<!--  Create COS -->
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos${TIME}${COUNTER}</name>
+                <a n="zimbraPrefMailItemsPerPage">50</a>
+                <a n="zimbraFeatureNotebookEnabled">FALSE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id"/>         
+        </t:response>
+    </t:test>
+
+    
+    <!-- Create Domain -->
+    <t:test  id="CreateDomainRequest1a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">                
+  				<name>${domain.name}</name>
+                <a n="zimbraDomainDefaultCOSId">${cos1.id}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id.val" />
+        </t:response>
+    </t:test>
+        
+	<!--  Create User for that Domain -->	
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <!-- Verify whether the COS id is the same -->
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account1.id}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse">
+				<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefMailItemsPerPage']" match="50"/>
+						<t:select path="//admin:a[@n='zimbraFeatureNotebookEnabled']" match="FALSE"/>					  	
+					  	<t:select path="//admin:a[@n='zimbraFeatureBriefcasesEnabled']" match="TRUE"/> 
+				</t:select>				
+			</t:select>
+		</t:response>
+	</t:test>
+		
+	<!-- Login to the user id -->
+	  <t:test depends="create_test_account2" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+    <t:test id="getFolderRequest" required="true">
+        <t:request>
+             <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase"/>  
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="folder.root"/>
+        </t:response>
+    </t:test>
+	
+	<!-- Create a briefcase folder and share it -->
+	
+	
+	<t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${COUNTER}" l="${folder.root}" view="document"/>
+            </CreateFolderRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse">
+				<t:select path="//mail:folder" attr="name" set="foldername1"/>
+            	<t:select path="//mail:folder" attr="id" set="account1.briefcase1.folder.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="folder${COUNTER}" l="${account1.briefcase1.folder.id}" view="document"/>
+            </CreateFolderRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse">
+				<t:select path="//mail:folder" attr="name" set="foldername"/>
+            	<t:select path="//mail:folder" attr="id" set="account1.briefcase.folder.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    
+	<t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.briefcase1.folder.id}" op="grant">                
+					<grant gt="${perm.guest}" perm="r" d="${guest2.name}" args="${guest2.password}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>  
+    
+	<!-- Share Briefcase with account2 -->
+	<t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.briefcase.folder.id}" op="grant">                    
+					<grant gt="${perm.guest}" perm="r" d="${guest2.name}" args="${guest2.password}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+	
+	<!--Perform the rest test -->
+	<t:property name="authToken" value=""/>
+
+    <t:property name="server.restServlet" value="${account1.server}"/>
+
+	<!-- Check if unauthorized access is possible -->
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account1.name}</user>
+			<folder>${foldername1}/${foldername}</folder>			
+			<guest>invalid${guest2.name}</guest>
+			<password>${guest2.password}</password>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="404"/>
+		</t:restServletResponse>
+	</t:resttest>
+	
+	
+	<!--Perform the rest test -->
+	<t:property name="authToken" value=""/>
+	
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account1.name}</user>
+			<folder>${foldername1}</folder>			
+			<guest>${guest2.name}</guest>
+			<password>${guest2.password}</password>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>		
+		</t:restServletResponse>
+	</t:resttest>
+	
+	
+	<!-- Check if valid user is able to access it thus verifying the bug -->
+	<t:resttest>
+		<t:restServletRequest>
+			<user>${account1.name}</user>
+			<folder>${foldername1}/${foldername}</folder>			
+			<guest>${guest2.name}</guest>
+			<password>${guest2.password}</password>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>		
+		</t:restServletResponse>
+	</t:resttest>
+					
+</t:test_case>    
+
+</t:tests>

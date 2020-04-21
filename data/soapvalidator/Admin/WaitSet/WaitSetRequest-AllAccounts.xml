@@ -1,0 +1,212 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="waitset.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="waitset.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="waitset.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="waitset.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="interest.all" value="all"/>
+<t:property name="interest.messages" value="m"/>
+<t:property name="interest.appointments" value="a"/>
+<t:property name="interest.contacts" value="c"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+
+
+
+<t:test_case testcaseid="CreateWaitSetRequest_AllAccounts_01" type="sanity" bugids="16519">
+    <t:objective>WaitSetRequest with allaccounts attribute (blocking)</t:objective>
+    <t:steps>
+    1. Login to admin
+    2. Send the CreateWaitSetRequest to create a wait set (allaccounts="1")
+    3. Inject a message into the mailbox
+    4. Send the WaitSetRequest to pick up the changes
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraMail" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+			<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="${interest.all}" allaccounts="1">
+			</CreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateWaitSetResponse" attr="seq" set="admin.waitset.seq"/>
+            <t:select path="//mail:CreateWaitSetResponse" attr="waitSet" set="admin.waitset.waitSet"/>
+        </t:response>
+    </t:test>
+
+    <t:test concurrent="true">
+        <t:request>
+			<WaitSetRequest xmlns="urn:zimbraMail" block="1" waitSet="${admin.waitset.waitSet}" seq="${admin.waitset.seq}" defTypes="${interest.all}" >
+			</WaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:WaitSetResponse">
+            	<t:select path="//mail:a" attr="id" match="${account3.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:delay sec="100"/>
+	
+	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account3.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account3.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <!-- The WaitSetRequest will return here, once the LMTP message is received -->
+
+
+</t:test_case> 
+
+<t:test_case testcaseid="CreateWaitSetRequest_AllAccounts_02" type="sanity">
+    <t:objective>WaitSetRequest with allaccounts attribute with a new account (non-blocking)</t:objective>
+    <t:steps>
+    1. Login to admin
+    2. Send the CreateWaitSetRequest to create a wait set (allaccounts="1")
+    3. Create a new account
+    4. Inject a message into the mailbox
+    5. using the account ID from step 2, find the account and make sure the correct account was returned
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="server.zimbraMail" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+			<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="${interest.all}" allaccounts="1">
+			</CreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateWaitSetResponse" attr="seq" set="admin.waitset.seq"/>
+            <t:select path="//mail:CreateWaitSetResponse" attr="waitSet" set="admin.waitset.waitSet"/>
+        </t:response>
+    </t:test>
+
+    <t:test concurrent="true">
+        <t:request>
+			<WaitSetRequest xmlns="urn:zimbraMail" block="1" waitSet="${admin.waitset.waitSet}" seq="${admin.waitset.seq}" defTypes="${interest.all}" >
+			</WaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:WaitSetResponse">
+	        	<!--
+	        		Since we don't know account4.id just yet, we can't match for it.
+	        		Remember the value, get the account, and check the email address.
+	        	-->
+        		<t:select path="//mail:a" attr="id" set="account4.id.temp"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:delay sec="10"/>
+	
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account4.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account4.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <!-- The WaitSetRequest will return here, once the LMTP message is received -->
+    
+    <!-- Just to make sure, wait for a few seconds for the other threads to finish -->
+	<t:delay sec="40"/>
+
+	<!-- Use the temp ID to match the email address of the account -->
+	<t:test>
+		<t:request>
+			<GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="id">${account4.id.temp}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="name" match="${account4.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case> 
+
+
+</t:tests>

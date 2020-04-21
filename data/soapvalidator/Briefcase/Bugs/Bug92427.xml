@@ -1,0 +1,131 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.document.attachfile1" value="${testMailRaw.root}/bug10545/testfile1.txt"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+ 
+<t:test_case testcaseid="bug92427" type="always" bugids="92427">
+    <t:objective>Create test account</t:objective>
+    <t:steps>
+        1. Login to admin.
+        2. Create accounts
+    </t:steps>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug92427" type="bhr" bugids="92427" >
+    <t:objective>Exception is logged when a briefcase folder is accessed through public REST share</t:objective>
+	<t:steps>
+	1. Access briefcase through rest url and verify contents of  brifcase are returned - http://server/home/${account1.name}/Briefcase
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+ 	            
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.attachfile1}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attachfile1.id"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}"  f="t">
+			    <upload id="${document.attachfile1.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document1.id"/>
+        </t:response>
+    </t:test>   
+     
+	<t:resttest>
+		<t:restServletRequest>
+			<basepath>/home/${account1.name}/Briefcase</basepath>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Content-Type" contains="text/html"/>
+		</t:restServletResponse>
+	</t:resttest>     
+
+</t:test_case> 	
+</t:tests>

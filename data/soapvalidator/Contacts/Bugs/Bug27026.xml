@@ -1,0 +1,157 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+<t:property name="uploadFile.name" value="${testMailRaw.root}/Bugs/27026/SampleImport1.csv"/>
+<t:property name="uploadFile2.name" value="${testMailRaw.root}/Bugs/27026/Export1.csv"/>  
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ContactsImport_acctsetup1" type="always">
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>   
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="ImportContactsDifCharset_1" type="sanity" bugids="107306">
+    <t:objective> Import the csv to an account</t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="uploadServletServer" value="${test_acct.server}"/>
+
+     <t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	
+    <t:test>
+        <t:request>
+            <ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+                <content aid="${message1.aid}"/>
+            </ImportContactsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ImportContactsResponse"/> 
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>in:contacts</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+        	     <t:select path="//mail:SearchResponse/mail:cn" attr="fileAsStr" match="Carta, Rôme"/>
+        	     <t:select path="//mail:SearchResponse/mail:cn" attr="fileAsStr" match="Laprte, René"/>
+        	    <t:select path="//mail:SearchResponse/mail:cn" attr="fileAsStr" match="Gökçen, Adnan"/> 
+        </t:response>
+    </t:test>    
+    
+</t:test_case>
+
+
+<!-- 
+<t:test_case testcaseid="ImportContactsDifCharset_2" type="sanity">
+    <t:objective> Import 100 different contacts to an account</t:objective>
+    
+     <t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile2.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	
+    <t:test>
+        <t:request>
+            <ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+                <content aid="${message2.aid}"/>
+            </ImportContactsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ImportContactsResponse"/> 
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>in:contacts</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:SearchResponse/mail:cn" />
+          	<t:select path="//mail:SearchResponse/mail:cn[@t='${tag1.id}']" attr="fileAsStr" match="Jaiswal, Poonam"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@t='${tag2.id}']" attr="fileAsStr" match="Kanada, Suryakant|Jaiswal, Prashant"/>  
+        </t:response>
+    </t:test>    
+    
+</t:test_case>  -->
+
+
+</t:tests>
+

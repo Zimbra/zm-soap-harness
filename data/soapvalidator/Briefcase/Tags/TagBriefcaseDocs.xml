@@ -1,0 +1,241 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="op.tag" value="tag"/>
+<t:property name="op.update" value="update"/>
+<t:property name="tag.number" value="5"/>
+
+<t:property name="tag.color.default" value="5"/>
+
+<t:property name="tag1.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag2.name" value="tag${TIME}${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="account1.document.htmlfile" value="${testMailRaw.root}/wiki01/basic.html"/>
+<t:property name="account1.document.textfile" value="${testMailRaw.root}/Contact/contact1.txt"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Acct_Setup" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+  
+    <t:test id="getFolderRequest">
+        <t:request>
+            <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>          
+            <t:select path="//mail:folder[@name='${globals.briefcase}']" attr="id" set="folder.briefcase.id"/> 
+        </t:response>
+    </t:test>   
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Tag_Briefcase_01" type="bhr">
+    <t:objective>Search for a tagged briefcase documents</t:objective>
+    
+    <t:steps> 
+        1. Add  documents to the briefcase.  
+        2. Create a new tag;
+        3. Tag the documents; 
+        4. Search for the tag;
+        5. Verify the tagged documents;
+        6. Search documents in Briefcase and verify that documents has proper tag id.
+        7. Remove document's tag and verify tagged documents
+    </t:steps>
+
+    <t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.textfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.textfile.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${folder.briefcase.id}">
+			    <upload id="${document.textfile.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.htmlfile}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.htmlfile.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>	
+	
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${folder.briefcase.id}">
+			    <upload id="${document.htmlfile.aid}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document2.id"/>
+        </t:response>
+    </t:test> 
+       
+    <t:test >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+	            <tag name="${tag1.name}" color="${tag.color.default}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+	        <t:select attr="id" set="tag.id"/>	       
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest  xmlns="urn:zimbraMail">
+                <action id="${document1.id}" op="${op.tag}" tag="${tag.id}"/>            
+            </ItemActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${document1.id}"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <ItemActionRequest  xmlns="urn:zimbraMail">
+                <action id="${document2.id}" op="${op.tag}" tag="${tag.id}"/>            
+            </ItemActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${document2.id}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="document"   >
+                <query>tag:"${tag1.name}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:doc" attr="id" match="${document1.id}" />
+            <t:select path="//mail:SearchResponse/mail:doc" attr="id" match="${document2.id}" />           
+        </t:response>
+    </t:test> 
+    
+     <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="document">
+                <query> in:"briefcase" </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:doc[@id='${document1.id}']" attr="t" match="${tag.id}"/>
+            <t:select path="//mail:SearchResponse/mail:doc[@id='${document2.id}']" attr="t" match="${tag.id}"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request>
+            <ItemActionRequest  xmlns="urn:zimbraMail">
+                <action id="${document2.id}" op="!${op.tag}" tag="${tag.id}"/>            
+            </ItemActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "!${op.tag}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${document2.id}"/>
+        </t:response>
+    </t:test> 
+    
+     <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="document">
+                <query> in:"briefcase" </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:doc[@id='${document1.id}']" attr="t" match="${tag.id}"/>
+            <t:select path="//mail:SearchResponse/mail:doc[@id='${document2.id}']" attr="t" match="${tag.id}" emptyset="1" />
+        </t:response>
+    </t:test>    
+
+</t:test_case>
+
+</t:tests>

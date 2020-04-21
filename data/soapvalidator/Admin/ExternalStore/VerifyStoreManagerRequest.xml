@@ -1,0 +1,209 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="zimbra.home.dir" value="/opt/zimbra"/>
+
+<t:test_case testcaseid="VerifyStoreManagerRequest_Setup" type="always" >
+    <t:objective>Test setup</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test  >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+	    <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	            <name>${account1.name}</name>
+	            <password>${defaultpassword.value}</password>
+	        </CreateAccountRequest>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>	
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+	</t:test>
+	
+	 <t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmlocalconfig -s zimbra_class_store'" RETURNSTDOUT WAIT</params>
+		</t:request>
+		<t:response>
+        	<t:select regex="(?s)(RC.*)(Data.*:\szimbra_class_store\s=\s)(\S+)(.*)" group="3" set="zimbra_class_store_value"/>
+        </t:response> 
+    </t:staftask>
+    
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "mkdir /opt/zimbra/lib/ext/storemanager" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+		
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "cp -r /opt/qa/soapvalidator/build/zimbra-extns-storemanager.jar  /opt/zimbra/lib/ext/storemanager/" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.default}</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmlocalconfig -e zimbra_class_store=com.zimbra.qa.extensions.storemanager.ExampleStoreManager '" RETURNSTDOUT WAIT</params>
+		</t:request>		 
+   </t:staftask>
+	   
+   <t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
+		</t:request>
+	</t:staftask>
+	 
+</t:test_case>
+
+
+<t:finally areas="spam, noncluster">
+
+	<!-- After all tests have run, reset the zimbra_class_store setting to the original -->
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:staftask >
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<!--<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmlocalconfig  -e zimbra_class_store=com.zimbra.cs.store.file.FileBlobStore'" RETURNSTDOUT WAIT</params> -->
+			
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmlocalconfig  -e zimbra_class_store=${zimbra_class_store_value}'" RETURNSTDOUT WAIT</params>
+		</t:request>		 
+   </t:staftask>
+	
+    <t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
+		</t:request>
+	</t:staftask>	
+
+</t:finally>
+
+
+<!-- Make sure non-admin auth is not allowed to run tests -->
+
+
+<t:test_case testcaseid="VerifyStoreManagerRequest_01" type="bhr">
+  <t:objective>Make sure user is not allowed to make VerifyStoreManagerRequest</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+  
+  <!-- Login to user account -->
+   <t:test id="user_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+   </t:test>
+    
+   <t:test id="runUnitTests">
+	    <t:request>
+	      	<VerifyStoreManagerRequest xmlns="urn:zimbraAdmin"/>
+	    </t:request>
+	    <t:response>
+	      	<t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="service.PERM_DENIED"/>
+	    </t:response>
+  </t:test>
+  
+</t:test_case>
+
+<!-- Do admin auth and send VerifyStoreManagerRequest  -->
+
+
+<t:test_case testcaseid="VerifyStoreManagerRequest_02" type="bhr">
+    <t:objective>Send VerifyStoreManagerRequest as a admin and check response </t:objective>
+
+    <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	        <t:test>
+                <t:request>
+                        <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                <account by="name">${admin.user}</account>
+                        </GetAccountRequest>
+                </t:request>
+                <t:response>
+                   <t:select path="//admin:GetAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+                </t:response>
+        </t:test>
+
+        <t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+ 	<t:test>
+		<t:request>
+			<VerifyStoreManagerRequest xmlns="urn:zimbraAdmin"/>			
+		</t:request>
+		<t:response>
+			<t:select path="//admin:VerifyStoreManagerResponse" />
+			<t:select path="//admin:VerifyStoreManagerResponse" attr="linkTime" emptyset="0"/>
+			<t:select path="//admin:VerifyStoreManagerResponse" attr="incomingTime" emptyset="0"/>
+			<t:select path="//admin:VerifyStoreManagerResponse" attr="fetchTime" emptyset="0"/>
+			<t:select path="//admin:VerifyStoreManagerResponse" attr="stageTime" emptyset="0"/>
+			<t:select path="//admin:VerifyStoreManagerResponse" attr="deleteTime" emptyset="0"/>
+			<t:select path="//admin:VerifyStoreManagerResponse" attr="storeManagerClass" match="com.zimbra.qa.extensions.storemanager.ExampleStoreManager"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+</t:tests>

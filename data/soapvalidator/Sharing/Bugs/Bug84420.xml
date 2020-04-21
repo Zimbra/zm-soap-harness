@@ -1,0 +1,274 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="user1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="user2${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="folder.pname" value="2"/> <!-- Folder's parent ID -->
+<t:property name="folder1.name" value="Folder1"/>
+<t:property name="subfolder1.name" value="SubFolder1"/>
+<t:property name="subfolder2.name" value="SubFolder2"/> 
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.ngrant"		value="!grant"/>
+<t:property name="op.read"			value="read"/>
+<t:property name="op.delete"		value="delete"/>
+
+<t:property name="grant.usr"			value="usr"/>
+<t:property name="grant.grp"			value="grp"/>
+<t:property name="grant.dom"			value="dom"/>
+<t:property name="grant.cos"			value="cos"/>
+<t:property name="grant.all"			value="all"/>
+<t:property name="grant.pub"			value="pub"/>
+<t:property name="grant.guest"			value="guest"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+    
+	<t:test id="ping">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+	<t:objective>Create a test account</t:objective>
+	<steps> 1. Login to admin account, 2. Create a test_account1 and 2 </steps>
+
+	<t:test id="admin_login" required="true" depends="ping">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
+        </t:response>
+    </t:test>    
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid2.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account2.server"/>
+        </t:response>
+    </t:test>   
+    
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+<t:test_case testcaseid="bug84420" type="bhr" bugids="84420" >
+	<t:objective>Can't move subfolders in shared email folder</t:objective>
+	<t:steps> 
+        1. Create nested for user1 under Inbox Folder1 --> SubFold1 --> SubFold2 --> SubFold3
+        2. Share Inbox with user2
+        3. user2 moves SubFold3 to SubFold1    
+	</t:steps>
+    
+	<t:test id="auth1" required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${subfolder1.name}" l="${folder1.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="subfolder1.id"/>
+        </t:response>
+	</t:test>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${subfolder2.name}" l="${subfolder1.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="subfolder2.id"/>
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account1.folder.calendar.id"/>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.Briefcase.id"/>			
+		</t:response>
+	</t:test>
+
+    <!--  Share the Calendar  folder with Account1 -->
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="${op.grant}" id="${account1.folder.inbox.id}">
+					<grant gt="${grant.usr}" d="${account2.name}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>	
+    
+    <t:test >
+        <t:request>
+            <SendShareNotificationRequest xmlns="urn:zimbraMail">
+                <share l="${account1.folder.inbox.id}" gt="${grant.usr}" d="${account2.name}"/>
+				<notes>test notes ${TIME}</notes>
+            </SendShareNotificationRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendShareNotificationResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:delay msec="3000"/>
+    
+     <t:property name="server.zimbraAccount" value="${account2.server}"/>   
+    <!-- Login to Account2 -->
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>                
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	
+	<t:test >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>in:inbox</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Created: Inbox shared by ${account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="${account1.name} has shared &quot;Inbox&quot; with ${account2.name} Shared item: Inbox.*"/>
+		</t:response>
+	</t:test>	
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="account2.folder.inbox.id"/>
+		</t:response>
+	</t:test>
+	
+	<!--  Account1 accepts calendar share Account2 (Mounting it) -->
+	
+	<t:property name="account1.Sharedfolder.inbox.name" value="sharedfolder.${TIME}.${COUNTER}"/>   
+
+    <t:test >
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                 <link l="${account2.folder.inbox.id}" name="${account1.Sharedfolder.inbox.name}" zid="${test_accountid1.id}" rid="${account1.folder.inbox.id}" view="message"/>				
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.Sharedfolder.inbox.id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link/mail:folder/mail:folder/mail:folder[@name='${subfolder2.name}']" attr="id" set="subfold2id"/>
+            <t:select path="//mail:CreateMountpointResponse/mail:link/mail:folder[@name='${folder1.name}']" attr="id" set="fold1id"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${subfold2id}" l="${fold1id}"></action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail">
+				<folder l="${account2.Sharedfolder.inbox.id}"/>
+			</GetFolderRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:link/mail:folder/mail:folder[@id='${subfold2id}']" attr="absFolderPath" match="/Inbox/Folder1/SubFolder2"/>
+		</t:response>
+	</t:test>
+	         
+</t:test_case>	
+
+</t:tests>

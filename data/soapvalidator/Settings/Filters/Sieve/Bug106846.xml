@@ -1,0 +1,228 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <!-- Test accounts declaration -->
+    <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_notify_account1.name" value="notify1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+
+    <!-- Variables declaration -->
+    <t:property name="folder_inbox" value="Inbox" />
+
+    <!-- Sieve rules declaration -->
+    <t:property name="sieve_rule1" value='require ["enotify", "variables"];
+notify :from "notification_test@${defaultdomain.name}" :message "notify_msg1"
+"mailto:${test_notify_account1.name}?body=NotificationMessage1";
+notify :from "notification_test@${defaultdomain.name}" :message "notify_msg2"
+"mailto:${test_notify_account1.name}";
+notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
+"mailto:${test_notify_account1.name}?body=";
+'/>
+
+
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin" />
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:test_case testcaseid="AcctSetup1_create_account" type="always">
+        <t:objective>create test accounts</t:objective>
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                    <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test required="true">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_notify_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_notify_account1.id" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request xmlns="urn:zimbraAdmin">
+	            <GetCosRequest>
+	                <cos by="name">default</cos>
+	            </GetCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
+	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+    
+    </t:test_case>
+
+    <t:test_case testcaseid="bug106846_rule1" type="bhr" bugids="106846">
+        <t:objective>notify - if body param is not specified, a notification with empty body should be sent</t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>        
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m f="!">
+                        <e t="t" a="${test_account1.name}" />
+                        <su>Test message</su>
+                        <mp ct="text/plain">
+                            <content>Hello</content>
+                        </mp>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="sendmsg1.id" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_notify_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
+                    <query>subject:notify_msg1</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:mp[@ct='text/plain']/mail:content" match="NotificationMessage1\n" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
+                    <query>subject:notify_msg2</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:mp[@ct='text/plain']/mail:content" match="" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
+                    <query>subject:notify_msg3</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:mp[@ct='text/plain']/mail:content" match="" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message" fetch="1">
+                    <query>in:${folder_inbox}</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="Test message" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <t:finally type="always">
+        <t:objective>reset cosconfig </t:objective>
+        
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+	    <t:test>
+	        <t:request>
+	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
+	                <id>${cosid}</id>
+	                <a n="zimbraSieveNotifyActionRFCCompliant">FALSE</a>
+	            </ModifyCosRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
+	        </t:response>
+	    </t:test>
+
+    </t:finally>
+</t:tests>

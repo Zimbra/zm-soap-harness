@@ -1,0 +1,311 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="appointment2.subject" value="Subject of meeting 2 ${TIME}.${COUNTER}"/>
+<t:property name="appointment2.content" value="Content of the message 2 ${TIME}.${COUNTER}"/>
+
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+   
+
+</t:test_case>
+
+
+<t:test_case testcaseid="436582" type="smoke" areas="Calendar">
+    <t:objective>Delete This Inline repeating event</t:objective>
+<t:steps> 1. create an daily recurring appointment.  5 occurrences.
+		  2. Delete 3rd instance of that appt.
+		  3. Verify instance get deleted properly
+</t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account1.name}"/>
+							<recur>
+								<add>
+									<rule freq="DAI">
+										<interval ival="1"/>
+										<count num="5"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="calItemId" set="appt1.calItemId"/>
+            	<t:select attr="invId" set="appt1.invId"/>
+            	<t:select attr="apptId" set="appt1.apptId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+ 	<t:property name="instance0.s" value="${TIME[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance0.e" value="${TIME(+3h)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance1.s" value="${TIME(+1d)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance1.e" value="${TIME(+1d)(+3h)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance2.s" value="${TIME(+2d)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance2.e" value="${TIME(+2d)(+3h)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance3.s" value="${TIME(+3d)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance3.e" value="${TIME(+3d)(+3h)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance4.s" value="${TIME(+4d)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance4.e" value="${TIME(+4d)(+3h)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance5.s" value="${TIME(+5d)[${time.20180101120000.gmt}]}"/>
+	<t:property name="instance5.e" value="${TIME(+5d)(+3h)[${time.20180101120000.gmt}]}"/>
+
+  <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+10d)[${time.20180101120000.gmt}]}"  uid="${account1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${account1.id}']">
+            	<t:select path="//mail:b[@s='${instance0.s}']" attr="e" match="${instance0.e}"/>
+            	<t:select path="//mail:b[@s='${instance1.s}']" attr="e" match="${instance1.e}"/>
+            	<t:select path="//mail:b[@s='${instance2.s}']" attr="e" match="${instance2.e}"/>
+            	<t:select path="//mail:b[@s='${instance3.s}']" attr="e" match="${instance3.e}"/>
+            	<t:select path="//mail:b[@s='${instance4.s}']" attr="e" match="${instance4.e}"/>
+            </t:select>      
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appt1.invId}" comp="0">
+               <inst d="${ICALTIME[${instance2.s}]}Z"/>
+				<m>
+                   <su>Cancelled${appointment.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled ${appointment.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+   <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20180101120000.gmt}]}" e="${TIME(+10d)[${time.20180101120000.gmt}]}"  uid="${account1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${account1.id}']">
+            	<t:select path="//mail:b[@s='${instance0.s}']" attr="e" match="${instance0.e}"/>
+            	<t:select path="//mail:b[@s='${instance1.s}']" attr="e" match="${instance1.e}" />
+            	<t:select path="//mail:b[@s='${instance2.s}']" attr="e" match="${instance2.e}" emptyset="1"/>
+            	<t:select path="//mail:b[@s='${instance3.s}']" attr="e" match="${instance3.e}"/>
+            	<t:select path="//mail:b[@s='${instance4.s}']" attr="e" match="${instance4.e}"/>
+            </t:select>      
+        </t:response>
+    </t:test>
+  
+
+</t:test_case>
+
+<t:test_case testcaseid="CancelAppointmentRequest_RecurrenceDaily01" type="bhr" areas="Calendar">
+    <t:objective>Delete This Inline repeating event if the time is specified in local time in GMT</t:objective>
+<t:steps> 1. create an daily recurring appointment by specifying time in GMT.  5 occurrences.
+		  2. Delete 3rd instance of that appt.
+		  3. Verify instance get deleted properly
+</t:steps>
+
+	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
+  	<t:property name="time.20071201120000.pst" value="${TIME(-8h)[${time.20071201120000.gmt}]}"/>
+   
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment2.subject}">
+							<s d="${ICALTIME[${time.20071201120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+3h)[${time.20071201120000.pst}]}" tz="${timezone.pst}" />
+							<or a="${account1.name}"/>
+							<recur>
+								<add>
+									<rule freq="DAI">
+										<interval ival="1"/>
+										<count num="5"/>
+									</rule>
+								</add>
+							</recur>
+						</comp>
+					</inv>
+					<su>${appointment2.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment2.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="invId" set="appt2.invId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+ 	<t:property name="instance0.s" value="${TIME[${time.20071201120000.gmt}]}"/>
+	<t:property name="instance0.e" value="${TIME(+3h)[${time.20071201120000.gmt}]}"/>
+	<t:property name="instance1.s" value="${TIME(+1d)[${time.20071201120000.gmt}]}"/>
+	<t:property name="instance1.e" value="${TIME(+1d)(+3h)[${time.20071201120000.gmt}]}"/>
+	<t:property name="instance2.s" value="${TIME(+2d)[${time.20071201120000.gmt}]}"/>
+	<t:property name="instance2.e" value="${TIME(+2d)(+3h)[${time.20071201120000.gmt}]}"/>
+	<t:property name="instance3.s" value="${TIME(+3d)[${time.20071201120000.gmt}]}"/>
+	<t:property name="instance3.e" value="${TIME(+3d)(+3h)[${time.20071201120000.gmt}]}"/>
+	<t:property name="instance4.s" value="${TIME(+4d)[${time.20071201120000.gmt}]}"/>
+	<t:property name="instance4.e" value="${TIME(+4d)(+3h)[${time.20071201120000.gmt}]}"/>
+
+  <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20071201120000.gmt}]}" e="${TIME(+10d)[${time.20071201120000.gmt}]}"  uid="${account1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${account1.id}']">
+            	<t:select path="//mail:b[@s='${instance0.s}']" attr="e" match="${instance0.e}"/>
+            	<t:select path="//mail:b[@s='${instance1.s}']" attr="e" match="${instance1.e}"/>
+            	<t:select path="//mail:b[@s='${instance2.s}']" attr="e" match="${instance2.e}"/>
+            	<t:select path="//mail:b[@s='${instance3.s}']" attr="e" match="${instance3.e}"/>
+            	<t:select path="//mail:b[@s='${instance4.s}']" attr="e" match="${instance4.e}"/>
+            </t:select>      
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appt2.invId}" comp="0">
+               <inst d="${ICALTIME(-8h)[${instance2.s}]}"  tz="${timezone.pst}"/>
+				<m>
+                   <su>Cancelled${appointment2.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled ${appointment2.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+   <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${time.20071201120000.gmt}]}" e="${TIME(+10d)[${time.20071201120000.gmt}]}"  uid="${account1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr[@id='${account1.id}']">
+            	<t:select path="//mail:b[@s='${instance0.s}']" attr="e" match="${instance0.e}"/>
+            	<t:select path="//mail:b[@s='${instance1.s}']" attr="e" match="${instance1.e}" />
+            	<t:select path="//mail:b[@s='${instance2.s}']" attr="e" match="${instance2.e}" emptyset="1"/>
+            	<t:select path="//mail:b[@s='${instance3.s}']" attr="e" match="${instance3.e}"/>
+            	<t:select path="//mail:b[@s='${instance4.s}']" attr="e" match="${instance4.e}"/>
+            </t:select>      
+        </t:response>
+    </t:test>
+  
+
+</t:test_case>
+
+
+</t:tests>

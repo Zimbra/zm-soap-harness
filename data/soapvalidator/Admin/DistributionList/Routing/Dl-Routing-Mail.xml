@@ -1,0 +1,704 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.name" value="source${COUNTER}${TIME}@${defaultdomain.name}"/>
+
+<t:property name="list1.name" value="dl${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list2.name" value="dl${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list2.account1.name" value="account${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list3.name" value="dl${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list3.account1.name" value="account${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list3.account2.name" value="account${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list3.account3.name" value="account${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list4.name" value="dl${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list4.account1.name" value="account${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list5.name" value="dl${COUNTER}${TIME}@${defaultdomain.name}"/>
+<t:property name="list5.account1.name" value="account${COUNTER}${TIME}@${defaultdomain.name}"/>
+
+<!--  Updated test cases as per bug 78481. -->
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+ 
+
+<t:test_case testcaseid="DistributionList_Routing_Mail_AccountSetup" type="always">
+    <t:objective>Create test Distribution List </t:objective>
+    <t:steps> 1. AuthRequest as admin
+              2. Create source accounts
+    </t:steps>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account0.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account0.server"/>
+        </t:response>
+    </t:test>  
+           
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DistributionList_Routing_Mail_01" type="bhr">
+    <t:objective>Send a message to a DL without any members - verify a bounce message is returned</t:objective>
+    <t:steps>
+    1. Create a new DL - don't add any members
+    2. Login as source account
+    3. Send a message to the new DL
+    4. Wait for 60 seconds
+    5. Verify a bounce back message is returned
+    </t:steps>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list1.name}</name>
+                <a n="description">An empty distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account0.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${list1.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>
+"How you dress at work definitely shapes how others perceive you," says Susan Vobejda, vice president of marketing for Yahoo! HotJobs. "Our survey shows that it's worthwhile to choose your work attire carefully, because those choices could help to move your career forward." More than half of the survey respondents (57%) said they would be willing to buy a new wardrobe in order to get a promotion.
+						</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:delay sec="60"/>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(Undelivered Mail)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DistributionList_Routing_Mail_02" type="bhr">
+    <t:objective>Send a message to a DL with one member</t:objective>
+    <t:steps>
+    1. Create a new DL with one member
+    2. Login as source account
+    3. Send a message to the new DL
+    4. Login to the member's account
+    5. Verify the message is received
+    </t:steps>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list2.name}</name>
+                <a n="description">A distribution list with one member</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list2.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${list2.account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="list2.account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="list2.account1.server"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list2.id}</id>
+                <dlm>${list2.account1.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+ 
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account0.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${list2.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>
+"How you dress at work definitely shapes how others perceive you," says Susan Vobejda, vice president of marketing for Yahoo! HotJobs. "Our survey shows that it's worthwhile to choose your work attire carefully, because those choices could help to move your career forward." More than half of the survey respondents (57%) said they would be willing to buy a new wardrobe in order to get a promotion.
+						</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${list2.account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${list2.account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DistributionList_Routing_Mail_03" type="bhr">
+    <t:objective>Send a message to a DL with multiple members</t:objective>
+    <t:steps>
+    1. Create a new DL with three members
+    2. Login as source account
+    3. Send a message to the new DL
+    4. Login to each member's account
+    5. Verify the message is received
+    </t:steps>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list3.name}</name>
+                <a n="description">A distribution list with one member</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list3.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${list3.account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="list3.account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="list3.account1.server"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list3.id}</id>
+                <dlm>${list3.account1.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+ 
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${list3.account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="list3.account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="list3.account2.server"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list3.id}</id>
+                <dlm>${list3.account2.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+ 
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${list3.account3.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="list3.account3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="list3.account3.server"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list3.id}</id>
+                <dlm>${list3.account3.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+ 
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account0.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${list3.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>
+"How you dress at work definitely shapes how others perceive you," says Susan Vobejda, vice president of marketing for Yahoo! HotJobs. "Our survey shows that it's worthwhile to choose your work attire carefully, because those choices could help to move your career forward." More than half of the survey respondents (57%) said they would be willing to buy a new wardrobe in order to get a promotion.
+						</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${list3.account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${list3.account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${list3.account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${list3.account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${list3.account3.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${list3.account3.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DistributionList_Routing_Mail_04" type="bhr">
+    <t:objective>Send a message to a DL with a DL as a member</t:objective>
+    <t:steps>
+    1. Create a new DL with one member
+    1. Create a second DL with one member
+    2. Add the second DL to the first DL
+    4. Login as source account
+    3. Send a message to the new DL
+    4. Login to each member's account
+    5. Verify the message is received
+    </t:steps>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list4.name}</name>
+                <a n="description">A distribution list with one member</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list4.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${list4.account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="list4.account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="list4.account1.server"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list4.id}</id>
+                <dlm>${list4.account1.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+ 
+    <t:test >
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list5.name}</name>
+                <a n="description">A distribution list with one member</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list5.id"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${list5.account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="list5.account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="list5.account1.server"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list5.id}</id>
+                <dlm>${list5.account1.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+ 
+    <t:test >
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${list4.id}</id>
+                <dlm>${list5.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+ 
+	<t:property name="server.zimbraAccount" value="${account0.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account0.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:property name="message.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${list4.name}"/>
+					<su>${message.subject}</su>
+					<mp ct="text/plain">
+						<content>
+"How you dress at work definitely shapes how others perceive you," says Susan Vobejda, vice president of marketing for Yahoo! HotJobs. "Our survey shows that it's worthwhile to choose your work attire carefully, because those choices could help to move your career forward." More than half of the survey respondents (57%) said they would be willing to buy a new wardrobe in order to get a promotion.
+						</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${list4.account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${list4.account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${list5.account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${list5.account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+</t:tests>

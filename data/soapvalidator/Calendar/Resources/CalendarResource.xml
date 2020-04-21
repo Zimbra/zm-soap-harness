@@ -1,0 +1,320 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="Resource.equipment" value="Equipment"/>
+<t:property name="Resource.room" value="Room"/>
+<t:property name="Resource.location" value="Location"/>
+
+<t:property name="timezone5" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="resource1.name" value="resource1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource2.name" value="resource2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource3.name" value="resource3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource4.name" value="resource4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource4.newname" value="resource4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource5.name" value="resource5.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource6.name" value="resource6.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource7.name" value="resource7.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="location1.name" value="location1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="CreateCalendarResourceRequest_01" type="smoke" >
+    <t:objective>Smoke test for CreateCalendarResourceRequest</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${resource1.name}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="DeleteCalendarResourceRequest_01" type="smoke" >
+    <t:objective>Smoke test for DeleteCalendarResourceRequest</t:objective>
+   
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${resource2.name}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+			<DeleteCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource2.id}</id>
+			</DeleteCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteCalendarResourceResponse" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ModifyCalendarResourceRequest_01" type="smoke" >
+    <t:objective>Smoke test for ModifyCalendarResourceRequest</t:objective>
+   
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource3.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${resource3.name}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource3.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+			<ModifyCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource3.id}</id>
+				<a n="zimbraCalResType">${Resource.location}</a>
+			</ModifyCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyCalendarResourceResponse/admin:calresource" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameCalendarResourceRequest_01" type="smoke" >
+    <t:objective>Smoke test for RenameCalendarResourceRequest</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource4.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${resource4.name}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource4.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+			<RenameCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<id>${resource4.id}</id>
+				<newName>${resource4.newname}</newName>
+			</RenameCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RenameCalendarResourceResponse/admin:calresource" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCalendarResourceRequest_01" type="smoke" >
+    <t:objective>Smoke test for GetCalendarResourceRequest</t:objective>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource5.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${resource5.name}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource5.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+			<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<calresource by="id">${resource4.id}</calresource>				
+			</GetCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCalendarResourceResponse/admin:calresource" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllCalendarResourcesRequest_01" type="smoke" >
+    <t:objective>Smoke test for GetAllCalendarResourcesRequest</t:objective>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource6.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${resource6.name}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource6.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+			<GetAllCalendarResourcesRequest xmlns="urn:zimbraAdmin">
+				<domain by="name"> ${defaultdomain.name} </domain>			
+			</GetAllCalendarResourcesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllCalendarResourcesResponse/admin:calresource" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchCalendarResourcesRequest_01" type="smoke" >
+    <t:objective>Smoke test for SearchCalendarResourcesRequest</t:objective>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${resource7.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="displayName">${resource7.name}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource7.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+			<SearchCalendarResourcesRequest xmlns="urn:zimbraAdmin" attrs="displayName">
+				<searchFilter>
+					<conds>
+						<cond attr="displayName" op="has" value="${resource7.name}"/>
+					</conds>
+				</searchFilter>			
+			</SearchCalendarResourcesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchCalendarResourcesResponse/admin:calresource" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

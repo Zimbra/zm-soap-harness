@@ -1,0 +1,227 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain0.name" value="rights.${TIME}.${COUNTER}.com"/>
+
+<t:property name="account0.name" value="domainadmin${TIME}${COUNTER}@${domain0.name}"/>
+<t:property name="account1.name" value="domainaccount${TIME}${COUNTER}@${domain0.name}"/>
+<t:property name="account2.name" value="rights${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="destination.name" value="rights${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="AuthToken_AccountSetup" type="always" >
+	<t:objective>create test accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain0.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain0.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account0.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraIsDomainAdminAccount">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account0.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account0.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account2.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${destination.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="destination.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="destination.server"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="dl1.name" value="dl1.${TIME}${COUNTER}@${domain0.name}"/>
+	<t:property name="dlm1.name" value="dlm1.${TIME}${COUNTER}@${domain0.name}"/>
+	<t:property name="dl2.name" value="dl2.${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="dlm2.name" value="dlm2.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+    <t:test>
+        <t:request>
+            <CreateDistributionListRequest  xmlns="urn:zimbraAdmin">
+                <name>${dl1.name}</name>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDistributionListRequest  xmlns="urn:zimbraAdmin">
+                <name>${dlm1.name}</name>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dlm1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest  xmlns="urn:zimbraAdmin">
+                <id>${dl1.id}</id>
+                <dlm>${dlm1.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDistributionListRequest  xmlns="urn:zimbraAdmin">
+                <name>${dl2.name}</name>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dl2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDistributionListRequest  xmlns="urn:zimbraAdmin">
+                <name>${dlm2.name}</name>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="dlm2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddDistributionListMemberRequest  xmlns="urn:zimbraAdmin">
+                <id>${dl2.id}</id>
+                <dlm>${dlm2.name}</dlm>
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthToken_User_GetDistributionListMembershipRequest_Basic01" type="bhr">
+    <t:objective>Use a user token to GetDistributionListMembershipRequest</t:objective>
+    <t:steps>
+    1. Login as standard user
+	2. Use standard user authtoken to GetDistributionListMembershipRequest  - PERM_DENIED
+	</t:steps>
+
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetDistributionListMembershipRequest  xmlns="urn:zimbraAdmin">
+                <dl by="id">${dlm2.id}</dl>
+            </GetDistributionListMembershipRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.PERM_DENIED"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+
+</t:tests>

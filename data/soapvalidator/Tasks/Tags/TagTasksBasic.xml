@@ -1,0 +1,645 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="op.tag" value="tag"/>
+<t:property name="op.untag" value="!tag"/>
+<t:property name="tag.colorvalid" value="4" />
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts, tags, and appointments</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+        
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.colorvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="account1.tag1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.colorvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="account1.tag2.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+        
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.colorvalid}" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="account2.tag1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="TagTask_Basic_01" type="bhr">
+    <t:objective>Tag a task using ItemActionRequest.</t:objective>
+    <t:steps>
+    1. Tag a task, using ItemActionRequest
+    2. GetTaskRequest, verify that the tag appears 
+    </t:steps>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="task1.start" value="1167652800000"/>
+	<t:property name="task1.name" value="task1.${TIME}.${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task1.name}">
+							<s d="${ICALTIME[${task1.start}]}"/>
+							<e d="${ICALTIME(+1h)[${task1.start}]}"/>
+							<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>Content ${TIME} ${COUNTER}</content>
+					</mp>
+					<su>${task1.name}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="calItemId" set="account1.task1.calItemId"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.task1.calItemId}" op="${op.tag}" tag="${account1.tag1.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request> 
+            <GetTaskRequest  xmlns="urn:zimbraMail" id="${account1.task1.calItemId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetTaskResponse/mail:task" attr="t" match=".*${account1.tag1.id}.*"/>
+        </t:response>
+    </t:test>
+        
+</t:test_case>
+
+<t:test_case testcaseid="TagTask_Basic_02" type="bhr">
+    <t:objective>Untag an appointment using ItemActionRequest.</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="task2.start" value="1167652800000"/>
+	<t:property name="task2.name" value="task2.${TIME}.${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task2.name}">
+							<s d="${ICALTIME[${task2.start}]}"/>
+							<e d="${ICALTIME(+1h)[${task2.start}]}"/>
+							<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>Content ${TIME} ${COUNTER}</content>
+					</mp>
+					<su>${task2.name}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="calItemId" set="account1.task2.calItemId"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.task2.calItemId}" op="${op.tag}" tag="${account1.tag1.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+      
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.task2.calItemId}" op="${op.untag}" tag="${account1.tag1.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetTaskRequest  xmlns="urn:zimbraMail" id="${account1.task2.calItemId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetTaskResponse/mail:task" attr="t" match=".*${account1.tag1.id}.*" emptyset="1"/>
+        </t:response>
+    </t:test>
+       
+</t:test_case>
+
+<t:test_case testcaseid="TagTask_Basic_03" type="bhr">
+    <t:objective>Apply two tags to an appointment</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="task3.start" value="1167652800000"/>
+	<t:property name="task3.name" value="task3.${TIME}.${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task3.name}">
+							<s d="${ICALTIME[${task3.start}]}"/>
+							<e d="${ICALTIME(+1h)[${task3.start}]}"/>
+							<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>Content ${TIME} ${COUNTER}</content>
+					</mp>
+					<su>${task3.name}</su>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="calItemId" set="account1.task3.calItemId"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.task3.calItemId}" op="${op.tag}" tag="${account1.tag1.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.task3.calItemId}" op="${op.tag}" tag="${account1.tag2.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request> 
+            <GetTaskRequest  xmlns="urn:zimbraMail" id="${account1.task3.calItemId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetTaskResponse/mail:task" attr="t" match=".*${account1.tag1.id}.*"/>
+            <t:select path="//mail:GetTaskResponse/mail:task" attr="t" match=".*${account1.tag2.id}.*"/>
+        </t:response>
+    </t:test>
+          
+</t:test_case>
+
+<!-- In Frank, sending a task is not implemented -->
+<t:test_case testcaseid="TagTask_Basic_04" type="deprecated" bugids="13684">
+    <t:objective>Apply a tag to a received (non-owned) appointment</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+        
+	<t:property name="task4.start" value="1167652800000"/>
+	<t:property name="task4.name" value="task4.${TIME}.${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+	        <CreateTaskRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv method="REQUEST">
+						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task4.name}">
+							<s d="${ICALTIME[${task4.start}]}"/>
+							<e d="${ICALTIME(+1h)[${task4.start}]}"/>
+							<or a="${account1.name}"/>
+							<at role="REQ" ptst="NE" rsvp="1" a="${account2.name}"/>
+						</comp>
+					</inv>
+					<mp ct="text/plain">
+    					<content>Content ${TIME} ${COUNTER}</content>
+					</mp>
+					<su>${task4.name}</su>
+					<e a="${account2.name}" t="t"/>
+				</m>
+	        </CreateTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:CreateTaskResponse" attr="calItemId" set="account1.task4.calItemId"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<GetTaskSummariesRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${task4.start}]}" e="${TIME(+1d)[${task4.start}]}"/>
+        </t:request>
+        <t:response>
+			 <t:select path="//mail:GetTaskSummariesResponse/mail:task[@name='${task4.name}']" attr="calItemId" set="account2.task4.calItemId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action id="${account2.task4.calItemId}" op="${op.tag}" tag="${account2.tag1.id}"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+        
+    <t:test >
+        <t:request> 
+            <GetTaskRequest  xmlns="urn:zimbraMail" id="${account2.task4.calItemId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetTaskResponse/mail:appt" attr="t" match=".*${account2.tag1.id}.*"/>
+        </t:response>
+    </t:test>
+           
+</t:test_case>
+
+
+<t:test_case testcaseid="TagTask_Basic_05" type="bhr">
+    <t:objective>Verify tagging an appointment using SetTaskRequest</t:objective>
+      
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+        
+	<t:property name="task5.start" value="1167652800000"/>
+	<t:property name="task5.name" value="task5.${TIME}.${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+	        <SetTaskRequest xmlns="urn:zimbraMail" t="${account1.tag1.id}" >
+                <default needsReply="0" ptst="AC" >
+                    <m>
+						<inv method="REQUEST">
+							<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task5.name}">
+								<s d="${ICALTIME[${task5.start}]}"/>
+								<e d="${ICALTIME(+1h)[${task5.start}]}"/>
+								<or a="${account1.name}"/>
+							</comp>
+						</inv>
+                        <mp content-type="text/plain">
+                            <content>Content ${TIME} ${COUNTER}</content>
+                        </mp>
+                        <su>${task5.name}</su>
+                    </m>
+                </default>
+	        </SetTaskRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SetTaskResponse" attr="calItemId" set="account1.task5.calItemId"/>
+		</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request> 
+            <GetTaskRequest  xmlns="urn:zimbraMail" id="${account1.task5.calItemId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetTaskResponse/mail:task" attr="t" match=".*${account2.tag1.id}.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="TagTask_Basic_06" type="deprecated" bugids="13684" >
+    <t:objective>Apply a tag to a received (non-owned) appointment using SetAppointmentRequest</t:objective>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+        
+	<t:property name="appointment6.start" value="1168084800000"/>
+	<t:property name="appointment6.name" value="appointment4.${TIME}.${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment6.name}" >
+                        <at role="OPT" ptst="NE" rsvp="1" a="${account2.name}"/>
+                        <s d="${ICALTIME[${appointment6.start}]}"/>  
+                        <e d="${ICALTIME(+1h)[${appointment6.start}]}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <e a="${account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>Content ${TIME} ${COUNTER}</content>
+                    </mp>
+                    <su>${appointment6.name}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="account1.appointment6.apptId"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-1d)[${appointment6.start}]}" calExpandInstEnd="${TIME(+1d)[${appointment6.start}]}">
+				<query>${appointment6.name}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="account2.appointment6.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${account2.appointment6.id}" compNum="0" verb="ACCEPT" updateOrganizer="${globals.true}">
+                <m origid="${account2.appointment6.id}" rt="r">
+                    <e t="t" a="${account1.name}"/>
+                    <su>ACCEPT: ${appointment6.name} </su>
+                    <mp ct="text/plain">
+                        <content>Yes, I will attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//mail:SendInviteReplyResponse" attr="apptId" set="account2.appointment6.apptId"/>
+        </t:response>
+    </t:test>    
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${account2.appointment6.apptId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse">
+            	<t:select path="//mail:appt" attr="uid" set="appointment6.uid"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail" t="${account2.tag1.id}" >
+                <default needsReply="0" ptst="AC" >
+                    <m>
+                        <inv uid="${appointment6.uid}" method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment6.name}" >
+                            <s d="${ICALTIME[${appointment6.start}]}" />  
+                            <e d="${ICALTIME(+1h)[${appointment6.start}]}" />  
+                            <or a="${account1.name}"/>
+                        </inv>
+                        <mp content-type="text/plain">
+                            <content>Content ${TIME} ${COUNTER}</content>
+                        </mp>
+                        <su>${appointment6.name}</su>
+                    </m>
+                </default>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" set="account2.appointment6.apptId"/>
+            <t:select path="//mail:SetAppointmentResponse/mail:default" attr="id" set="account1.appointment6.invId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${account2.appointment6.apptId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse/mail:appt" attr="t" match=".*${account2.tag1.id}.*"/>
+        </t:response>
+    </t:test>
+         
+</t:test_case>
+
+</t:tests>

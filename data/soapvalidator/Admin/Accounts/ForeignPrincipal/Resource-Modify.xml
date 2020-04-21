@@ -1,0 +1,242 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="foreignPrincipal.Attr.name" value="zimbraForeignPrincipal"/>
+<t:property name="Resource.equipment" value="Equipment"/>
+<t:property name="Resource.location" value="Location"/>
+<t:property name="active" value="active"/>
+<t:property name="closed" value="closed"/>
+
+<t:property name="cos1.name" value="cos${TIME}${COUNTER}"/>
+
+
+<t:property name="resource1.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource1.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
+<t:property name="resource1.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
+    
+<t:property name="resource2.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource2.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+    
+<t:property name="resource3.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource3.foreignPrincipal1" value="test:${TIME}.${COUNTER}"/>
+<t:property name="resource3.foreignPrincipal2" value="test:${TIME}.${COUNTER}"/>
+
+<t:property name="resource4.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource4.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+
+<t:property name="resource5.name" value="fp.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="resource5.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos1.name}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ForeignPrincipal_AccountModify_01" type="bhr">
+    <t:objective>Modify the foreign principal attribute</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+                <name>${resource1.name}</name>
+				<a n="zimbraForeignPrincipal">${resource1.foreignPrincipal1}</a>
+				<a n="zimbraCOSId">${cos1.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${resource1.name}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+            </CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource1.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <ModifyCalendarResourceRequest xmlns = "urn:zimbraAdmin">
+                <id>${resource1.id}</id>
+                <a n="zimbraForeignPrincipal">${resource1.foreignPrincipal2}</a>
+            </ModifyCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyCalendarResourceResponse/admin:calresource" attr="id" match="${resource1.id}"/>
+            <t:select path = "//admin:ModifyCalendarResourceResponse/admin:calresource/admin:a[@n='zimbraForeignPrincipal']" match="${resource1.foreignPrincipal2}"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+		    <GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<calresource by="foreignPrincipal">${resource1.foreignPrincipal1}</calresource>
+			</GetCalendarResourceRequest>
+		</t:request>
+		<t:response>
+            <t:select path= "//zimbra:Code" match="^account.NO_SUCH_CALENDAR_RESOURCE$"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+		    <GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<calresource by="foreignPrincipal">${resource1.foreignPrincipal2}</calresource>
+			</GetCalendarResourceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetCalendarResourceResponse/admin:calresource" attr="id" match="${resource1.id}"/>
+		</t:response>
+	</t:test>
+	
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ForeignPrincipal_AccountModify_02" type="bhr">
+    <t:objective>Add the foreign principal attribute to an existing account</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+                <name>${resource2.name}</name>
+				<a n="zimbraCOSId">${cos1.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${resource2.name}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+            </CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id"  set="resource2.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <ModifyCalendarResourceRequest xmlns = "urn:zimbraAdmin">
+                <id>${resource2.id}</id>
+                <a n="zimbraForeignPrincipal">${resource2.foreignPrincipal}</a>
+            </ModifyCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyCalendarResourceResponse/admin:calresource" attr="id" match="${resource2.id}"/>
+            <t:select path = "//admin:ModifyCalendarResourceResponse/admin:calresource/admin:a[@n='zimbraForeignPrincipal']" match="${resource2.foreignPrincipal}"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<calresource by="foreignPrincipal">${resource2.foreignPrincipal}</calresource>
+			</GetCalendarResourceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetCalendarResourceResponse/admin:calresource" attr="id" match="${resource2.id}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ForeignPrincipal_AccountModify_03" type="bhr">
+    <t:objective>Add a second foreign principal to the account</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+                <name>${resource3.name}</name>
+				<a n="zimbraForeignPrincipal">${resource3.foreignPrincipal1}</a>
+				<a n="zimbraCOSId">${cos1.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${resource3.name}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+            </CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse/admin:calresource" attr="id" set="resource3.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <ModifyCalendarResourceRequest xmlns = "urn:zimbraAdmin">
+                <id>${resource3.id}</id>
+                <a n="+zimbraForeignPrincipal">${resource3.foreignPrincipal2}</a>
+            </ModifyCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyCalendarResourceResponse/admin:calresource" attr="id" match="${resource3.id}"/>
+            <t:select path = "//admin:ModifyCalendarResourceResponse/admin:calresource/admin:a[@n='zimbraForeignPrincipal']" match="${resource3.foreignPrincipal2}"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+		    <GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<calresource by="foreignPrincipal">${resource3.foreignPrincipal1}</calresource>
+			</GetCalendarResourceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetCalendarResourceResponse/admin:calresource" attr="id" match="${resource3.id}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+		    <GetCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<calresource by="foreignPrincipal">${resource3.foreignPrincipal2}</calresource>
+			</GetCalendarResourceRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetCalendarResourceResponse/admin:calresource" attr="id" match="${resource3.id}"/>
+		</t:response>
+	</t:test>
+	
+
+
+</t:test_case>
+
+
+
+</t:tests>
+

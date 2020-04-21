@@ -1,0 +1,442 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+<t:property name="account1.name" value="reindex1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="reindex2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="reindex3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="reindex4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="mime.dir" value="${testMailRaw.root}/email22"/>
+
+<t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>    
+
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+ 
+<t:test_case testcaseid="ReIndexRequest_Basic_01" type="bhr">
+    <t:objective>Reindex a new account (mailbox exists, but is empty) </t:objective>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse"/>
+        </t:response>
+    </t:test>
+   
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account1.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse">
+	            <t:select path="//admin:mbox" attr="mbxid" set="account1.mailbox.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
+	
+    <t:test>
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="start">
+               <mbox id="${account1.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse" attr="status" match="started"/>
+        </t:response>
+    </t:test>
+
+    <!--
+    	wait for the reindex to complete
+    	
+    	if this fails, increase reindexdelay.msec
+    	
+    -->
+    <t:test delay="${reindexdelay.msec}">
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
+               <mbox id="${account1.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse" attr="status" match="idle"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ReIndexRequest_Basic_02" type="bhr">
+    <t:objective>Reindex an account containing mails </t:objective>
+    <t:steps> 1. Inject mail into an account
+              2. ReIndex it
+    </t:steps>
+
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse"/>
+        </t:response>
+    </t:test>
+   
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+	
+	
+    <t:mailinjecttest id="reIndexRequest03a">
+        <t:lmtpInjectRequest>
+            <foldername>${mime.dir}</foldername>
+            <to>${account2.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${account2.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+   
+	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
+
+    <t:test id="reIndexRequest03b">
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="start">
+               <mbox id="${account2.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test delay="${reindexdelay.msec}">
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
+               <mbox id="${account2.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse" attr="status" match="idle"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ReIndexRequest_Basic_03" type="bhr">
+    <t:objective> ReIndexRequest for an account with action ="status"  </t:objective>
+
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse"/>
+        </t:response>
+    </t:test>
+   
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account3.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse">
+	            <t:select path="//admin:mbox" attr="mbxid" set="account3.mailbox.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+     
+	<t:property name="server.zimbraAdmin" value="${account3.server}"/>
+	
+    <t:test id="reIndexRequest03b">
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="start">
+               <mbox id="${account3.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="reIndexRequest03b">
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
+               <mbox id="${account3.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse" attr="status" match="idle|running"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
+               <mbox id="${account3.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse" attr="status" match="idle|running"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ReIndexRequest_Basic_04" type="bhr" bugids="51327">
+    <t:objective> ReIndexRequest for an account with action ="cancel"  </t:objective>
+
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account4.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse">
+	            <t:select path="//admin:mbox" attr="mbxid" set="account4.mailbox.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+     
+	<t:property name="server.zimbraAdmin" value="${account4.server}"/>
+
+    <!-- Make sure the reindex is not running first -->
+    <t:test >
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="status">
+               <mbox id="${account4.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ReIndexResponse" attr="status" match="idle"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ReIndexRequest xmlns="urn:zimbraAdmin" action="cancel">
+               <mbox id="${account4.id}"/>   
+            </ReIndexRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:ReIndexResponse" attr="status" match="idle"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

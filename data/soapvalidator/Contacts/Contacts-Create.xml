@@ -1,0 +1,838 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account.password" value="${defaultpassword.value}"/>
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="firstName" value="First.${TIME}.${COUNTER}"/>
+<t:property name="lastName" value="Last.${TIME}.${COUNTER}"/>
+<t:property name="email" value="email.${TIME}.${COUNTER}@domain.com"/>
+<t:property name="uploadFile.name" value="${testMailRaw.root}/Contact/image1.jpg"/>
+<t:property name="uploadFile1.name" value="${testMailRaw.root}/Contact/invalidimage.jpg"/>
+
+<t:property name="contact.blank" value=""/>
+<t:property name="contact.firstname" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact.lastname" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact.mailid" value="email.${TIME}.${COUNTER}"/>
+
+<t:property name="contact1.firstname" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact1.lastname" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact1.mailid" value="email.${TIME}.${COUNTER}@domain.com"/>
+
+<t:property name="contact2.firstname1" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact2.lastname1" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact2.firstname2" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact2.lastname2" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact2.mailid" value="email.${TIME}.${COUNTER}@domain.com"/>
+<t:property name="company.name" value="Company"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ContactsCreate_acctsetup1" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+                    <!-- 
+                    <a n="zimbraMailHost">${LOCALHOST}</a>
+                    <a n="zimbraMailStatus">enabled</a>
+                    <a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+                    <a n="zimbraPasswordMinAge">7</a>
+                    Commenting out the optional attributes and sending the request with minimal requirement
+                    -->
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="ContactsCreate_acctlogin" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+                <!--<prefs/>-->
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest1" type="smoke">
+    <t:objective>Create a contact  </t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest2" type="sanity" >
+    <t:objective>Create a contact that is already existing </t:objective>
+
+    <t:test id="contacts002a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                    <a n="email">${contact1.mailid}</a>     	
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+
+    <t:test depends="contacts002a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                    <a n="email">${contact1.mailid}</a>     	
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="CreateContactRequest3" type="sanity" >
+    <t:objective>Create a Contact with all the fields</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">pspl</a>
+                    <a n="workFax">6666</a>
+                    <a n="workPhone2">6666</a>
+                    <a n="callbackPhone">6666</a>
+                    <a n="carPhone">6666</a>
+                    <a n="homePhone2">6666</a>
+                    <a n="homeFax">6666</a>
+                    <a n="otherPhone">6666</a>
+                    <a n="otherFax">6666</a>
+                    <a n="email">user1@persistent.co.in</a>
+                    <a n="email2">user1@persistent.co.in</a>
+                    <a n="middleName">s</a>
+                    <a n="jobTitle">QA</a>
+                    <a n="workPhone">66666</a>
+                    <a n="homePhone">66666</a>
+                    <a n="mobilePhone">6666</a>
+                    <a n="pager">666</a>
+                    <a n="email3">user1@persistent.co.in</a>
+                    <a n="workStreet">ttt</a>
+                    <a n="workCity">tt</a>
+                    <a n="workState">tt</a>
+                    <a n="workPostalCode">tt</a>
+                    <a n="workCountry">tt</a>
+                    <a n="workURL">tt</a>
+                    <a n="notes">hihohioohhghghgjhjhj</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/> 	  
+            </t:select>	
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest4" type="functional" >
+    <t:objective>Create a Contact with Blank Fields </t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName"></a>
+                    <a n="lastName"></a>
+                    <a n="email"></a>
+                    <a n="fileAs"></a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest5" type="sanity" >
+    <t:objective>Create a Contacts with leading spaces in First Name and Last name </t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">    Leading</a>
+                    <a n="lastName">     Spaces</a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>	
+        </t:response>
+   </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest6" type="sanity" >
+    <t:objective>Create a Contacts with trailling spaces in First Name and Last name </t:objective>
+ 
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">Trailing               </a>
+                    <a n="lastName">Spaces                </a>
+                </cn>
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest7" type="sanity" >
+    <t:objective>Create a Contacts with Duplicate e-mail id </t:objective>
+
+    <t:test id="contacts7a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact2.firstname1}</a>
+                    <a n="lastName">${contact2.lastname1}</a>
+                    <a n="email">${contact2.mailid}</a>     	
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+	
+    <t:test depends="contacts7a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${contact2.firstname2}</a>
+                    <a n="lastName">${contact2.lastname2}</a>
+                    <a n="email">${contact2.mailid}</a>     	
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest8" type="sanity" >
+ <t:objective>Create a contact with a valid company name, and with "file as" option company</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">pspl</a>
+                    <a n="fileAs">3</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest9" type="sanity" >
+ <t:objective>Create a contact without a company name, and with "file as" option company</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="fileAs">3</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest10" type="functional" >
+ <t:objective>Create a Contact with invalid "File As" option (10) </t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">persistent</a>
+                    <a n="fileAs">10</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest11" type="functional" >
+ <t:objective>Create a Contact With negative "File As" option </t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">persistent</a>
+                    <a n="fileAs">-1</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> 	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ContactActionRequest1" type="sanity" bugids="11018">
+ <t:objective>Delete already deleted Contact  </t:objective>
+ <t:steps>create the contact, delete it, then delete it again </t:steps>
+
+    <t:test id="contactaction1a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+    <t:test id="contactaction1b" depends="contactaction1a">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id}" op="delete"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="contactaction1b">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id}" op="delete"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest12" type="functional" >
+    <t:objective>Create a Contact With different valid file as option  </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">${company.name}</a>
+                    <a n="fileAs">1</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">${company.name}</a>
+                    <a n="fileAs">2</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">${company.name}</a>
+                    <a n="fileAs">3</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">${company.name}</a>
+                    <a n="fileAs">4</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">${company.name}</a>
+                    <a n="fileAs">5</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">${company.name}</a>
+                    <a n="fileAs">6</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                    <a n="company">${company.name}</a>
+                    <a n="fileAs">7</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CreateContactRequest13" type="functional" bugids="5201" >
+ <t:objective>Create a Contact with a bad attribute </t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="">First.${TIME}.${COUNTER}</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> 	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CreateContactRequest14" type="bhr" bugids="6020">
+    <t:objective>Create a contact using a simple inline vCard</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+<vcard>
+BEGIN:VCARD
+VERSION:2.1
+N:Smith;John;M.;Mr.;Esq.
+TEL;WORK;VOICE;MSG:+1 (919) 555-1234
+TEL;WORK;FAX:+1 (919) 555-9876
+ADR;WORK;PARCEL;POSTAL;DOM:Suite 101;1 Central St.;Any Town;NC;27654
+END:VCARD
+</vcard>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+	            <t:select path="//mail:a[@n='firstName']" match="John"/>
+		     	<t:select path="//mail:a[@n='lastName']" match="Smith"/>
+	            <t:select path="//mail:a[@n='middleName']" match="M."/>
+	            <t:select path="//mail:a[@n='nameSuffix']" match="Esq."/>
+	            <!--t:select path="//mail:a[@n='workFax']" match="+1 (919) 555-9876"/>
+	            <t:select path="//mail:a[@n='workPhone']" match="+1 (919) 555-1234"/-->
+	            <t:select path="//mail:a[@n='namePrefix']" match="Mr."/>
+				<!-- Getting error while matching "+" sign as Dagling Character. Henced removed out that chk-point -->
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateContactRequest15" type="bhr" bugids="6630">
+    <t:objective>Create a contact using inline vCard exported rom Outlook</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+<vcard>
+BEGIN:VCARD
+VERSION:2.1
+N:_LAST_;_FIRST_;_MIDDLE_;_TITLE_;_SUFFIX_
+FN:_FIRST_ _MIDDLE_ _LAST_ _SUFFIX_
+NICKNAME:_NICKNAME_
+ORG:_COMPANY_;_DEPARTMENT_
+TITLE:_JOB_TITLE_
+NOTE;ENCODING=QUOTED-PRINTABLE:_NOTES_=0D=0A
+TEL;WORK;VOICE:_BUSINESS_PHONE_
+TEL;WORK;VOICE:_BUSINESS2_PHONE_
+TEL;HOME;VOICE:_HOME_PHONE_
+TEL;CELL;VOICE:_MOBILE_PHONE_
+TEL;CAR;VOICE:_CAR_PHONE_
+TEL;VOICE:_OTHER_PHONE_NUMBER_
+TEL;PAGER;VOICE:_PAGER_NUMBER_
+TEL;WORK;FAX:_BUSINESS_FAX_
+TEL;HOME;FAX:_HOME_FAX_
+TEL;HOME:_HOME_2_PHONE_
+TEL;ISDN:_ISDN_NUMBER_
+TEL;PREF:_PRIMARY_NUMBER_
+ADR;WORK:_BUSINESSADDR_POBOX_;_OFFICE_;_BUSINESSADDR_STREET_;_BUSINESSADDR_CITY_;_BUSINESSADDR_STATE_;_BUSINESSADDR_ZIP_;_BUSINESSADDR_COUNTRY_
+LABEL;WORK;ENCODING=QUOTED-PRINTABLE:_OFFICE_=0D=0A_BUSINESSADDR_POBOX_=0D=0A_BUSINESSADDR_STREET_=0D=0A_BUSINESS=
+ADDR_CITY_, _BUSINESSADDR_STATE_ _BUSINESSADDR_ZIP_=0D=0A_BUSINESSADDR_COUNT=
+RY_
+ADR;HOME:_HOMEADDR_POBOX_;;_HOMEADDR_STREET_;_HOMEADDR_CITY_;_HOMEADDR_STATE_;_HOMEADDR_ZIP_;_HOMEADDR_COUNTRY_
+LABEL;HOME;ENCODING=QUOTED-PRINTABLE:_HOMEADDR_POBOX_=0D=0A_HOMEADDR_STREET_=0D=0A_HOMEADDR_CITY_, _HOMEADDR_STAT=
+E_ _HOMEADDR_ZIP_=0D=0A_HOMEADDR_COUNTRY_
+ADR;POSTAL:_OTHERADDR_POBOX_;;_OTHERADDR_STREET_;_OTHERADDR_CITY_;_OTHERADDR_STATE_;_OTHERADDR_ZIP_;_OTHERADDR_COUNTRY_
+LABEL;POSTAL;ENCODING=QUOTED-PRINTABLE:_OTHERADDR_POBOX_=0D=0A_OTHERADDR_STREET_=0D=0A_OTHERADDR_CITY_, _OTHERADDR_=
+STATE_ _OTHERADDR_ZIP_=0D=0A_OTHERADDR_COUNTRY_
+X-WAB-GENDER:2
+URL;HOME:http://_PERSONAL_HOMEPAGE_
+URL;WORK:http://_WEBPAGEADDRESS_
+ROLE:_PROFESSION_
+BDAY:20060401
+EMAIL;PREF;INTERNET:_EMAILONE_@DOMAIN.COM_
+EMAIL;TLX:_TELEX_NUMBER_
+FBURL:?????????????????
+REV:20060321T084730Z
+END:VCARD
+</vcard>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='email']"  match="_EMAILONE_@DOMAIN.COM_">
+            </t:select>	
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<!-- Test case corresponding to bug 15589 -->
+
+<t:test_case testcaseid="CreateContactRequest16" type="bhr">
+    <t:objective>Create a contact  with verbose ="0" and verify that only "id" is returned in response</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail" verbose="0">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id"/>
+            </t:select>	
+            <t:select path="//mail:CreateContactResponse/mail:cn/mail:a" attr="email" emptyset="1"/>
+            <t:select path="//mail:CreateContactResponse/mail:cn/mail:a" attr="lastName" emptyset="1"/>
+            <t:select path="//mail:CreateContactResponse/mail:cn/mail:a" attr="firstName" emptyset="1"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+<t:property name="uploadServletServer" value="${test_acct2.server}"/>
+
+<t:test_case testcaseid="CreateContactRequest17" type="bhr" bugids="13827">
+    <t:objective>Create a contact with image</t:objective>
+    <t:steps> 1. Login with a user
+	2. create contact with image as attachment to the contact
+	</t:steps>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="contactimage.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${firstName}</a>
+                    <a n="lastName">${lastName}</a>
+                    <a n="email">${email}</a>
+					<a n="image" aid="${contactimage.aid}"/>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//mail:CreateContactResponse/mail:cn/mail:a[@n="image"]' attr="filename" match="image1.jpg"/>
+			<t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='firstName']" match="${firstName}"/>
+			<t:select path="//mail:CreateContactResponse/mail:cn/mail:a[@n='lastName']" match="${lastName}"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+<t:property name="uploadServletServer" value="${test_acct2.server}"/>
+
+<t:test_case testcaseid="CreateContactRequest18" type="bhr" bugids="71868">
+    <t:objective>Try to upload an invalid image in contact</t:objective>
+    <t:steps> 	1. Login with a user
+    			2. Upload a invalid picture(text file renamed as jpg file) 
+				3. Create contact with invalid image as attachment to the contact
+				4. Server should return invalid image error code
+	</t:steps>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+       
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile1.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="contactimage18.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+     <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">${firstName}</a>
+                    <a n="lastName">${lastName}</a>
+                    <a n="email">${email}</a>
+					<a n="image" aid="${contactimage18.aid}"/>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+             <t:select path = "//zimbra:Code" match="mail.INVALID_IMAGE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

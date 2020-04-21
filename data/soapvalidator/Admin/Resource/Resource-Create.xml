@@ -1,0 +1,1068 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="Resource.equipment" value="Equipment"/>
+<t:property name="Resource.location" value="Location"/>
+<t:property name="active" value="active"/>
+<t:property name="closed" value="closed"/>
+
+<t:property name="displayName1" value="TestName.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="description" value="Test Name"/>
+<t:property name="zimbraNotes" value="Test Name"/>
+<t:property name="building" value="Test Building"/>
+<t:property name="floor" value="Test Floor"/>
+<t:property name="room" value="Test Room"/>
+<t:property name="street" value="Test Name"/>
+<t:property name="city" value="Test City"/>
+<t:property name="state" value="Test STATE"/>
+<t:property name="country" value="Test Country"/>
+<t:property name="postalcode" value="Test Name"/>
+
+<t:property name="Resource.name1" value="testResource1.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource.name2" value="testResource2.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource.name3" value="testResource3.${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="Resource.name4" value="testResource4.${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="Resource.blank" value=""/>
+<t:property name="Resource.space" value="             "/>
+<t:property name="Resource.sometext" value="Some text some text"/>
+<t:property name="Resource.spchar" value=":''&lt;//\\"/>
+<t:property name="Resource.negative" value="-14343"/>
+<t:property name="Resource.zero" value="0000"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="AcctSetup01_resource_create" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">TestCos${TIME}${COUNTER}</name>        
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource01" type="smoke">
+    <t:objective>  Create a resource with type= Equipment  and with all valid values  </t:objective>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.name1}</name>
+				<a n="zimbraCOSId">${cos.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="description">${description}</a>
+				<a n="zimbraNotes">${zimbraNotes}</a>
+				<a n="zimbraCalResSite">t</a>
+				<a n="zimbraCalResLocationDisplayName">${Resource.name1} ${displayName1}</a>
+				<a n="zimbraCalResBuilding">${building}</a>
+				<a n="zimbraCalResFloor">${floor}</a>
+				<a n="zimbraCalResRoom">${room}</a>
+				<a n="street">${street}</a>
+				<a n="l">${city}</a>
+				<a n="st">${state}</a>
+				<a n="co">${country}</a>
+				<a n="postalCode">${postalcode}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource02" type="bhr">
+    <t:objective> Create an equipment with duplicate name (it should give an error message)  </t:objective>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.name1}</name>
+				<a n="zimbraCOSId">${cos.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="description">${description}</a>
+				<a n="zimbraNotes">${zimbraNotes}</a>
+				<a n="zimbraCalResSite">t</a>
+				<a n="zimbraCalResLocationDisplayName">${Resource.name1} ${displayName1}</a>
+				<a n="zimbraCalResBuilding">${building}</a>
+				<a n="zimbraCalResFloor">${floor}</a>
+				<a n="zimbraCalResRoom">${room}</a>
+				<a n="street">${street}</a>
+				<a n="l">${city}</a>
+				<a n="st">${state}</a>
+				<a n="co">${country}</a>
+				<a n="postalCode">${postalcode}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.ACCOUNT_EXISTS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource03" type="bhr">
+    <t:objective> Create an equipment with minimum required attributes and display name missing </t:objective>
+
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.name3}</name>
+				<a n="zimbraCOSId">${cos.id}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource04" type="functional" >
+    <t:objective> Create an equipment with name as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.blank}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.space}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.sometext}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.spchar}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.negative}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>${Resource.zero}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource05" type="functional" >
+    <t:objective> Create an equipment with zimbraCalResType as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.blank}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> -->
+				<t:select path="//zimbra:Code" match="ldap.OBJECT_CLASS_VIOLATION"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.space}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="ldap.OBJECT_CLASS_VIOLATION"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.spchar}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.negative}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.zero}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CreateCalendarResource06" type="functional" >
+    <t:objective> Create an equipment with zimbraAccountStatus as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${Resource.blank}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${Resource.space}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${Resource.spchar}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.negative}</a>
+				<a n="zimbraAccountStatus">${Resource.blank}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.zero}</a>
+				<a n="zimbraAccountStatus">${Resource.blank}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource07" type="functional">
+    <t:objective> Create an equipment with displayName as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${Resource.blank}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="ldap.OBJECT_CLASS_VIOLATION"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${Resource.space}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+<!--             <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST"/> -->
+            <t:select path="//zimbra:Code" match="ldap.OBJECT_CLASS_VIOLATION"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${Resource.spchar}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${Resource.negative}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${Resource.zero}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource08" type="functional">
+    <t:objective> Create an equipment with zimbraCalResAutoAcceptDecline as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${Resource.blank}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${Resource.space}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${Resource.spchar}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${Resource.negative}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${Resource.zero}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.false}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource09" type="functional">
+    <t:objective> Create an equipment with zimbraCalResAutoAcceptDecline as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${Resource.blank}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${Resource.space}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${Resource.spchar}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${Resource.negative}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${Resource.zero}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource10" type="functional">
+    <t:objective> Create an equipment with zimbraCOSId as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCOSId">${Resource.blank}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCOSId">${Resource.space}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCOSId">${Resource.spchar}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+<!--         	<t:select path="//soap:Text" match=".* uuid must not contain ':'"/> -->
+<!--             <t:select path="//zimbra:Code" match="^service.FAILURE"/> -->
+            <t:select path="//zimbra:Code" match="account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCOSId">${Resource.negative}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCOSId">${Resource.zero}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_COS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource11" type="functional">
+    <t:objective> Create an equipment with description as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="description">${Resource.blank}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="description">${Resource.space}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="description">${Resource.spchar}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="description">${Resource.negative}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="description">${Resource.zero}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="CreateCalendarResource12" type="functional">
+    <t:objective> Create an equipment with zimbraNotes as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraNotes">${Resource.blank}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraNotes">${Resource.space}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraNotes">${Resource.spchar}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraNotes">${Resource.negative}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraNotes">${Resource.zero}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateCalendarResource13" type="functional">
+    <t:objective> Create an equipment with zimbraCalResSite as blank, space, spchar, negative, zero</t:objective>
+ 
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResSite">${Resource.blank}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResSite">${Resource.space}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResSite">${Resource.spchar}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResSite">${Resource.negative}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<CreateCalendarResourceRequest xmlns="urn:zimbraAdmin">
+				<name>test.${TIME}${COUNTER}@${defaultdomain.name}</name>
+				<a n="zimbraCalResSite">${Resource.zero}</a>
+				<a n="zimbraCalResType">${Resource.equipment}</a>
+				<a n="zimbraAccountStatus">${active}</a>
+				<a n="displayName">${displayName1}</a>
+				<a n="zimbraCalResAutoAcceptDecline">${globals.true}</a>
+				<a n="zimbraCalResAutoDeclineIfBusy">${globals.true}</a>
+			</CreateCalendarResourceRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCalendarResourceResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

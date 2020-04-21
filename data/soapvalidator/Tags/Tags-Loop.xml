@@ -1,0 +1,256 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account1.server" value="NOTDEFINED"/>
+
+<t:property name="tag.colorvalid1" value="4"/>
+<t:property name="tag.colorvalid2" value="1"/>
+<t:property name="tag1.name" value="Nametag1${COUNTER}"/>
+<t:property name="tag2.name" value="Nametag2${COUNTER}"/>
+<t:property name="tag3.name" value="Nametag3${COUNTER}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_tag_loop" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>1. Login to admin.
+             2. Create admin account. 
+    </t:steps>
+
+    <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+	<!--t:property name="uri" value="${mailclient.uri}"/-->
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+</t:test_case>
+
+<t:test_case testcaseid="acctSetup2_tag_loop" type="always">
+    <t:objective>Login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Tag_loop1" type="sanity" duration="long">
+    <t:objective>Creating 62 tags</t:objective>
+    <t:steps> 1. Create Tags
+              2. Send GetInfoRequest        
+    </t:steps> 
+
+    <t:test_loop count="62">      
+        
+        <t:test>
+            <t:request>
+                <CreateTagRequest xmlns="urn:zimbraMail">
+                    <tag name="tag${COUNTER}" color="${tag.colorvalid1}"/>
+                </CreateTagRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:CreateTagResponse/mail:tag" attr="id"/>                                    
+            </t:response>
+        </t:test> 
+        
+    </t:test_loop>
+
+    <t:test timeframeMax="3000">
+        <t:request>
+            <GetInfoRequest xmlns="urn:zimbraAccount"/>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetInfoResponse/acct:name"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+<!--- Performing various operation in an account with huge folder list-->  
+    
+<t:test_case testcaseid="acctSetup3_tag_loop" type="always">
+    <t:objective>Create a tag for test purpose </t:objective>
+        
+    <t:test required="true">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag1.name}" color="${tag.colorvalid1}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="tag.id"/>                                    
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+    
+    
+<t:test_case testcaseid="Tag_loop2" type="sanity" duration="long">
+    <t:objective>Get all tags</t:objective>
+
+	<t:test>
+	    <t:request>
+	        <GetTagRequest xmlns="urn:zimbraMail"/>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:GetTagResponse"/>
+	    </t:response>
+	</t:test>
+    
+</t:test_case>    
+    
+
+<t:test_case testcaseid="Tag_loop3" type="sanity" duration="long">
+    <t:objective>Get particular tags</t:objective>
+
+	<t:test>
+	    <t:request>
+	        <GetTagRequest id="${tag.id}" xmlns="urn:zimbraMail"/>
+	    </t:request>
+	    <t:response>
+		    <t:select path="//mail:GetTagResponse"/>
+	    </t:response>
+	</t:test>
+    
+</t:test_case>        
+    
+    
+<t:test_case testcaseid="Tag_loop4" type="sanity" duration="long">
+    <t:objective>Rename a tag </t:objective>
+
+    <t:test  timeframeMax="3000">
+        <t:request>
+            <TagActionRequest xmlns="urn:zimbraMail">
+                <action op="rename" id="${tag.id}" name="${tag2.name}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="rename"/>                
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+    
+<t:test_case testcaseid="Tag_loop5" type="sanity" duration="long">
+    <t:objective>Change color of tag </t:objective>
+
+    <t:test  timeframeMax="3000">
+        <t:request>
+            <TagActionRequest xmlns="urn:zimbraMail">
+                <action op="color" id="${tag.id}" color="${tag.colorvalid2}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="color"/>                
+        </t:response>
+    </t:test>
+    
+</t:test_case>    
+    
+    
+<t:test_case testcaseid="Tag_loop6" type="sanity" duration="long">
+    <t:objective>Exceed the maximum limit of tags creation</t:objective>
+
+    <t:test_loop count="10">
+
+        <t:test>
+            <t:request>
+                <CreateTagRequest xmlns="urn:zimbraMail">
+                    <tag name="tag${COUNTER}" color="${tag.colorvalid1}"/>
+                </CreateTagRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="^mail.TOO_MANY_TAGS$"/>
+            </t:response>
+        </t:test>
+
+    </t:test_loop>
+
+</t:test_case>  
+    
+    
+<t:test_case testcaseid="Tag_loop7" type="sanity" duration="long">
+    <t:objective>Delete a tag </t:objective>
+
+    <t:test id="tag_loop7a"  timeframeMax="3000">
+        <t:request>
+            <TagActionRequest xmlns="urn:zimbraMail">
+                <action op="delete" id="${tag.id}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action" attr="op" match="delete"/>                
+        </t:response>
+    </t:test>
+    
+</t:test_case> 
+    
+    
+<t:test_case testcaseid="Tag_loop8" type="sanity" duration="long">
+    <t:objective>Verify new tag can be created if a tag is deleted at stage of its maximum limit</t:objective>
+
+   <t:test depends="tag_loop7a" timeframeMax="3000">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag3.name}" color="${tag.colorvalid1}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>   
+    
+    
+</t:tests>

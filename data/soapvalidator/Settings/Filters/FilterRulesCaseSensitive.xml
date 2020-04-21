@@ -1,0 +1,673 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_filters" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	    </t:response>
+    </t:test>
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+	    </t:response>
+    </t:test>
+	 <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+	    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="FilterAction_CaseSensitive_01" type="bhr" bugids="27463" >
+    <t:objective>Verify filter action=flag is done for case sesitive match</t:objective>
+    <t:steps> 1. Create filter with Action Flag for case sensitive subject of incoming mail.
+    2. verify message is flagged.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<!-- case sensitive = cs -->
+	<t:property name="timecounter" value="${TIME}${COUNTER}"/>
+	<t:property name="filter1.subject" value="filter${timecounter}"/>
+	<t:property name="filter1.subject.cs" value="FILTER${timecounter}"/>	
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter1.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" caseSensitive="1" value="${filter1.subject.cs}" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged"/>
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+        
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+    <t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account1.name}'/>
+					<su>${filter1.subject.cs}</su>
+					<mp ct="text/plain">
+	    				<content>Hello world</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+
+	<t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account1.name}'/>
+					<su>${filter1.subject}</su>
+					<mp ct="text/plain">
+	    				<content>Hello world</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+	
+	<t:waitforpostfixqueue/>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+
+     <t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox "${filter1.subject.cs}"</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+				<t:select path="//mail:SearchResponse/mail:m[@f='u']/mail:su" match="${filter1.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:m[@f='fu']/mail:su" match="${filter1.subject.cs}"/>
+			</t:response>
+    </t:test>
+ </t:test_case>
+
+<t:test_case testcaseid="FilterAction_CaseSensitive_02" type="bhr" bugids="27463" >
+    <t:objective>Verify filter action=fileintofolder is done for case sesitive match</t:objective>
+    <t:steps> 1. Create filter with Action file into folder for case sensitive from field.
+    2. verify message is in folder.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="folder2.name" value="folder${TIME}${COUNTER}"/>
+
+	<t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                	<folder name="${folder2.name}" l="1"/>                
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>            
+        </t:response>
+	</t:test>
+
+	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
+	<!-- case sensitive = cs -->
+	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter3.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="sender.personal.name" value="firstname"/>
+	<t:property name="sender.personal.name.cs" value="FirstName"/>
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter2.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="From" stringComparison="contains" caseSensitive="1" value="${sender.personal.name.cs}" />
+						</filterTests>
+						<filterActions>
+							 <actionFileInto folderPath="${folder2.name}" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+    <t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account1.name}'/>
+					<e t="f" a='${account2.name}' p="${sender.personal.name.cs}"/>
+					<su>${filter2.subject}</su>
+					<mp ct="text/plain">
+	    				<content>Hello world</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+
+	<t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account1.name}'/>
+					<e t="f" a='${account2.name}' p="${sender.personal.name}"/>
+					<su>${filter3.subject}</su>
+					<mp ct="text/plain">
+	    				<content>Hello world</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+	
+	<t:waitforpostfixqueue/>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+     <t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:${folder2.name}</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter2.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${filter3.subject}" emptyset="1"/>
+			</t:response>
+    </t:test>
+ </t:test_case>
+
+
+<t:test_case testcaseid="FilterAction_CaseSensitive_03" type="bhr" bugids="27463" >
+    <t:objective>Verify filter action=flag is done for case sesitive body match</t:objective>
+    <t:steps> 1. Create filter with Action Flag for case sensitive body of incoming mail.
+    2. verify message is flagged.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
+	<!-- case sensitive = cs -->
+	<t:property name="filter3.subject" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter3.body.cs" value="HelloWorld"/>	
+	<t:property name="filter3.body" value="helloworld"/>	
+
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter3.name}" active="1">
+						<filterTests condition="anyof">
+							<bodyTest caseSensitive="1" value="${filter3.body.cs}" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged"/>
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+        
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+    <t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account3.name}'/>
+					<su>${filter3.subject}</su>
+					<mp ct="text/plain">
+	    				<content>${filter3.body.cs}</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+
+	<t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account3.name}'/>
+					<su>${filter3.subject}</su>
+					<mp ct="text/plain">
+	    				<content>${filter3.body}</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+	
+	<t:waitforpostfixqueue/>
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+     <t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox "${filter3.subject}"</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+				<t:select path="//mail:SearchResponse/mail:m[@f='u']/mail:fr" match="${filter3.body}"/>
+				<t:select path="//mail:SearchResponse/mail:m[@f='fu']/mail:fr" match="${filter3.body.cs}"/>
+			</t:response>
+    </t:test>
+ </t:test_case>
+
+<t:test_case testcaseid="FilterAction_CaseSensitive_04" type="bhr" bugids="27463" >
+    <t:objective>Verify filter action=flag is done for read receipt mail match</t:objective>
+    <t:steps> 1. Create filter with Action Flag for read receipt.
+    2. verify message is flagged.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter4.name" value="filter${TIME}${COUNTER}"/>
+	<!-- case sensitive = cs -->
+
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter4.name}" active="1">
+						<filterTests condition="anyof">
+							<mimeHeaderTest caseSensitive="1" header="Content-Type" stringComparison="contains" value="message/disposition-notification" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged"/>
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+        
+	<t:property name="message1.file" value="${testMailRaw.root}/27463/read_receipt.txt"/>
+
+	 <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message1.file}</filename>
+			<to>${account4.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account4.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+
+     <t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox </query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+				<t:select path="//mail:SearchResponse/mail:m" attr="f" match="fu"/>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^Read-Receipt:.*"/>
+				
+			</t:response>
+    </t:test>
+ </t:test_case>
+
+
+<t:test_case testcaseid="FilterAction_CaseSensitive_05" type="bhr" bugids="27463" >
+    <t:objective>Verify filter action=flag is done for case sesitive = 0</t:objective>
+    <t:steps> 1. Create filter with Action Flag for case sensitive=0 subject of incoming mail.
+    2. verify both message is unflagged.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter5.name" value="filter${TIME}${COUNTER}"/>
+	<!-- case sensitive = cs -->
+	<t:property name="timecounter" value="${TIME}${COUNTER}"/>
+	<t:property name="filter5.subject" value="filter${timecounter}"/>
+	<t:property name="filter5.subject.cs" value="FILTER${timecounter}"/>	
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter5.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" caseSensitive="0" value="${filter5.subject.cs}" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged"/>
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+        
+
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+    <t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account4.name}'/>
+					<su>${filter5.subject.cs}</su>
+					<mp ct="text/plain">
+	    				<content>Hello world</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+
+	<t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account4.name}'/>
+					<su>${filter5.subject}</su>
+					<mp ct="text/plain">
+	    				<content>Hello world</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+	
+	<t:waitforpostfixqueue/>
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+
+     <t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox "${filter5.subject.cs}"</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+				<t:select path="//mail:SearchResponse">
+					<t:select path="//mail:m[1]" attr="f" match="f" emptyset="1"/>
+					<t:select path="//mail:m[2]" attr="f" match="f" emptyset="1"/>
+				</t:select>
+			</t:response>
+    </t:test>
+ </t:test_case>
+
+</t:tests>
+

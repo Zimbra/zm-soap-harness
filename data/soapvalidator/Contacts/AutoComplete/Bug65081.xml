@@ -1,0 +1,207 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!-- account1 is in the GAL -->
+<t:property name="account1.name" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Create Accounts" type="always">
+    <t:objective>Create test accounts</t:objective>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="bug65081" type="bhr" bugids="65081,65974" >
+    <t:objective>AutoCompleteRequest first last and last first</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.contacts}']" attr="id" set="account1.folder.contacts.id"/>
+		</t:response>
+	</t:test>
+
+
+	<t:property name="contact1.email" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="contact1.firstname" value="matt"/>
+	<t:property name="contact1.lastname" value="rickson"/>
+
+	<t:property name="contact2.email" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="contact2.firstname" value="matt"/>
+	<t:property name="contact2.lastname" value="malcom${TIME}${COUNTER}"/>
+	
+	<t:property name="contact3.email" value="account${TIME}${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="contact3.firstname" value="mic${TIME}${COUNTER}"/>
+	<t:property name="contact3.lastname" value="rickson"/>
+	
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account1.folder.contacts.id}">
+                    <a n="firstName">${contact1.firstname}</a>
+                    <a n="lastName">${contact1.lastname}</a>
+                    <a n="email">${contact1.email}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account1.folder.contacts.id}">
+                    <a n="firstName">${contact2.firstname}</a>
+                    <a n="lastName">${contact2.lastname}</a>
+                    <a n="email">${contact2.email}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn l="${account1.folder.contacts.id}">
+                    <a n="firstName">${contact3.firstname}</a>
+                    <a n="lastName">${contact3.lastname}</a>
+                    <a n="email">${contact3.email}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>          
+        </t:response>
+    </t:test>
+
+	
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>matt m</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${contact2.email}.*"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${contact1.email}.*" emptyset="1"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>rickson m</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+			<t:select path="//mail:match" attr="email" match=".*${contact1.email}.*"/>
+ 			<t:select path="//mail:match" attr="email" match=".*${contact3.email}.*"/>
+ 			<t:select path="//mail:match" attr="email" match=".*${contact2.email}.*" emptyset="1"/>
+ 			</t:select>
+		</t:response>
+    </t:test>  
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>rickson mic</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${contact3.email}.*"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${contact2.email}.*" emptyset="1"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${contact1.email}.*" emptyset="1"/>
+ 			</t:select>
+		</t:response>
+    </t:test> 
+
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail"> 
+				<name>rickson matt</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:AutoCompleteResponse">
+ 				<t:select path="//mail:match" attr="email" match=".*${contact1.email}.*"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${contact2.email}.*" emptyset="1"/>
+ 				<t:select path="//mail:match" attr="email" match=".*${contact3.email}.*" emptyset="1"/>
+ 			</t:select>
+		</t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+</t:tests>

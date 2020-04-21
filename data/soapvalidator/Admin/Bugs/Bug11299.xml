@@ -1,0 +1,375 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="foreignPrincipal.Attr.name" value="zimbraForeignPrincipal"/>
+
+<t:property name="account1.name" value="acc.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="acc.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="acc.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="acc.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="acc.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+<t:property name="subject1.valid" value="email01A" />
+	
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct1.server" value="${zimbraServer.name}"/>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="MultipleForwarding_Accounts_01" type="bhr">
+    <t:objective>To verify Multiple email ID forwarding</t:objective>
+	<t:steps> 
+		1. Login to Admin account
+		2. Create five accounts 
+		3. From admin login Modify account1 and setup forwarding with comma separated values account2 and 3.
+		4. Login to account 1 and modify the user forwarding tab and add account 4 and 5.  
+		5. Send emails to account 1 and login to each account and check if email has reached them. 
+	</t:steps>
+
+	<!-- lOGIN TO admin -->
+	 <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- Create 5 accounts -->
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+		<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>	
+        </t:response>
+    </t:test>  
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>	
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>	
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>	
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>				
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account5.id"/>
+		<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>	
+        </t:response>
+    </t:test>  
+
+	<!-- Specifying csv values in forwarding -->
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n="zimbraPrefMailForwardingAddress">${account2.name}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account" attr="id" match="${account1.id}"/>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account/admin:a[@n='zimbraPrefMailForwardingAddress']" match="${account2.name}"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <!-- Login to account1 -->
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+     <t:property name="forward.Ids" value="${account3.name},${account4.name}" type="csv"/>
+     
+     <!-- Setup more forwarding -->
+    <t:test id="modifyprefsrequest1">
+        <t:request>
+			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+				<pref name="zimbraPrefMailForwardingAddress">${forward.Ids}</pref>				
+			</ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>       
+   <!-- Login to admin to check how many forwarding has been set -->
+   <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- Send email to account1
+	<t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>      -->
+
+	<t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${test_acct1.server}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="test_acct1.mta.server"/>
+		</t:response>
+    </t:test>
+
+	 <t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${account1.server}</address>
+            <filename>${msg01.file}</filename>
+            <recipient>${account1.name}</recipient>
+        </t:smtpInjectRequest>
+    </t:smtpinjecttest>
+
+
+	<!-- Wait for the message to be forwarded  -->
+	<t:delay sec="5"/>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<!-- Login to account1 -->
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${subject1.valid})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+        </t:response>
+    </t:test>
+    
+    
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+		   <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg1.id}']">
+            	 <t:select attr="su" match="email01A"/>
+ 			</t:select>
+        </t:response>
+    </t:test> 
+
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test delay="20000">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${subject1.valid})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id"/>
+        </t:response>
+    </t:test>
+        
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+		   <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg2.id}']">
+            	<t:select attr="su" match="email01A"/>
+			<!-- 	<t:select path="//mail:e[@t='f']" attr="a" match="testestuser@aol.com"/> 
+           		<t:select path="//mail:e[@t='t']" attr="a" match="mime@zimbra.com"/> -->
+ 			</t:select>
+        </t:response>
+    </t:test> 
+
+	<t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${subject1.valid})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id"/>
+        </t:response>
+    </t:test>
+        
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg3.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+		   <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg3.id}']">
+            	<t:select attr="su" match="email01A"/>			
+ 			</t:select>
+        </t:response>
+    </t:test>         
+
+</t:test_case>
+
+
+<!-- <t:test_case testcaseid="ForeignPrincipal_AccountModify_03" type="bhr">
+    <t:objective>Add a second foreign principal to the account</t:objective>
+
+
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns = "urn:zimbraAdmin">
+                <id>${account3.id}</id>
+                <a n="+zimbraForeignPrincipal">${account3.foreignPrincipal2}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account" attr="id" match="${account3.id}"/>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account/admin:a[@n='zimbraForeignPrincipal']" match="${account3.foreignPrincipal2}"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+		    <GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${account3.foreignPrincipal1}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account3.id}"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+		    <GetAccountRequest xmlns="urn:zimbraAdmin">
+				<account by="foreignPrincipal">${account3.foreignPrincipal2}</account>
+			</GetAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAccountResponse/admin:account" attr="id" match="${account3.id}"/>
+		</t:response>
+	</t:test>
+	
+
+
+</t:test_case>  -->
+
+</t:tests>
+

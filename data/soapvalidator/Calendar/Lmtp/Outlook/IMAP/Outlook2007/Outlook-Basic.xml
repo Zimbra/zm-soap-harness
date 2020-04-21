@@ -1,0 +1,144 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+
+<t:property name="account1.name" value="outlook.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+    
+<t:property name="appt1.filename" value="${testMailRaw.root}/email31/nonrecc_nonallday.txt"/>
+<t:property name="appt1.subject" value="nonrecc_nonallday"/>
+<t:property name="appt1.start" value="1168137000000"/>
+
+
+   
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+
+<t:test_case testcaseid="account_setup" type="always">
+    <t:objective>Create test account and inject messages</t:objective>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${appt1.filename}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="Outlook2007_Calendar_Basic_01" type="bhr">
+    <t:objective>Login to the test account </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${appt1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="appt1.id"/>
+            <t:select path="//mail:SearchResponse/mail:m/mail:e[@t='f']" attr="a" set="appt1.organizer.email"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<SendInviteReplyRequest xmlns="urn:zimbraMail" id="${appt1.id}" compNum="0" verb="ACCEPT" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${appt1.organizer.email}"/>
+					<su>Accept: ${appt1.subject}</su>
+					<mp ct="text/plain">
+						<content>Message Content</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>    
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse" attr="invId" set="appt1.invId"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appt1.invId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="GetApptSummaries1">
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${TIME(-1d)[${appt1.start}]}" e="${TIME(+1d)[${appt1.start}]}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetApptSummariesResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+   
+
+    
+</t:tests>

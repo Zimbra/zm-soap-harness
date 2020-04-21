@@ -1,0 +1,172 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="spamlifetime1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="MsgSpamLifetime" value="30s"/>
+
+<t:property name="msg.file" value="${testMailRaw.root}/spam/spam1.txt"/>
+<t:property name="msg1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+
+<t:property name="op.spam" value="spam"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MailSpamLifetime_Setup" type="always" >
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a account1 with zimbraMailSpamLifetime = 30 secs
+    </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken.admin"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="authToken" value="${authToken.admin}"/>
+
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraMailSpamLifetime">${MsgSpamLifetime}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="MailSpamLifetime01" type="bhr"  areas="smtp" >
+    <t:objective>Verify that the SPAM mail injected using SMTP gets purged after time specified in zimbraMailSpamLifetime.</t:objective>
+    <steps> 1. Inject a SPAM mail using SMTP.
+            2. Login to account1. 
+			3. The message should be in Junk folder.
+			4. After purging messages, the mail should not be in Junk folder.
+    </steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	 <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg.file}</filename>
+            <to>${account1.name}</to>
+            <from>${defaultdestination.email}</from>
+            <server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+
+    <!--t:smtpinjecttest>
+        <t:smtpInjectRequest>
+            <address>${account1.server}</address>
+            <filename>${msg.file}</filename>
+            <recipient>${account1.name}</recipient>
+            <sender>${defaultdestination.email}</sender>
+        </t:smtpInjectRequest>
+    </t:smtpinjecttest-->
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken.account1"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${authToken.account1}"/>
+
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message" >
+                <query>in:junk</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${authToken.admin}"/>
+	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
+
+
+    <t:test>
+        <t:request>
+            <GetMailboxRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account1.id}"/>
+            </GetMailboxRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetMailboxResponse/admin:mbox" attr="mbxid"  set="account1.mbxid"/>
+        </t:response>
+    </t:test>  
+ 
+
+    <t:test delay="60000" >
+        <t:request>
+            <PurgeMessagesRequest xmlns="urn:zimbraAdmin">
+                <mbox id="${account1.id}"/>
+            </PurgeMessagesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PurgeMessagesResponse/admin:mbox" attr="mbxid" match="^${account1.mbxid}$"/>
+        </t:response>
+    </t:test>  
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="authToken" value="${authToken.account1}"/>
+
+
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" >
+		       <query>in:(sent OR drafts OR junk OR trash)</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" emptyset="1"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests> 

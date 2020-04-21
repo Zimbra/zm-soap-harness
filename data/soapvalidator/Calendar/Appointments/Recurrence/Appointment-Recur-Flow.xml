@@ -1,0 +1,2769 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account5.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account6.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>
+<t:property name="test_acct4.server" value="NOT_DEFINED"/>
+
+<t:property name="appointment1.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment2.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment3.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment4.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment5.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment6.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment7.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment8.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment9.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment10.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment11.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment12.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment13.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment14.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment15.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment16.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment17.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment18.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment19.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment20.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment21.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment22.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment23.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment24.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment25.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment26.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment27.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+<t:property name="appointment28.subject" value="SubjectOfMeeting${TIME}.${COUNTER}"/>
+
+
+<t:property name="appointment1.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment2.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment3.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment4.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment5.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment6.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment7.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment8.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment9.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment10.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment11.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment12.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment13.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment14.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment15.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment16.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment17.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment18.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment19.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment20.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment21.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment22.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment23.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment24.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment25.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment26.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment27.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment28.location" value="Location of meeting${TIME}.${COUNTER}"/>
+
+<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="timezone" value="(GMT+05.30) Chennai / Kolkata / Mumbai / New Delhi"/>
+<t:property name="UntilTime" value="T182959Z"/> <!-- This variable depend of GMT offset of the timezone 23:59:59 -(GMT offset) -->
+<t:property name="CurrentTime" value="${GENTIME}"/>
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="Time3" value="${ICALTIME(-1h)}"/>
+<t:property name="Time4" value="${ICALTIME(-30m)}"/>
+<t:property name="Time5" value="${ICALTIME(-1d)}"/>
+<t:property name="Time6" value="${ICALTIME(-1d)(+30m)}"/>
+<t:property name="Time7" value="${ICALTIME(+30d)}"/>
+<t:property name="Time8" value="${ICALTIME(-30d)}"/>
+<t:property name="Time9" value="${ICALTIME(+180d)}"/>
+<t:property name="Time10" value="${ICALTIME(+1080d)}"/>
+<t:property name="Time11" value="${CURRDATE}"/>
+<t:property name="Time12" value="${ICALTIME}"/>
+<t:property name="TimeRangeStart" value="2003337000000"/>
+<t:property name="TimeRangeFinish" value="2006965800000"/>
+<t:property name="TimeRangeStart1" value="1138473000000"/>
+<t:property name="TimeRangeFinish1" value="1142101800000"/>
+
+<t:property name="Date1" value="15"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+<t:property name="Date" value="${CURRDATE(+365d)}"/>
+<t:property name="delay.time" value="50"/>
+<t:property name="daily" value="DAI"/>
+<t:property name="weekly" value="WEE"/>
+<t:property name="monthly" value="MON"/>
+<t:property name="yearly" value="YEA"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test id="ping">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_appointment_create_recur" type="always" >
+	<t:objective>Create test accounts</t:objective>
+
+	<!-- Login to admin -->
+	<t:test id="admin_login" required="true" depends="ping">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="create_test_account1" required="true" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${test_account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test id="create_test_account2" required="true" depends="admin_login">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${test_account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup2_appointment_create_recur" type="always" >
+	<t:objective>login as the test accounts to set auth token and session id</t:objective>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:test id="auth1" required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="Account1.authToken" value="${authToken}"/>  
+
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:test id="auth2" required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="Account2.authToken" value="${authToken}"/>  
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur01" type="smoke" areas="Calendar">
+	<t:objective>Create an recurring appointment of every day with no end date and check that account2 has received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create a appointment of every day with no end date
+	2. Login to account 2
+	3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>	
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment1.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="1"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment1.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appt1.invId"/>                        
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appt1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt1.invId}']">
+            	<t:select path="//mail:inv">
+            		<t:select path="//mail:comp">
+	            		<t:select path="//mail:recur">
+	            			<t:select path="//mail:rule" attr="freq" set="appt01.freq">
+	            				<t:select path="//mail:interval" attr="ival" set="appt01.interval"/>
+            				</t:select>
+	            		</t:select>
+            		</t:select>
+            	</t:select>
+           	</t:select>
+        </t:response>
+    </t:test>
+
+	<t:objective>Verify that the appointment is there in attendee's account</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment1.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment1.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv01.id"/>	
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv01.id}" sortBy="dateDesc" offset="0" limit="25">
+			<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv01.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment1.subject}"/-->			
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment1.subject}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment1.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${appt01.freq}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="${appt01.interval}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur02" type="bhr" areas="Calendar">
+	<t:objective>Create an recurring appointment of every day with End after 5 occurence and check that account2  received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create a appointment of every day with End after 5 occurence
+	2. Login to account 2
+	3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment2.subject}" loc="${appointment2.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="1"/>
+								<count num="5"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+					<mp content-type="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				<su>${appointment2.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+	<t:response>
+		<t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appt2.invId"/>  
+	</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appt2.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt2.invId}']">
+            	<t:select path="//mail:inv">
+            		<t:select path="//mail:comp">
+	            		<t:select path="//mail:recur">
+	            			<t:select path="//mail:rule" attr="freq" set="appt02.freq">
+	            				<t:select path="//mail:interval" attr="ival" set="appt02.interval"/>
+	            				<t:select path="//mail:count" attr="num" set="appt02.count"/>
+            				</t:select>
+	            		</t:select>
+            		</t:select>
+            	</t:select>
+           	</t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment2.subject})</query>
+			</SearchRequest>
+		</t:request>
+	<t:response>
+		<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment2.subject}"/>
+		<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+		<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv02.id"/>	
+	</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv02.id}" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv02.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment2.subject}"/-->			
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment2.subject}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment2.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${appt02.freq}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="${appt02.interval}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:count" attr="num" match="${appt02.count}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid = "appointment_create_recur03" type="bhr" areas="Calendar">
+	<t:objective>Create an recurring appointment of every day with given End by date and check that account2  received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create a appointment of every day with given End by Date
+	2. Login to account 2
+	3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment3.subject}" loc="${appointment3.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="1"/>
+								<until d="${Date}" tz="${timezone}"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment3.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"  attr="invId" set="appt3.invId"/>  
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appt3.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt3.invId}']">
+            	<t:select path="//mail:inv">
+            		<t:select path="//mail:comp">
+	            		<t:select path="//mail:recur">
+	            			<t:select path="//mail:rule" attr="freq" set="appt03.freq">
+	            				<t:select path="//mail:interval" attr="ival" set="appt03.interval"/>
+	            				<t:select path="//mail:until" attr="d" set="appt03.d"/>
+            				</t:select>
+	            		</t:select>
+            		</t:select>
+            	</t:select>
+           	</t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment3.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment3.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv03.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv03.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv03.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment3.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment3.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment3.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${appt03.freq}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="${appt03.interval}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until" attr="d" match="${appt03.d}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid = "appointment_create_recur04" type="smoke" areas="Calendar">
+	<t:objective>Create an recurring appointment of every week day with No End date and check that account2 received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create a appointment of every week day with No End date.
+	2. Login to account 2
+	3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment4.subject}" loc="${appointment4.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="1"/>
+									<byday>
+										<wkday day="MO"/>
+										<wkday day="TU"/>
+										<wkday day="WE"/>
+										<wkday day="TH"/>
+										<wkday day="FR"/>
+									</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment4.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"  attr="invId" set="appt4.invId"/>                        
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appt4.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt4.invId}']">
+            	<t:select path="//mail:inv">
+            		<t:select path="//mail:comp">
+	            		<t:select path="//mail:recur">
+	            			<t:select path="//mail:rule" attr="freq" set="appt04.freq">
+	            				<t:select path="//mail:interval" attr="ival" set="appt04.interval"/>
+            				</t:select>
+	            		</t:select>
+            		</t:select>
+            	</t:select>
+           	</t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment4.subject})</query>
+			</SearchRequest>
+	</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment4.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv04.id"/>	
+	</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv04.id}" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv04.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment4.subject}"/-->			
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment4.subject}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment4.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${appt04.freq}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="${appt04.interval}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" emptyset="0"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur05" type="bhr" areas="Calendar">
+	<t:objective>Create an recurring appointment of every week day with End after 7 occurance and check that account2  received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create a appointment of every week day with End after 7 occurance
+	2. Login to account 2
+	3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment5.subject}" loc="${appointment5.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="1"/>
+								<count num="7"/>
+									<byday>
+										<wkday day="MO"/>
+										<wkday day="TU"/>
+										<wkday day="WE"/>
+										<wkday day="TH"/>
+										<wkday day="FR"/>
+									</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment5.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment5.id"/>
+		</t:response>
+	</t:test>
+
+     <t:test>
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment5.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" set="appt05.freq"/>
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" set="appt05.interval"/>
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp//mail:recur/mail:add/mail:rule/mail:count" attr="num" set="appt05.count"/>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment5.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment5.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv05.id"/>	
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv05.id}" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv05.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment5.subject}"/-->			
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment5.subject}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment5.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${appt05.freq}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:count" attr="num" match="${appt05.count}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="${appt05.interval}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" emptyset="0"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid = "appointment_create_recur06" type="bhr" areas="Calendar">
+	<t:objective>Create an recurring appointment of every week day with End By Date and check that account2  received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create a appointment of every week day with End By Date
+	2. Login to account 2
+	3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment6.subject}" loc="${appointment6.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="1"/>
+								<until d="${Date}" tz="${timezone}"/>
+									<byday>
+										<wkday day="MO"/>
+										<wkday day="TU"/>
+										<wkday day="WE"/>
+										<wkday day="TH"/>
+										<wkday day="FR"/>
+									</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment6.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"  attr="invId" set="appt6.invId"/>  
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appt6.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt6.invId}']">
+            	<t:select path="//mail:inv">
+            		<t:select path="//mail:comp">
+	            		<t:select path="//mail:recur">
+	            			<t:select path="//mail:rule" attr="freq" set="appt06.freq">
+	            				<t:select path="//mail:interval" attr="ival" set="appt06.interval"/>
+	            				<t:select path="//mail:until" attr="d" set="appt06.d"/>
+            				</t:select>
+	            		</t:select>
+            		</t:select>
+            	</t:select>
+           	</t:select>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment6.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment6.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv06.id"/>	
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv06.id}" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv06.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment6.subject}"/-->			
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment6.subject}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment6.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${appt06.freq}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="${appt06.interval}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until" attr="d" match="${appt06.d}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid = "appointment_create_recur07" type="bhr" areas="Calendar" bugids="6520">
+	<t:objective>Create an recurring appointment of every 4th day with no end date and check that account2  received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create a appointment of every 4th day with no end date
+	2. Login to account 2
+	3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment7.subject}" loc="${appointment7.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="4"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment7.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/> 
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test > 
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment7.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment7.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv07.id"/>	
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv07.id}" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv07.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment7.subject}"/-->			
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment7.subject}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment7.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${daily}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="4"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur08" type="bhr" areas="Calendar">
+	<t:objective>Create an recurring appointment of every 4th day with End after 5 occurence and check that account2  received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create a appointment of every 4th day with End after 5 occurence
+	2. Login to account 2
+	3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment8.subject}" loc="${appointment8.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="4"/>
+								<count num="5"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment8.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment8.subject})</query>
+			</SearchRequest>
+	</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment8.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv08.id"/>	
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv08.id}" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv08.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment8.subject}"/-->			
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment8.subject}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment8.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${daily}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:count" attr="num" match="5"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="4"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+
+
+<t:test_case testcaseid = "appointment_create_recur09" type="bhr" areas="Calendar">
+	<t:objective>Create an recurring appointment of every 4th day with End By Date and check that account2  received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create a appointment of every 4th day with End By Date
+	2. Login to account 2
+	3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment9.subject}" loc="${appointment9.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}" tz="${timezone}"/>  
+					<e d="${Time2}" tz="${timezone}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="4"/>
+								<until d="${Date}" tz="${timezone}"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment9.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+	<!--  t:delay msec="30000" /-->
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment9.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment9.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv09.id"/>	
+		</t:response>
+	</t:test>
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv09.id}" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv09.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment9.subject}"/-->			
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment9.subject}"/>
+		    <t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment9.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${daily}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="4"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until" attr="d" match="${Date}${UntilTime}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur10" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment every wednesday with no end date and check that account2 has received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment every wednesday with no end date
+			  2. Login to account2 
+		      3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>	
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment10.subject}" loc="${appointment10.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="WEE">
+								<interval ival="1"/>
+								<byday>
+									<wkday day="WE"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment10.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>                        
+		</t:response>
+	</t:test>
+
+	<t:objective>Verify that the appointment is there in attendee's account</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment10.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment10.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv10.id"/>	
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv10.id}" sortBy="dateDesc" offset="0" limit="25">
+			<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv10.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment10.subject}"/-->			
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment10.subject}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment10.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${weekly}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="WE"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+	
+<t:test_case testcaseid = "appointment_create_recur11" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment every wednesday with End after 5 occurrences and check that account2  received the appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment every wednesday with End after 5 occurrences
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment11.subject}" loc="${appointment11.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="WEE">
+								<interval ival="1"/>
+								<count num="5"/>
+								<byday>
+									<wkday day="WE"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+					<mp content-type="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				<su>${appointment11.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+	<t:response>
+		<t:select path = "//mail:CreateAppointmentResponse"/>  
+	</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment11.subject})</query>
+			</SearchRequest>
+		</t:request>
+	<t:response>
+		<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment11.subject}"/>
+		<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+		<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv11.id"/>	
+	</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv11.id}" sortBy="dateDesc" offset="0" limit="25">
+				<query>in:${globals.inbox}</query>
+			</SearchConvRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv11.id}"/>
+			<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment11.subject}"/-->
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment11.subject}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment11.location}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${weekly}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:count" attr="num" match="5"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="WE"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur12" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment every Thursday with given End by date and check that account2  received the appointment request.</t:objective>
+	<t:steps> 1. Create an appointment every Thursday with given End by Date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment12.subject}" loc="${appointment12.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}" tz="${timezone}"/>  
+					<e d="${Time2}" tz="${timezone}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="WEE">
+								<interval ival="1"/>
+								<until d="${Date}" tz="${timezone}"/>
+								<byday>
+									<wkday day="TH"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment12.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment12.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment12.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv12.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv12.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv12.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment12.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment12.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment12.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${weekly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until" attr="d" match="${Date}${UntilTime}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="TH"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur13" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment every "3" weeks on all (7) days with no End date and check that account2 has received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment every "3" weeks on all (7) days with no End date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment13.subject}" loc="${appointment13.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="WEE">
+								<interval ival="3"/>
+								<byday>
+									<wkday day="SU"/>
+									<wkday day="MO"/>
+									<wkday day="TU"/>
+									<wkday day="WE"/>
+									<wkday day="TH"/>
+									<wkday day="FR"/>
+									<wkday day="SA"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment13.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment13.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment13.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv13.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv13.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv13.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment13.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment13.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment13.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${weekly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="SU"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="MO"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="TU"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="WE"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="TH"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="FR"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="SA"/>				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur14" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment every 3 weeks on two days with no End date and check that account2 has received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment every 3 weeks on two days with no End date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment14.subject}" loc="${appointment14.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="WEE">
+								<interval ival="3"/>
+								<byday>
+									<wkday day="MO"/>
+									<wkday day="WE"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment14.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment14.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment14.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv14.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv14.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv14.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment14.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment14.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment14.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${weekly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="MO"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="WE"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur15" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment every 3 weeks on two days with End after 5 occurence and check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment every 3 weeks on two days with End after 5 occurence
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment15.subject}" loc="${appointment15.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="WEE">
+								<interval ival="3"/>
+								<count num="5"/>
+								<byday>
+									<wkday day="MO"/>
+									<wkday day="WE"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment15.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment15.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment15.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv15.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv15.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv15.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment15.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment15.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment15.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${weekly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="MO"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="WE"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur16" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment every 3 weeks on two days with End by date, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment 3 weeks on two days with End by date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment16.subject}" loc="${appointment16.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}" tz="${timezone}"/>  
+					<e d="${Time2}" tz="${timezone}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="WEE">
+								<interval ival="3"/>
+								<until d="${Date}" tz="${timezone}"/>
+								<byday>
+									<wkday day="MO"/>
+									<wkday day="WE"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment16.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment16.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment16.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv16.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv16.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv16.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment16.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment16.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment16.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${weekly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="MO"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="WE"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until" attr="d" match="${Date}${UntilTime}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur17" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on day 20th of every 2nd month with no End date, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on day 20th of every 2nd month with no End date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment17.subject}" loc="${appointment17.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="MON">
+								<interval ival="2"/>
+								<bymonthday modaylist="20"/>
+								<x-name name="repeatCustomType" value="S"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment17.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment17.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment17.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv17.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv17.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv17.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment17.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment17.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment17.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${monthly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="2"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonthday" attr="modaylist" match="20"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur18" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on day 20th of every 2nd month with End after 2 occurrence, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on day 20th of every 2nd month with End after 2 occurrence
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment18.subject}" loc="${appointment18.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="MON">
+								<interval ival="1"/>
+								<count num="2"/>
+								<bymonthday modaylist="20"/>
+								<x-name name="repeatCustomType" value="S"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment18.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment18.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment18.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv18.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv18.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv18.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment18.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment18.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment18.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${monthly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonthday" attr="modaylist" match="20"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:count" attr="num" match="2"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur19" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on day 20th of every 2nd month with End by given date, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on day 20th of every 2nd month with End after 2 occurrence
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment19.subject}" loc="${appointment19.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}" tz="${timezone}"/>  
+					<e d="${Time2}" tz="${timezone}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="MON">
+								<interval ival="1"/>
+								<until d="${Date}" tz="${timezone}"/>
+								<bymonthday modaylist="20"/>
+								<x-name name="repeatCustomType" value="S"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment19.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment19.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment19.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv19.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv19.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv19.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment19.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment19.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment19.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${monthly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonthday" attr="modaylist" match="20"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until" attr="d" match="${Date}${UntilTime}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur20" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on the 2nd tuesday of every 2nd month with No End date, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on the 2nd tuesday of every 2nd month with No End date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment20.subject}" loc="${appointment20.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="MON">
+								<interval ival="2"/>
+								<byday>
+									<wkday ordwk="2" day="TU"/>
+								</byday>
+								<x-name name="repeatCustomType" value="O"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment20.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment20.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment20.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv20.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv20.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv20.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment20.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment20.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment20.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${monthly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="2"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="ordwk" match="2"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="TU"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur21" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on the 2nd tuesday of every 2nd month with end after 5 occurence, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on the 2nd tuesday of every 2nd month with end after 5 occurence
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment21.subject}" loc="${appointment21.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="MON">
+								<interval ival="2"/>
+								<count num="5"/>
+								<byday>
+									<wkday ordwk="2" day="TU"/>
+								</byday>
+								<x-name name="repeatCustomType" value="O"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment21.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment21.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment21.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv21.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv21.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv21.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment21.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment21.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment21.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${monthly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="2"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="ordwk" match="2"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="TU"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:count" attr="num" match="5"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur22" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on the 2nd tuesday of every 2nd month with end after 5 occurence, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on the 2nd tuesday of every 2nd month with end after 5 occurence
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment22.subject}" loc="${appointment22.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}" tz="${timezone}"/>  
+					<e d="${Time2}" tz="${timezone}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="MON">
+								<interval ival="5"/>
+								<until d="${Date}" tz="${timezone}"/>
+								<byday>
+									<wkday ordwk="1" day="TU"/>
+								</byday>
+								<x-name name="repeatCustomType" value="O"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment22.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment22.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment22.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv22.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv22.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv22.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment22.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment22.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment22.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${monthly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="5"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="ordwk" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="day" match="TU"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until" attr="d" match="${Date}${UntilTime}"/>				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur23" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on 6th march of every year with no end date, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on 6th march of every year with no end date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment23.subject}" loc="${appointment23.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="YEA">
+								<interval ival="1"/>
+								<bymonth molist="3"/>
+								<x-name name="repeatCustomType" value="S"/>
+								<bymonthday modaylist="6"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment23.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment23.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment23.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv23.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv23.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv23.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment23.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment23.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment23.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${yearly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonth" attr="molist" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonthday" attr="modaylist" match="6"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur24" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on 6th march of every year with end after 5 occurrence, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on 6th march of every year with end after 5 occurrence
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment24.subject}" loc="${appointment24.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="YEA">
+								<interval ival="1"/>
+								<count num="5"/>
+								<bymonth molist="3"/>
+								<x-name name="repeatCustomType" value="S"/>
+								<bymonthday modaylist="6"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment24.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment24.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment24.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv24.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv24.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv24.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment24.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment24.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment24.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${yearly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonth" attr="molist" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonthday" attr="modaylist" match="6"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:count" attr="num" match="5"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur25" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on 6th march of every year with end by given date, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on 6th march of every year with end by given date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment25.subject}" loc="${appointment25.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}" tz="${timezone}"/>  
+					<e d="${Time2}" tz="${timezone}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="YEA">
+								<interval ival="1"/>
+								<until d="${Date}" tz="${timezone}"/>
+								<bymonth molist="3"/>
+								<x-name name="repeatCustomType" value="S"/>
+								<bymonthday modaylist="6"/>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment25.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment25.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment25.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv25.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv25.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv25.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment25.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment25.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment25.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${yearly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonth" attr="molist" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonthday" attr="modaylist" match="6"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until" attr="d" match="${Date}${UntilTime}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid = "appointment_create_recur26" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on the first monday of march of every year with end by given date, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on the first monday of march of of every year with end by given date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment26.subject}" loc="${appointment26.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}" tz="${timezone}"/>  
+					<e d="${Time2}" tz="${timezone}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="YEA">
+								<interval ival="1"/>
+								<until d="${Date}" tz="${timezone}"/>
+								<bymonth molist="3"/>
+								<x-name name="repeatCustomType" value="O"/>
+								<byday>
+									<wkday ordwk="1" day="MO"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment26.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment26.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment26.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv26.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv26.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv26.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment26.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment26.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment26.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${yearly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonth" attr="molist" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="ordwk" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:until" attr="d" match="${Date}${UntilTime}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur27" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on the first monday of march of every year with end after 5 occurrence, check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on the first monday of march of every year with with end after 5 occurrence
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment27.subject}" loc="${appointment27.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="YEA">
+								<interval ival="1"/>
+								<count num="5"/>
+								<bymonth molist="3"/>
+								<x-name name="repeatCustomType" value="O"/>
+								<byday>
+									<wkday ordwk="1" day="MO"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment27.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment27.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment27.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv27.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv27.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv27.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment27.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment27.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment27.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${yearly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonth" attr="molist" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="ordwk" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:count" attr="num" match="5"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid = "appointment_create_recur28" type="bhr" areas="Calendar">
+	<t:objective>Create an appointment on the first monday of march of every year with no end date3/3/2006 check that account2  received the correct appointment request.
+	</t:objective>
+	<t:steps> 1. Create an appointment on the first monday of march of every year with noend date
+			  2. Login to account 2
+			  3. Check that above appointment is received by account2
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${Account1.authToken}"/>  
+
+
+	<t:test>
+		<t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m>
+				<inv method="REQUEST" fb="B" transp="O" allDay="0" name="${appointment28.subject}" loc="${appointment28.location}">
+					<at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+					<s d="${Time1}"/>  
+					<e d="${Time2}"/>  
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="YEA">
+								<interval ival="1"/>
+								<bymonth molist="3"/>
+								<x-name name="repeatCustomType" value="O"/>
+								<byday>
+									<wkday ordwk="1" day="MO"/>
+								</byday>
+							</rule>
+						</add>
+					</recur>
+				</inv>
+				<e a="${test_account2.name}" t="t"/>
+				<mp content-type="text/plain">
+					<content>${appointment.content}</content>
+				</mp>
+				<su>${appointment28.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+		</t:request>
+		<t:response>
+			<t:select path = "//mail:CreateAppointmentResponse"/>  
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+	<t:property name="authToken" value="${Account2.authToken}"/>  
+
+
+	<t:test delay="${delay.time}">
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation" bugid="7618">
+				<query>subject:(${appointment28.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${appointment28.subject}"/>
+				<t:select path="//mail:SearchResponse/mail:c/mail:e[@t='f']" attr="a" match="${test_account1.name}"/>
+			<t:select path="//mail:SearchResponse/mail:c" attr="id" set="conv28.id"/>	
+		</t:response>
+	</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchConvRequest xmlns="urn:zimbraMail" cid="${conv28.id}" sortBy="dateDesc" offset="0" limit="25">
+					<query>in:${globals.inbox}</query>
+				</SearchConvRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchConvResponse/mail:m" attr="cid" match="${conv28.id}"/>
+				<!--t:select path="//mail:SearchConvResponse/mail:m/mail:su" match="${appointment28.subject}"/-->				
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="name" match="${appointment28.subject}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp" attr="loc" match="${appointment28.location}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule" attr="freq" match="${yearly}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:interval" attr="ival" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:bymonth" attr="molist" match="3"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:recur/mail:add/mail:rule/mail:byday/mail:wkday" attr="ordwk" match="1"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:or" attr="url" match="${test_account1.name}"/>
+				<t:select path="//mail:SearchConvResponse/mail:m/mail:inv/mail:comp/mail:at" attr="url" match="${test_account2.name}"/>
+			</t:response>
+		</t:test>
+
+</t:test_case>
+
+
+</t:tests>
+

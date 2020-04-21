@@ -1,0 +1,834 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_filters" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefTimeZoneId">UTC</a>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test><!--
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	    </t:response>
+    </t:test>-->
+</t:test_case>
+
+<t:test_case testcaseid="FilterAfterSpecificTimeofDay_01" type="bhr" bugids="13902" >
+    <t:objective>Filter the mail received after specific time based of user's default timezone</t:objective>
+    <t:steps> 1. Create filter with rule "message received after (current time for user -1 min)" apply flag
+			  2. Send a message to user verify  message gets flagged.
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter1.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="after" time="${CURRENTTIMEHHMM(-2m)}" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter1.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter1.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>	   
+
+</t:test_case>
+
+<t:test_case testcaseid="FilterBeforeSpecificTimeofDay_01" type="bhr" bugids="13902" >
+    <t:objective>Filter the mail received after specific time based of user's default timezone</t:objective>
+    <t:steps> 1. Create filter with rule "message received before (current time user +2 min)" apply flag
+			  2. Send a message to user verify  message gets flagged.
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter2.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="before" time="${CURRENTTIMEHHMM(+2m)}" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter2.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter2.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter2.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>	   
+
+</t:test_case>
+
+<t:test_case testcaseid="FilterBetweenSpecificTimeofDay_01" type="bhr" bugids="13902" >
+    <t:objective>Filter the mail received between specific time based of user's default timezone</t:objective>
+    <t:steps> 1. Create filter with rule "message received before (current time user +2 min)" and "message received after (current time for user -2 min)"  and apply flag
+			  2. Send a message to user verify  message gets flagged.
+			  3. wait for 2 mins send another message verify message not get filtered.
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter3a.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter3b.subject" value="filter${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter3.name}" active="1">
+						<filterTests condition="allof">
+						<currentTimeTest dateComparison="before" time="${CURRENTTIMEHHMM(+2m)}" />
+						<currentTimeTest dateComparison="after" time="${CURRENTTIMEHHMM(-2m)}" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter3a.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter3a.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter3a.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>	   
+    
+    <t:delay msec="120000" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter3b.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test id="filters_basic02d" depends="filters_basic01a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter3b.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter3b.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']" emptyset="1"/>
+        </t:response>
+    </t:test>	   
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="FilterBetweenSpecificTimeofDay_02" type="sanity" bugids="13902" >
+    <t:objective>Filter the mail received after specific time based of user's default timezone</t:objective>
+    <t:steps> 1. Create filter with rule "message received after (current time user +2 min)" and "message received before (current time for user -2 min)"  and apply flag
+			  2. Send a message to user verify  message does not get flagged.
+			  3. wait for 2 mins send another message verify message get flagged.
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter4.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter4a.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="filter4b.subject" value="filter${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter4.name}" active="1">
+						<filterTests condition="allof">
+						<currentTimeTest dateComparison="before" time="${CURRENTTIMEHHMM(-1m)}" />
+						<currentTimeTest dateComparison="after" time="${CURRENTTIMEHHMM(+2m)}" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter4a.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test id="filters_basic02d" depends="filters_basic01a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter4a.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter4a.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']" emptyset="1"/>
+        </t:response>
+    </t:test>	   
+    
+    <t:delay sec="120" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter4b.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter4b.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter4b.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']" emptyset="1"/>
+        </t:response>
+    </t:test>	   	
+
+</t:test_case>
+
+<t:test_case testcaseid="FilterOnSpecificWeekDay_01" type="bhr" bugids="13902" >
+    <t:objective>Filter the mail received on specific weekday</t:objective>
+    <t:steps> 1. Create filter with rule "message received on current weekday"   apply flag
+			  2. Send a message to user verify  message gets flagged.
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter5.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter5.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter5.name}" active="1">
+						<filterTests condition="allof">
+						<currentDayOfWeekTest value="${CURRWEEKDAY}" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter5.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter5.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter5.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="FilterOnSpecificWeekDay_02" type="bhr" bugids="13902" >
+    <t:objective>Filter the mail received on specific weekday</t:objective>
+    <t:steps> 1. Create filter with rule "message received on 2 days after current weekday and 2 days before current weekday"   apply flag
+			  2. Send a message to user verify  message does not flagged.
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter6.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter6.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="allof">
+						<currentDayOfWeekTest value="${CURRWEEKDAY(+2d)},${CURRWEEKDAY(-2d)}" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+   
+	<t:property name="msg01.file" value="${testMailRaw.root}/email01/msg01.txt" />
+
+	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+			<to>${account1.name}</to>
+			<from>filter@testfilter.com</from>
+			<server>${account1.server}</server>
+			<modify>
+                <header a="Subject">${filter6.subject}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>	
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${filter6.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${filter6.subject}"/>
+            <t:select path="//mail:SearchResponse/mail:m[@f='fu']" emptyset="1"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="FilteronTimeIvalidValues_01" type="functional" bugids="58018" >
+    <t:objective>Verify Filter Rule on Date Time throws error on invalid value</t:objective>
+    <t:steps>.
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter6.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter6.subject" value="filter${TIME}${COUNTER}"/>
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="before" time="2400" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+    
+    	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="after" time="2400" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+    
+    	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="later" time="2400" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="before" time="2900" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+    
+        <t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="before" time="2298" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="before" time="-1020" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+    	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="before" time="140000" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>    
+    <t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="before" time="54" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentTimeTest dateComparison="before" time="a" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+    <t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentDayOfWeekTest value="-1" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+
+ 	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentDayOfWeekTest value="1,3,8" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+
+ 	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentDayOfWeekTest value="11,-02" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+
+ 	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter6.name}" active="1">
+						<filterTests condition="anyof">
+						<currentDayOfWeekTest value="a,b,c" />
+						</filterTests>
+						<filterActions>
+							 <actionFlag flagName="flagged" />
+							<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.*"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+
+</t:tests>

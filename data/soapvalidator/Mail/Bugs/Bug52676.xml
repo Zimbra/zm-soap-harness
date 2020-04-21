@@ -1,0 +1,134 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account, 2. Create a mail account </steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug52676" type="bhr" bugids="52676">
+    <t:objective>Unknown 'application/octet-stream' error for pdf attachments</t:objective>
+    <t:steps>
+    1. Login to ZWC
+	2. Send mail to user with attachment name containing "z"
+	3. Verify letter "z" does not changed to a "%"
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="contact1.name.last" value="Last${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+	        <AuthRequest xmlns="urn:zimbraAccount">
+	            <account by="name">${account1.name}</account>
+	            <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:property name="msg01.file"		value="${testMailRaw.root}/Bugs/52676/bug52676.txt"/>
+	<t:property name="msg01.subject"	value="email01A"/>	
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+	
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>From: jstiles@example.com</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+		
+		</t:response>
+	</t:test>
+	
+	<t:property name="attachment.name"		value="Jarrod_Stilesz_resume_5579615_10344909272010946044.pdf"/>
+	
+	<t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+       		<t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@filename='${attachment.name}']"/>           		      
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+</t:tests>
+
+

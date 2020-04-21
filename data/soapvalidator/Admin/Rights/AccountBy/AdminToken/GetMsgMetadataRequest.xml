@@ -1,0 +1,141 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account0.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="right${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct1_setup_AccountBy" type="always" >
+ <t:objective>create test accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<!-- Remember these values for later -->
+	<t:property name="authToken.admin" value="${authToken}"/>
+
+	
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+        </t:response>
+    </t:test>  
+
+	<!-- account1 creates a conversation and gets the conversation ID -->
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request> 
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse">
+            	<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+            </t:select>
+        </t:response>
+	</t:test>
+
+	<t:property name="conversation1.subject" value="Conversation ${TIME} ${COUNTER}"/>
+	
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>To: foo@foo.com
+From: ${account1.name}
+Subject: ${conversation1.subject}
+
+Content ${TIME} ${COUNTER}
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message1.id"/>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AccountBy_Admin_GetMsgMetadataRequest_Basic01" type="bhr">
+    <t:objective>Use an admin token with accountby to GetMsgMetadataRequest</t:objective>
+    <t:steps>
+    1. Use admin authtoken with accountby=account1 to GetMsgMetadataRequest - Success
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+		<t:requestContext>
+			<authToken>${authToken.admin}</authToken>
+
+			<account by="id">${account1.id}</account>
+		</t:requestContext>
+        <t:request>
+            <GetMsgMetadataRequest xmlns="urn:zimbraMail">
+                <m ids="${account1.message1.id}"/>
+            </GetMsgMetadataRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgMetadataResponse">
+            	<t:select path="//mail:m" attr="id" match="${account1.id}:${account1.message1.id}"/>
+            	<t:select path="//mail:m" attr="l" match="${account1.id}:${account1.folder.inbox.id}"/>
+            </t:select>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+</t:tests>
