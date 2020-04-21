@@ -20,7 +20,7 @@ public class Driver {
 		config.sendto = "admin@qa60.lab.zimbra.com";
 		config.from = "admin@qa60.lab.zimbra.com";
 		config.host = "qa60.lab.zimbra.com";
-		config.msg = "/p4/matt/main/ZimbraQA/data/TestMailRaw/email01/msg01.txt";
+		config.msg = "/p4/matt/main/ZimbraQA/data/testmailraw/email01/msg01.txt";
 		config.auth = false;
 		config.ssl = false;
 		config.startls = false;

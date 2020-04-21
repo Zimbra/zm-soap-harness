@@ -159,8 +159,8 @@ EXECUTE_SOAP_XML()
 		echo "Output written to $QA_RESULTS/$QA_LOGS/$DIR_NAME ..."
 
 
-		# Need to cd to the data folder, so that TestMailRaw
-		# is in the folder (TestMailRaw is used to upload
+		# Need to cd to the data folder, so that testmailraw
+		# is in the folder (testmailraw is used to upload
 		#emails and files)
 		(cd $DIR/..; $JAVA_COM $JAVA_ARGS $TC_TYPE -f soapvalidator/$TC_FILE >$QA_RESULTS/$QA_LOGS/$DIR_NAME/$BASE_NAME.out 2>$QA_RESULTS/$QA_LOGS/$DIR_NAME/$BASE_NAME.err)
 

@@ -15,5 +15,5 @@ if [ x$USER = "x" ]; then
 fi
 
 
-zmlmtpinject -a localhost -p 7025 -r ${USER} -s ho@${zimbra_server_hostname} -d ${zimbra_home}/qa/TestMailRaw
+zmlmtpinject -a localhost -p 7025 -r ${USER} -s ho@${zimbra_server_hostname} -d ${zimbra_home}/qa/testmailraw
 
