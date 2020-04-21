@@ -18,7 +18,7 @@
 <t:property name="Resource2.description" value="Equipment${TIME}${COUNTER}"/>
 
 <t:property name="test_account1.name" value="testAccount1.${TIME}${COUNTER}@${domain1.name}"/>
-<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account1.password" value="${defaultpassword.value}"/>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 <t:test_case testcaseid="testcase_setup" type="always" >
@@ -61,7 +61,7 @@
 
 	<t:test >
         <t:request>
-            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain1.name}" server="${server.zimbraAdmin}">
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="name${TIME}${COUNTER}" type="zimbra" domain="${domain1.name}">
         		<account by="name">${domain1.galaccount.name}</account>
     		</CreateGalSyncAccountRequest>
         </t:request>
