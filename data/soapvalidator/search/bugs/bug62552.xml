@@ -1,0 +1,144 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name"			value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="import.tarfile" value="${testMailRaw.root}/62552/bug62552.tgz" />
+<t:property name="searchfolder1" value="antivirus" />
+<t:property name="searchfolder1.NewName" value="antivirus_new" />
+<t:property name="searchfolder2" value="service" />
+
+
+<t:test_case testcaseid="Create_account" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug62552" type="bhr"  bugids="62552">
+	<t:objective>Imported search folder.</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Import mail box with saved search folder.
+	3. rename the saved search folder
+	4. move the saved search folder to trash
+	5. Verify  there is no error.
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+
+
+     <t:resttest required="true">
+		<t:restServletRequest method="POST">
+			<filename>${import.tarfile}</filename>
+			<fmt>tgz</fmt>
+			<resolve>replace</resolve>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:search[@name='${searchfolder1}']" attr="id" set="searchfolder1.id"/>
+				<t:select path="//mail:search[@name='${searchfolder2}']" attr="id" set="searchfolder2.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+
+ 
+ <t:test>
+ 	<t:request>
+ 	<FolderActionRequest xmlns="urn:zimbraMail">
+ 		<action  op="rename" id="${searchfolder1.id}" name="${searchfolder1.NewName}"/>
+ 	</FolderActionRequest>
+ 	</t:request>
+ 	<t:response>
+ 		<t:select path="//mail:FolderActionResponse" />
+ 	</t:response>
+ </t:test>
+
+
+<t:test>
+ 	<t:request>
+ 	<FolderActionRequest xmlns="urn:zimbraMail">
+ 		<action  op="trash" id="${searchfolder2.id}" />
+ 	</FolderActionRequest>
+ 	</t:request>
+ 	<t:response>
+ 		<t:select path="//mail:FolderActionResponse" />
+ 	</t:response>
+ </t:test>
+
+
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:search[@name='${searchfolder1.NewName}']" attr="id" match="${searchfolder1.id}"/>
+				<t:select path="//mail:folder[@name='${globals.trash}']/mail:search[@name='${searchfolder2}']" attr="id" match="${searchfolder2.id}"/>
+			</t:select>
+	    </t:response>	
+				
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

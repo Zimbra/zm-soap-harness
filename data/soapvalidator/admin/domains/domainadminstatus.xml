@@ -1,0 +1,354 @@
+<t:tests xmlns:t='urn:zimbraTestHarness'>
+
+
+<t:property name="domain1.name" value="domain.${TIME}.${COUNTER}.com"/>
+
+<t:property name="domainAdmin1.name" value="domainadmin${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="domainAdmin2.name" value="domainadmin${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="domainAdmin3.name" value="domainadmin${TIME}${COUNTER}@${domain1.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+
+<t:test_case testcaseid="domainAdminStatus_AccountSetup" type="always">
+    <t:objective> Create Test domain, accounts, alias and distribution list  </t:objective>
+
+    <!-- authenticate as admin -->
+    <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns='urn:zimbraAdmin'>
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <!-- create good and bad domains -->
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
+        </t:response>
+    </t:test>
+
+
+    <!-- create domain admin user -->
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domainAdmin1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraIsDelegatedAdminAccount">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="domainAdmin1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domainAdmin1.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${domain1.name}</target>
+				<grantee type="usr" by="name">${domainAdmin1.name}</grantee>
+				<right>domainAdminRights</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domainAdmin2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraIsDelegatedAdminAccount">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="domainAdmin2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domainAdmin2.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${domain1.name}</target>
+				<grantee type="usr" by="name">${domainAdmin2.name}</grantee>
+				<right>domainAdminRights</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domainAdmin3.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraIsDelegatedAdminAccount">${globals.true}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="domainAdmin3.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domainAdmin3.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${domain1.name}</target>
+				<grantee type="usr" by="name">${domainAdmin3.name}</grantee>
+				<right>domainAdminRights</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="domainAdminStatus_01" type="bhr">
+    <t:objective>Authenticate as domain admin, whose account is in active mode</t:objective>
+	<t:steps>
+	1. Login as domain admin to web client
+	2. Login as domain admin to admin console
+	3. Execute admin functionality - create a new account
+	</t:steps>
+	
+	
+	<t:property name="server.zimbraAccount" value="${domainAdmin1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${domainAdmin1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:GetInfoResponse"/> 
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns='urn:zimbraAdmin'>
+                <name>${domainAdmin1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>account.${TIME}.${COUNTER}@${domain1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="domainAdminStatus_02" type="bhr">
+    <t:objective>Authenticate as domain admin, whose account is in maintenance mode</t:objective>
+	<t:steps>
+	1. Login as admin.  Change domain admin account status to maintenance mode
+	2. Login as domain admin to web client - MAINTENANCE_MODE
+	3. Login as domain admin to admin console - MAINTENANCE_MODE
+	</t:steps>
+	
+	
+	<t:property name="server.zimbraAccount" value="${domainAdmin2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${domainAdmin2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="domainAdmin2.zimbraAccount.authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns='urn:zimbraAdmin'>
+                <name>${domainAdmin2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="domainAdmin2.zimbraAdmin.authToken"/>
+        </t:response>
+    </t:test>
+
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns='urn:zimbraAdmin'>
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${domainAdmin2.id}</id>
+                <a n="zimbraAccountStatus">maintenance</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${domainAdmin2.server}"/>
+	<t:property name="authToken" value="${domainAdmin2.zimbraAccount.authToken}"/>
+	<t:test>
+		<t:request>
+			<GetInfoRequest xmlns="urn:zimbraAccount"/>
+		</t:request>
+		<t:response>
+            <t:select path="//zimbra:Code" match="account.MAINTENANCE_MODE|service.AUTH_EXPIRED"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="authToken" value="${domainAdmin2.zimbraAdmin.authToken}"/>
+	<t:delay msec="10000"/>
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>account.${TIME}.${COUNTER}@${domain1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.MAINTENANCE_MODE|service.AUTH_EXPIRED"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="domainAdminStatus_03" type="sanity">
+    <t:objective>Verify the server behavior when a domain admin places his own account in maintenance mode</t:objective>
+	<t:steps>
+	1. Login as domain admin
+	2. Modify the domain admin's account to maintenance - receive the ModifyAccountResponse normally
+	3. Execute admin behavior - Create a new account
+	4. Login as domain admin - MAINTENANCE_MODE
+	</t:steps>
+	
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns='urn:zimbraAdmin'>
+                <name>${domainAdmin3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${domainAdmin3.id}</id>
+                <a n="zimbraAccountStatus">maintenance</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:delay msec="10000"/>
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>account.${TIME}.${COUNTER}@${domain1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="account.MAINTENANCE_MODE|service.AUTH_EXPIRED"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+
+
+</t:tests>

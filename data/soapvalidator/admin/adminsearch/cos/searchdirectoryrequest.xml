@@ -1,0 +1,61 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_account_search" type="always" >
+    <t:objective>Prepare the account for tests</t:objective>
+    <t:steps> 1. Login to admin
+              2. Create test-accounts
+              3. Create an alias 
+              4. Create a distribution list        
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+
+</t:test_case>
+
+    
+
+<t:test_case testcaseid="SearchDirectoryRequest_Coses_01" type="bhr" bugids="30823">
+    <t:objective>Verify searching for types="coses" only. </t:objective>    
+
+    <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" sortBy="cn" sortAscending="1" attrs="cn,description" types="coses">
+                <query></query>
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:cos" attr="name" match="default"/>    
+        </t:response>
+    </t:test> 
+
+</t:test_case> 
+
+</t:tests>

@@ -1,0 +1,225 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="waitset.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="waitset.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="waitset.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="waitset.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="interest.all" value="all"/>
+<t:property name="interest.messages" value="m"/>
+<t:property name="interest.appointments" value="a"/>
+<t:property name="interest.contacts" value="c"/>
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateWaitSetRequest_Contacts_AccountSetup" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps>1. Login to admin
+             2. Create an account.    
+    </t:steps>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+
+<t:test_case testcaseid="CreateWaitSetRequest_Contacts_01" type="bhr">
+    <t:objective>Test Case for WaitSetRequest (non blocking) for Contact changes</t:objective>
+    <t:steps>
+    1. Login to account1
+    2. Send the CreateWaitSetRequest to create a wait set
+    3. Create a new contact into the mailbox
+    4. Send the WaitSetRequest to pick up the changes
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="${interest.contacts}" >
+				<add>
+					<a id="${account1.id}" />
+				</add>
+			</CreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateWaitSetResponse" attr="seq" set="account1.waitset.seq"/>
+            <t:select path="//mail:CreateWaitSetResponse" attr="waitSet" set="account1.waitset.waitSet"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse">
+            	<t:select path="//mail:cn" attr="id" set="account1.contact1.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<WaitSetRequest xmlns="urn:zimbraMail" waitSet="${account1.waitset.waitSet}" seq="${account1.waitset.seq}">
+			</WaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:WaitSetResponse">
+            	<t:select path="//mail:a" attr="id" match="${account1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case> 
+
+<t:test_case testcaseid="CreateWaitSetRequest_Contacts_02" type="bhr">
+    <t:objective>Test Case for WaitSetRequest (blocking) for Contact changes</t:objective>
+    <t:steps>
+    1. Login to account1
+    2. Send the CreateWaitSetRequest to create a wait set
+    3. Create a new contact into the mailbox
+    4. Send the WaitSetRequest to pick up the changes
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+			<CreateWaitSetRequest xmlns="urn:zimbraMail" defTypes="${interest.all}" >
+				<add>
+					<a id="${account2.id}" />
+				</add>
+			</CreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateWaitSetResponse" attr="seq" set="account2.waitset.seq"/>
+            <t:select path="//mail:CreateWaitSetResponse" attr="waitSet" set="account2.waitset.waitSet"/>
+        </t:response>
+    </t:test>
+
+    <t:test concurrent="true">
+        <t:request>
+			<WaitSetRequest xmlns="urn:zimbraMail" block="1" waitSet="${account2.waitset.waitSet}" seq="${account2.waitset.seq}" defTypes="${interest.all}" >
+			</WaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:WaitSetResponse">
+            	<t:select path="//mail:a" attr="id" match="${account2.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:delay sec="10"/>
+	
+    <t:test >
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse">
+            	<t:select path="//mail:cn" attr="id" set="account2.contact1.id"/>
+            </t:select>	
+        </t:response>
+    </t:test>
+
+
+	<!-- The WaitSetResponse will be received here, after the contact is created in the mailbox -->
+	
+</t:test_case> 
+
+</t:tests>

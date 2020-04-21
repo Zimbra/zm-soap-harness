@@ -1,0 +1,905 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="test_account.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account.password" value="${defaultpassword.value}"/>
+
+<t:property name="op.tag" value="tag"/>
+<t:property name="tag1.name" value="tag1"/>
+<t:property name="tag1.color" value="3"/>
+<t:property name="tag2.name" value="tag2"/>
+<t:property name="tag2.color" value="1"/>
+
+<t:property name="folder1.name" value="folder1"/>
+<t:property name="folder2.name" value="folder2"/>
+<t:property name="folder3.name" value="folder3"/>
+<t:property name="folder4.name" value="folder4"/>
+
+<t:property name="spamtag" value="tag:tag1"/>
+<t:property name="trashtag" value="tag:tag2"/>
+
+<t:property name="inbox" value="in:${globals.inbox}"/>
+<t:property name="contacts" value="in:${globals.contacts}"/>
+<t:property name="drafts" value="in:${globals.drafts}"/>
+<t:property name="sent" value="in:${globals.sent}"/>
+<t:property name="spam" value="in:${globals.spam}"/>
+<t:property name="trash" value="in:${globals.trash}"/>
+<t:property name="folder1" value="in:(Contacts/folder1)"/>
+<t:property name="folder2" value="in:folder2"/>
+<t:property name="folder3" value="in:folder3"/>
+<t:property name="folder4" value="in:(folder3/folder4)"/>
+
+<t:property name="Spamfirstname" value="firstName5"/>
+<t:property name="Trashfirstname" value="firstName6"/>
+
+<t:property name="op.move" value="move"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="admin_auth" type="always" >
+    <t:objective>Login as the admin and create a test account</t:objective>
+    <t:steps>1. Login to admin
+             2. Create a test account
+    </t:steps>
+    
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+             </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+<t:test_case testcaseid="account_login" type="always" >
+    <t:objective>Login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="account_setup" type="always" >
+    <t:objective>Account Setup </t:objective>
+    <t:steps>1. Modify the preferences to include Spam\Trash in searches
+             2. Create some contacts
+             3. Create some folders.
+             4. Move the contacts to default\custom folders.
+    </t:steps>
+
+    <!-- Modify the preferences to include Spam\Trash in searches -->
+    <t:test id="modifyPrefsRequest1">
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefIncludeSpamInSearch">${globals.true}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="modifyPrefsRequest2">
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefIncludeTrashInSearch">${globals.true}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Create Some contacts -->
+    <t:test id="createContactRequest1">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName1</a>
+                    <a n="lastName">lastName1</a>
+                    <a n="middleName">middleName1</a>
+                    <a n="email">firstname01_lastname01@testsearch.com</a>
+                    <a n="jobTitle">jobTitle1</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact1.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id="createContactRequest2">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName2</a>
+                    <a n="lastName">lastName2</a>
+                    <a n="middleName">middleName2</a>
+                    <a n="email">firstname02_lastname02@testsearch.com</a>
+                    <a n="jobTitle">jobTitle2</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact2.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id="createContactRequest3">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName3</a>
+                    <a n="lastName">lastName3</a>
+                    <a n="middleName">middleName3</a>
+                    <a n="email">firstname03_lastname03@testsearch.com</a>
+                    <a n="jobTitle">jobTitle3</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact3.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id="createContactRequest4">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName4</a>
+                    <a n="lastName">lastName4</a>
+                    <a n="middleName">middleName4</a>
+                    <a n="email">firstname04_lastname04@testsearch.com</a>
+                    <a n="jobTitle">jobTitle4</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact4.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id="createContactRequest5">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName5</a>
+                    <a n="lastName">lastName5</a>
+                    <a n="middleName">middleName5</a>
+                    <a n="email">firstname05_lastname05@testsearch.com</a>
+                    <a n="jobTitle">jobTitle5</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact5.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id="createContactRequest6">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName6</a>
+                    <a n="lastName">lastName6</a>
+                    <a n="middleName">middleName6</a>
+                    <a n="email">firstname06_lastname06@testsearch.com</a>
+                    <a n="jobTitle">jobTitle6</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact6.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id="createContactRequest7">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName7</a>
+                    <a n="lastName">lastName7</a>
+                    <a n="middleName">middleName7</a>
+                    <a n="email">firstname07_lastname07@testsearch.com</a>
+                    <a n="jobTitle">jobTitle7</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact7.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id="createContactRequest8">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName8</a>
+                    <a n="lastName">lastName8</a>
+                    <a n="middleName">middleName8</a>
+                    <a n="email">firstname08_lastname08@testsearch.com</a>
+                    <a n="jobTitle">jobTitle8</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact8.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id="createContactRequest9">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName9</a>
+                    <a n="lastName">lastName9</a>
+                    <a n="middleName">middleName9</a>
+                    <a n="email">firstname09_lastname09@testsearch.com</a>
+                    <a n="jobTitle">jobTitle9</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact9.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <t:test id="createContactRequest10">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">firstName10</a>
+                    <a n="lastName">lastName10</a>
+                    <a n="middleName">middleName10</a>
+                    <a n="email">firstname010_lastname010@testsearch.com</a>
+                    <a n="jobTitle">jobTitle10</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+         <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact10.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+    
+    <!-- Get default folder and create some custom folders -->
+    <t:test id="getFolderRequest">
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inbox.id"/>
+            <t:select path="//mail:folder[@name='${globals.contacts}']" attr="id" set="contacts.id"/>
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="drafts.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="sent.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="spam.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="trash.id"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="root.id"/> 
+        </t:response>
+    </t:test>
+    
+    <t:test id="createFolderRequest1" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${contacts.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="createFolderRequest2" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder2.name}" l="${root.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="createFolderRequest3" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${root.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="createFolderRequest4" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder4.name}" l="${folder3.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>            
+        </t:response>
+    </t:test>
+
+    <!-- Move the contacts in various folders -->
+    <t:test id="contactActionRequest1">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact1.id}" op="${op.move}" l="${inbox.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact1.id}"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest2">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact2.id}" op="${op.move}" l="${contacts.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact2.id}"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest3">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact3.id}" op="${op.move}" l="${drafts.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact3.id}"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest4">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact4.id}" op="${op.move}" l="${sent.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact4.id}"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest5">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact5.id}" op="${op.move}" l="${spam.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact5.id}"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest6">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact6.id}" op="${op.move}" l="${trash.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact6.id}"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest7">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact7.id}" op="${op.move}" l="${folder1.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact7.id}"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest8">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact8.id}" op="${op.move}" l="${folder2.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact8.id}"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest9">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact9.id}" op="${op.move}" l="${folder3.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact9.id}"/>            
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest10">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact10.id}" op="${op.move}" l="${folder4.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>            
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.move}"/>
+                <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact10.id}"/>            
+        </t:response>
+    </t:test>
+      
+</t:test_case>
+
+
+<t:test_case testcaseid="folder_SearchRequest1" type="sanity" >
+    <t:objective>Searching contacts in various default folders </t:objective>
+   
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${inbox} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${contacts} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${drafts} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" />
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${sent}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" />
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${spam} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" />
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${trash} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" />
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="folder_SearchRequest2" type="sanity" >
+    <t:objective>Searching contacts in custom folders </t:objective>
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${folder1} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" />
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${folder2} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" />
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${folder3} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" />
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${folder4} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>       
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup2" type="always" >
+    <t:objective>Creating tags and add it to respected contacts</t:objective>
+    <t:steps> 1. Create two tags 
+              2. Adding tags to respected contacts of Spam and Trash
+    </t:steps>
+    
+    <t:test id="createTagRequest1">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag1.name}" color="${tag1.color}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag1.id"/>
+            <t:select attr="color" match="${tag1.color}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test id="createTagRequest2" >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag2.name}" color="${tag2.color}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag2.id"/>
+            <t:select attr="color" match="${tag2.color}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest11">
+        <t:request>
+            <ContactActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${contact5.id}" op="${op.tag}" tag="${tag1.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact5.id}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="contactActionRequest12">
+        <t:request>
+            <ContactActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${contact6.id}" op="${op.tag}" tag="${tag2.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ContactActionResponse/mail:action" attr = "op" match = "${op.tag}"/>
+            <t:select path = "//mail:ContactActionResponse/mail:action" attr = "id" match = "${contact6.id}"/>
+        </t:response>
+    </t:test>
+    
+ </t:test_case>  
+
+
+<t:test_case testcaseid="folder_SearchRequest4" type="sanity" bugids="2395">
+    <t:objective>Setting zimbraPrefIncludeSpamInSearch = FALSE and Searching contacts in spam </t:objective>
+    <t:steps> 1. Searching contact basing on content of contact
+              2. Searching contact basing on tag attached to contact 
+    </t:steps> 
+    
+    <t:test id="folder_SearchRequest4a">
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefIncludeSpamInSearch">${globals.false}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="folder_SearchRequest4a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${Spamfirstname}</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>           
+        </t:response>
+    </t:test>
+    
+    <t:test depends="folder_SearchRequest4a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${spamtag}</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>             
+        </t:response>
+    </t:test>
+
+</t:test_case> 
+
+
+<t:test_case testcaseid="folder_SearchRequest5" type="sanity" bugids="2395">
+    <t:objective>Setting zimbraPrefIncludeTrashInSearch = FALSE and Searching contacts in trash </t:objective> 
+    
+    <t:test id="folder_SearchRequest5a">
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefIncludeTrashInSearch">${globals.false}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="folder_SearchRequest5a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${Trashfirstname}</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>           
+        </t:response>
+    </t:test>
+    
+    <t:test depends="folder_SearchRequest5a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact">
+                <query>${trashtag}</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact1.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact2.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact3.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact4.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact5.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact6.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact7.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact8.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact9.id}']" emptyset="1"/>
+            <t:select path="//mail:SearchResponse/mail:cn[@id='${contact10.id}']" emptyset="1"/>             
+        </t:response>
+    </t:test>
+
+</t:test_case>    
+
+    
+</t:tests>

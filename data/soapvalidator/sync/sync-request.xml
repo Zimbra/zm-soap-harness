@@ -1,0 +1,2686 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+<t:property name="test_account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.password" value="test123"/>
+
+<t:property name="contact.firstname" value="Contact.${TIME}.${COUNTER}"/>
+<t:property name="contact.lastname" value="Name.${TIME}.${COUNTER}"/>
+<t:property name="contact.mailid" value="email.${TIME}.${COUNTER}"/>
+<t:property name = "message.subject2" value ="Subject${TIME}.${COUNTER}"/>
+<t:property name = "message.subject" value ="Subject${TIME}.${COUNTER}"/>
+
+<t:property name = "postfixdelay.msec" value = "15000"/>
+<t:property name = "message.content" value = "content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="folder.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder2.name" value="folder.${TIME}.${COUNTER}"/>  
+<t:property name="folder3.name" value="folder.${TIME}.${COUNTER}"/>      
+<t:property name="folder.newname" value="folder.${TIME}.${COUNTER}"/>  
+<t:property name="searchFolder.name" value="searchFolder.${TIME}.${COUNTER}"/>
+<t:property name="tag.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag2.name" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag.newname" value="tag${TIME}${COUNTER}"/>
+<t:property name="tag.colorvalid" value="4"/>
+<t:property name="tag.colorvalid2" value="2"/>
+    
+<t:property name="folder.colorvalid" value="3"/>
+    
+<t:property name="token.negative" value="-1"/>
+<t:property name="token.zero" value="0"/>
+<t:property name="token.decimal" value="1.54"/>
+<t:property name="token.largeNumber" value="111222333"/>
+<t:property name="token.space" value="        "/>
+<t:property name="token.blank" value=""/>    
+<t:property name="token.sometext" value="Some Text"/>
+
+<t:property name="appointment.name" value="Meeting${TIME}"/>    
+<t:property name="TimeRangeStart" value="${TIME}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+1d)}"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>    
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>    
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup1_SyncRequest" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps> 1. Login to Admin
+              2. Create test accounts
+    </t:steps>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>        
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account2.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>        
+    </t:test>
+
+     <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${test_account3.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>        
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+<t:test_case testcaseid="acct_setup2_SyncRequest" type="always">
+    <t:objective>Setup the accounts for test purpose </t:objective>
+    <t:steps>1. Login to account3 
+             2. Send a mail to account2
+             3. Login to account 1 for other test purpose
+    </t:steps>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${test_account3.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+     <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a="${test_account2.name}"/>
+                    <su>test mail</su>
+                    <mp ct="text/plain">
+                        <content>Content of the mail</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="send1.id"/>
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="get_folder_id" type="always">
+    <t:objective>Get the id of all the folders</t:objective>
+    
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder.inbox"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder.trash"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder.sent"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder.spam"/> 
+            <t:select path="//mail:folder[@name='${globals.drafts}']" attr="id" set="folder.drafts"/> 
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="token1.no"/> 
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest1" type="bhr">
+    <t:objective>SyncRequest without any token on a new mailbox </t:objective>     
+
+    <t:test id="syncRequest1a">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token1.id"/>            
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder[@name='${globals.tags}']"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder[@name='${globals.root}']"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder[@name='${globals.calendar}']"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder[@name='${globals.contacts}']"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder[@name='${globals.drafts}']"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder[@name='${globals.sent}']"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder[@name='${globals.trash}']"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder[@name='${globals.spam}']"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder[@name='${globals.inbox}']"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest2" type="bhr" bugids="2380">
+    <t:objective>SyncRequest with the previous token on a new mailbox (Sync Request without any change in account state)</t:objective>    
+
+    <t:test depends="syncRequest1a">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse" attr="token" match="${token1.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest3" type="sanity">
+    <t:objective>SyncRequest after creation of a folder</t:objective>
+     <t:steps> 1. Get the sync token
+               2. Get the id of root folder
+               3. Create a folder under root
+               4. Check for the synchronization
+    </t:steps>
+    
+    <t:test id="syncRequest3a">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest3b" depends="syncRequest3a">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder[@name='${globals.root}']" attr="id" set="folder.root"/>
+            <t:header path="//zimbra:context/zimbra:change" attr="token" match="${token1.no}" emptyset="1"/> 
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="token2.no"/> 
+        </t:response>
+    </t:test>
+    
+    <t:test id="syncRequest3c" depends="syncRequest3b">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder.root}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+            <t:header path="//zimbra:context/zimbra:change" attr="token" match="${token2.no}" emptyset="1"/> 
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="token3.no"/> 
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest3d" depends="syncRequest3c">
+        <t:request>
+            <SyncRequest token="${token3.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:folder"  attr="id" match="${folder1.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest4" type="sanity">
+    <t:objective>SyncRequest after creation of a tag</t:objective>
+    <t:steps> 1. Get the sync token
+              2. Create a tag
+              3. Check for the synchronization
+    </t:steps>
+    
+    <t:test id="syncRequest4a">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token4.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest4b" depends="syncRequest4a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag1.id"/>            
+            </t:select>
+            <t:header path="//zimbra:context/zimbra:change" attr="token" match="${token3.no}" emptyset="1"/> 
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="token4.no"/> 
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest4c" depends="syncRequest4b">
+        <t:request>
+            <SyncRequest token="${token4.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:tag"  attr="id" match="${tag1.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest5" type="sanity">
+    <t:objective>SyncRequest after creation of a contact</t:objective>
+    <t:steps> 1. Get the sync token
+              2. Create a contact
+              3. Check for the synchronization
+    </t:steps>
+    
+    <t:test id="syncRequest5a">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token5.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="syncRequest5b" depends="syncRequest5a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                     <a n="firstName">First.${TIME}.${COUNTER}</a>
+                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact1.id"/>
+            </t:select>   
+            <t:header path="//zimbra:context/zimbra:change" attr="token" match="${token4.no}" emptyset="1"/> 
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="token5.no"/> 
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest5c" depends="syncRequest5b">
+        <t:request>
+            <SyncRequest token="${token5.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:cn"  attr="id" match="${contact1.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest6" type="sanity">
+    <t:objective>SyncRequest after addition of mail </t:objective>
+    <t:steps> 1. Get the sync token
+              2. Add a mail to mailbox
+              3. Check for the synchronization
+    </t:steps>
+    
+    <t:test id="syncRequest6a">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token6.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="syncRequest6b" depends="syncRequest6a">
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>Subject: hello
+
+                        Content Text
+                    </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message1.id"/>
+            <t:header path="//zimbra:context/zimbra:change" attr="token" match="${token5.no}" emptyset="1"/> 
+            <t:header path="//zimbra:context/zimbra:change" attr="token" set="token6.no"/> 
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest6c" depends="syncRequest6b">
+        <t:request>
+            <SyncRequest token="${token5.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+        </t:response>
+    </t:test>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest7" type="sanity">
+    <t:objective>SyncRequest with a token obtained before the creation of a tag, folder, contact, mail</t:objective>    
+    
+    <t:test depends="syncRequest3c,syncRequest4b,syncRequest5b,syncRequest6b">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:folder" attr="id" match="${folder1.id}"/> 
+            <t:select path="//mail:SyncResponse/mail:tag"  attr="id" match="${tag1.id}"/>
+            <t:select path="//mail:SyncResponse/mail:cn"  attr="id" match="${contact1.id}"/>
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+        </t:response>
+    </t:test>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest8" type="sanity">
+    <t:objective>SyncRequest with a token obtained before the contact, mail</t:objective>
+    
+    <t:test depends="syncRequest5a,syncRequest5b,syncRequest6b">
+        <t:request>
+            <SyncRequest token="${token5.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:folder" attr="id" emptyset="1"/> 
+            <t:select path="//mail:SyncResponse/mail:tag"  attr="id" emptyset="1"/>            
+            <t:select path="//mail:SyncResponse/mail:cn"  attr="id" match="${contact1.id}"/>
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+        </t:response>
+    </t:test>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest9" type="sanity">
+    <t:objective>SyncRequest without any token in a mailbox with information (tag, folder, contact, mail)</t:objective>
+    
+    <t:test  depends="syncRequest3c,syncRequest4b,syncRequest5b,syncRequest6b">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder[@name='${folder.name}']" attr="id" match="${folder1.id}"/> 
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:tag"  attr="id" match="${tag1.id}"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder/mail:cn"  attr="ids" match="${contact1.id}"/>
+            <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:m"  attr="ids" match="${message1.id}"/>
+        </t:response>
+    </t:test>
+      
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest10" type="sanity">
+    <t:objective>SyncRequest after saving the mail as draft </t:objective>
+    <t:steps> 1. Get the sync token
+              2. Save a mail as draft 
+              3. Check for the synchronization
+    </t:steps>
+    
+    <t:test id="syncRequest10a">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token10.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="syncRequest10b" depends="syncRequest10a">
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account1.name}'/>
+                    <su> Draft mail  </su>
+                    <mp ct="text/plain">
+                        <content> Draft content </content>
+                    </mp>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest10c" depends="syncRequest10b">
+        <t:request>
+            <SyncRequest token="${token10.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${draft1.id}"/>
+        </t:response>
+    </t:test>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest11" type="sanity">
+    <t:objective>SyncRequest after creating an appointment</t:objective>
+    <t:steps> 1. Get the sync token
+              2. Create an appointment
+              3. Check for the synchronization
+    </t:steps>
+    
+    <t:test id="syncRequest11a">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token11.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="syncRequest11b" depends="syncRequest11a">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.name}" loc="India">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account3.name}"/>
+                        <s d="${ICALTIME(+30m)}"/>  
+                        <e d="${ICALTIME(+60m)}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account3.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>Meeting with Persistent </content>
+                    </mp>
+                    <su>Test appointment </su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse/mail:m" attr="id" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest11c" depends="syncRequest11b">
+        <t:request>
+            <SyncRequest token="${token11.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${appointment1.id}"/>
+        </t:response>
+    </t:test>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest12" type="sanity">
+    <t:objective>SyncRequest with previous token instead of current token </t:objective>
+    <t:steps> 1. Sync request to get a token A 
+              2. Add message to the account
+              3. Sync request with token A to get a token B.
+              4. Add a contact
+              5. Sync request with token A in place of token B
+    </t:steps>
+    
+    <t:test id="syncRequest12a">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token12a.id"/>
+        </t:response>
+    </t:test>    
+
+    <t:test id="syncRequest12b" depends="syncRequest12a">
+        <t:request>
+           <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="1">
+                    <content>Subject: hello
+                        Content Text
+                    </content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest12c" depends="syncRequest12b">
+        <t:request>
+            <SyncRequest token="${token12a.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message2.id}"/>
+            <t:select path="//mail:SyncResponse"  attr="token" set="token12b.id"/>
+        </t:response>
+    </t:test>
+
+     <t:test id="syncRequest12d" depends="syncRequest12c">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                     <a n="firstName">First.${TIME}.${COUNTER}</a>
+                     <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                     <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact2.id"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    
+    <t:test id="syncRequest12e" depends="syncRequest12d">
+        <t:request>
+            <SyncRequest token="${token12a.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message2.id}"/>
+            <t:select path="//mail:SyncResponse/mail:cn"  attr="id" match="${contact2.id}"/>
+        </t:response>
+    </t:test>   
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest13" type="functional">
+    <t:objective>SyncRequest with the invalid numeric tokens (Negative/Zero/Decimal/Large Number)</t:objective>    
+    <t:steps> 1. Sync to get the next token.
+              2. Sync with negative token and check the new token is same as that obtained in step1
+              3. Sync with token=0 and check it gives error
+              4. Sync with a large token and check the new token is same as that obtained in step1
+    </t:steps>
+
+    <t:test id="syncRequest13a">
+        <t:request>
+            <SyncRequest token="${token1.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token13.id"/>
+        </t:response>
+    </t:test>    
+
+    <t:test depends="syncRequest13a">
+        <t:request>
+            <SyncRequest token="${token.negative}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse" attr="token" match="${token13.id}"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="syncRequest13a">
+        <t:request>
+            <SyncRequest token="${token.zero}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse" attr="token" match="${token13.id}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SyncRequest token="${token.decimal}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="syncRequest13a">
+        <t:request>
+            <SyncRequest token="${token.largeNumber}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse" attr="token" match="${token13.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest14" type="functional">
+    <t:objective>SyncRequest with the invalid tokens (blank/spaces/sometext)</t:objective>    
+    
+    <t:test>
+        <t:request>
+            <SyncRequest token="${token.blank}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SyncRequest token="${token.space}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SyncRequest token="${token.sometext}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+<t:test_case testcaseid="SyncRequest15" type="bhr">
+    <t:objective>Sync without any token to a new account which already has a mail in its inbox</t:objective>
+    <t:steps>1. Login to account 2 
+             2. Check for the synchronization
+    </t:steps>
+
+    <t:test id="syncRequest15a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account2.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    <t:delay msec="1000" />
+     <t:test id="syncRequest15b" depends="syncRequest15a">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+         <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder/mail:m[@ids='${send1.id}']"/>
+        </t:response>
+    </t:test>    
+   
+</t:test_case>
+   
+
+<t:test_case testcaseid="SyncRequest16" type="sanity" bugids="2368">
+    <t:objective>Sync after deleting a message</t:objective>
+
+    <t:test id="syncRequest16a" depends="syncRequest15b">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${send1.id}" op = "delete"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "delete"/>            
+        </t:response>
+    </t:test>
+    <t:delay msec="1000" />
+    <t:test depends="syncRequest16a">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+         <t:select path="//mail:SyncResponse/mail:folder/mail:folder/mail:folder/mail:m[@ids='${send1.id}']" emptyset="1"/>
+        </t:response>
+    </t:test> 
+   
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="SyncRequest17" type="sanity">
+    <t:objective>Verify Sync after deletion of a tag</t:objective>
+    <t:steps>1. Login to account 1 
+             2. Delete the folder
+             3. Check for the synchronization
+    </t:steps>
+
+    <t:test id="syncRequest17a">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest17b" depends="syncRequest3c">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="delete" id="${folder1.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+       
+     <t:test depends="syncRequest3a,syncRequest17b">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token3.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:folder"  attr="id" match="${folder1.id}" emptyset="1"/>
+        </t:response>
+    </t:test>    
+   
+</t:test_case>
+    
+    
+<t:test_case testcaseid="SyncRequest18" type="sanity">
+    <t:objective>Verify Sync after deletion of a Tag</t:objective>
+    <t:steps>1. Delete the Tag
+             2. Check for the synchronization
+    </t:steps>
+
+     <t:test id="syncRequest18a" depends="syncRequest4b">
+        <t:request>
+            <TagActionRequest xmlns="urn:zimbraMail">
+                <action op="delete" id="${tag1.id}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+       
+     <t:test depends="syncRequest4a,syncRequest18a">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token4.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:tag"  attr="id" match="${tag1.id}" emptyset="1"/>
+        </t:response>
+    </t:test>    
+   
+</t:test_case>
+    
+
+<t:test_case testcaseid="SyncRequest19" type="sanity">
+    <t:objective>Verify Sync after deletion of a Contact</t:objective>
+    <t:steps>1. Delete the Tag
+             2. Check for the synchronization
+    </t:steps>    
+
+    <t:test id="syncRequest19a" depends="syncRequest5b">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action op="delete" id="${contact1.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+       
+     <t:test depends="syncRequest5a,syncRequest19a">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token5.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:cn"  attr="id" match="${contact1.id}" emptyset="1"/>
+        </t:response>
+    </t:test>    
+   
+</t:test_case>
+    
+
+<t:test_case testcaseid="SyncRequest20" type="sanity">
+    <t:objective>Verify Sync after deletion of an appointment </t:objective>
+    <t:steps>1. Get the summaries 
+             2. Cancel the appointment
+             3. Verify the Sync
+    </t:steps>
+
+	<t:test id="syncRequest20a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment.name}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="syncRequest20b" depends="syncRequest20a">
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">                
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+       
+     <t:test depends="syncRequest11a,syncRequest20b">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token11.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${appointment1.id}" emptyset="1"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>   
+    
+
+<t:test_case testcaseid="SyncRequest21" type="sanity" bugids="2367">
+    <t:objective>SyncRequest after performing rename operation on folder </t:objective>
+     <t:steps> 1. Create a folder under root
+               2. Check for the synchronization
+               3. Rename the folder 
+               4. Perform sync 
+    </t:steps>
+    
+    <t:test id="syncRequest21a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder2.name}" l="${folder.root}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder21.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest21b" depends="syncRequest21a">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="token21.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest21c" depends="syncRequest21a,syncRequest21b">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="rename" id="${folder21.id}" name="${folder.newname}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="syncRequest21c">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token21.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:folder"  attr="name" match="${folder.newname}"/>            
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="SyncRequest22" type="sanity">
+    <t:objective>SyncRequest after performing move operation on folder </t:objective>
+     <t:steps> 1. Create two folder under root
+               2. Check for the synchronization
+               3. Move one folder within other 
+               4. Sync again
+    </t:steps>
+
+    <t:test id="syncRequest22a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Folder${TIME}${COUNTER}" l="${folder.root}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder22a.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest22b">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Folder${TIME}${COUNTER}" l="${folder.root}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder22b.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest22b" depends="syncRequest22a">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="token22.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest22c" depends="syncRequest22a,syncRequest22b">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${folder22a.id}" l="${folder22b.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="syncRequest22c">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token22.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:folder"  attr="l" match="${folder22b.id}"/>
+            <t:select path="//mail:SyncResponse/mail:folder"  attr="id" match="${folder22a.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest23" type="sanity">
+    <t:objective>SyncRequest after performing color operation on folder </t:objective>
+     <t:steps> 1. Create a folder
+               2. Perform synchronization
+               3. Perform color operation
+               4. Sync again
+    </t:steps>
+
+    <t:test id="syncRequest23a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Folder${TIME}${COUNTER}" l="${folder.root}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder23.id"/>
+        </t:response>
+    </t:test>
+   
+    <t:test id="syncRequest23b">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="token23.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest23c" depends="syncRequest23a">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="color" id="${folder23.id}" color="${folder.colorvalid}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="syncRequest23b,syncRequest23c">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token23.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:folder"  attr="color" match="${folder.colorvalid}"/>            
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="SyncRequest24" type="sanity">
+    <t:objective>SyncRequest after performing empty operation on folder </t:objective>
+     <t:steps> 1. Create two folder under root
+               2. Move one folder within other 
+               3. Perform sync
+               4. Empty the parent folder
+               5. Verify sync
+    </t:steps>
+
+    <t:test id="syncRequest24a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Folder${TIME}${COUNTER}" l="${folder.root}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder24a.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest24b">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Folder${TIME}${COUNTER}" l="${folder.root}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder24b.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest24c" depends="syncRequest24a,syncRequest24b">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="move" id="${folder24a.id}" l="${folder24b.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest24d">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse"  attr="token" set="token24.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest24e" depends="syncRequest24c">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="empty" id="${folder24b.id}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="syncRequest24d">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail" token="${token24.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SyncResponse/mail:deleted"  attr="ids" match="${folder24a.id}"/>                     
+        </t:response>
+    </t:test>
+    
+</t:test_case>    
+    
+    
+<t:test_case testcaseid="SyncRequest25" type="sanity">
+    <t:objective>SyncRequest after creation of renaming a tag </t:objective>
+    <t:steps> 1. Create a tag
+              2. Perform sync
+              3. Rename a tag
+              4. Verify synchronization
+    </t:steps>
+
+    <t:test id="syncRequest25a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag2.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag25.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test id="syncRequest25b">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token25.id"/>            
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest25c" depends="syncRequest25a">
+        <t:request>
+            <TagActionRequest xmlns="urn:zimbraMail">
+                <action op="rename" id="${tag25.id}" name="${tag.newname}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="syncRequest25b,syncRequest25c">
+        <t:request>
+            <SyncRequest token="${token25.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:tag"  attr="name" match="${tag.newname}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="SyncRequest26" type="sanity">
+    <t:objective>SyncRequest after creation of changing the color of a tag</t:objective>
+    <t:steps> 1. Create a tag
+              2. Perform sync
+              3. Change the color 
+              4. Verify synchronization
+    </t:steps>
+
+    <t:test id="syncRequest26a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${tag2.name}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag26.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:test id="syncRequest26b">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token26.id"/>            
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest26c" depends="syncRequest26a">
+        <t:request>
+            <TagActionRequest xmlns="urn:zimbraMail">
+                <action op="color" id="${tag26.id}" color="${tag.colorvalid2}"/>
+            </TagActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:TagActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="syncRequest26b,syncRequest26c">
+        <t:request>
+            <SyncRequest token="${token26.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:tag"  attr="color" match="${tag.colorvalid2}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>    
+    
+
+<t:test_case testcaseid="SyncRequest27" type="sanity">
+    <t:objective>SyncRequest after tagging a contact</t:objective>
+    <t:steps> 1. Create a contact.
+              2. Create a tag.
+              3. Check for synchronization.
+              4. Tag the contact.
+              5. Check for synchronization.
+    </t:steps>
+    
+    <!--create a contact-->    
+    <t:test id="SyncRequest27a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact.id27"/>
+        </t:response>
+    </t:test>
+
+    <!--Create a tag-->
+    <t:test id="SyncRequest27b" >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <!--Check for synchronization-->
+    <t:test id="syncRequest27c">
+        <t:request>
+            <SyncRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token27.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag the contact-->       
+    <t:test id= "syncRequest27d">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id27}" op="tag" tag="${tag.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="tag"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for synchronization-->
+    <t:test id="syncRequest27e">
+        <t:request>
+            <SyncRequest token="${token27.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:cn"  attr="id" match="${contact.id27}"/>
+		<t:select path="//mail:SyncResponse/mail:cn"  attr="t" match="${tag.id}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+   
+
+<t:test_case testcaseid="SyncRequest28" type="sanity">
+    <t:objective>SyncRequest after multitagging a contact</t:objective>
+    <t:steps> 1. Create a contact.
+              2. Create a tag.
+              3. Check for synchronization.
+              4. Tag the contact by mutitags.
+              5. Check for synchronization.
+    </t:steps>    
+
+    <!--Create a contact-->  
+    <t:test id="SyncRequest28a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id28"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <!--Create a tag-->
+    <t:test id="SyncRequest28b" >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag.id"/>
+             <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <!--Create another tag-->
+    <t:test id="SyncRequest28c" >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.colorvalid2}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag2.id"/>
+             <t:select attr="color" match="${tag.colorvalid2}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <!--Check for synchronization-->
+    <t:test id="syncRequest28d">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token28.id"/>
+        </t:response>
+    </t:test>
+        
+    <!--Tag the contact-->
+    <t:test id= "syncRequest28e">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id28}" op="tag" tag="${tag.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="tag"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag the contact-->
+    <t:test id= "syncRequest28f">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id28}" op="tag" tag="${tag2.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="tag"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for synchronization-->
+    <t:test id="syncRequest28g">
+        <t:request>
+            <SyncRequest token="${token28.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+             <t:select path="//mail:SyncResponse/mail:cn"  attr="id" match="${contact.id28}"/>
+		<t:select path="//mail:SyncResponse/mail:cn"  attr="t" match="${tag.id},${tag2.id}"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest29" type="sanity">
+    <t:objective>SyncRequest after removing tag from a contact</t:objective>
+    <t:steps> 1. Create a contact.
+              2. Create a tag.
+              3. Tag the contact.
+              3. Check for synchronization.
+              4. Remove the tag from cantact.
+              5. Check for synchronization.
+    </t:steps>
+    
+    <!--Create a contact-->   
+    <t:test id="SyncRequest29a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id29"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <!--Create a tag-->
+    <t:test id="SyncRequest29b" >
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag.id"/>
+             <t:select attr="color" match="${tag.colorvalid}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <!--Tag a contact-->
+    <t:test id= "SyncRequest29c">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id29}" op="tag" tag="${tag.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="tag"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for synchronization-->
+    <t:test id="syncRequest29d">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token29.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Remove the tag from contact-->
+    <t:test id="syncRequest29e">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id29}" op="!tag" tag="${tag.id}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="op" match="!tag"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for synchronization-->
+    <t:test id="syncRequest29f">
+        <t:request>
+            <SyncRequest token="${token29.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:cn"  attr="t" match="1" emptyset="1"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest30" type="sanity">
+    <t:objective>SyncRequest after marking a contact as flagged</t:objective>
+    <t:steps>1.Create a contact
+             2.Check for synchronization
+             3.Mark the contact as flagged
+             4.Check for synchronization
+    </t:steps>
+
+    <t:test id="SyncRequest30a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id30"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest30b">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token30.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest30c">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id30}" op="flag"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="syncRequest30d">
+        <t:request>
+            <SyncRequest token="${token30.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:cn"  attr="f" match="f"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest31" type="sanity">
+    <t:objective>SyncRequest after marking a contact as unflagged</t:objective>
+    <t:steps>1.Create a contact
+             2.Mark the contact as flagged
+             3.Check for synchronization
+             4.Mark the contact as unflagged
+             5.Check for synchronization
+    </t:steps>
+
+    <t:test id="SyncRequest31a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id31"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest31b">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id31}" op="flag"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest31c">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token31.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest31d">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id31}" op="!flag"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest31e">
+        <t:request>
+            <SyncRequest token="${token31.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+          <t:select path="//mail:SyncResponse/mail:cn"  attr="f" match="1" emptyset="1"/> 
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest32" type="sanity">
+    <t:objective>SyncRequest after modifying a contact</t:objective>
+    <t:steps>1.Create a contact
+             2.Check for synchronization
+             3.Modify the contact
+             4.Check for synchronization
+    </t:steps>
+
+    <t:test id="SyncRequest32a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id32"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest32b">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token32.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest32c">
+        <t:request>
+            <ModifyContactRequest xmlns = "urn:zimbraMail" replace = "0" force = "1">
+                <cn id = "${contact.id32}">
+                    <a n = "firstName">NewFirstName${TIME}${COUNTER}</a>
+                    <a n = "lastName">NewLastName${TIME}${COUNTER}</a>
+                    <a n = "email">Newemail${TIME}${COUNTER}</a>
+                </cn>
+            </ModifyContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyContactResponse/mail:cn"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest32d">
+        <t:request>
+            <SyncRequest token="${token32.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:cn"  attr="id" match="${contact.id32}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest33" type="sanity">
+    <t:objective>SyncRequest after moving a contact to trash</t:objective>
+    <t:steps>1.Create a contact
+             2.Check for synchronization
+             3.Move the contact to trash
+             4.Check for synchronization
+    </t:steps>
+
+    <t:test id="SyncRequest33a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id33"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest33b">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token33.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest33c">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id33}" op="move" l="${folder.trash}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="id" match="${contact.id33}"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest33d">
+        <t:request>
+            <SyncRequest token="${token33.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+         <t:select path="//mail:SyncResponse/mail:cn"  attr="l" match="${folder.trash}"/>   
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest34" type="sanity">
+    <t:objective>SyncRequest after moving a contact to inbox.</t:objective>
+    <t:steps>1.Create a contact
+             2.Check for synchronization
+             3.Move contact to inbox
+             4.Check for synchronization
+    </t:steps>
+
+    <t:test id="SyncRequest34a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id34"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest34b">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token34.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest34c">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id34}" op="move" l="${folder.inbox}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="id" match="${contact.id34}"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest34d">
+        <t:request>
+            <SyncRequest token="${token34.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+             <t:select path="//mail:SyncResponse/mail:cn"  attr="l" match="${folder.inbox}"/> 
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest35" type="sanity">
+    <t:objective>SyncRequest after moving a contact to sent folder.</t:objective>
+    <t:steps>1.Create a contact
+             2.Check for synchronization
+             3.Move contact to sent folder
+             4.Check for synchronization
+    </t:steps>
+
+    <t:test id="SyncRequest35a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id35"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest35b">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token35.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest35c">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id35}" op="move" l="${folder.sent}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="id" match="${contact.id35}"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest35d">
+        <t:request>
+            <SyncRequest token="${token35.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+             <t:select path="//mail:SyncResponse/mail:cn"  attr="l" match="${folder.sent}"/> 
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest36" type="sanity">
+    <t:objective>SyncRequest after moving a contact to drafts.</t:objective>
+    <t:steps>1.Create a contact
+             2.Check for synchronization
+             3.Move contact to drafts
+             4.Check for synchronization
+    </t:steps>
+
+    <t:test id="SyncRequest36a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id36"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest36b">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token36.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest36c">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id36}" op="move" l="${folder.drafts}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="id" match="${contact.id36}"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest36d">
+        <t:request>
+            <SyncRequest token="${token36.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+             <t:select path="//mail:SyncResponse/mail:cn"  attr="l" match="${folder.drafts}"/> 
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest37" type="sanity">
+    <t:objective>SyncRequest after moving a contact to junk folder.</t:objective>
+    <t:steps>1.Create a contact
+             2.Check for synchronization
+             3.Move contact to junk folder
+             4.Check for synchronization
+    </t:steps>
+
+    <t:test id="SyncRequest37a">
+        <t:request>
+            <CreateContactRequest xmlns="urn:zimbraMail">
+                <cn>
+                    <a n="firstName">First.${TIME}.${COUNTER}</a>
+                    <a n="lastName">Last.${TIME}.${COUNTER}</a>
+                    <a n="email">email.${TIME}.${COUNTER}@domain.com</a>
+                </cn>     
+            </CreateContactRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateContactResponse/mail:cn">
+            <t:select attr="id" set="contact.id37"/>
+            </t:select>    
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest37b">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token37.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest37c">
+        <t:request>
+            <ContactActionRequest xmlns="urn:zimbraMail">
+                <action id="${contact.id37}" op="move" l="${folder.spam}"/>
+            </ContactActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ContactActionResponse/mail:action" attr="id" match="${contact.id37}"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest37d">
+        <t:request>
+            <SyncRequest token="${token37.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+             <t:select path="//mail:SyncResponse/mail:cn"  attr="l" match="${folder.spam}"/> 
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup3_SyncRequest" type="always">
+    <t:objective>Login to account 2 and get the mail sent by account 1.</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+	             <e t="t" a='${test_account2.name}'/>
+	             <su> ${message.subject2} </su>
+	             <mp ct="text/plain">
+	                 <content> ${message.content} </content>
+	             </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SendMsgResponse/mail:m" attr = "id" set = "message.id"/>
+
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account2.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message" limit="25">
+                    <query>subject:(${message.subject2})</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+            </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest38" type="sanity" >
+    <t:objective>SyncRequest after tagging and untagging a mail from inbox.</t:objective>
+    <t:steps>
+             1.Create a tag
+             2.Check for synchronization
+             3.Tag the mail
+             4.Check for synchronization
+             5.Untag the mail
+             6.Check for synchronization
+    </t:steps>
+
+    <!--Create a tag-->
+    <t:test id="SyncRequest38a">
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="tag${TIME}${COUNTER}" color="${tag.colorvalid}"/>
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag">
+            <t:select attr="id" set="tag.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest38b" depends="SyncRequest38a">
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token38.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Tag a message-->
+    <t:test id = "SyncRequest38c" depends="SyncRequest38a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message1.id}" op = "tag" tag = "${tag.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "tag"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest38f" depends="SyncRequest38c">
+        <t:request>
+            <SyncRequest token="${token38.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+          <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+		<t:select path="//mail:SyncResponse/mail:m"  attr="t" match="${tag.id}"/>
+		<t:select path="//mail:SyncResponse"  attr="token" set="token38b.id"/> 
+        </t:response>
+    </t:test>
+
+	<!--UnTag a message-->
+    <t:test id = "SyncRequest38c" depends="SyncRequest38a">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message1.id}" op = "!tag" tag = "${tag.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "!tag"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+	<!--Check for sync-->
+    <t:test id="SyncRequest38f" depends="SyncRequest38c">
+        <t:request>
+            <SyncRequest token="${token38b.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+          <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+		<t:select path="//mail:SyncResponse/mail:m"  attr="t" match="${tag.id}" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest39" type="sanity" >
+    <t:objective>SyncRequest after marking the mail as flagged and unflagged.</t:objective>
+    <t:steps>
+             1.Check for synchronization
+             2.Flag the mail
+             3.Check for synchronization
+             4.Unflag the mail
+             5.Check for synchronization
+    </t:steps>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest39a" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token39.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Flag the mail-->
+    <t:test id="SyncRequest39b">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message1.id}" op = "flag"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "flag"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest39c" depends="SyncRequest39b">
+        <t:request>
+            <SyncRequest token="${token39.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+            <t:select path="//mail:SyncResponse"  attr="token" set="token39b.id"/> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>
+
+    <!--Unflag the mail-->
+    <t:test id="SyncRequest39d" depends="SyncRequest39c">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message1.id}" op = "!flag"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "!flag"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>            
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest39e" >
+        <t:request>
+            <SyncRequest token="${token39b.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="f" match="f" emptyset="1"/>
+            <t:select path="//mail:SyncResponse/mail:m"  attr="f" match=".*f" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest40" type="sanity" >
+    <t:objective>SyncRequest after marking the mail as read and unread.</t:objective>
+    <t:steps>
+             1.Check for synchronization
+             2.Mark the mail as read
+             3.Check for synchronization
+             4.Mark the mail as unread
+             5.Check for synchronization
+    </t:steps>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest40a" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token40.id"/>
+        </t:response>
+    </t:test>
+
+    <!--Mark the mail as read-->
+    <t:test id="SyncRequest40b">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message1.id}" op = "read"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "read"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>    
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest40c" depends="SyncRequest40b">
+        <t:request>
+            <SyncRequest token="${token40.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>            
+            <t:select path="//mail:SyncResponse"  attr="token" set="token40b.id"/> 
+            <t:select path="//mail:SyncResponse"  attr="f" set=".*u" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+    <!--Mark the mail as unread-->    
+    <t:test id="SyncRequest40d">
+        <t:request>
+            <MsgActionRequest xmlns = "urn:zimbraMail">
+                <action id = "${message1.id}" op = "!read"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "!read"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>       
+          </t:response>
+    </t:test>   
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest40e">
+        <t:request>
+            <SyncRequest token="${token40b.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="f" match=".*u"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest41" type="sanity" >
+    <t:objective>SyncRequest after moving a mail to trash.</t:objective>
+    <t:steps>1.Check for synchronization
+             2.Move mail to trash
+             3.Check for synchronization
+    </t:steps>
+     
+    <!--Check for sync-->
+    <t:test id="SyncRequest41a" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token41.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="SyncRequest41b" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="move" l="${folder.trash}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "move"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest41c">
+    <t:request>
+            <SyncRequest token="${token41.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="l" match="${folder.trash}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest42" type="sanity" >
+    <t:objective>SyncRequest after moving a mail to spam folder.</t:objective>
+    <t:steps>1.Check for synchronization
+             2.Move mail to junk folder
+             3.Check for synchronization
+    </t:steps>
+     
+    <!--Check for sync-->
+    <t:test id="SyncRequest42a" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token42.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Move to junk folder-->
+    <t:test id="SyncRequest42b" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="move" l="${folder.spam}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "move"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest42c">
+    <t:request>
+            <SyncRequest token="${token42.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="l" match="${folder.spam}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest43" type="sanity" >
+    <t:objective>SyncRequest after moving a mail to drafts.</t:objective>
+    <t:steps>1.Check for synchronization
+             2.Move mail to drafts
+             3.Check for synchronization
+    </t:steps>
+     
+    <!--Check for sync-->
+    <t:test id="SyncRequest43a" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token43.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Move to drafts-->
+    <t:test id="SyncRequest43b" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="move" l="${folder.drafts}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "move"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest43c">
+    <t:request>
+            <SyncRequest token="${token43.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="l" match="${folder.drafts}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest44" type="sanity" >
+    <t:objective>SyncRequest after moving a mail to sent folder.</t:objective>
+    <t:steps>1.Check for synchronization
+             2.Move mail to sent folder
+             3.Check for synchronization
+    </t:steps>
+     
+    <!--Check for sync-->
+    <t:test id="SyncRequest44a" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token44.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Move to sent folder-->
+    <t:test id="SyncRequest44b" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="move" l="${folder.sent}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "move"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest44c">
+    <t:request>
+            <SyncRequest token="${token44.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="l" match="${folder.sent}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest45" type="sanity" >
+    <t:objective>SyncRequest after moving a mail to inbox folder.</t:objective>
+    <t:steps>1.Check for synchronization
+             2.Move mail to inbox folder
+             3.Check for synchronization
+    </t:steps>
+     
+    <!--Check for sync-->
+    <t:test id="SyncRequest45a" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token45.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Move to inbox-->
+    <t:test id="SyncRequest45b" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="move" l="${folder.inbox}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "move"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest45c">
+    <t:request>
+            <SyncRequest token="${token45.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="l" match="${folder.inbox}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+    
+<t:test_case testcaseid="SyncRequest46" type="sanity" >
+    <t:objective>SyncRequest after marking a mail as spam </t:objective>
+    <t:steps>1.Check for synchronization
+             2.Mark the mail as spam
+             3.Check for synchronization
+    </t:steps>
+     
+    <!--Check for sync-->
+    <t:test id="SyncRequest46a" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token46.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Move it as spam -->
+    <t:test id="SyncRequest46b" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="spam"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "spam"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest42c">
+    <t:request>
+            <SyncRequest token="${token46.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="l" match="${folder.spam}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="SyncRequest47" type="sanity" bugids="15701" >
+    <t:objective>SyncRequest after marking it as not a spam .</t:objective>
+    <t:steps>1.Check for synchronization
+             2.Mark the mail as spam (with "l" attribute)
+             3.Check for synchronization
+    </t:steps>
+     
+    <!-- Make sure the message is spam (in case SyncRequest46 was not executed) -->
+    <t:test id="SyncRequest47a" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="spam"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "spam"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest47b" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token47.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Un mark as spam -->
+    <t:test id="SyncRequest47c" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="!spam" l="${folder.inbox}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "!spam"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest47e">
+    <t:request>
+            <SyncRequest token="${token47.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="l" match="${folder.inbox}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>    
+
+<t:test_case testcaseid="SyncRequest47a" type="sanity" >
+    <t:objective>SyncRequest after marking it as not a spam .</t:objective>
+    <t:steps>1.Check for synchronization
+             2.Mark the mail as spam
+             3.Check for synchronization
+    </t:steps>
+     
+    <!-- Make sure the message is spam (in case SyncRequest46 was not executed) -->
+    <t:test id="SyncRequest47aa" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="spam"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "spam"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest47ab" >
+        <t:request>
+            <SyncRequest  xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="token47.id"/>
+        </t:response>
+    </t:test>
+    
+    <!--Un mark as spam -->
+    <t:test id="SyncRequest47ac" >  
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${message1.id}" op="!spam"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "op" match = "!spam"/>
+            <t:select path = "//mail:MsgActionResponse/mail:action" attr = "id" match = "${message1.id}"/>
+        </t:response>
+    </t:test>
+
+    <!--Check for sync-->
+    <t:test id="SyncRequest47ae">
+    <t:request>
+            <SyncRequest token="${token47.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse/mail:m"  attr="id" match="${message1.id}"/>
+	     <t:select path="//mail:SyncResponse/mail:m"  attr="l" match="${folder.inbox}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>    
+
+
+    
+</t:tests>

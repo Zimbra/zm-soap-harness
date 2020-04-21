@@ -1,0 +1,236 @@
+Return-Path: bounces+8732-4631-mmondal=vmware.com@email.socialcast.com
+Received: from 10.113.63.62 (LHLO mta02.zimbra.com) (10.113.63.62) by
+ dogfood.zimbra.com with LMTP; Fri, 15 Jul 2011 16:21:11 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mta02.zimbra.com (Postfix) with ESMTP id 2DCC97C0029
+	for <mmondal@zimbra.com>; Fri, 15 Jul 2011 16:21:11 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at zimbra.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.009
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.009 tagged_above=-10 required=3
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, HTML_MESSAGE=0.001, T_RP_MATCHES_RCVD=-0.01]
+	autolearn=unavailable
+Authentication-Results: mta02.zimbra.com (amavisd-new); dkim=pass
+	header.i=@email.socialcast.com
+Authentication-Results: mta02.zimbra.com (amavisd-new); domainkeys=pass
+	header.from=share@socialcast.com header.sender=support@socialcast.com
+Authentication-Results: mta02.zimbra.com (amavisd-new); dkim=softfail (fail,
+	body has been altered) header.i=@socialcast.com
+Received: from mta02.zimbra.com ([127.0.0.1])
+	by localhost (mta02.zimbra.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id S+1WILFTixe5 for <mmondal@zimbra.com>;
+	Fri, 15 Jul 2011 16:21:02 -0700 (PDT)
+Received: from mailhost4.vmware.com (unknown [10.16.67.124])
+	by mta02.zimbra.com (Postfix) with ESMTP id 84FEA7C004B
+	for <mmondal@zimbra.com>; Fri, 15 Jul 2011 16:20:32 -0700 (PDT)
+Received: by mailhost4.vmware.com (Postfix)
+	id 731CBC9FF3; Fri, 15 Jul 2011 16:20:32 -0700 (PDT)
+Delivered-To: mmondal@vmware.com
+Received: from proofpoint-agent-2.vmware.com (proofpoint-agent-1.vmware.com [10.16.79.24])
+	by mailhost4.vmware.com (Postfix) with ESMTP id 61C47C9E0C
+	for <mmondal@vmware.com>; Fri, 15 Jul 2011 16:20:32 -0700 (PDT)
+Received: from sledgehammer.vmware.com (sledgehammer.vmware.com [10.16.79.36])
+	by proofpoint-agent-1 (8.14.3/8.14.3) with ESMTP id p6FNKCDn011882
+	for <mmondal@vmware.com>; Fri, 15 Jul 2011 16:20:29 -0700
+Received: from o1.email.socialcast.com (o1.email.socialcast.com [208.115.214.220])
+	by sledgehammer.vmware.com (Postfix) with SMTP id F285A29006
+	for <mmondal@vmware.com>; Fri, 15 Jul 2011 16:20:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=email.socialcast.com; h=
+	date:from:sender:reply-to:to:message-id:subject:mime-version
+	:content-type; s=smtpapi; bh=NxY+u7dxfuZoD0ZM031dtrhrOVk=; b=aDI
+	yg4+O2ciW2WDviBmT91siX5uf4A5Cqy8wIrMYiO1UxltXi8AVj0428YQj7GG15HY
+	4cyi2wZdao9JkPh6QS6K139Cr8QTCcuNLF79RyM3gRDsqTNgoEMpjXUytEfN4mZx
+	6LoBRXjRT1u0gqaU4+BoHp+j9n1XuY/QFGR8pdNU=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=socialcast.com; h=date:from
+	:sender:reply-to:to:message-id:subject:mime-version
+	:content-type; q=dns; s=smtpapi; b=nsOY77/D2zG2H1PasjUdYlbbR8qRO
+	QhH9JQuFFhPbhtBfnR1VRF1O0gkjQJ8iARJUjL/8HsIDMf035qJv0T0HT96Jkb/D
+	NHoLLYZksGsKqXUXlImPLGlosv2cUP/xVl7UpeOrSJuCqm2qb0U1GuB+928cKZ0L
+	kdI0/GJ2FHXXuM=
+Received: by 10.16.69.84 with SMTP id mf19.3729.4E20CB2A8
+        Fri, 15 Jul 2011 18:20:10 -0500 (CDT)
+Received: from default.socialcast.com (unknown [10.9.180.5])
+	by mi11 (SG) with ESMTP id 4e20cb2a.5dce.29d3eb2
+	Fri, 15 Jul 2011 18:20:10 -0500 (CST)
+Received: by default.socialcast.com (Postfix, from userid 500)
+	id 750EC1F98EA4; Fri, 15 Jul 2011 19:20:09 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=socialcast.com;
+	s=mail; t=1310772009;
+	bh=FkvwdXrQxcTmoUsrqGeAzv+QvhLpHpB92OS/KUveNiQ=;
+	h=Date:From:Sender:Reply-To:To:Message-Id:Subject:Mime-Version:
+	 Content-Type;
+	b=g33T/2nQ07FI0rNBCAWTTg9ImONEMDfzsWce8NMcBXaqUZvU3AxnQ4NgKos7KR5pV
+	 l2VoaWk9oXGEYR44KgxR3qwwMAYUDr73iJmOwjyz1Jk690B4PjOpLYMcPOd7XOpAzS
+	 DaAG2HYXlDc9R/gksxsJBikj5bugevR12AzRgTrk=
+Date: Fri, 15 Jul 2011 19:20:08 -0400
+From: Mark Egan <share@socialcast.com>
+Sender: support@socialcast.com
+Reply-To: share@socialcast.com
+To: VMware <do-not-reply@socialcast.com>
+Message-Id: <message6336274.0.1310772008@socialcast.com>
+Subject: [VMware] Mark Egan has sent a Broadcast Message to the VMware Community
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary=mimepart_4e20cb2950b63_1d834b6216025b
+Precedence: Bulk
+Auto-Submitted: auto-generated
+X-Sendgrid-EID: agl9Hmw412ljvJQABkDsThHhPfF+flUxrtP/l8vSEO/lCzWul4C47Izk6SunmpwmrQvHczZpTMauX8MCGNDVS333EWc5I9lxLkpY7pprq2mKAf5M+N4W37kXKeGRBw4Mb9A17V9ZxZedI/DvPNrRPw==
+X-Sendgrid-ID: y7LkBW5zPWu56mvur0a4EE3/GHCjRKYAqe4J7QArZRMmAGvlJtBsny/67qGVj6yg
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:5.4.6813,1.0.211,0.0.0000
+ definitions=2011-07-15_07:2011-07-15,2011-07-15,1970-01-01 signatures=0
+X-Proofpoint-Spam-Details: rule=quarantine_notspam policy=quarantine score=0 spamscore=0 ipscore=0
+ suspectscore=1 phishscore=0 bulkscore=0 adultscore=0 classifier=spam
+ adjust=0 reason=mlx engine=6.0.2-1012030000 definitions=main-1107150206
+
+
+
+--mimepart_4e20cb2950b63_1d834b6216025b
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: Quoted-printable
+Content-Disposition: inline
+
+
+-- reply above this line to post a comment --
+
+The following Broadcast Message has been sent on behalf of Mark Egan:
+
+"To All Employees,
+
+As you know, we had an email outage situation last week that occurred as th=
+e result of a storage issue with our EMC gear.  Both Exchange and Zimbra we=
+re affected, and this had a serious impact on our customers, partners and e=
+mployees.  There are several things I would like to communicate to the VMwa=
+re community at this time:
+
+1.       This was a highly unusual occurrence for this type of hardware fai=
+lure.  We are working with EMC to replace the affected parts and will ship =
+the old parts to EMC for diagnosis. It is a very high priority for EMC to d=
+etermine the root cause of the failure.
+
+2.       We have some work to do internally.  In addition to a complete pos=
+t-mortem and failback planning, we are conducting a detailed review of our =
+storage environment to identify any areas of improvement.  We are also goin=
+g to closely coordinate the activities of the Business Continuity (BCP)/Dis=
+aster Recovery (DR) Program with our Emergency Management Team (EMT) to ens=
+ure we provide better coordination and communications in these situations i=
+n the future.
+
+3.       We have been working diligently to roll out our BCP and DR Program=
+s. The decision was made to roll this out in two phases. Phase 1, occurring=
+ earlier this year, was our data center move from our OSDC lab to our high-=
+availability data center (SC9).  Because we had upgraded the network betwee=
+n our three datacenters, we had connectivity between locations that enabled=
+ us to get the email system recovered. Phase 2, scheduled for FY12, will pr=
+ovide BCP/DR plans between SC9 and Wenatchee for OTC and GSS support.  A pl=
+an is in place, and we will continue to roll this out according to our appr=
+oved schedule.
+
+My team is hard at work on this issue, and I will keep the company updated =
+as to next steps and progress in this area. Thank you for your patience as =
+we work our way through the process.
+
+Mark" - Mark Egan
+
+
+To read the entire message, please click on the link below:
+https://vmware-com.socialcast.com/messages/6336274
+
+Thanks,
+The VMware Community Team
+
+
+
+
+--mimepart_4e20cb2950b63_1d834b6216025b
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: Quoted-printable
+Content-Disposition: inline
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang=3D'en'>
+<head>
+<meta content=3D'text/html; charset=3Dutf-8' http-equiv=3D'Content-Type' />
+</head>
+<body bgcolor=3D'#ffffff'>
+<div style=3D'width: 100%;'>-- reply above this line to post a comment --</=
+div>
+
+<a href=3D'https://vmware-com.socialcast.com' style=3D'text-decoration: non=
+e; color: #404040; border: 0;display: block; clear: both; margin: 15px 15px=
+ 0;'>
+<img alt=3D'VMware' src=3D'https://ne.wac.edgecastcdn.net/801245/socialcast=
+.s3.amazonaws.com/logos/5194/vmwareLink_poweredSocialcast_logo_logo.png' st=
+yle=3D'border: 0px none;' />
+</a>
+<table bgcolor=3D'#ffffff' border=3D'0' cellpadding=3D'15' cellspacing=3D'0=
+' style=3D"margin: 0; background-color: #fff; color: #404040; font-family: =
+'Helvetica Neue', Helvetica, Arial, sans-serif; width: 600px;" width=3D'600=
+'>
+<tbody>
+<tr>
+<td colspan=3D'2' style=3D'padding: 0 15px 0; vertical-align: top; font-siz=
+e: 12px; line-height: 15px;'>
+<h2 style=3D'font-size: 18px; font-weight: bold; margin: 15px 0; padding-bo=
+ttom: 10px; line-height: 25px; border-bottom:1px dotted #d9d9d9; color: #40=
+4040 !important;'>
+The following Broadcast Message has been sent on behalf of Mark Egan:
+</h2>
+</td>
+</tr>
+<tr>
+<td border=3D'0' style=3D'padding: 0 0 15px; vertical-align: top; text-alig=
+n: center;' width=3D'75'>
+<a href=3D"https://vmware-com.socialcast.com/users/markegan" style=3D"width=
+:45px; margin: 0 15px;" target=3D"_blank"><img alt=3D'Mark Egan' border=3D'=
+0' src=3D'https://gp1.wac.edgecastcdn.net/801245/socialcast.s3.amazonaws.co=
+m/tenants/5258/profile_photos/570314/Egan_photo_jpeg_square45.jpg' style=3D=
+'border: 1px solid #d9d9d9; width: 45px' />
+</a></td>
+<td border=3D'0' style=3D'padding: 0 30px 15px 0; vertical-align: top; font=
+-size: 12px; line-height: 15px;' width=3D'525'>
+<a href=3D"https://vmware-com.socialcast.com/users/markegan" style=3D"font-=
+size: 13px; font-weight: bold; color: #187AAB; text-decoration: none; displ=
+ay: block; margin: 0 0 6px;">Mark Egan</a>
+<div class=3D'message' style=3D'margin: 0 0 6px; width: 100%'>
+To All Employees, <br/> <br/>As you know, we had an email outage situation =
+last week that occurred as the result of a storage issue with our EMC gear.=
+  Both Exchange and Zimbra were affected, and this had a serious impact on =
+our customers, partners and employees.  There are several things I would li=
+ke to communicate to the VMware community at this time: <br/> <br/>1.      =
+ This was a highly unusual occurrence for this type of hardware failure.  W=
+e are working with EMC to replace the affected parts and will ship the old =
+parts to EMC for diagnosis. It is a very high priority for EMC to determine=
+ the root cause of the failure. <br/> <br/>2.       We have some work to do=
+ internally.  In addition to a complete post-mortem and failback planning, =
+we are conducting a detailed review of our storage environment to identify =
+any areas of improvement.  We are also going to closely coordinate the acti=
+vities of the Business Continuity (BCP)/Disaster Recovery (DR) Program with=
+ our Emergency Management Team (EMT) to ensure we provide better coordinati=
+on and communications in these situations in the future. <br/> <br/>3.     =
+  We have been working diligently to roll out our BCP and DR Programs. The =
+decision was made to roll this out in two phases. Phase 1, occurring earlie=
+r this year, was our data center move from our OSDC lab to our high-availab=
+ility data center (SC9).  Because we had upgraded the network between our t=
+hree datacenters, we had connectivity between locations that enabled us to =
+get the email system recovered. Phase 2, scheduled for FY12, will provide B=
+CP/DR plans between SC9 and Wenatchee for OTC and GSS support.  A plan is i=
+n place, and we will continue to roll this out according to our approved sc=
+hedule. <br/> <br/>My team is hard at work on this issue, and I will keep t=
+he company updated as to next steps and progress in this area. Thank you fo=
+r your patience as we work our way through the process. <br/> <br/>Mark
+</div>
+<a href=3D"https://vmware-com.socialcast.com/messages/6336274" class=3D"tim=
+estamp" style=3D"font-size: 11px; color: #a9a9a9; text-decoration: none; di=
+splay: block; margin: 0 0 10px;">Today at  4:20 pm</a>
+</td>
+
+</tr>
+</tbody>
+</table>
+</body>
+</html>
+
+
+--mimepart_4e20cb2950b63_1d834b6216025b--

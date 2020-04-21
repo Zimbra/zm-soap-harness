@@ -1,0 +1,140 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always">
+    <t:objective>Create test account</t:objective>
+    <steps>
+        1. Login to admin account
+        2. Create user accounts
+    </steps>
+
+    <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="RequestId_BatchRequest_01" type="bhr">
+    <t:objective>Verify that the RequestId in a BatchRequest are returned correctly</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="server.zimbra" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="auth" required="true">
+        <t:request>
+			<BatchRequest xmlns="urn:zimbra" onerror="continue">
+            	<GetFolderRequest xmlns="urn:zimbraMail" requestId="1"/>
+            	<SyncRequest xmlns="urn:zimbraMail" requestId="2"/>
+			</BatchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:BatchResponse">
+	            <t:select path="//mail:GetFolderResponse" attr="requestId" match="^1$"/>
+	            <t:select path="//mail:SyncResponse" attr="requestId" match="^2$"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RequestId_BatchRequest_02" type="sanity">
+    <t:objective>Verify that the RequestId in a BatchRequest are returned correctly</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	<t:property name="server.zimbra" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="account1.request1.id" value="${TIME}.${COUNTER}"/>
+	<t:property name="account1.request2.id" value="${TIME}.${COUNTER}"/>
+
+    <t:test id="auth" required="true">
+        <t:request>
+			<BatchRequest xmlns="urn:zimbra" onerror="continue">
+            	<GetFolderRequest xmlns="urn:zimbraMail" requestId="${account1.request1.id}"/>
+            	<SyncRequest xmlns="urn:zimbraMail" requestId="${account1.request2.id}"/>
+			</BatchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:BatchResponse">
+	            <t:select path="//mail:GetFolderResponse" attr="requestId" match="${account1.request1.id}"/>
+	            <t:select path="//mail:SyncResponse" attr="requestId" match="${account1.request2.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+</t:tests>
+
+

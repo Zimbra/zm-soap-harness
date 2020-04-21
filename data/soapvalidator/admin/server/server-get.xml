@@ -1,0 +1,316 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.name" value="testserver${TIME}${COUNTER}"/>
+<t:property name="server.name2" value="testserver${TIME}${COUNTER}"/>
+<t:property name="server.notes" value="test of adding Server via SOAP"/>
+<t:property name="server.desc" value="test server description"/>
+
+<t:property name="server.blank" value=""/>
+<t:property name="server.space" value="             "/>
+<t:property name="server.sometext" value="Some text"/>
+<t:property name="server.spchar" value=":''&lt;//\\"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>Login to admin and create a server for test purpose </t:objective>
+    <t:steps>1. Login to admin account.
+             2. Create a server for test purpose.    
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="createserverrequest1" required="true">
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.name}</name>
+                <a n="zimbraNotes">${server.notes}</a>
+                <a n="description">${server.desc}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateServerResponse/admin:server" attr="id" set="server.id1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest1" type="bhr" areas="dev_sanity">
+    <t:objective> Get the details of server with valid id (by id) </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="id">${server.id1}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServerResponse/admin:server" attr="id" match="${server.id1}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest2" type="bhr" areas="dev_sanity">
+    <t:objective> Get the details of server with valid name (by name) </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="name">${server.name}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServerResponse/admin:server" attr="name" match="${server.name}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest3" type="functional">
+    <t:objective> Get the details of server with blank value of id</t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="id">${server.blank}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest4" type="functional">
+    <t:objective> Get the details of server with sometext at id </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="id">${server.sometext}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_SERVER$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest5" type="functional" bugids="2055">
+    <t:objective> Get the details of server with blank name </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="name">${server.blank}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest6" type="functional">
+    <t:objective> Get the details of server with blank value for the attribute 'by' </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="${server.blank}">${server.id1}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest7" type="functional">
+    <t:objective> Get the details of server with some text value for the attribute 'by' </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="${server.sometext}">${server.id1}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest8" type="functional">
+    <t:objective> Get the details of server without 'by' attribute. </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server>${server.id1}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest9" type="functional">
+    <t:objective> Get the details of server with 'by' = id with leading space </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="    id">${server.id1}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest10" type="functional">
+    <t:objective> Get the details of server with 'by' = id with trailing space </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="id       ">${server.id1}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetServerRequest11" type="functional">
+    <t:objective> Get the details for a deleted server </t:objective>
+    <t:steps>1. Delete a server.
+        2. Get the details for deleted server by id.
+        3. Get the details of server by name.
+    </t:steps>
+
+    <t:test id="getserverrequest9a" >
+        <t:request>
+            <DeleteServerRequest xmlns="urn:zimbraAdmin">
+                <id>${server.id1}</id>
+            </DeleteServerRequest>
+            
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteServerResponse"/>
+        </t:response>
+    </t:test>
+    <t:test id="getserverrequest9b" depends="getserverrequest9a" >
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="id">${server.id1}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_SERVER$"/>
+        </t:response>
+    </t:test>
+    <t:test id="getserverrequest9c" depends="getserverrequest9a">
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="name">${server.name}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.NO_SUCH_SERVER$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetAllServersRequest1" type="bhr" areas="dev_sanity">
+    <t:objective> Get the details of all the servers </t:objective>
+    <t:steps>1. Create a server.
+             2. Get the details for all the servers.
+    </t:steps>
+
+    <t:test id="getallserversrequest1a">
+        <t:request>
+            <CreateServerRequest xmlns="urn:zimbraAdmin">
+                <name>${server.name2}</name>
+                <a n="zimbraNotes">${server.notes}</a>
+                <a n="description">${server.desc}</a>
+            </CreateServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateServerResponse/admin:server" attr="id" set="server.id2"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="getallserversrequest1b" depends="getallserversrequest1a">
+        <t:request>
+            <GetAllServersRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:GetAllServersResponse"/>
+           
+        </t:response>
+    </t:test>
+
+    <t:test id="getallserversrequest1c" depends="getallserversrequest1b">
+        <t:request>
+            <GetAllServersRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+             <t:select path="//admin:GetAllServersResponse/admin:server" attr="id" match="^${server.id2}$"/>         
+        </t:response>
+    </t:test>
+
+</t:test_case>
+ 
+</t:tests>

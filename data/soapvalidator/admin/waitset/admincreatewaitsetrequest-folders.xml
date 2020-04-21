@@ -1,0 +1,791 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="waitset1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="waitset2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="waitset3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="waitset4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="folder.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder1.name" value="folder1.${TIME}.${COUNTER}"/>
+<t:property name="folder2.name" value="folder2.${TIME}.${COUNTER}"/>
+<t:property name="folder3.name" value="folder3.${TIME}.${COUNTER}"/>
+<t:property name="folder4.name" value="folder4.${TIME}.${COUNTER}"/>
+<t:property name="folder5.name" value="folder5.${TIME}.${COUNTER}"/>
+<t:property name="folder6.name" value="folder6.${TIME}.${COUNTER}"/>
+<t:property name="folder7.name" value="folder7.${TIME}.${COUNTER}"/>
+<t:property name="folder8.name" value="folder8.${TIME}.${COUNTER}"/>
+<t:property name="folder9.name" value="folder9.${TIME}.${COUNTER}"/>
+<t:property name="folder.pname" value="1"/>
+
+<t:property name="interest.all" value="all"/>
+<t:property name="interest.messages" value="m"/>
+<t:property name="interest.appointments" value="a"/>
+<t:property name="interest.contacts" value="c"/>
+<t:property name="interest.folders" value="f"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="AdminCreateWaitSetRequest_folders_01" type="bhr" bugids="74316">
+    <t:objective>AdminWaitSetRequest with defTypes="f"</t:objective>
+    <t:steps>
+    1. Login to admin
+    2. Send the AdminCreateWaitSetRequest to create a wait set 
+    3. Send the WaitSetRequest to pick up the changes -> seq - 0
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+	
+    <t:test >
+        <t:request>
+			<AdminCreateWaitSetRequest xmlns="urn:zimbraAdmin" defTypes="${interest.folders}">
+			 <add>
+      			<a id="${account1.id}" />
+   			 </add> 
+			</AdminCreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="seq" set="admin.waitset.seq"/>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="waitSet" set="admin.waitset.waitSet"/>
+        </t:response>
+    </t:test>
+   
+   <t:property name="waitset.seq" value="0"/>
+   
+    <t:test>
+        <t:request>
+			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet}" seq="${admin.waitset.seq}" defTypes="${interest.folders}" >
+			</AdminWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminWaitSetResponse">
+            	<t:select path="//admin:AdminWaitSetResponse" attr="seq" match="${waitset.seq}"/>	
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case> 
+
+
+<t:test_case testcaseid="AdminCreateWaitSetRequest_folders_02" type="bhr" bugids="74316">
+    <t:objective>AdminWaitSetRequest with defTypes="f"</t:objective>
+    <t:steps>
+    1. Login to admin
+    2. Send the AdminCreateWaitSetRequest to create a wait set 
+    3. Login as user
+    4. Create a folder
+    5. Login as admin
+    6. Send the WaitSetRequest to pick up the changes
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+   
+	
+    <t:test >
+        <t:request>
+			<AdminCreateWaitSetRequest xmlns="urn:zimbraAdmin" defTypes="${interest.folders}">
+			 <add>
+      			<a id="${account1.id}" />
+   			 </add> 
+			</AdminCreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="seq" set="admin.waitset.seq"/>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="waitSet" set="admin.waitset.waitSet"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test id="CreateFolderRequest1" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
+        </t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="waitset.seq" value="2"/>
+    
+    <t:test>
+        <t:request>
+			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet}" seq="${admin.waitset.seq}" defTypes="${interest.folders}" >
+			</AdminWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminWaitSetResponse">
+            	<t:select path="//admin:a" attr="id" match="${account1.id}"/>	
+            	<t:select path="//admin:AdminWaitSetResponse" attr="seq" match="${waitset.seq}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case> 
+
+
+<t:test_case testcaseid="AdminCreateWaitSetRequest_folders_03" type="bhr" bugids="74316">
+    <t:objective>AdminWaitSetRequest with defTypes="f"</t:objective>
+    <t:steps>
+    1. Login to admin
+    2. Send the AdminCreateWaitSetRequest to create a wait set 
+    3. Login as user
+    4. Create a folder > Modify created folder
+    5. Login as admin
+    6. Send the WaitSetRequest to pick up the changes
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    	
+    <t:test >
+        <t:request>
+			<AdminCreateWaitSetRequest xmlns="urn:zimbraAdmin" defTypes="${interest.folders}">
+			 <add>
+      			<a id="${account1.id}" />
+   			 </add> 
+			</AdminCreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="seq" set="admin.waitset.seq1"/>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="waitSet" set="admin.waitset.waitSet1"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test id="CreateFolderRequest1" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder2.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+        </t:response>
+	</t:test>
+	
+	<t:test  depends="folderaction1a">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="rename" id="${folder2.id}" name="${folder3.name}"/>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action">        
+            </t:select>
+        </t:response>
+    </t:test>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="waitset.seq" value="2"/>
+    
+    <t:test>
+        <t:request>
+			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet1}" seq="${admin.waitset.seq1}" defTypes="${interest.folders}" >
+			</AdminWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminWaitSetResponse">
+            	<t:select path="//admin:a" attr="id" match="${account1.id}"/>	
+            	<t:select path="//admin:AdminWaitSetResponse" attr="seq" match="${waitset.seq}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case> 
+
+
+<t:test_case testcaseid="AdminCreateWaitSetRequest_folders_04" type="bhr" bugids="74316">
+    <t:objective>AdminWaitSetRequest with defTypes="f"</t:objective>
+    <t:steps>
+    1. Login to admin
+    2. Send the AdminCreateWaitSetRequest to create a wait set 
+    3. Login as user
+    4. Create a folder > delete created folder
+    5. Login as admin
+    6. Send the WaitSetRequest to pick up the changes
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    	
+    <t:test >
+        <t:request>
+			<AdminCreateWaitSetRequest xmlns="urn:zimbraAdmin" defTypes="${interest.folders}" >
+			 <add>
+      			<a id="${account1.id}" />
+   			 </add> 
+			</AdminCreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="seq" set="admin.waitset.seq2"/>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="waitSet" set="admin.waitset.waitSet2"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test id="CreateFolderRequest1" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder4.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder4.id"/>
+        </t:response>
+	</t:test>
+	
+	<t:test  depends="folderaction1a">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action op="delete" id="${folder4.id}" />
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action">        
+            </t:select>
+        </t:response>
+    </t:test>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="waitset.seq" value="2"/>
+    
+    <t:test>
+        <t:request>
+			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet2}" seq="${admin.waitset.seq2}" defTypes="${interest.folders}" >
+			</AdminWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminWaitSetResponse">
+            	<t:select path="//admin:a" attr="id" match="${account1.id}"/>	
+            	<t:select path="//admin:AdminWaitSetResponse" attr="seq" match="${waitset.seq}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case> 
+
+<t:test_case testcaseid="AdminCreateWaitSetRequest_folders_05" type="bhr" bugids="74316">
+    <t:objective>AdminWaitSetRequest with defTypes="f"</t:objective>
+    <t:steps>
+    1. Login to admin
+    2. Send the AdminCreateWaitSetRequest to create a wait set 
+    3. Login as user
+    4. Create two folders 
+    5. Login as admin
+    6. Send the WaitSetRequest to pick up the changes
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    	
+    <t:test >
+        <t:request>
+			<AdminCreateWaitSetRequest xmlns="urn:zimbraAdmin" defTypes="${interest.folders}">
+			 <add>
+      			<a id="${account1.id}" />
+   			 </add> 
+			</AdminCreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="seq" set="admin.waitset.seq2"/>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="waitSet" set="admin.waitset.waitSet2"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test id="CreateFolderRequest1" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder5.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder5.id"/>
+        </t:response>
+	</t:test>
+	
+	<t:test id="CreateFolderRequest1" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder6.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder6.id"/>
+        </t:response>
+	</t:test>
+	
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="waitset.seq" value="2"/>
+    
+    <t:test>
+        <t:request>
+			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet2}" seq="${admin.waitset.seq2}" defTypes="${interest.folders}" >
+			</AdminWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminWaitSetResponse">
+            	<t:select path="//admin:a" attr="id" match="${account1.id}"/>	
+            	<t:select path="//admin:AdminWaitSetResponse" attr="seq" match="${waitset.seq}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case> 
+
+<t:test_case testcaseid="AdminCreateWaitSetRequest_folders_06" type="bhr" bugids="74316">
+    <t:objective>AdminWaitSetRequest with defTypes="f"</t:objective>
+    <t:steps>
+    1. Login to admin
+    2. Send the AdminCreateWaitSetRequest to create a wait set 
+    3. Login as a user
+    4. Create a folder > send GetFolderRequest to get a folder
+    5. Login as admin
+    6. Send the WaitSetRequest to pick up the changes
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    	
+    <t:test >
+        <t:request>
+			<AdminCreateWaitSetRequest xmlns="urn:zimbraAdmin" defTypes="${interest.folders}">
+			 <add>
+      			<a id="${account1.id}" />
+   			 </add> 
+			</AdminCreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="seq" set="admin.waitset.seq2"/>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="waitSet" set="admin.waitset.waitSet2"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test id="CreateFolderRequest1" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder7.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder7.id"/>
+        </t:response>
+	</t:test>
+	
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder[@id='1']" attr="name" match="USER_ROOT"/>
+            <t:select path="//mail:folder[@name='${folder7.name}']" attr="id" set="folder7.id"/>
+		</t:response>
+	</t:test>
+	
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="waitset.seq" value="2"/>
+    
+    <t:test>
+        <t:request>
+			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet2}" seq="${admin.waitset.seq2}" defTypes="${interest.folders}" >
+			</AdminWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminWaitSetResponse">
+            	<t:select path="//admin:a" attr="id" match="${account1.id}"/>	
+            	<t:select path="//admin:AdminWaitSetResponse" attr="seq" match="${waitset.seq}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    
+</t:test_case> 
+
+<t:test_case testcaseid="AdminCreateWaitSetRequest_folders_07" type="bhr" bugids="74316">
+    <t:objective>AdminWaitSetRequest with defTypes="f"</t:objective>
+    <t:steps>
+     1. Login to admin
+    2. Send the AdminCreateWaitSetRequest to create a wait set 
+    3. Login as user
+    4. Create a folder 
+    5. Login as admin
+    6. Send the WaitSetRequest to pick up the changes
+    7. repeat step 3,4,5,6 and verify value of attr seq changed accordingly.
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    	
+    <t:test >
+        <t:request>
+			<AdminCreateWaitSetRequest xmlns="urn:zimbraAdmin" defTypes="${interest.folders}" >
+			 <add>
+      			<a id="${account1.id}" />
+   			 </add> 
+			</AdminCreateWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="seq" set="admin.waitset.seq2"/>
+            <t:select path="//admin:AdminCreateWaitSetResponse" attr="waitSet" set="admin.waitset.waitSet2"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test id="CreateFolderRequest1" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder8.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder8.id"/>
+        </t:response>
+	</t:test>
+	
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="waitset.seq" value="2"/>
+    
+    <t:test>
+        <t:request>
+			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet2}" seq="${admin.waitset.seq2}" defTypes="${interest.folders}" >
+			</AdminWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminWaitSetResponse">
+            	<t:select path="//admin:a" attr="id" match="${account1.id}"/>	
+            	<t:select path="//admin:AdminWaitSetResponse" attr="seq" match="${waitset.seq}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test id="CreateFolderRequest1" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder9.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder9.id"/>
+        </t:response>
+	</t:test>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="waitset.seq" value="3"/>
+    
+    <t:test>
+        <t:request>
+			<AdminWaitSetRequest xmlns="urn:zimbraAdmin" waitSet="${admin.waitset.waitSet2}" seq="${admin.waitset.seq2}" defTypes="${interest.folders}" >
+			</AdminWaitSetRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AdminWaitSetResponse">
+            	<t:select path="//admin:a" attr="id" match="${account1.id}"/>	
+            	<t:select path="//admin:AdminWaitSetResponse" attr="seq" match="${waitset.seq}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case> 
+
+
+</t:tests>

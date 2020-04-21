@@ -1,0 +1,330 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="stop1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="stop2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_filters_stop_basic" type="always" >
+    <t:objective> Create test account and login to first account </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	    </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+			</t:select>
+				<t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="account1.filter1.folder.name" value="folder${TIME}${COUNTER}"/>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${account1.filter1.folder.name}" l="${account1.folder.inbox.id}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="account1.filter1.folder.id"/>
+        </t:response>
+	</t:test>
+
+	<t:property name="account1.filter2.tag.name" value="tag${TIME}${COUNTER}"/>
+
+    <t:test>
+        <t:request>
+            <CreateTagRequest xmlns="urn:zimbraMail">
+                <tag name="${account1.filter2.tag.name}" color="1" />
+            </CreateTagRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateTagResponse/mail:tag" attr="id" set="account1.filter2.tag.id" />
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="filters_action_stop_01" type="bhr" bugids="33793">
+    <t:objective>When "Do not process additional filter rules" is unchecked, all the rules should be applied</t:objective>
+    <t:steps>
+    1. Login as account1
+    2. Create a folder and a tag
+    3. Create a rule:
+    	A. When from matches account02, file into folder.  "Do not process additional filter rules" = unchecked
+    	B. When subject matches, tag it.  "Do not process additional filter rules" = unchecked
+	4. Login as account02
+	5. Send a message to account1 with the subject that matches
+	6. Message should be filed into the subfolder.  It should be tagged.
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+    <t:property name="message1.file" value="${testMailRaw.root}/email01/msg01.txt"/>
+    <t:property name="message1.subject" value="email01A"/>
+    <t:property name="message1.body" value="simple text string in the body"/>
+
+
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="Filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                        	<headerTest header="subject" stringComparison="contains"  value="${message1.subject}" />          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionTag tagName="${account1.filter2.tag.name}" />
+                        </filterActions>
+                    </filterRule>
+                    
+                    <filterRule name="Filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                        	<bodyTest value="${message1.body}" />          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionFileInto folderPath="/${globals.inbox}/${account1.filter1.folder.name}" />
+                        </filterActions>
+                    </filterRule>
+                    
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+
+   <t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message1.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+   
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+	            <t:select attr="l" match="${account1.filter1.folder.id}"/>
+	            <t:select attr="t" match=".*${account1.filter2.tag.id}.*"/>
+            </t:select>
+            <t:select path="//mail:SearchResponse/mail:m" attr="l" match="${account1.folder.inbox.id}" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="filters_action_stop_02" type="bhr">
+    <t:objective>When "Do not process additional filter rules" is checked, only the first rule should be applied</t:objective>
+    <t:steps>
+    1. Login as account1
+    2. Create a folder and a tag (already executed)
+    3. Create a rule:
+    	A. When from matches account02, file into folder.  "Do not process additional filter rules" = checked
+    	B. When subject matches, tag it.  "Do not process additional filter rules" = checked
+	4. Login as account02
+	5. Send a message to account1 with the subject that matches
+	6. Message should be filed into the subfolder.  It should not be tagged.
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+
+    <t:property name="message3.file" value="${testMailRaw.root}/email01/msg03.txt"/>
+    <t:property name="message3.subject" value="email01C"/>
+    <t:property name="message3.body" value="Now is the time for all good men to come"/>
+
+
+	<t:test id="filters_basic01a">
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                        	<headerTest  header= "subject" stringComparison="contains"  value="${message3.subject}" />          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionTag tagName="${account1.filter2.tag.name}" />
+                        	<actionStop />
+                        </filterActions>
+                    </filterRule>
+                    
+                    <filterRule name="filter${TIME}${COUNTER}" active="1">
+                         <filterTests condition="anyof">
+                        	<bodyTest value="${message3.body}" />          
+                        </filterTests>
+                        <filterActions> 
+                        	<actionFileInto folderPath="/${globals.inbox}/${account1.filter1.folder.name}" />  	
+                        </filterActions>
+                    </filterRule>
+                    
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+	
+    
+    <t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message3.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+   
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message3.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+	            <t:select attr="l" match="${account1.folder.inbox.id}"/>
+	            <t:select attr="t" match=".*${account1.filter2.tag.id}.*"/>
+            </t:select>
+            <t:select path="//mail:SearchResponse/mail:m" attr="l" match="${account1.filter1.folder.id}" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+</t:tests>
+

@@ -1,0 +1,463 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!--
+These tests send characters that are invalid for e-mail addresses.
+
+negative_address1 -> note the open parenthesis, which is an invalid character
+negative_address2 -> note the open bracket (&lt; is equivalent to <), which is an invalid character
+
+
+These tests send characters that are used in the lookup query command.
+The response should be service.FAILED
+
+negative_query_user1 -> note the open bracket
+negative_query_user2 -> note the close bracket
+negative_query_user3 -> note the pipe
+negative_query_user4 -> note the ampersand
+negative_query_user5 -> note the semicolon
+negative_query_user6 -> note the equals
+
+negative_query_passwd1 -> note the open bracket
+negative_query_passwd2 -> note the close bracket
+negative_query_passwd3 -> note the pipe
+negative_query_passwd4 -> note the ampersand
+negative_query_passwd5 -> note the semicolon
+negative_query_passwd6 -> note the equals
+
+-->
+
+<t:property name="admin_user.name" value="admin${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="admin_user.password" value="${defaultpassword.value}"/>
+
+<t:property name="valid_user" value="${admin_user.name}"/>
+<t:property name="valid_password" value="${defaultpassword.value}"/>
+
+<t:property name="negative_address1" value="user1@inva(lid_domain.com"/>
+<t:property name="negative_address2" value="user1@inva&lt;lid_domain,com"/>
+
+<t:property name="negative_query_user1" value="user1@zim(bra.com"/>
+<t:property name="negative_query_user2" value="user1@zimb)ra.com"/>
+<t:property name="negative_query_user3" value="user1@zim|bra.com"/>
+<t:property name="negative_query_user4" value="user1@zimb&amp;ra.com"/>
+<t:property name="negative_query_user5" value="user1@z;imbra.com"/>
+<t:property name="negative_query_user6" value="user1@zim=bra.com"/>
+<t:property name="negative_query_user7" value="user1@user1@example.com"/>
+
+<t:property name="negative_query_passwd1" value="tes(t123"/>
+<t:property name="negative_query_passwd2" value="tes)t123"/>
+<t:property name="negative_query_passwd3" value="test|123"/>
+<t:property name="negative_query_passwd4" value="test&amp;123"/>
+<t:property name="negative_query_passwd5" value="tes;t123"/>
+<t:property name="negative_query_passwd6" value="test=123"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+ <t:objective>create test admin account</t:objective>
+
+<t:test id="admin_login" required="true" >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAdmin">
+    <name>${admin.user}</name>
+    <password>${admin.password}</password>
+  </AuthRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+ </t:response>
+</t:test>
+
+<t:test required="true" >
+ <t:request>
+  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+    <name>${admin_user.name}</name>
+    <password>${admin_user.password}</password>
+     <a n="zimbraIsAdminAccount">TRUE</a>
+  </CreateAccountRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="admin_user.id"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="AdminAuthNegative000" type="sanity" >
+ <t:objective>make sure valid admin login succeeds</t:objective>
+
+<t:test required="true">
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${admin_user.name}</account>
+    <password>${admin_user.password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative001" type="sanity" >
+ <t:objective>login with a domain with a left parenthes</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${negative_address1}</account>
+    <password>${valid_password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<!-- Bug 1725 : Response used to be service.FAILURE -->
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative002" type="sanity" bugids="1725">
+ <t:objective>login with a domain with less than</t:objective>
+
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${negative_address2}</account>
+    <password>${valid_password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<!-- Bug 1725 : Response used to be service.FAILURE -->
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative003" type="sanity" bugids="1725">
+ <t:objective>login with a domain with a left parenthes</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${negative_query_user1}</account>
+    <password>${valid_password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<!-- Bug 1725 : Response used to be service.FAILURE -->
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative004" type="sanity" bugids="1725">
+ <t:objective>login with a domain with a right parenthes</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${negative_query_user2}</account>
+    <password>${valid_password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<!-- Bug 1725 : Response used to be service.FAILURE -->
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative005" type="sanity" >
+ <t:objective>login with a domain with a vertical bar</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${negative_query_user3}</account>
+    <password>${valid_password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative006" type="sanity" >
+ <t:objective>login with a domain with an ampersand</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${negative_query_user4}</account>
+    <password>${valid_password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative007" type="sanity" bugids="1725">
+ <t:objective>login with a domain with a semicolon</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${negative_query_user5}</account>
+    <password>${valid_password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<!-- Bug 1725 : Response used to be service.FAILURE -->
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative008" type="sanity" bugids="1725">
+ <t:objective>login with a domain with a equals sign</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${negative_query_user6}</account>
+    <password>${valid_password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<!-- Bug 1725 : Response used to be service.FAILURE -->
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AdminAuthNegative008a" type="sanity" bugids="2427">
+ <t:objective>login with a domain with two at @ signs</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${negative_query_user7}</account>
+    <password>${valid_password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+        <t:response>
+            <t:select path= "//zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative009" type="sanity" >
+ <t:objective>login with a password with a left parenthes</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${valid_user}</account>
+    <password>${negative_query_passwd1}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative010" type="sanity" >
+ <t:objective>login with a password with a right parenthes</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${valid_user}</account>
+    <password>${negative_query_passwd2}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative011" type="sanity" >
+ <t:objective>login with a password with a vertical bar</t:objective>
+
+<t:test>
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${valid_user}</account>
+    <password>${negative_query_passwd3}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative012" type="sanity" >
+ <t:objective>login with a password with a ampersand</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${valid_user}</account>
+    <password>${negative_query_passwd4}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative013" type="sanity" >
+ <t:objective>login with a password with a semi-colon</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${valid_user}</account>
+    <password>${negative_query_passwd5}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+
+
+<t:test_case testcaseid="AdminAuthNegative014" type="sanity" >
+ <t:objective>login with a password with a equals sign</t:objective>
+
+<t:test >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${valid_user}</account>
+    <password>${negative_query_passwd6}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//zimbra:Code"  match="^account.AUTH_FAILED$"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+
+</t:tests>

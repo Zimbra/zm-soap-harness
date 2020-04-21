@@ -1,0 +1,417 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_bug65369" type="always" >
+    <t:objective>create test accounts</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	    </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailDefaultCharset">iso-2022-jp</a>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+	    </t:response>
+    </t:test>
+    
+     <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailDefaultCharset">iso-2022-jp</a>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+	    </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="FilterActionNotifyCharset_01" type="bhr" bugids="65369">
+    <t:objective>Verify Filter Action Notify has charset=us-ascii if the message body contain ASCII only</t:objective>
+    <t:steps> 
+	    1. Create a filter with Action Notify set some different notification subject.
+	    2. Send message containing ASCII characters only
+	    3. Verify Notification message delivered to sender has charset=us-ascii.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter1.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter1.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="notify1.subject" value="Thanks $\{from} $\{SUBJECT}"/>	
+	<t:property name="notify1.body" value="Testing for ascii charset"/>
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter1.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" value="${filter1.subject}" />
+						</filterTests>
+						<filterActions>
+							  <actionNotify a="${account2.name}" su="${notify1.subject}">
+           						 <content>${notify1.body}</content>
+           					 </actionNotify>
+           					 <actionKeep />
+  						<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+        
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+    <t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account1.name}'/>
+					<su>${filter1.subject}</su>
+					<mp ct="text/plain">
+	    				<content>Good Morning</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+	
+	<t:waitforpostfixqueue/>
+
+     <t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox "${filter1.subject}"</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+	        	<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account2_msg1.id"/>
+				<t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}"/>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Thanks ${account2.name} ${filter1.subject}"/>
+			</t:response>
+    </t:test>
+    
+    <t:resttest>
+		<t:restServletRequest>
+			<id>${account2_msg1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>		
+			<t:select attr="Content-Type" match=".*us-ascii.*"/>			
+		</t:restServletResponse>
+	</t:resttest>
+	
+ </t:test_case>
+ 
+ <t:test_case testcaseid="FilterActionNotifyCharset_02" type="bhr" bugids="65369">
+      <t:objective>Verify Filter Action Notify has charset=utf-8 if the message body is not ASCII only and the message char code includes bigger char code than
+		zimbraPrefMailDefaultCharset</t:objective>
+    <t:steps> 
+	    1. Create a filter with Action Notify set some different notification subject.
+	    2. Send message containing Japanese characters only to the account where zimbraPrefMailDefaultCharset is not set.
+	    3. Verify Notification message delivered to sender has charset=utf-8.
+    </t:steps>
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter2.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter2.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="notify2.subject" value="Thanks $\{from} $\{SUBJECT}"/>	
+	<t:property name="notify2.body" value="ラドクリフ、マラソン五輪代表に1万m出場にも含み"/>
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter2.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" value="${filter2.subject}" />
+						</filterTests>
+						<filterActions>
+							  <actionNotify a="${account2.name}" su="${notify2.subject}">
+           						 <content>${notify2.body}</content>
+           					 </actionNotify>
+           					 <actionKeep />
+  						<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+        
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+    <t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account1.name}'/>
+					<su>${filter2.subject}</su>
+					<mp ct="text/plain">
+	    				<content>Good Morning</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+	
+	<t:waitforpostfixqueue/>
+
+     <t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox "${filter2.subject}"</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+	        	<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account2_msg2.id"/>
+				<t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account1.name}"/>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Thanks ${account2.name} ${filter2.subject}"/>
+			</t:response>
+    </t:test>
+    
+    <t:resttest>
+		<t:restServletRequest>
+			<id>${account2_msg2.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>			
+			<t:select attr="Content-Type" match=".*charset=utf-8.*"/>
+		</t:restServletResponse>
+	</t:resttest>
+ </t:test_case>
+ 
+ <t:test_case testcaseid="FilterActionNotifyCharset_03" type="bhr" bugids="65369">
+ 
+     <t:objective>Verify Filter Action Notify has charset=iso-2022-jp if the message body is not ASCII only and the message char code includes bigger char code than
+		zimbraPrefMailDefaultCharset is set Japanese(iso-2022-jp)</t:objective>
+    <t:steps> 
+	    1. Create a filter with Action Notify set some different notification subject.
+	    2. Send message containing Japanese characters only to the account where zimbraPrefMailDefaultCharset is set to iso-2022-jp.
+	    3. Verify Notification message delivered to sender has charset=iso-2022-jp.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account4.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="filter3.name" value="filter${TIME}${COUNTER}"/>
+	<t:property name="filter3.subject" value="filter${TIME}${COUNTER}"/>	
+	<t:property name="notify3.subject" value="Thanks $\{from} $\{SUBJECT}"/>	
+	<t:property name="notify3.body" value="ラドクリフ、マラソン五輪代表に1万m出場にも含み"/>
+	
+	<t:test>
+		<t:request>
+			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+				<filterRules>
+					<filterRule name="${filter3.name}" active="1">
+						<filterTests condition="anyof">
+							<headerTest header="Subject" stringComparison="contains" value="${filter3.subject}" />
+						</filterTests>
+						<filterActions>
+							  <actionNotify a="${account3.name}" su="${notify3.subject}">
+           						 <content>${notify3.body}</content>
+           					 </actionNotify>
+           					 <actionKeep />
+  						<actionStop />
+						</filterActions>
+					</filterRule>                                  
+				</filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+        
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+     </t:test>
+    
+    <t:test >
+ 		<t:request>
+    		<SendMsgRequest xmlns="urn:zimbraMail">
+      			<m>
+					<e t="t" a='${account4.name}'/>
+					<su>${filter3.subject}</su>
+					<mp ct="text/plain">
+	    				<content>Good Morning</content>
+					</mp>
+    			 </m>
+    		</SendMsgRequest>
+  		</t:request>
+  		<t:response>
+        	<t:select path="//mail:SendMsgResponse"/>
+   		</t:response>
+	</t:test>
+	
+	<t:waitforpostfixqueue/>
+
+     <t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>in:inbox "${filter3.subject}"</query>
+				</SearchRequest>
+			</t:request>
+	        <t:response>
+	        	<t:select path="//mail:SearchResponse/mail:m" attr="id" set="account3_msg.id"/>
+				<t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${account4.name}"/>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Thanks ${account3.name} ${filter3.subject}"/>
+			</t:response>
+    </t:test>
+    
+    <t:resttest>
+		<t:restServletRequest>
+			<id>${account3_msg.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>			
+			<t:select attr="Content-Type" match=".*iso-2022-jp.*"/>
+		</t:restServletResponse>
+	</t:resttest>
+ </t:test_case>
+ 
+ </t:tests>

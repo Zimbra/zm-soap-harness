@@ -1,0 +1,455 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:property name="organizer1.name" value="organizer1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee1.name" value="invitee1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="organizer2.name" value="organizer2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee2a.name" value="invitee2a.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee2b.name" value="invitee2b.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="organizer3.name" value="organizer3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee3.name" value="invitee3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="organizer4.name" value="organizer4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee4.name" value="invitee4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="organizer5.name" value="organizer5.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="invitee5.name" value="invitee5.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+<t:property name="timezone.pst.regex" value="America\/Los_Angeles"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+   
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${organizer1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="organizer1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="organizer1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${organizer2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="organizer2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="organizer2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${organizer3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="organizer3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="organizer3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${organizer4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="organizer4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="organizer4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${organizer5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="organizer5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="organizer5.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="invitee1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="invitee1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee2a.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="invitee2a.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="invitee2a.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee2b.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="invitee2b.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="invitee2b.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="invitee3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="invitee3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="invitee4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="invitee4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_organizer1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${invitee5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="invitee5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="invitee5.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CancelMeetingRequest_Basic_01" type="smoke" areas="Calendar">
+    <t:objective>Cancel a meeting request to an invitee</t:objective>
+    <t:steps>
+    1. Login as organizer
+    2. Create a simple meeting request.  Invite the invitee.
+    3. Cancel the meeting
+    </t:steps>
+
+
+
+	<t:property name="server.zimbraAccount" value="${organizer1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${organizer1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="organizer1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    
+   
+	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+	<t:property name="time.20180101120000.gmt" value="1514808000000"/>
+	<t:property name="time.20180101120000.pst" value="${TIME(-8h)[${time.20180101120000.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+			<CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m >
+					<inv>
+						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+							<or a="${organizer1.name}"/>
+							<at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="1"/>
+							<s d="${ICALTIME[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+							<e  d="${ICALTIME(+1h)[${time.20180101120000.pst}]}" tz="${timezone.pst}" />
+						</comp>
+					</inv>
+					<e a="${invitee1.name}" t="t"/>
+					<su>${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse">
+            	<t:select attr="calItemId" set="organizer1.appt1.calItemId"/>
+            	<t:select attr="invId" set="organizer1.appt1.invId"/>
+            	<t:select attr="apptId" set="organizer1.appt1.apptId"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+	<t:property name="server.zimbraAccount" value="${invitee1.server}"/>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${invitee1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="invitee1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20180101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20180101120000.gmt}]}" types="appointment">
+				<query>inid:${invitee1.calendar.folder.id}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse/mail:appt">
+            	<t:select attr="invId" set="invitee1.appt1.invId"/>
+            	<t:select attr="compNum" set="invitee1.appt1.compNum"/>
+            	<t:select attr="name" set="invitee1.appt1.name"/>
+            	<t:select path="//mail:or" attr="a" set="invitee1.appt1.or"/>
+            </t:select> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${invitee1.appt1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${invitee1.appt1.invId}']">
+        		<t:select path="//mail:comp">
+        			<t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20180101120000.pst}]}"/>
+        			<t:select path="//mail:s" attr="tz" match="${timezone.pst.regex}"/>
+        			<t:select path="//mail:e" attr="d" match="${ICALTIME(+1h)[${time.20180101120000.pst}]}"/>
+        			<t:select path="//mail:e" attr="tz" match="${timezone.pst.regex}"/>
+            	</t:select>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+			<SendInviteReplyRequest xmlns="urn:zimbraMail" id="${invitee1.appt1.invId}" compNum="${invitee1.appt1.compNum}" verb="ACCEPT" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${invitee1.appt1.or}"/>
+					<su>Accept: ${invitee1.appt1.name}</su>
+					<mp ct="text/plain">
+						<content>Accept: ${invitee1.appt1.name}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${organizer1.server}"/>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${organizer1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+   
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${organizer1.appt1.invId}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m[@id='${organizer1.appt1.invId}']">
+            	<t:select path="//mail:at[@a='${invitee1.name}']" attr="ptst" match="AC"/>
+            	<t:select path="//mail:reply[@at='${invitee1.name}']" attr="ptst" match="AC"/>
+            </t:select>
+			<t:select path="//mail:comp" attr="compNum" set="organizer1.appt1.compNum"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${organizer1.appt1.invId}" comp="${organizer1.appt1.compNum}" >
+            	<m>
+					<e a="${invitee1.name}" t="t"/>
+					<su>CANCELED: ${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${appointment.content}</content>
+					</mp>
+            	</m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20180101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20180101120000.gmt}]}" types="appointment">
+				<query>inid:${organizer1.calendar.folder.id}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:appt[@name='${appointment.subject}']" emptyset="1"/>
+            </t:select> 
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${invitee1.server}"/>
+    
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${invitee1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20180101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20180101120000.gmt}]}" types="appointment">
+				<query>inid:${invitee1.calendar.folder.id}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:appt[@name='${appointment.subject}']" emptyset="1"/>
+            </t:select> 
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

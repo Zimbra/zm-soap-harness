@@ -1,0 +1,1172 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl1.name" value="dl1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl1.newname" value="newdl1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl2.name" value="dl2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl2.newname" value="newdl2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl3.name" value="dl3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl3.newname" value="newdl3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl4.name" value="dl4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl4.newname" value="newdl4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl5.name" value="dl5.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl5.newname" value="newdl5.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl6.name" value="dl6.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl6.newname" value="dl6.${TIME}.${COUNTER}@domain.name${TIME}.com"/>
+<t:property name="account1.dl7.name" value="dl7.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl7.newname" value="dl7.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl8.name" value="dl8.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl8.newname" value="dl8.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl9.name" value="dl9.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="domain.new.name" value="new.${TIME}.${COUNTER}${defaultdomain.name}"/>
+<t:property name="account1.dl9.newname" value="dl9.${TIME}.${COUNTER}@${domain.new.name}"/>
+<t:property name="account1.dl10.name" value="dl10.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.dl10.newname" value="dl10.${TIME}.${COUNTER}@${domain.new.name}"/>
+
+<t:property name="account1.member1.name" value="mem1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.member2.name" value="mem2.${TIME}.${COUNTER}@otherdomain${TIME}.com"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+    <t:test required="true">
+     <t:request>
+       <PingRequest xmlns="urn:zimbraAdmin"/>
+     </t:request>
+      <t:response>
+        <t:select path="//admin:PingResponse"/>
+     </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="admin_auth" type="always" >
+ <t:objective>login as the admin</t:objective>
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+	
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+		
+	<t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.new.name}</name>
+                <a n="zimbraNotes">test of adding via SOAP</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
+        </t:response>        
+    </t:test>
+    
+	<t:property name="server.zimbraAdmin" value="${account1.server}"/>
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="domain">${defaultdomain.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account1.name}</grantee>
+				<right xmlns="">createDistList</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameDistributionListRequest01" type="bhr" bugids="" >
+    <t:objective>Create and rename distribution list by id . </t:objective>    
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl1.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl1.id" />
+    		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
+        </t:response>
+    </t:test> 
+
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl1.id}</dl>
+                 <action op="rename">
+                 <newName>${account1.dl1.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl1.id}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl1.newname}']" />
+        	<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl1.name}']"  emptyset="1"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:test_case testcaseid="RenameDistributionListRequest02" type="bhr" bugids="" >
+    <t:objective>Create and delete distribution list by name . </t:objective>    
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl2.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl2.id" />
+    		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
+        </t:response>
+    </t:test> 
+
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl2.name}</dl>
+                 <action op="rename">
+                          <newName>${account1.dl2.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl2.newname}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl2.newname}']" />
+			<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl2.name}']"  emptyset="1"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:test_case testcaseid="RenameDistributionListRequest03" type="bhr" bugids="" >
+    <t:objective>Create distribution list add members rename it . </t:objective>    
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl3.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl3.id" />
+    		<!--   <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
+        </t:response>
+    </t:test> 
+
+     <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl3.name}</dl>
+                 <action op="addMembers">
+                 <dlm>${account1.member1.name}</dlm>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+    
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl3.name}</dl>
+                 <action op="rename" >
+                 <newName>${account1.dl3.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest  xmlns="urn:zimbraAccount"  >
+            	<dl by="id">${account1.dl3.id}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl3.newname}']" />
+        <t:response>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameDistributionListRequest04" type="bhr" bugids="" >
+    <t:objective>Add member after rename distribution list . </t:objective>    
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl4.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl4.id" />
+    		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
+        </t:response>
+    </t:test> 
+
+     <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl4.name}</dl>
+                 <action op="addMembers">
+                 <dlm>${account1.member1.name}</dlm>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+    
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl4.name}</dl>
+                 <action op="rename" >
+                 	<newName>${account1.dl4.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl4.newname}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:GetDistributionListResponse/acct:dl[@id='${account1.dl4.id}']" />
+        </t:response>
+    </t:test> 
+    
+     <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl4.newname}</dl>
+                 <action op="addMembers">
+                 <dlm>${account1.member2.name}</dlm>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:test_case testcaseid="RenameDistributionListRequest05" type="bhr" bugids="" >
+    <t:objective>Create and rename distribution and re-create distribution list by original name . </t:objective>    
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl5.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl5.id" />
+    	<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />-->	
+        </t:response>
+    </t:test> 
+
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl5.name}</dl>
+                 <action op="rename" >
+                 <newName>${account1.dl5.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl5.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" match="${account1.dl5.id}" emptyset="1" />
+    		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+
+<t:test_case testcaseid="RenameDistributionListRequest06" type="bhr" bugids="" >
+    <t:objective>Create and rename distribution with some other domain . </t:objective>    
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl6.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl6.id" />
+    		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
+        </t:response>
+    </t:test> 
+
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl6.name}</dl>
+                 <action op="rename" >
+                 <newName>${account1.dl6.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//zimbra:Code" match="account.NO_SUCH_DOMAIN" />
+        </t:response>
+    </t:test>         
+
+</t:test_case>
+
+<t:test_case testcaseid="RenameDistributionListRequest07" type="bhr" bugids="" >
+    <t:objective>Try to rename distribution where user does not have createDistRight right on that domain. </t:objective>    
+
+	<t:steps>
+			1. Login into account1.
+			2. Create a DL .
+			3. Add account2 as a memeber and owner of the DL created in step 2.
+			4. Login into account2.
+			5. Try to rename the DL. account2 will get service.PERM_DENIED.
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl7.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl7.id" />
+    		<!--  <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl7.id}</dl>
+                 <action op="addMembers">
+                 	<dlm>${account2.name}</dlm>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl7.id}</dl>
+                 <action op="addOwners">
+                 	<owner type="usr" by="id">${account2.id}</owner>                 	
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test>   
+     
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
+            	<dl by="name">${account1.dl7.name}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account2.name}']" attr="id" match="${account2.id}"/>
+        </t:response>
+     </t:test>  
+    
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+   <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl7.name}</dl>
+                 <action op="rename">
+                     <newName>${account1.dl7.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//zimbra:Code" match="service.PERM_DENIED" />
+        </t:response>
+    </t:test>   
+
+</t:test_case>
+
+<t:test_case testcaseid="RenameDistributionListRequest08" type="bhr" bugids="69485" >
+    <t:objective>Try to rename distributionlist on the same domain where user is granted with createDistRight right on that domain. </t:objective>    
+
+	<t:steps>
+			1. Login into account1.
+			2. Create a DL .
+			3. Add account2 as a memeber of the DL created in step 2.
+			4. Login into account2.
+			5. Try to rename the DL. account2 will get service.PERM_DENIED.
+			6. Admin grant createDistRight on the domain to account 2
+			7. Login into account2.
+			8. Try to rename the DL. account2 will be able to delete sucessfully.			
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl8.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl8.id" />
+    		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" />  -->
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl8.id}</dl>
+                 <action op="addMembers">
+                 	<dlm>${account2.name}</dlm>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl8.id}</dl>
+                 <action op="addOwners">
+                 	<owner type="usr" by="id">${account2.id}</owner>                 	
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test>   
+     
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
+            	<dl by="name">${account1.dl8.name}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account2.name}']" attr="id" match="${account2.id}"/>
+        </t:response>
+     </t:test>  
+    
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl8.name}</dl>
+                 <action op="rename">
+                     <newName>${account1.dl8.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//zimbra:Code" match="service.PERM_DENIED" />
+        </t:response>
+    </t:test>   
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="domain">${defaultdomain.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account2.name}</grantee>
+				<right xmlns="">createDistList</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+		</t:response>
+	</t:test>
+
+	<t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc acl \'" RETURNSTDOUT RETURNSTDERR WAIT 50000</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:staftask>
+		<t:request>
+			<server>${account2.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc acl \'" RETURNSTDOUT RETURNSTDERR WAIT 50000</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl8.name}</dl>
+                 <action op="rename">
+                     <newName>${account1.dl8.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl8.newname}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl8.newname}']" />
+			<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl8.name}']"  emptyset="1"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+
+<t:test_case testcaseid="RenameDistributionListRequest09" type="bhr" bugids="69485" >
+    <t:objective>Try to rename distributionlist on the different domain where user is granted with createDistRight right on old domain. </t:objective>    
+
+	<t:steps>
+			1. Login into account1.
+			2. Create a DL .
+			3. Add account2 as a memeber of the DL created in step 2.
+			4. Login into account2.
+			5. Try to rename the DL using dfferent domain and get service.PERM_DENIED.
+			6. Admin grant createDistRight on the old domain to account 2
+			7. Login into account2.
+			8. Try to rename the DL using dfferent domain and receive service.PERM_DENIED.			
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl9.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl9.id" />
+    		<!-- <t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl9.id}</dl>
+                 <action op="addMembers">
+                 	<dlm>${account2.name}</dlm>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl9.id}</dl>
+                 <action op="addOwners">
+                 	<owner type="usr" by="id">${account2.id}</owner>                 	
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test>   
+     
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
+            	<dl by="name">${account1.dl9.name}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account2.name}']" attr="id" match="${account2.id}"/>
+        </t:response>
+     </t:test>  
+       
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl9.name}</dl>
+                 <action op="rename">
+                     <newName>${account1.dl9.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//zimbra:Code" match="service.PERM_DENIED" />
+        </t:response>
+    </t:test>   
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="domain">${defaultdomain.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account2.name}</grantee>
+				<right xmlns="">createDistList</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl9.name}</dl>
+                 <action op="rename">
+                     <newName>${account1.dl9.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//zimbra:Code" match="service.PERM_DENIED" />
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="RenameDistributionListRequest10" type="bhr" bugids="69485" >
+    <t:objective>Try to rename distributionlist on the different domain where user is granted with createDistRight right on both domains. </t:objective>    
+
+	<t:steps>
+			1. Login into account1.
+			2. Create a DL .
+			3. Add account2 as a memeber of the DL created in step 2.
+			4. Login into account2.
+			5. Try to rename the DL using dfferent domain and get service.PERM_DENIED.
+			6. Admin grant createDistRight on the both domains to account 2
+			7. Login into account2.
+			8. Try to rename the DL using dfferent domain and  rename the dl sucessfully.			
+    </t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <CreateDistributionListRequest xmlns="urn:zimbraAccount" >
+                 <name>${account1.dl10.name}</name>
+          	</CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:CreateDistributionListResponse/acct:dl" attr="id" set="account1.dl10.id" />
+    	<!-- 	<t:select path="//acct:CreateDistributionListResponse/acct:dl/acct:owners/acct:owner" attr="id" match="${account1.id}" /> -->
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl10.id}</dl>
+                 <action op="addMembers">
+                 	<dlm>${account2.name}</dlm>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="id">${account1.dl10.id}</dl>
+                 <action op="addOwners">
+                 	<owner type="usr" by="id">${account2.id}</owner>                 	
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test>   
+     
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest xmlns="urn:zimbraAccount" needOwners="1" >
+            	<dl by="name">${account1.dl10.name}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account1.name}']" attr="id" match="${account1.id}"/>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl/acct:owners/acct:owner[@name='${account2.name}']" attr="id" match="${account2.id}"/>
+        </t:response>
+     </t:test>  
+       
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl10.name}</dl>
+                 <action op="rename">
+                     <newName>${account1.dl10.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//zimbra:Code" match="service.PERM_DENIED" />
+        </t:response>
+    </t:test>   
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAdmin" value="${account2.server}"/>
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target xmlns="" by="name" type="domain">${defaultdomain.name}</target>				
+				<grantee xmlns="" by="name" type="usr">${account2.name}</grantee>
+				<right xmlns="">createDistList</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+		</t:response>
+	</t:test>
+	
+	<t:test required="true">
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">				
+				<target xmlns="" by="name" type="domain">${domain.new.name}</target>
+				<grantee xmlns="" by="name" type="usr">${account2.name}</grantee>
+				<right xmlns="">createDistList</right>
+			</GrantRightRequest>
+		</t:request>
+		<t:response>
+		</t:response>
+	</t:test>
+
+	<t:staftask>
+		<t:request>
+			<server>${account2.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc acl \'" RETURNSTDOUT RETURNSTDERR WAIT 50000</params>
+		</t:request>
+	</t:staftask>
+	
+	
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	<t:staftask>
+		<t:request>
+			<server>${account2.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmprov fc acl \'" RETURNSTDOUT RETURNSTDERR WAIT 50000</params>
+		</t:request>
+	</t:staftask>
+
+    <t:test >
+        <t:request >
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test >
+        <t:request >
+            <DistributionListActionRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl10.name}</dl>
+                 <action op="rename">
+                     <newName>${account1.dl10.newname}</newName>
+                 </action>
+          	</DistributionListActionRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//acct:DistributionListActionResponse" />
+        </t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request >
+            <GetDistributionListRequest xmlns="urn:zimbraAccount" >
+            	<dl by="name">${account1.dl10.newname}</dl>
+          	</GetDistributionListRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl10.newname}']" />
+			<t:select path="//acct:GetDistributionListResponse/acct:dl[@name='${account1.dl10.name}']"  emptyset="1"/>
+        </t:response>
+    </t:test> 
+    
+</t:test_case>
+
+</t:tests>
+
+

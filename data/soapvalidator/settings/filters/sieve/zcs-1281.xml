@@ -1,0 +1,383 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="test_account1.name"
+		value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account2.name"
+		value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+	<t:property name="folder1.name" value="folder1.${TIME}.${COUNTER}"/>
+	<t:property name="folder2.name" value="folder2.${TIME}.${COUNTER}"/>
+	<t:property name="folder_rename" value="folder.${TIME}.${COUNTER}"/>
+	<t:property name="tag.name" value="tag${TIME}${COUNTER}" />
+	
+	<t:property name="sieve_rule1" value='require ["fileinto", "log"];
+		if anyof address :is "from" "p2@testdomain.com"
+			{ 
+			  if address :is "to" "ds@ds.com" 
+			  {  tag "tagto";  }
+			}
+		elsif anyof header :contains "subject" ["automation", "nunit"]		
+			{
+			fileinto "FromP2";
+			log "Move message to FromP2 folder";
+			} 
+		elsif anyof header :contains "subject" ["automation", "nunit"] 
+			{
+			redirect "qa-automation@testdomain.com";
+			log "Forward message to qa-automation DL";
+			}
+		else 
+			{ fileinto "Inbox"; }'></t:property>
+
+<t:property name="sieve_rule2" value='require ["fileinto", "log"];
+		if anyof address :is "from" "p2@zqa-380.eng.zimbra.com" 
+			{ fileinto "FromP2"; log "Move message to FromP2 folder"; }
+		elsif anyof (header :contains "subject" ["automation", "nunit"])
+			{ redirect "qa-automation@zqa-380.eng.zimbra.com"; log "Forward message to qa-automation DL"; }'></t:property>
+
+<t:test_case testcaseid="Config setup" type="always">
+    <t:objective>create test account</t:objective>
+    
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+	<t:test_case testcaseid="acctSetup1" type="always">
+		<t:objective>create test account</t:objective>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailSieveScript">${sieve_rule1}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"/>
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account2.name}</name>
+					<password>${defaultpassword.value}</password>
+					<a n="zimbraMailOutgoingSieveScript">${sieve_rule2}</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"/>
+			</t:response>
+		</t:test>
+		
+	</t:test_case>
+
+	<t:test_case testcaseid="Incoming_FolderRule" type="bhr" bugids="zcs-1281">
+		<t:objective>Folder operations for user </t:objective>
+		<t:steps>
+            1. Perform folder operations -- create/rename/move/delete.
+            2. Verify all the operations are successful.
+    	</t:steps>
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail"/>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="parentfolder.id"/>
+			</t:response>
+		</t:test>
+
+		<t:test>
+	        <t:request>
+	            <CreateFolderRequest xmlns="urn:zimbraMail">
+	                <folder name="${folder1.name}" l="${parentfolder.id}"/>
+	            </CreateFolderRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+	            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="absFolderPath" match="/Inbox/${folder1.name}"/>
+	        </t:response>
+		</t:test>
+				
+		<t:test>
+	        <t:request>
+	            <CreateFolderRequest xmlns="urn:zimbraMail">
+	                <folder name="${folder2.name}" l="${parentfolder.id}"/>
+	            </CreateFolderRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+	        </t:response>
+		</t:test>
+
+	    <t:test>
+	        <t:request>
+	            <FolderActionRequest xmlns="urn:zimbraMail">
+	                <action op="rename" id="${folder1.id}" name="${folder_rename}"/>
+	            </FolderActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:FolderActionResponse/mail:action">
+	            <t:select attr="id" match="${folder1.id}"/>
+	            <t:select attr="op" match="rename"/>        
+	            </t:select>
+	        </t:response>
+	    </t:test>
+    
+		<t:test>
+	        <t:request>
+	            <FolderActionRequest xmlns="urn:zimbraMail">
+	                <action op="move" id="${folder1.id}" l="${folder2.id}"/>
+	            </FolderActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:FolderActionResponse/mail:action">
+	            <t:select attr="id" match="${folder1.id}"/>
+	            <t:select attr="op" match="move"/>        
+	            </t:select>
+	        </t:response>
+	    </t:test>
+
+		<t:test>
+	        <t:request>
+	            <FolderActionRequest xmlns="urn:zimbraMail">
+	                <action op="delete" id="${folder1.id}"/>
+	            </FolderActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:FolderActionResponse/mail:action">
+	            <t:select attr="id" match="${folder1.id}"/>
+	            <t:select attr="op" match="delete"/>        
+	            </t:select>
+	        </t:response>
+	    </t:test>
+	    	    		
+	</t:test_case>
+
+	<t:test_case testcaseid="Incoming_TagRule" type="bhr" bugids="zcs-1281">
+		<t:objective>Tag operations for user </t:objective>
+		<t:steps>
+            1. Perform tag operations -- create/delete
+    	</t:steps>
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+	    <t:test>
+	        <t:request>
+	            <CreateTagRequest xmlns="urn:zimbraMail">
+	                <tag name="${tag.name}" />
+	            </CreateTagRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:CreateTagResponse/mail:tag">
+	            <t:select attr="id" set="tag.id" />
+	            <t:select attr="name" match="${tag.name}" />
+	            </t:select>
+	        </t:response>
+	    </t:test>
+
+		<t:test>
+		    <t:request>
+			    <TagActionRequest xmlns="urn:zimbraMail">
+			        <action op="delete" id="${tag.id}"/>
+			    </TagActionRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:TagActionResponse/mail:action">
+			    <t:select attr="id" match="${tag.id}"/>
+			    <t:select attr="op" match="delete"/>
+	    	    </t:select>
+		    </t:response>
+		</t:test>
+			    	    		
+	</t:test_case>
+	
+	<t:test_case testcaseid="Outgoing_FolderRule" type="bhr" bugids="zcs-1281">
+		<t:objective>Folder operations for user </t:objective>
+		<t:steps>
+            1. Perform folder operations -- create/rename/move/delete.
+            2. Verify all the operations are successful.
+    	</t:steps>
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<GetFolderRequest xmlns="urn:zimbraMail"/>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.inbox}']" attr="id" set="parentfolder.id"/>
+			</t:response>
+		</t:test>
+
+		<t:test>
+	        <t:request>
+	            <CreateFolderRequest xmlns="urn:zimbraMail">
+	                <folder name="${folder1.name}" l="${parentfolder.id}"/>
+	            </CreateFolderRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+	            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="absFolderPath" match="/Inbox/${folder1.name}"/>
+	        </t:response>
+		</t:test>
+				
+		<t:test>
+	        <t:request>
+	            <CreateFolderRequest xmlns="urn:zimbraMail">
+	                <folder name="${folder2.name}" l="${parentfolder.id}"/>
+	            </CreateFolderRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id"/>
+	        </t:response>
+		</t:test>
+
+	    <t:test>
+	        <t:request>
+	            <FolderActionRequest xmlns="urn:zimbraMail">
+	                <action op="rename" id="${folder1.id}" name="${folder_rename}"/>
+	            </FolderActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:FolderActionResponse/mail:action">
+	            <t:select attr="id" match="${folder1.id}"/>
+	            <t:select attr="op" match="rename"/>        
+	            </t:select>
+	        </t:response>
+	    </t:test>
+    
+		<t:test>
+	        <t:request>
+	            <FolderActionRequest xmlns="urn:zimbraMail">
+	                <action op="move" id="${folder1.id}" l="${folder2.id}"/>
+	            </FolderActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:FolderActionResponse/mail:action">
+	            <t:select attr="id" match="${folder1.id}"/>
+	            <t:select attr="op" match="move"/>        
+	            </t:select>
+	        </t:response>
+	    </t:test>
+
+		<t:test>
+	        <t:request>
+	            <FolderActionRequest xmlns="urn:zimbraMail">
+	                <action op="delete" id="${folder1.id}"/>
+	            </FolderActionRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:FolderActionResponse/mail:action">
+	            <t:select attr="id" match="${folder1.id}"/>
+	            <t:select attr="op" match="delete"/>        
+	            </t:select>
+	        </t:response>
+	    </t:test>
+	    	    		
+	</t:test_case>
+
+	<t:test_case testcaseid="Outgoing_TagRule" type="bhr" bugids="zcs-1281">
+		<t:objective>Tag operations for user </t:objective>
+		<t:steps>
+            1. Perform tag operations -- create/delete
+    	</t:steps>
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account2.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+	    <t:test>
+	        <t:request>
+	            <CreateTagRequest xmlns="urn:zimbraMail">
+	                <tag name="${tag.name}" />
+	            </CreateTagRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//mail:CreateTagResponse/mail:tag">
+	            <t:select attr="id" set="tag.id" />
+	            <t:select attr="name" match="${tag.name}" />
+	            </t:select>
+	        </t:response>
+	    </t:test>
+
+		<t:test>
+		    <t:request>
+			    <TagActionRequest xmlns="urn:zimbraMail">
+			        <action op="delete" id="${tag.id}"/>
+			    </TagActionRequest>
+		    </t:request>
+		    <t:response>
+			    <t:select path="//mail:TagActionResponse/mail:action">
+			    <t:select attr="id" match="${tag.id}"/>
+			    <t:select attr="op" match="delete"/>
+	    	    </t:select>
+		    </t:response>
+		</t:test>
+			    	    		
+	</t:test_case>
+				
+</t:tests>

@@ -1,0 +1,282 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<!--
+
+Check basic soap request functionality
+
+-->
+
+<t:property name="account1.name" value="account.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="account.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+
+<t:test_case testcaseid="PASS-CheckSoap_01" type="sanity" areas="selfcheck">
+    <t:objective>SOAP Harness -- CheckSoap - Verify the available namespaces</t:objective>
+    <t:steps>
+    1. Check different namespaces, zimbraAdmin, zimbraMail, zimbraAccount, ...
+    	A. Send AuthRequest (zimbraAdmin)
+    	B. Send AuthRequest (zimbraAccount)
+    	C. Send GetFolderRequest (zimbraMail)
+    </t:steps>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraMail" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:GetFolderResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="PASS-CheckSoap_02" type="sanity" areas="selfcheck">
+    <t:objective>SOAP Harness -- CheckSoap - Verify the t:test and t:soaptest types</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test >
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:soaptest >
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:soaptest>
+
+</t:test_case>
+
+<t:test_case testcaseid="PASS-CheckSoap_03" type="sanity" areas="selfcheck">
+    <t:objective>SOAP Harness -- CheckSoap - Verify the t:test and t:soaptest types</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test >
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:soaptest >
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:soaptest>
+
+</t:test_case>
+
+<t:test_case testcaseid="PASS-CheckSoap_03" type="sanity" areas="selfcheck">
+    <t:objective>SOAP Harness -- CheckSoap - Verify the t:test and t:soaptest types</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test >
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:soaptest >
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:soaptest>
+
+</t:test_case>
+
+<t:test_case testcaseid="PASS-CheckSoap_04" type="sanity" areas="selfcheck">
+    <t:objective>SOAP Harness -- CheckSoap - Verify the t:requestContext</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="account2.authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="authToken" value="abc123"/>
+
+
+    <t:test >
+        <t:requestContext>
+            <authToken>${account2.authToken}</authToken>
+
+        </t:requestContext>
+        <t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>              
+            <t:select path="//mail:GetFolderResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="authToken" value=""/>
+
+
+</t:test_case>
+
+<t:test_case testcaseid="PASS-CheckSoap_05" type="sanity" areas="selfcheck">
+    <t:objective>SOAP Harness -- CheckSoap - Verify the t:header</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${account3.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:header path="//zimbra:refresh">
+	            <t:header path="//zimbra:folder[@id='1']" attr="name" matches="USER_ROOT"/>
+            </t:header>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

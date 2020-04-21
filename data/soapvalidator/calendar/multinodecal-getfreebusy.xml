@@ -1,0 +1,858 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="accountA1.name" value="multihosta1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="accountA2.name" value="multihosta2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="accountB1.name" value="multihostb1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="accountB2.name" value="multihostb2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="NonExist1.name" value="testNonExisting${TIME}.${COUNTER}@${defaultdomain.name} "/>
+<t:property name="NonExist2.name" value="ABCD@ABCD.com "/>
+<t:property name="COS.name" value="multihostcos${TIME}${COUNTER}"/>
+
+<t:property name="time.now" value="${TIME}"/>
+<t:property name="time.+1" value="${TIME(-1d)}"/>
+<t:property name="time.+2" value="${TIME(+2d)}"/>
+<t:property name="time.+3" value="${TIME(+3d)}"/>
+<t:property name="time.+4" value="${TIME(+4d)}"/>
+<t:property name="time.+5" value="${TIME(+5d)}"/>
+
+<t:property name="tz.default" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+<t:property name="TimeRangeStart" value="${TIME(-2d)}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+2d)}"/>
+
+<t:property name="Time1" value="${ICALTIME(+1h)}"/>
+<t:property name="Time2" value="${ICALTIME(+2h)}"/>
+<t:property name="Time6" value="${ICALTIME(+30m)}"/>
+
+<t:property name="Time3" value="${CURRDATE}"/>
+<t:property name="Time4" value="${CURRDATE(+1d)}"/>
+<t:property name="Time5" value="${CURRDATE(+2d)}"/>
+<t:property name="Time7" value="${CURRDATE(+2d)}"/>
+
+<t:property name="calendar.verb1" value="ACCEPT"/>
+<t:property name="calendar.verb2" value="DECLINE"/>
+<t:property name="calendar.verb3" value="TENTATIVE"/>
+
+<t:property name="appointment.subject" value="Subject is Get Free Busy Calendar meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment1.subject" value="Subject1 is Get Free Busy Calendar meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Location of Get Free Busy Calendar meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Content of Get Free Busy Calendar message${TIME}.${COUNTER}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+<t:property name="account2.appointment1.id" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup_multinodecal_getfreebusy" hostCount="2" type="always" >
+    <t:objective>Account setup </t:objective>
+	<t:steps> 1. Login to admin.
+			  2. Get the Servers.
+			  3. Create COS using the servers.
+			  4. Create test accounts on Host A and Host B.
+	</t:steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="admin_login" required="true" >
+        <t:request>
+            <GetAllServersRequest xmlns="urn:zimbraAdmin"></GetAllServersRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetAllServersResponse/admin:server[@name='${multihostA.FQDN}']" attr="id" set="serverA.id"/>
+            <t:select path="//admin:GetAllServersResponse/admin:server[@name='${multihostB.FQDN}']" attr="id" set="serverB.id"/>
+        </t:response>
+    </t:test>
+
+<!-- bug id 7694 -->
+    <t:test depends="admin_login" required="true" >
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${COS.name}</name>  
+				<a n="zimbraPrefMailPollingInterval">5m</a>
+				<a n="zimbraContactMaxNumEntries">0</a>
+				<a n="zimbraPrefGroupMailBy">conversation</a>
+				<a n="zimbraFeatureViewInHtmlEnabled">${globals.false}</a>
+				<a n="zimbraPasswordMaxAge">0</a>
+				<a n="zimbraAttachmentsViewInHtmlOnly">${globals.false}</a>
+				<a n="zimbraPrefMessageViewHtmlPreferred">${globals.true}</a>
+				<a n="zimbraPrefCalendarUseQuickAdd">${globals.true}</a>
+				<a n="zimbraPrefShowFragments">${globals.true}</a>
+				<a n="zimbraFeatureGalEnabled">${globals.true}</a>
+				<a n="zimbraPrefHtmlEditorDefaultFontSize">12pt</a>
+				<a n="zimbraMailMinPollingInterval">2m</a>
+				<a n="zimbraPrefForwardIncludeOriginalText">includeBody</a>
+				<a n="zimbraPrefUseKeyboardShortcuts">${globals.false}</a>
+				<a n="zimbraFeatureSavedSearchesEnabled">${globals.true}</a>
+				<a n="zimbraMailTrashLifetime">30d</a>
+				<a n="zimbraPrefCalendarAlwaysShowMiniCal">${globals.true}</a>
+				<a n="zimbraMailIdleSessionTimeout">0</a>
+				<a n="zimbraPrefMailItemsPerPage">25</a>
+				<a n="zimbraPrefForwardReplyInOriginalFormat">${globals.false}</a>
+				<a n="zimbraPrefContactsPerPage">25</a>
+				<a n="zimbraPasswordMinAge">0</a>
+				<a n="zimbraFeatureAdvancedSearchEnabled">${globals.true}</a>
+				<a n="zimbraPrefMailSignatureStyle">outlook</a>
+				<a n="zimbraPrefComposeInNewWindow">${globals.false}</a>
+				<a n="zimbraFeatureIMEnabled">${globals.false}</a>
+				<a n="zimbraPrefSaveToSent">${globals.true}</a>
+				<a n="zimbraPrefAutoAddAddressEnabled">${globals.false}</a>
+				<a n="zimbraPrefForwardReplyPrefixChar">></a>
+				<a n="zimbraPrefReplyIncludeOriginalText">includeBody</a>
+				<a n="zimbraPrefCalendarNotifyDelegatedChanges">${globals.false}</a>
+				<a n="zimbraPrefTimeZoneId">${tz.default}</a>
+				<a n="zimbraFeatureSharingEnabled">${globals.true}</a>
+				<a n="zimbraPrefMailInitialSearch">in:inbox</a>
+				<a n="zimbraFeatureConversationsEnabled">${globals.true}</a>
+				<a n="zimbraMailMessageLifetime">0</a>
+				<a n="zimbraPasswordMaxLength">64</a>
+				<a n="zimbraPrefUseTimeZoneListInCalendar">${globals.false}</a>
+				<a c="1" n="zimbraMailHostPool">${serverA.id}</a>
+				<a c="1" n="zimbraMailHostPool">${serverB.id}</a>
+				<a n="zimbraPrefCalendarApptReminderWarningTime">5</a>
+				<a n="zimbraPasswordLocked">${globals.false}</a>
+				<a n="zimbraPrefImapSearchFoldersEnabled">${globals.true}</a>
+				<a n="zimbraFeatureContactsEnabled">${globals.true}</a>
+				<a n="zimbraAdminAuthTokenLifetime">12h</a>
+				<a n="zimbraFeatureHtmlComposeEnabled">${globals.true}</a>
+				<a n="zimbraMailSpamLifetime">30d</a>
+				<a n="zimbraFeatureMailForwardingEnabled">${globals.true}</a>
+				<a n="zimbraFeatureCalendarEnabled">${globals.true}</a>
+				<a n="zimbraAuthTokenLifetime">2d</a>
+				<a n="zimbraAttachmentsBlocked">${globals.false}</a>
+				<a n="zimbraPasswordMinLength">6</a>
+				<a n="zimbraPrefIncludeSpamInSearch">${globals.false}</a>
+				<a n="zimbraAttachmentsIndexingEnabled">${globals.true}</a>
+				<a n="zimbraPasswordEnforceHistory">0</a>
+				<a n="zimbraFeatureTaggingEnabled">${globals.true}</a>
+				<a n="zimbraPrefContactsInitialView">list</a>
+				<a n="zimbraFeatureFiltersEnabled">${globals.true}</a>
+				<a n="zimbraPrefHtmlEditorDefaultFontFamily">Times New Roman</a>
+				<a n="zimbraPrefHtmlEditorDefaultFontColor">#000000</a>
+				<a n="zimbraPop3Enabled">${globals.true}</a>
+				<a n="zimbraPrefSentMailFolder">sent</a>
+				<a c="1" n="cn">default</a>
+				<a n="zimbraPrefIncludeTrashInSearch">${globals.false}</a>
+				<a n="zimbraPrefComposeFormat">text</a>
+				<a n="zimbraImapEnabled">${globals.true}</a>
+				<a n="zimbraPrefCalendarFirstDayOfWeek">0</a>
+				<a n="zimbraMailQuota">0</a>
+				<a c="1" n="description">The default COS</a>
+				<a n="zimbraFeatureInitialSearchPreferenceEnabled">${globals.true}</a>
+				<a c="1" n="zimbraProxyCacheableContentTypes">text/javascript</a>
+				<a c="1" n="zimbraProxyCacheableContentTypes">application/x-javascript</a>
+				<a n="zimbraPrefShowSearchString">${globals.false}</a>
+				<a n="zimbraPrefDedupeMessagesSentToSelf">dedupeNone</a>
+				<a n="zimbraFeatureChangePasswordEnabled">${globals.true}</a>
+				<a n="zimbraPrefCalendarInitialView">workWeek</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${COS.name}"/>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="zimbraId" set="Cos.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountA1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCOSId">${Cos.id}</a>
+                <a n="zimbraMailHost">${multihostA.FQDN}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountA1.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountA2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCOSId">${Cos.id}</a>
+                <a n="zimbraMailHost">${multihostA.FQDN}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountA2.id"/>
+        </t:response>
+    </t:test> 
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountB1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCOSId">${Cos.id}</a>
+                <a n="zimbraMailHost">${multihostB.FQDN}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountB1.id"/>
+        </t:response>
+    </t:test>  
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${accountB2.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraCOSId">${Cos.id}</a>
+                <a n="zimbraMailHost">${multihostB.FQDN}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="accountB2.id"/>
+        </t:response>
+    </t:test> 
+	
+</t:test_case>
+
+<t:test_case testcaseid="multinodecal_getfreebusy01" hostCount="2" type="smoke" bugids="7419" >
+    <t:objective>Verify the free/busy status of accountA2, accountB1 and accountB2 </t:objective>
+	<t:steps> 1. Login to accountA1.
+			  2. Get the free/busy status of accountA2, accountB1 and accountB2 (All free).
+	</t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="id">${accountA1.id}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+    </t:test> 
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="multinodecal_getfreebusy02" hostCount="2" type="bhr" bugids="7419" >
+    <t:objective>Verify the free/busy status of accountA1, accountB1 and accountB2 </t:objective>
+	<t:steps> 1. Login to accountA2.
+			  2. Get the free/busy status of accountA1, accountB1 and accountB2 (All free).
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+    
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="id">${accountA2.id}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+    </t:test> 
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="multinodecal_getfreebusy03" hostCount="2" type="bhr" bugids="7419">
+    <t:objective>Verify the free/busy status of accountA1, accountA2 and accountB2 </t:objective>
+	<t:steps> 1. Login to accountB1.
+			  2. Get the free/busy status of accountA1, accountA2 and accountB2 (All free).
+	</t:steps>
+
+	<t:property name="uri" value="${multihostB.mailClientUri}"/>
+    
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="id">${accountB1.id}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+    </t:test> 
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="multinodecal_getfreebusy04" hostCount="2" type="bhr" bugids="7419">
+    <t:objective>Verify the free/busy status of accountA1, accountA2 and accountB1 </t:objective>
+	<t:steps> 1. Login to accountB2.
+			  2. Get the free/busy status of accountA1, accountA2 and accountB1 (All free).
+	</t:steps>
+
+	<t:property name="uri" value="${multihostB.mailClientUri}"/>
+    
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="id">${accountB2.id}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+    </t:test> 
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+			<GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountB2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="multinodecal_getfreebusy05" hostCount="2" type="bhr">
+    <t:objective>Verify the busy status of accountA2 </t:objective>
+	<t:steps> 1. Login to accountA2.
+			  2. Create a all day appointment fb=busy.
+			  3. Login into accountA1.
+			  4. Get the free/busy status of accountA2.
+	</t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF"  allDay="1" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst  ="NE" rsvp="1" a="${accountA1.name}"/>
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${accountA2.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+   
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="multinodecal_getfreebusy06" hostCount="2" type="bhr">
+    <t:objective>Verify the busy status of accountA2 </t:objective>
+	<t:steps> 1. Login to accountA2.
+			  2. Create a all day appointment fb=Tentative
+			  3. Login into accountA1.
+			  4. Get the free/busy status of accountA2.
+	</t:steps>
+    
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="T" transp="O" status="CONF"  allDay="1" name="${appointment1.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst  ="NE" rsvp="1" a="${accountA1.name}" />
+                        <s d="${Time3}" />  
+                        <e d="${Time5}"/>  
+                        <or a="${accountA2.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+   
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+3}" uid="${accountA2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:t"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="multinodecal_getfreebusy07" hostCount="2" type="bhr">  
+    <t:objective>GetFreeBusy status of attendees when status of Account is unknown </t:objective>
+    <t:steps> 1. Login to account1.
+			  2. Check the FreeBusy status for account not existing on default domain.
+			  3. Check status non existing account. 
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="id">${accountA1.id}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+    </t:test> 
+
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${NonExist1.name}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:n"/>  
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${NonExist2.name}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:n"/>  
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetFreeBusyRequest08" hostCount="2" type="bhr"> 
+    <t:objective>GetFreeBusy status of attendees after the attendee has accepted the meeting and then declines the meeting. </t:objective>
+    <t:steps> 1. Login to accountA1.
+			  2. Create an appointment of account1 with accountA2.
+              3. Login to account2 and accept the invitation.
+              4. Login ino accounAt1 and Check the status FreeBusy for accountA2(busy).
+			  5. Login to accountA2 and decline the invitation.
+			  6. Login ino accounA1 and Check the status FreeBusy for accountA2(FREE).
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="id">${accountA1.id}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+    </t:test> 
+    
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${accountA2.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${accountA1.name}"/>
+                    </inv>
+                    <e a="${accountA2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse/mail:m" attr="id" set="invitation1.id"/>
+        </t:response>
+
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="accountA1.appointment1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="id">${accountA2.id}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+    </t:test> 
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="accountA2.appointment1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${accountA2.appointment1.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${accountA2.appointment1.id}" rt="r">
+                    <e t="t" a="${accountA1.name}"/>
+                    <su>${calendar.verb1}${appointment1.subject} </su>
+                    <mp ct="text/plain">
+                        <content>Yes, I will attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//mail:SendInviteReplyResponse" attr="id" match="${accountA2.appointment1.id}"/>
+        </t:response>
+    </t:test>    
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+	<t:test>
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="id">${accountA1.id}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+    </t:test> 
+
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>  
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>     
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SendInviteReplyRequest xmlns="urn:zimbraMail" id="${accountA2.appointment1.id}" compNum="0" verb="${calendar.verb1}" updateOrganizer="${globals.true}">
+                <m origid="${accountA2.appointment1.id}" rt="r">
+                    <e t="t" a="${accountA1.name}"/>
+                    <su>${calendar.verb2}${appointment1.subject} </su>
+                    <mp ct="text/plain">
+                        <content>No, I won't attend. </content>
+                    </mp>
+                </m>
+            </SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+           <t:select path = "//mail:SendInviteReplyResponse" attr="id" match="${accountA2.appointment1.id}"/>
+        </t:response>
+    </t:test>    
+
+	<t:property name="server.zimbraAccount" value="${multihostA.FQDN}"/>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${accountA1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${time.+1}" e="${time.+2}" uid="${accountA2.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>  
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:f"/>     
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

@@ -1,0 +1,111 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="search.name1" value="Search01${TIME}.${COUNTER}"/>
+<t:property name="query01" value="in:inbox"/>
+
+<t:property name="type1" value="message"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+			</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+	<t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${test_account1.name}</name>
+				<password>${test_account1.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+                    <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+
+<t:test_case testcaseid="acct1_login" type="always" >
+	<t:objective>login as the test account</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${test_account1.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="GetSearchFolderRequest1" type="smoke">
+	<t:objective> Create Search Folder for query "in:inbox" and type "message"  </t:objective>
+	<t:test id="getsearchfolderrequest1a">
+			<t:request>
+				<CreateSearchFolderRequest xmlns="urn:zimbraMail">
+					<search name="${search.name1}" query="${query01}" types="${type1}" sortBy="dateDesc" l="1"/>
+				</CreateSearchFolderRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:CreateSearchFolderResponse"/>
+				<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="name" match="${search.name1}"/>
+				<t:select path="//mail:CreateSearchFolderResponse/mail:search" attr="query" match="${query01}"/>
+			</t:response>
+	</t:test>
+
+	<t:test id="getsearchfolderrequest1b">
+		<t:request>
+			<GetSearchFolderRequest xmlns="urn:zimbraMail">
+			</GetSearchFolderRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetSearchFolderResponse "/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

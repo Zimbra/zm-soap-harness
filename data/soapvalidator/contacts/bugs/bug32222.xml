@@ -1,0 +1,122 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="test_account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+<t:property name="uploadFile.name" value="${testMailRaw.root}/32222/Email_out.csv"/>
+
+<t:property name="account3.yahoo.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="uploadFile.yahoo.name" value="${testMailRaw.root}/yahoo_ab.csv"/>
+<t:property name = "contacts.sometext" value = "abcd"/>
+<t:property name = "contacts.number" value = "1234"/>
+<t:property name = "contacts.negative" value = "-1"/>
+<t:property name = "contacts.decimal" value = "1.4"/>
+<t:property name = "contacts.spchar" value = "//\\|-'.^%_+"/>
+<t:property name = "contacts.blank" value = ""/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ContactsImport_acctsetup1" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account2.password}</password>   
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="ImportCustomCSV_Outlook" type="sanity">
+    <t:objective> Import 170 different contacts to an account with changing the header field</t:objective>
+   
+	<t:property name="uploadServletServer" value="${test_acct2.server}"/>
+		
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account2.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	
+     <t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	
+    <t:test>
+        <t:request>
+            <ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+                <content aid="${message1.aid}"/>
+            </ImportContactsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ImportContactsResponse"/> 
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="contact" limit="100">
+                <query>in:contacts</query>
+            </SearchRequest>        
+        </t:request>
+        <t:response>            
+            <t:select path="//mail:SearchResponse/mail:cn" attr="fileAsStr" match="Schoenfeld,  Jeff-FSAC" />
+        </t:response>
+    </t:test>    
+    
+</t:test_case>
+</t:tests>
+

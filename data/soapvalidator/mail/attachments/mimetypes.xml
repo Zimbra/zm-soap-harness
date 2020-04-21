@@ -1,0 +1,503 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="file.txt.path" value="${testMailRaw.root}/attachments1/filename.txt"/>
+<t:property name="file.xls.path" value="${testMailRaw.root}/attachments1/Book1.xls"/>
+<t:property name="file.doc.path" value="${testMailRaw.root}/attachments1/word.doc"/>
+<t:property name="file.pdf.path" value="${testMailRaw.root}/attachments1/pdfaccess.pdf"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="MessageSend_AccSetup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+
+<t:test_case testcaseid="Mail_Attachments_SendMsgRequest_MimeTypes_01" type="smoke">
+	<t:objective>Send a message with a simple text attachment</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${file.txt.path}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.upload.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>${message1.subject}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+					<attach aid="${message1.upload.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+	 	<t:request>
+	   		<SearchRequest xmlns="urn:zimbraMail" types="message">
+	   			<query>subject:(${message1.subject})</query>
+	   		</SearchRequest>
+ 		</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:mp[@cd='attachment']" attr="ct" match="text/plain"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="Mail_Attachments_SendMsgRequest_MimeTypes_02" type="bhr">
+	<t:objective>Send a message with an XLS attachment</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${file.xls.path}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.upload.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>${message1.subject}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+					<attach aid="${message1.upload.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+	 	<t:request>
+	   		<SearchRequest xmlns="urn:zimbraMail" types="message">
+	   			<query>subject:(${message1.subject})</query>
+	   		</SearchRequest>
+ 		</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:mp[@cd='attachment']" attr="ct" match="application/vnd.ms-excel"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="Mail_Attachments_SendMsgRequest_MimeTypes_03" type="bhr" bugids="32536">
+	<t:objective>Send a message with an XLS attachment (with incorrect upload attachment type)</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${file.xls.path}</filename>
+			<contenttype>text/plain</contenttype>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.upload.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>${message1.subject}</su>
+					<mp ct="text/html">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+					<attach aid="${message1.upload.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+	 	<t:request>
+	   		<SearchRequest xmlns="urn:zimbraMail" types="message">
+	   			<query>subject:(${message1.subject})</query>
+	   		</SearchRequest>
+ 		</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:mp[@cd='attachment']" attr="ct" match="application/vnd.ms-excel"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="Mail_Attachments_SendMsgRequest_MimeTypes_04" type="bhr" bugids="32536">
+	<t:objective>Send a message with an doc attachment (with incorrect upload attachment type)</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${file.doc.path}</filename>
+			<contenttype>application/applefile</contenttype>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.upload.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>${message1.subject}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+					<attach aid="${message1.upload.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+	 	<t:request>
+	   		<SearchRequest xmlns="urn:zimbraMail" types="message">
+	   			<query>subject:(${message1.subject})</query>
+	   		</SearchRequest>
+ 		</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:mp[@cd='attachment']" attr="ct" match="application/msword"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="Mail_Attachments_SendMsgRequest_MimeTypes_05" type="bhr" bugids="32536">
+	<t:objective>Send a message with an pdf attachment (with incorrect upload attachment type)</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${file.pdf.path}</filename>
+			<contenttype>text/x-plain-to-save</contenttype>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.upload.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:property name="message1.subject" value="subject${TIME}${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account2.name}"/>
+					<su>${message1.subject}</su>
+					<mp ct="text/plain">
+						<content>content${TIME}${COUNTER}</content>
+					</mp>
+					<attach aid="${message1.upload.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+	
+	<t:test>
+	 	<t:request>
+	   		<SearchRequest xmlns="urn:zimbraMail" types="message">
+	   			<query>subject:(${message1.subject})</query>
+	   		</SearchRequest>
+ 		</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+	 	</t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse">
+            	<t:select path="//mail:mp[@cd='attachment']" attr="ct" match="application/pdf"/>
+            </t:select>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+</t:tests>

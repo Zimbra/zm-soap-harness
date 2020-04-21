@@ -1,0 +1,233 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:property name="account1.old.name" value="account1.old.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.new.name" value="account1.new.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+
+  
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.old.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test id="create_test_account2" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="Appointment_Organizer_Rename_01" type="sanity" bugids="11379, 16733">
+    <t:objective>Verify that an account that is renamed can still edit his appointments</t:objective>
+	<t:steps>
+	1. Login as original account
+	2. Create an appointment
+	3. Login as admin
+	4. Rename the account to a new email address
+	5. Login as the renamed account
+	6. Modify the appointment - should be successful
+	</t:steps>
+	
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+    
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.old.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment1.subject" value="appointment1.${TIME}.${COUNTER}"/>
+	<t:property name="appointment1.start" value="1448971200000"/> <!-- 12/1/2015 12:00:00 GMT -->
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
+                        <s d="${ICALTIME[${appointment1.start}]}"/>  
+                        <e d="${ICALTIME(+1h)[${appointment1.start}]}"/>  
+                        <or a="${account1.old.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                       <content>Appointment Content</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment1.apptId"/>
+            <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="appointment1.calItemId"/>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment1.invId"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="GetAppointmentRequest1a">
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.invId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+	</t:test>
+
+    <t:test depends="renameAccountRequest1a">
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <newName>${account1.new.name}</newName>
+            </RenameAccountRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//admin:RenameAccountResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.new.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test depends="GetAppointmentRequest1a">
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.invId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse">
+            	<t:select path="//mail:or" attr="a" match="${account1.old.name}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment1.new.start" value="1448974800000"/> <!-- 12/1/2015 13:00:00 GMT -->
+
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.invId}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" >
+                        <s d="${ICALTIME[${appointment1.new.start}]}"/>  
+                        <e d="${ICALTIME(+1h)[${appointment1.new.start}]}"/>  
+                        <or a="${account1.new.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                       <content>Appointment Content</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="GetAppointmentRequest1a">
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment1.invId}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetAppointmentResponse">
+            	<t:select path="//mail:or" attr="a" match="${account1.new.name}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+
+</t:tests>

@@ -1,0 +1,170 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+<t:property name="account1.name" value="complex.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="complex.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="complex.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="complex.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="complex.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="validpassword.value" value="ABCDEFabcdef123456,.?!;:"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="ComplexPassword_CreateAccount_01" type="bhr">
+	<t:objective>Verify CreateAccountRequest sets the complex password settings</t:objective>
+
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${validpassword.value}</password>
+				<a n="zimbraPasswordMinUpperCaseChars">4</a>
+				<a n="zimbraPasswordMinLowerCaseChars">4</a>
+				<a n="zimbraPasswordMinPunctuationChars">4</a>
+				<a n="zimbraPasswordMinNumericChars">4</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="ComplexPassword_CreateAccount_02" type="sanity" >
+	<t:objective>Verify CreateAccountRequest sets the complex password settings</t:objective>
+
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${validpassword.value}</password>
+				<a n="zimbraPasswordMinUpperCaseChars">4</a>
+				<a n="zimbraPasswordMinLowerCaseChars">4</a>
+				<a n="zimbraPasswordMinPunctuationChars">4</a>
+				<a n="zimbraPasswordMinNumericChars">4</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']" set="account1.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ComplexPassword_CreateAccount_03" type="sanity" >
+	<t:objective>Verify CreateAccountRequest throws an error if the password is not complex enough</t:objective>
+
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>ABCabc123!@#</password>
+				<a n="zimbraPasswordMinUpperCaseChars">4</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="account.INVALID_PASSWORD"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ComplexPassword_CreateAccount_04" type="sanity" >
+	<t:objective>Verify CreateAccountRequest throws an error if the password is not complex enough</t:objective>
+
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>ABCabc123!@#</password>
+				<a n="zimbraPasswordMinLowerCaseChars">4</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="account.INVALID_PASSWORD"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ComplexPassword_CreateAccount_05" type="sanity" >
+	<t:objective>Verify CreateAccountRequest throws an error if the password is not complex enough</t:objective>
+
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>ABCabc123!@#</password>
+				<a n="zimbraPasswordMinPunctuationChars">4</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="account.INVALID_PASSWORD"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="ComplexPassword_CreateAccount_06" type="sanity" >
+	<t:objective>Verify CreateAccountRequest throws an error if the password is not complex enough</t:objective>
+
+
+	<t:test >
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>ABCabc123!@#</password>
+				<a n="zimbraPasswordMinNumericChars">4</a>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="account.INVALID_PASSWORD"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

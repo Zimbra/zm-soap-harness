@@ -1,0 +1,236 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="user${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
+<t:property name="account2.name" value="user2${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.without_domain_name" value="user3.${TIME}.${COUNTER}"/>
+<t:property name="accented.password" value="t�st���"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+ <t:objective>create test account</t:objective>
+
+	<t:test required="true" >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAdmin">
+	    <name>${admin.user}</name>
+	    <password>${admin.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+	    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+				<a n="zimbraForeignPrincipal">${account1.foreignPrincipal}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="server.zimbraAccount"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthRequest_basic_01" type="smoke">
+	<t:objective>Basic Test: AuthRequest - login to the client using by="name"</t:objective>
+
+
+	
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account1.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="AuthRequest_basic_02" type="smoke" bugids="10929">
+	<t:objective>Basic Test: AuthRequest - login to the client using by="id"</t:objective>
+
+
+	
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="id">${account1.id}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="AuthRequest_basic_03" type="sanity" bugids="10929">
+	<t:objective>Basic Test: AuthRequest - login to the client using by="foreignPrincipal"</t:objective>
+
+
+	
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="foreignPrincipal">${account1.foreignPrincipal}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="AuthRequest_basic_05" type="bhr" bugids="18705">
+<t:objective>Verify User auth token should not be able to execute RunUnitTestRequest</t:objective>
+
+	<t:test >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account1.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+			<RunUnitTestsRequest  xmlns="urn:zimbraAdmin">
+			</RunUnitTestsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AuthRequest_basic_04" type="sanity" bugids="11387">
+<t:objective>Verify that Accented characters in password field is allowed.</t:objective>
+	<t:steps>
+					1. Create test account with Accented characters in password.
+					2. Try to login into the account.
+	</t:steps>
+		<t:test required="true" >
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${accented.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="server.zimbraAccount"/>
+			</t:response>
+		</t:test>  
+
+		<t:test >
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="id">${account2.id}</account>
+					<password>${accented.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+	
+	<t:test_case testcaseid="AuthRequest_basic_05" type="bhr" bugids="82139">
+	<t:objective> Verify account AuthRequest support "account by" syntax and without default domain name </t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+			<account by="name">${admin.user}</account>
+            <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.without_domain_name}@${defaultdomain.name}</name>
+                <password>${admin.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin.Id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+			<account by="name">${account3.without_domain_name}</account>
+            <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+</t:tests>

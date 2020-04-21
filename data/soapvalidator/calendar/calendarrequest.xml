@@ -1,0 +1,1518 @@
+
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="test_account.password" value="${defaultpassword.value}"/>
+
+<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.location" value="Meeting Room 1"/>
+<t:property name="appointment.content" value="Content of the message"/>
+<t:property name="appointment.newsubject" value="Subject of meeting${TIME}.${COUNTER}"/>
+
+<t:property name="appointment11.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment11.location" value="Meeting Room 1"/>
+<t:property name="appointment11.content" value="Content of the message"/>
+
+<t:property name="appointment14.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment14.location" value="Meeting Room 1"/>
+<t:property name="appointment14.content" value="Content of the message"/>
+
+<t:property name="cos1.name" value="Cos${TIME}.${COUNTER}"/>
+
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="Time3" value="${ICALTIME(+2h)}"/>
+<t:property name="Time4" value="${ICALTIME(+3h)}"/>
+<t:property name="Time5" value="${ICALTIME(+4h)}"/>
+<t:property name="Time6" value="${ICALTIME(+5h)}"/>
+<t:property name="Time7" value="${ICALTIME(+6h)}"/>
+<t:property name="Time8" value="${ICALTIME(+7h)}"/>
+<t:property name="Time9" value="${ICALTIME(+8h)}"/>
+<t:property name="Time10" value="${ICALTIME(+9h)}"/>
+<t:property name="Time11" value="${ICALTIME(+10h)}"/>
+<t:property name="Time12" value="${ICALTIME(+11h)}"/>
+<t:property name="Time13" value="${ICALTIME(+12h)}"/>
+<t:property name="Time14" value="${ICALTIME(+13h)}"/>
+<t:property name="Time15" value="${ICALTIME(+14h)}"/>
+<t:property name="Time16" value="${ICALTIME(+15h)}"/>
+<t:property name="Time17" value="${ICALTIME(+15h)}"/>
+
+
+<t:property name="notification.content" value="Your device verification code for receiving reminders is"/>
+
+<t:property name="uploadFile.name" value="${soapxml.root}/RestServlet/Calendar/Post/basic.ics"/>
+
+
+<t:test_case testcaseid="CalendarRequest_AccountSetup" type="smoke" >
+    <t:objective>Account setup for all calendar requests smoke test</t:objective>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account.password}</password>
+                <a n="zimbraCalendarReminderDeviceEmail">"foo@foo.com"}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    
+     <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateAppointmentRequest_01" type="smoke" >
+    <t:objective>Smoke test for CreateAppointmentRequest</t:objective>   
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CreateAppointmentException_01" type="smoke" >
+    <t:objective>Smoke test for CreateAppointmentException</t:objective>   
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time2}"/>  
+                        <e d="${Time3}"/>  
+                        <or a="${test_account1.name}"/>
+                        <recur>
+							<add>
+								<rule freq="DAI">
+									<interval ival="1"/>
+								</rule>
+							</add>
+						</recur>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment2.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <s d="${Time3}"/>  
+                        <e d="${Time4}"/>  
+                        <or a="${test_account1.name}"/>
+                        <exceptId d="${Time2}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SetAppointmentRequest_01" type="smoke" >
+    <t:objective>Smoke test for SetAppointmentRequest</t:objective>   
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+        
+    <t:test >
+        <t:request>
+            <SetAppointmentRequest xmlns="urn:zimbraMail" >
+                <default needsReply="0" ptst="AC">
+                    <m>
+                        <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                            <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                            <s d="${Time3}"/>  
+                            <e d="${Time4}"/>  
+                            <or a="${test_account1.name}"/>
+                        </inv>
+                        <e a="${test_account2.name}" t="t"/>
+                        <mp content-type="text/plain">
+                            <content>${appointment.content}</content>
+                        </mp>
+                        <su>${appointment.subject}</su>
+                    </m>
+                </default>
+            </SetAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SetAppointmentResponse" attr="apptId" />
+        </t:response>
+    </t:test>     
+
+</t:test_case>
+
+<t:test_case testcaseid="AddAppointmentInviteRequest_01" type="smoke" >
+	<t:objective>Smoke test for AddAppointmentInviteRequest </t:objective>
+	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="appointment.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="appointment.content" value=".content${TIME}${COUNTER}"/>
+	<t:property name="time.20141201120000.gmt" value="1417435200000"/>
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
+	                		<at a="${test_account2.name}" role="REQ" ptst="NE" rsvp="1"/>
+	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" tz="Asia/Colombo"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20141201120000.gmt}]}" tz="Asia/Colombo"/>  
+	                        <or a="${test_account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <e a="${test_account2.name}" t="t"/>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appointment.apptId"/>
+            <t:select path="//mail:CreateAppointmentResponse" attr="invId" set="appointment.invId"/>
+
+       </t:response>
+    </t:test>
+     <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${appointment.invId}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp" attr="uid" set="appointment.uid"/>
+        </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+            <AddAppointmentInviteRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv > 
+                    	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" uid="${appointment.uid}" seq="1">
+                    		<at a="${test_account2.name}" role="REQ" ptst="NE" rsvp="1"/>
+                    		<at a="${test_account3.name}" role="REQ" ptst="NE" rsvp="1"/>
+	                        <s d="${ICALTIME[${time.20141201120000.gmt}]}" tz="Asia/Colombo"/>  
+	                        <e d="${ICALTIME(+3h)[${time.20141201120000.gmt}]}" tz="Asia/Colombo"/>  
+	                        <or a="${test_account1.name}"/>
+                        </comp>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </AddAppointmentInviteRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddAppointmentInviteResponse" >
+                        	<t:select attr="calItemId" set="appointment.calItemId.New"/>
+            </t:select>
+       </t:response>
+    </t:test>
+         
+</t:test_case>
+
+<t:test_case testcaseid="GetFreeBusyRequest_01" type="smoke" >
+    <t:objective>Smoke test for GetFreeBusyRequest </t:objective>	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time4}"/>  
+                        <e d="${Time5}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="now" value="${TIME}"/>
+	<t:property name="end" value="${TIME(+10h)}"/>
+    
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${now}" e="${end}"  uid="${test_account1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse/mail:usr"/>      
+        </t:response>
+    </t:test>     
+         
+</t:test_case>
+
+<t:test_case testcaseid="GetWorkingHoursRequest_01" type="smoke" >
+    <t:objective>Smoke test for GetWorkingHoursRequest </t:objective>	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+           <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${now}" e="${end}" id="${test_account1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetWorkingHoursResponse/mail:usr"/>      
+        </t:response>
+    </t:test>     
+         
+</t:test_case>
+
+<t:test_case testcaseid="CancelAppointmentRequest_01" type="smoke" >
+    <t:objective>Smoke test for CancelAppointmentRequest </t:objective>	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time6}"/>  
+                        <e d="${Time7}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment7.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CancelAppointmentRequest xmlns="urn:zimbraMail" id="${appointment7.id}" comp="0">
+                <m>
+                   <su>Cancelled${appointment.subject}</su>
+                    <mp content-type="text/plain">
+                        <content> Action: Cancelled ${appointment.subject}" </content>
+                    </mp>
+                </m>
+            </CancelAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CancelAppointmentResponse"/>
+        </t:response>
+    </t:test> 
+         
+</t:test_case>
+
+<t:test_case testcaseid="ModifyAppointmentRequest_01" type="smoke" >
+    <t:objective>Smoke test for ModifyAppointmentRequest </t:objective>	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time7}"/>  
+                        <e d="${Time8}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment8.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="time.20071201120000.gmt" value="1196510400000"/>
+    
+    <t:test>
+        <t:request>
+            <ModifyAppointmentRequest xmlns="urn:zimbraMail" id="${appointment8.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment.newsubject}" >
+	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.newsubject}</su>
+                </m>
+            </ModifyAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ModifyAppointmentResponse" attr="invId" set="appt1.invId"/>
+        </t:response>
+    </t:test>
+         
+</t:test_case>
+
+<t:test_case testcaseid="ForwardAppointmentRequest_01" type="smoke" >
+    <t:objective>Smoke test for ForwardAppointmentRequest </t:objective>	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time8}"/>  
+                        <e d="${Time9}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment8.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="forward.subject" value="subject${TIME}${COUNTER}"/>
+	<t:property name="forward.content" value=".content${TIME}${COUNTER}"/>
+    
+    <t:test>
+        <t:request>
+            <ForwardAppointmentRequest xmlns="urn:zimbraMail" id="${appointment8.id}">
+                <m>
+					<e t="t" a="${test_account2.name}"/>
+					<su>${forward.subject}</su>
+					<mp ct="text/plain">
+					    <content>${forward.content}</content>
+					</mp>
+                </m>
+            </ForwardAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ForwardAppointmentResponse">
+            </t:select>
+       </t:response>
+    </t:test>    
+             
+</t:test_case>
+
+<t:test_case testcaseid="SendInviteReplyRequest_01" type="smoke" >
+    <t:objective>Smoke test for SendInviteReplyRequest </t:objective>	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment11.subject}" loc="${appointment11.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time10}"/>  
+                        <e d="${Time11}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment11.content}</content>
+                    </mp>
+                    <su>${appointment11.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment11.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test required="true">
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${appointment11.subject})</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="id" set="message11.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message11.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+             <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp" attr="compNum" set="account2.compNum"/>
+             <t:select path="//mail:GetMsgResponse/mail:m/mail:inv/mail:comp" attr="apptId" set="account2.message11.apptId" />
+            
+        </t:response>
+    </t:test>
+	
+	<t:property name="verb.response" value="ACCEPT"/>
+	<t:property name="verb.expected" value="AC"/>
+	
+	<t:test>
+        <t:request>
+			<SendInviteReplyRequest xmlns="urn:zimbraMail" verb="${verb.response}" id="${message11.id}" compNum="${account2.compNum}" updateOrganizer="TRUE">
+				<m rt="r">
+					<e t="t" a="${test_account1.name}"/>
+					<su>${verb.response}: ${appointment.subject}</su>
+					<mp ct="text/plain">
+						<content>${verb.response}</content>
+					</mp>
+				</m>
+			</SendInviteReplyRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendInviteReplyResponse"/>
+        </t:response>
+    </t:test>    
+    
+</t:test_case>
+
+<t:test_case testcaseid="ForwardAppointmentInviteRequest_01" type="smoke" >
+    <t:objective>Smoke test for ForwardAppointmentInviteRequest </t:objective>	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment14.subject}" loc="${appointment14.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time14}"/>  
+                        <e d="${Time15}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment14.content}</content>
+                    </mp>
+                    <su>${appointment14.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment14.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${appointment14.subject})</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="id" set="message14.id"/>
+            </t:select>
+        </t:response>
+    </t:test>   
+	
+	<t:test>
+        <t:request>
+			<ForwardAppointmentInviteRequest xmlns="urn:zimbraMail"  id="${message14.id}" >
+				<m rt="r">
+					<e t="t" a="${test_account1.name}"/>
+					<e t="f" a="${test_account2.name}"/>
+					<su>Forward: ${appointment14.subject}</su>
+					<mp ct="text/plain">
+						 <content>${appointment14.content}</content>
+					</mp>
+				</m>
+			</ForwardAppointmentInviteRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ForwardAppointmentInviteResponse"/>
+        </t:response>
+    </t:test>    
+    
+</t:test_case>
+
+<t:test_case testcaseid="GetAppointmentRequest_01" type="smoke" >
+    <t:objective>Smoke test for GetAppointmentRequest </t:objective>	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time11}"/>  
+                        <e d="${Time12}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment12.id"/>
+        </t:response>
+    </t:test>    
+
+   <t:test depends="GetAppointmentRequest1a">
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appointment12.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp" attr="name" match="${appointment.subject}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="CounterAppointmentRequest_01" type="sanity" >
+    <t:objective>Sanity test for CounterAppointmentRequest and DeclineCounterAppointmentRequest </t:objective>	
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time12}"/>  
+                        <e d="${Time13}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="calItemId" set="calItemId1"/>
+        </t:response>
+    </t:test>
+    
+   <t:test required="true">
+      <t:request>
+        <GetAppointmentRequest xmlns="urn:zimbraMail" id="${calItemId1}"/>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp">
+          <t:select attr="uid" set="calItemUid1"/>
+          <t:select attr="seq" set="calItemSeq1"/>
+        </t:select>
+      </t:response>
+   </t:test>
+
+   <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+      <t:request>
+        <CounterAppointmentRequest xmlns="urn:zimbraMail">
+          <m>
+            <e a="${test_account2.name}" t="t"/>          
+            <su>New Time Proposed: ${appointment.subject}</su>
+            <mp ct="text/plain">
+              <content>Let's meet some other time.  uid=${calItemUid1}, seq=${calItemSeq1}</content>
+            </mp>
+            <inv>
+              <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
+                 <s d="${Time13}"/>  
+                 <e d="${Time14}"/>  
+                <or a="${test_account1.name}"/>
+              </comp>
+        	</inv>           
+          </m>
+         </CounterAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CounterAppointmentResponse"/>
+        </t:response>
+    </t:test>
+    
+   <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+      <t:request>
+        <DeclineCounterAppointmentRequest xmlns="urn:zimbraMail">
+          <m>
+            <e a="${test_account2.name}" t="t"/>          
+            <su>Proposal Declined:: ${appointment.subject}</su>
+            <mp ct="text/plain">
+               <content>No, let's stick to the original plan.</content>
+            </mp>
+            <inv>
+              <comp name="New Time Proposed: ${appointment.subject}" uid="${calItemUid1}" seq="${calItemSeq1}">
+                 <s d="${Time13}"/>  
+                 <e d="${Time14}"/>  
+                <or a="${test_account1.name}"/>
+              </comp>
+        	</inv>           
+          </m>
+        </DeclineCounterAppointmentRequest>
+      </t:request>
+      <t:response>
+           <t:select path="//mail:DeclineCounterAppointmentResponse"/>
+      </t:response>
+   </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="ExpandRecur_01" type="sanity">
+    <t:objective>Sanity test for ExpandRecurRequest.  </t:objective>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+	<t:property name="appointment.content" value="Content of the message${TIME}.${COUNTER}"/>
+
+	<t:property name="time.20090101120000.gmt" value="1230811200000"/>
+	<t:property name="time.20090101120000.pst" value="${TIME(-8h)[${time.20090101120000.gmt}]}"/>
+
+	<t:test>
+        <t:request>
+			<ExpandRecurRequest xmlns="urn:zimbraMail" s="${TIME(+10d)[${time.20090101120000.gmt}]}" e="${TIME(+20d)[${time.20090101120000.gmt}]}">
+				<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.subject}">
+					<s d="${ICALTIME[${time.20090101120000.pst}]}" tz="${timezone.pst}" />
+					<e  d="${ICALTIME(+3h)[${time.20090101120000.pst}]}" tz="${timezone.pst}" />
+					<or a="${test_account1.name}"/>
+					<recur>
+						<add>
+							<rule freq="DAI">
+								<interval ival="1"/>
+							</rule>
+						</add>
+					</recur>
+				</comp>
+ 			</ExpandRecurRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//mail:ExpandRecurResponse">
+				<t:select path="//mail:inst[@ridZ='20090111T120000Z']"/>
+			</t:select>
+		</t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetICalRequest_01" type="smoke" >
+	<t:objective>Smoke test for GetICalRequest </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>    
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time9}"/>  
+                        <e d="${Time10}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment9.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request >
+            <GetICalRequest xmlns="urn:zimbraMail" s="${TIME(-2d)}" e="${TIME(+2d)}"/>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetICalResponse" attr="ical" set="ics.string"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetMiniCalRequest_01" type="smoke" >
+	<t:objective>Smoke test for GetMiniCalRequest </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>    
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment9.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>            
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
+        </t:response>
+   </t:test>    
+
+   <t:test >
+        <t:request>
+            <GetMiniCalRequest xmlns="urn:zimbraMail" s="${TIME(-2d)}" e="${TIME(+2d)}">       
+				<folder id="${folder.calendar}" />			
+			</GetMiniCalRequest>
+        </t:request>        
+        <t:response>
+			<t:select path = "//mail:GetMiniCalResponse/mail:date"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+
+<t:test_case testcaseid="ImportAppointmentsRequest_01" type="smoke">
+	<t:objective>Smoke test for ImportAppointmentsRequest	</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+	<t:property name="uploadServletServer" value="${test_acct.server}"/>
+	<t:property name="server.restServlet" value="${test_acct.server}"/>
+	
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>    
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+   <t:test>
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>            
+            <t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="folder.calendar"/>
+        </t:response>
+   </t:test>
+
+   <t:test required="true">
+		<t:request>
+			<ImportAppointmentsRequest xmlns="urn:zimbraMail" ct="ics" l="${folder.calendar}">
+			<content aid="${message1.aid}"/>
+			</ImportAppointmentsRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:ImportAppointmentsResponse/mail:appt" />
+		</t:response>
+	</t:test>
+   
+</t:test_case> 
+
+<t:test_case testcaseid="DismissCalendarItemAlarmRequest_01" type="smoke" >
+	<t:objective>Smoke test for DismissCalendarItemAlarmRequest </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+    <t:test>
+       <t:request>
+          <CreateAppointmentRequest xmlns="urn:zimbraMail">
+           <m>
+            <e t="f" a="${test_account2.name}"/>          
+            <inv>
+              <tz id="PacificTime" stdoff="-480" dayoff="-420">
+                <standard week="-1" wkday="1" mon="10" hour="2" min="0" sec="0"/>
+                <daylight week="1" wkday="1" mon="4" hour="2" min="0" sec="0"/>
+              </tz>
+              <comp method="REQUEST" type="event" fb="B" transp="O"
+                   status="CONF" class="PUB" allDay="0" name="${appointment.subject}">
+                <s tz="PacificTime" d="20201019T100000"/>
+                <e tz="PacificTime" d="20201019T110000"/>
+                <or a="${test_account1.name}"/>
+                
+                <recur>
+                  <add>
+                    <rule freq="DAI">
+                      <interval ival="1"/>
+                      <count num="5"/>
+                    </rule>
+                  </add>
+                </recur>
+                 
+                <alarm action="DISPLAY">
+                  <trigger>
+                    <rel related="START" neg="1" m="30"/>
+                  </trigger>
+                  <desc>Reminder 2</desc>
+                  <repeat count="2" m="10"/>
+                </alarm>
+              </comp>
+            </inv>
+             <mp content-type="text/plain">
+                  <content>${appointment.content}</content>
+             </mp>
+                <su>${appointment.subject}</su>
+          </m>
+        </CreateAppointmentRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:CreateAppointmentResponse" attr="calItemId" set="apptId"/>
+      </t:response>
+    </t:test>
+
+    <!-- Dismiss alarm -->
+    <t:test id="Dismiss alarm">
+      <t:request>
+        <DismissCalendarItemAlarmRequest xmlns="urn:zimbraMail">
+          <appt id="${apptId}" dismissedAt="1603125000000"/>
+        </DismissCalendarItemAlarmRequest>
+      </t:request>
+      <t:response>
+        <t:select path="//mail:DismissCalendarItemAlarmResponse/mail:appt/mail:alarmData">
+          <t:select attr="nextAlarm" match="1603211400000"/>
+        </t:select>
+      </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SendVerificationCodeRequest_01" type="sanity" >
+    <t:objective>Sanity test for SendVerificationCodeRequest</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+    	<t:request>
+            <SendVerificationCodeRequest xmlns="urn:zimbraMail" a="${test_account1.name}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendVerificationCodeResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="VerifyCodeRequest_01" type="smoke" >
+    <t:objective>Smoke test for VerifyCodeRequest</t:objective>   
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    <t:delay sec="60"/>
+    <t:test>
+    	<t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+            	 <query>"${notification.content}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="fr" set="notification.contentfull"/>
+        </t:response>
+    </t:test>
+    
+    <t:regex input="${notification.contentfull}" regex="(${notification.content})\s(.*)" group="2"  set="notification.code"/>
+    
+	<t:test>
+    	<t:request>
+            <VerifyCodeRequest xmlns="urn:zimbraMail" a="${test_account1.name}" code="${notification.code}">            	 
+            </VerifyCodeRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:VerifyCodeResponse" attr="success" match="1" />
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="InvalidateReminderDeviceRequest_01" type="sanity" >
+    <t:objective>Sanity test for InvalidateReminderDeviceRequest</t:objective>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos1.name}</name>        
+                <a n="zimbraFeatureCalendarReminderDeviceEmailEnabled">TRUE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id"/>     
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCalendarReminderDeviceEmail">${test_account4.name}</a>
+                <a n="zimbraCOSId">${cos.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid4.id"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account4.name}</account>
+                <password>${test_account.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+    	<t:request>
+            <InvalidateReminderDeviceRequest xmlns="urn:zimbraMail" a="${test_account4.name}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:InvalidateReminderDeviceResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="timezone1" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+<t:property name="timezone2" value="(GMT-11.00) Midway Island / Samoa"/>
+<t:property name="appointment.timezone" value="${timezone1}"/>
+
+<t:test_case testcaseid="FixCalendarTZRequest_01" type="sanity" >
+	<t:objective>Sanity test for FixCalendarTZRequest </t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+ 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>    
+    
+    <t:test >
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                 <tz id="My Central Timezone" stdoff="-360" dayoff="-300">
+	                <standard mon="10" mday="1" hour="2" min="0" sec="0"/>
+	                <daylight mon="3" mday="31" hour="2" min="0" sec="0"/>
+	             </tz>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
+                        <s d="${Time16}" tz="My Central Timezone"/>  
+                        <e d="${Time17}" tz="My Central Timezone"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment15.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+    	<t:request>
+            <FixCalendarTZRequest xmlns="urn:zimbraAdmin" >
+            	<account name="${test_account1.name}"/>
+            	<tzfixup>
+  					<fixupRule>   
+	    				<match>
+	    					<any/>
+	    					
+	    				</match>
+	    				<replace>     
+      						<tz id="America/Los_Angeles" dayoff="-420" stdoff="-480" > 
+      						 	<standard sec="0" min="0" hour="2" wkday="1" week="1" mon="11"/>
+            					<daylight min="0" wkday="1" sec="0" week="2" mon="3" hour="2"/>
+            				 </tz>
+   						</replace>	    						
+    				</fixupRule>   
+            	</tzfixup>
+            </FixCalendarTZRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:FixCalendarTZResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+</t:tests>

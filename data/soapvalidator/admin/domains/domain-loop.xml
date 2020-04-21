@@ -1,0 +1,223 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    
+<t:property name="domain.name0" value="domain${TIME}${COUNTER}.com"/>
+<t:property name="domain.name1" value="domain${TIME}${COUNTER}.com"/>
+<t:property name="domain.name2" value="domain${TIME}${COUNTER}.com"/>
+<t:property name="domain.name3" value="domain${TIME}${COUNTER}.com"/>
+
+<t:property name="galmode1" value="ldap"/>
+<t:property name="galresult" value="10"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="accountSetup_Domain_Loop" type="always" >
+    <t:objective>Login to Admin Account</t:objective>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Domain_loop1" type="sanity">
+    <t:objective>Create 100 Domains  </t:objective>    
+    
+    <t:test_loop count="100">
+        <t:test id="domain_loop1a" timeframeMax="1000">
+            <t:request>
+                <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                    <name>domain${TIME}${COUNTER}</name>
+                </CreateDomainRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateDomainResponse/admin:domain" />
+            </t:response>
+        </t:test>
+    </t:test_loop>
+        
+</t:test_case>
+
+
+<t:test_case testcaseid="Domain_loop2" type="sanity" >
+    <t:objective> Get all Domains Request </t:objective>
+    <t:steps>  1. Create one known new Domains 
+               2. Verify that this domain id must return by Search Directory Request 
+    </t:steps>
+    
+    <t:test id="domain_loop2a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name0}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id0" />
+        </t:response>
+    </t:test>
+
+	<t:test depends="domain_loop1a,domain_loop2a" timeframeMax="40000">
+		<t:request>
+			<SearchDirectoryRequest xmlns="urn:zimbraAdmin" offset="0" sortBy="zimbraDomainName" sortAscending="1" types="domains">
+				<query/>
+			</SearchDirectoryRequest>
+		</t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse/admin:domain" attr="id" match="${domain.id0}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Domain_loop3" type="sanity" >
+    <t:objective>Delete the existing domain </t:objective>
+    <t:steps> 1. Create a new Domain 
+              2. Delete it
+    </t:steps>
+    
+    <t:test id="domain_loop3a">
+        <t:request> 
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name1}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="domain_loop3a" timeframeMax="1000">
+        <t:request>
+            <DeleteDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain.id1}</id>
+            </DeleteDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteDomainResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Domain_loop4" type="sanity">
+	<t:objective> Get  Domains Request  (by id/name)</t:objective>
+    <t:steps> 
+        1. Create a new Domain 
+        2. Retrieve it by id
+    </t:steps>
+    
+    <t:test id="domain_loop4a">
+        <t:request> 
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name2}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id2"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="domain_loop4a" timeframeMax="100">
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain.id2}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetDomainResponse/admin:domain" attr="id"  match="${domain.id2}"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="domain_loop4a" timeframeMax="100">
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="name">${domain.name2}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+	        <t:select path="//admin:GetDomainResponse/admin:domain" attr="name"  match="${domain.name2}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Domain_loop5" type="sanity" >
+    <t:objective>Modify a a domain   </t:objective>
+    <t:steps> 1. Create a Domain
+              2. Modify the attributes
+    </t:steps>
+    
+    <t:test id="domain_loop5a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name3}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name3}</a>
+                <a n="zimbraNotes">${domain.name3}</a>
+                <a n="zimbraGalLdapURL">${domain.name3}</a>
+                <a n="zimbraGalLdapSearchBase">${domain.name3}</a>
+                <a n="zimbraGalLdapBindDn">${domain.name3}</a>
+                <a n="zimbraGalLdapBindPassword">${domain.name3}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraGalLdapFilter">${domain.name3}</a>
+                <a n="zimbraAuthLdapURL">${domain.name3}</a>
+                <a n="zimbraAuthLdapBindDn">${domain.name3}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id3"/>
+        </t:response>
+    </t:test>
+
+    <t:test depends="domain_loop5a" timeframeMax="1000">
+        <t:request>
+            <ModifyDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain.id3}</id>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="description">${galmode1}</a>
+                <a n="zimbraNotes">${galmode1}</a>
+                <a n="zimbraGalLdapURL">${galmode1}</a>
+                <a n="zimbraGalLdapSearchBase">${galmode1}</a>
+                <a n="zimbraGalLdapBindDn"/>
+                <a n="zimbraGalLdapBindPassword">${galmode1}</a>
+                <a n="zimbraGalLdapFilter"/>
+                <a n="zimbraAuthLdapURL">${galmode1}</a>
+                <a n="zimbraAuthLdapBindDn">${galmode1}</a>
+            </ModifyDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain" attr="id" match="${domain.id3}"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+    
+    
+</t:tests>

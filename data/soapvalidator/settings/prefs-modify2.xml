@@ -1,0 +1,693 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+<t:property name="prefs.negative" value="-5"/>
+<t:property name="prefs.decimal" value="6.5"/>
+<t:property name="prefs.invalid" value="0088"/>
+<t:property name="prefs.alpha" value="abcd"/>
+<t:property name="prefs.blank" value=""/>
+
+<t:property name="composeformat.text" value="text"/>
+<t:property name="composeformat.html" value="html"/>
+
+<t:property name="calendarview.day" value="day"/>
+<t:property name="calendarview.workweek" value="workWeek"/>
+<t:property name="calendarview.week" value="week"/>
+<t:property name="calendarview.month" value="month"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>create test account</t:objective>
+    <t:steps>1. Login to admin.
+             2. Create a test account.
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test  required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>                
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest1" type="smoke">
+    <t:objective> Set zimbraPrefComposeFormat attribute to html/text </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeFormat">${composeformat.html}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeFormat"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeFormat']" match ="${composeformat.html}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeFormat">${composeformat.text}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeFormat"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeFormat']" match ="${composeformat.text}"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest2" type="functional" >
+    <t:objective> Set zimbraPrefMailItemsPerPage attribute to some values like negative/decimal/starting with zero/alpha </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeFormat">${prefs.negative}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeFormat">${prefs.decimal}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeFormat">${prefs.invalid}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeFormat">${prefs.alpha}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeFormat">${prefs.blank}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest3" type="deprecated" >
+    <t:objective> Set zimbraPrefForwardReplyInOriginalFormat attribute to html/text </t:objective>
+
+   <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${globals.true}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyInOriginalFormat']" match ="${globals.true}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${globals.false}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefForwardReplyInOriginalFormat']" match ="${globals.false}"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest4" type="deprecated" >
+    <t:objective> Set zimbraPrefForwardReplyInOriginalFormat attribute to some values like negative/decimal/starting with zero/alpha </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.negative}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.decimal}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.invalid}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.alpha}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefForwardReplyInOriginalFormat">${prefs.blank}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest5" type="bhr">
+    <t:objective> Set zimbraPrefComposeInNewWindow attribute to true/false </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeInNewWindow">${globals.true}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeInNewWindow"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeInNewWindow']" match ="${globals.true}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeInNewWindow">${globals.false}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeInNewWindow"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefComposeInNewWindow']" match ="${globals.false}"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest6" type="functional" >
+    <t:objective> Set zimbraPrefComposeInNewWindow attribute to some values like negative/decimal/starting with zero/alpha </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeInNewWindow">${prefs.negative}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeInNewWindow">${prefs.decimal}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeInNewWindow">${prefs.invalid}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeInNewWindow">${prefs.alpha}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefComposeInNewWindow">${prefs.blank}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest7" type="bhr">
+    <t:objective> Set zimbraPrefCalendarInitialView attribute to true/false </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView">${calendarview.day}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarInitialView']" match ="${calendarview.day}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView">${calendarview.workweek}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarInitialView']" match ="${calendarview.workweek}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView">${calendarview.week}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarInitialView']" match ="${calendarview.week}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView">${calendarview.month}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefCalendarInitialView']" match ="${calendarview.month}"/>
+         </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest8" type="functional" >
+    <t:objective> Set zimbraPrefCalendarInitialView attribute to some values like negative/decimal/starting with zero/alpha </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView">${prefs.negative}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView">${prefs.decimal}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView">${prefs.invalid}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView">${prefs.alpha}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefCalendarInitialView">${prefs.blank}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest9" type="bhr">
+    <t:objective> Set zimbraPrefUseTimeZoneListInCalendar attribute to html/text </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefUseTimeZoneListInCalendar">${globals.true}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefUseTimeZoneListInCalendar"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseTimeZoneListInCalendar']" match ="${globals.true}"/>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefUseTimeZoneListInCalendar">${globals.false}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefUseTimeZoneListInCalendar"/>
+            </GetPrefsRequest >
+        </t:request>
+        <t:response>
+            <t:select path="//acct:GetPrefsResponse/acct:pref[@name='zimbraPrefUseTimeZoneListInCalendar']" match ="${globals.false}"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyPrefsRequest10" type="functional" >
+    <t:objective> Set zimbraPrefUseTimeZoneListInCalendar attribute to some values like negative/decimal/starting with zero/alpha </t:objective>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefUseTimeZoneListInCalendar">${prefs.negative}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefUseTimeZoneListInCalendar">${prefs.decimal}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefUseTimeZoneListInCalendar">${prefs.invalid}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefUseTimeZoneListInCalendar">${prefs.alpha}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.INVALID_ATTR_VALUE"/> 
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                <pref name="zimbraPrefUseTimeZoneListInCalendar">${prefs.blank}</pref>
+            </ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>

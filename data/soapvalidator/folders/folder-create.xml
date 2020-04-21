@@ -1,0 +1,607 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+
+
+<t:property name="folder.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder2.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder3.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder4.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder5.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder6.name" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="folder6.newname" value="folder.${TIME}.${COUNTER}"/>
+    
+<t:property name="folder.nonlatinname" value="&#12465;&#12525;&#12525;&#36557;&#26361;"/>    
+
+<t:property name="folder.spaceinname" value="fold      er.${TIME}.${COUNTER}"/>
+<t:property name="folder.blankname" value=""/>
+<t:property name="folder.space" value="            "/>
+<t:property name="folder.spchar" value=":/\\.;&lt;*''"/>
+<t:property name="folder.pname" value="1"/> <!-- Folder's parent ID -->
+<t:property name="folder.pnameZero" value="0"/>
+<t:property name="other.user" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+    <t:objective>create test account</t:objective>
+    <t:steps> 
+        1. Login to admin.
+        2. Create admin account. 
+    </t:steps>
+
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="false" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+                <!-- 
+                <a n="zimbraMailHost">${LOCALHOST}</a>
+                <a n="zimbraMailStatus">enabled</a>
+                <a n="zimbraMailDeliveryAddress">${test_account1.name}</a> 
+                <a n="zimbraPasswordMinAge">7</a>
+                Commenting out the optional attributes and sending the request with minimal requirement
+                 -->
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+</t:test>
+
+    <t:test  id="create_test_account2" depends="admin_login" >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${other.user}</name>
+                <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="otheruser.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+    <t:objective>login as the test account</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+                <!--<prefs/>-->
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest1" type="smoke">
+    <t:objective>Create a folder with valid name </t:objective>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder.id"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest2" type="sanity" >
+    <t:objective>Create a folder with blank folder name </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.blankname}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.INVALID_NAME"/>            
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+
+<t:test_case testcaseid="CreateFolderRequest3" type="sanity" >
+ <t:objective>Create a folder with all spaces in folder name </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.space}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.INVALID_NAME"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest4" type="sanity" >
+    <t:objective>Create a folder with special characters in folder name </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.spchar}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.INVALID_NAME"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest5" type="sanity" >
+    <t:objective>Create a folder with duplicate folder name </t:objective>
+
+    <t:test depends="CreateFolderRequest1a">
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>        
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest6" type="sanity" >
+    <t:objective>Create a folder with nonexisting parent folder name </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder3.name}" l="${folder.pnameZero}"/>
+            </CreateFolderRequest>
+         </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_FOLDER|^mail.NO_SUCH_ITEM"/>        
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest7" type="functional" bugids="1744" >
+    <t:objective>Create a folder with blank parent folder name </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder4.name}" l="${folder.blankname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^service.INVALID_REQUEST$"/>    
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest8" type="functional" >
+    <t:objective>Create a folder with No parent folder name </t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder5.name}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+         <t:select path="//mail:CreateFolderResponse/mail:folder"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest9" type="sanity" >
+    <t:objective>Create a folder with duplicate name but with leading spaces </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="            ${folder.name}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest10" type="sanity" >
+    <t:objective>Create a folder with duplicate name but with trailing spaces </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}           " l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+        <t:select path="//zimbra:Code" match="^mail.ALREADY_EXISTS"/>   
+        </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="CreateFolderRequest11" type="sanity" >
+    <t:objective>Create a folder having spaces within the folder name</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.spaceinname}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>     
+         <t:select path="//mail:CreateFolderResponse/mail:folder"/>
+        </t:response>
+</t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="CreateFolderRequest12" type="sanity" bugids="2813">
+    <t:objective>Create a folder with non-latin-1 name </t:objective>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.nonlatinname}" l="${folder.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id"/>
+        </t:response>
+</t:test>
+
+</t:test_case>    
+
+
+<t:test_case testcaseid="CreateFolderRequest13" type="sanity" bugids="8170">
+    <t:objective> Verify color and flag (as checked) can be set while creating folders </t:objective>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder[@id='1']" attr="name" match="USER_ROOT"/>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="folder_inbox.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="folder_trash.id"/>
+            <t:select path="//mail:folder[@name='${globals.sent}']" attr="id" set="folder_sent.id"/>
+            <t:select path="//mail:folder[@name='${globals.spam}']" attr="id" set="folder_spam.id"/> 
+
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder.name}" l="${folder_inbox.id}" color="3" f="checked"/>
+				<acl> 
+					<grant perm="rwidax" gt="usr" zid="${test_account1.id}" d="${other.user}"/> 
+				</acl>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="myfolder.id"/>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="color" match="3"/>
+        </t:response>
+	</t:test>
+
+</t:test_case>    
+
+
+
+<t:test_case testcaseid="436615" type="sanity" >
+    <t:objective> Verify  CreateFolderRequest for flag value "#" </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Folder${TIME}" l="${folder_inbox.id}" color="3" f="#" view="appointment"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="myfolder.id"/>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="color" match="3"/>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="f" match="#"/>
+        </t:response>
+	</t:test>
+
+</t:test_case>    
+
+
+<t:test_case testcaseid="CreateFolderRequest15" type="sanity" >
+    <t:objective> Verify if f="b" is specified, it do not include any appointments from this folder in the users F/B</t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Calendar${TIME}" l="1" color="3" f="b" view="appointment"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="myfolder.id"/>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="color" match="3"/>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="f" match="b"/>
+        </t:response>
+	</t:test>
+
+<t:property name="appointment1.subject" value="subject.${TIME}.${COUNTER}"/>
+<t:property name="appointment1.location" value="location.${TIME}.${COUNTER}"/>
+<t:property name="appointment1.content" value="folder.${TIME}.${COUNTER}"/>
+<t:property name="appt1.start" value="1264098600000"/>
+
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m l="${myfolder.id}">
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment1.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${other.user}"/>
+                        <s d="${ICALTIME[${appt1.start}]}"/>  
+                        <e d="${ICALTIME(+1h)[${appt1.start}]}"/>  
+                        <or a="${test_account1.name}"/>
+                    </inv>
+                    <e a="${test_account1.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment1.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse" />
+        </t:response>
+    </t:test>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${other.user}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+            </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-2d)[${appt1.start}]}" e="${TIME(+2d)[${appt1.start}]}" uid="${test_account1.id}"/>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:GetFreeBusyResponse//mail:usr" attr="b" emptyset="1"/>            
+        </t:response>
+    </t:test>
+
+</t:test_case>  
+
+
+<t:test_case testcaseid="CreateFolderRequest16" type="sanity" >
+    <t:objective> Verify CreateFolderRequest with flag value "*" </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="Folder${TIME}" l="${folder_inbox.id}" color="3" f="*" view="appointment"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="color" match="3"/>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="f" match="\*"/>
+        </t:response>
+	</t:test>
+
+</t:test_case>    
+
+<t:test_case testcaseid="CreateFolderRequest17" type="sanity" bugids="32397">
+    <t:objective> CreateFolderRequest works when full path is specified instead of parent folder id </t:objective>
+
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="/Folder${TIME}" color="3"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="color" match="3"/>
+        </t:response>
+	</t:test>
+
+</t:test_case>    
+
+<t:test_case testcaseid="CreateFolderRequest18" type="sanity" bugids="35890">
+    <t:objective> CreateFolderRequest sets the view correctly for nested folders </t:objective>
+
+	<t:property name="folder1.name" value="folder${TIME}${COUNTER}"/>
+	<t:property name="folder2.name" value="folder${TIME}${COUNTER}"/>
+	<t:property name="folder3.name" value="folder${TIME}${COUNTER}"/>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path='//mail:folder/mail:folder[@name="${globals.briefcase}"]' attr="id" set="briefcase.id"/>
+				<t:select path='//mail:folder[@name="USER_ROOT"]' attr="id" set="root.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test id="CreateFolderRequest1a" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${root.id}" name="Notebook" view="document"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder0.id" />
+        </t:response>
+	</t:test>
+
+	<t:test id="CreateFolderRequest1b" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${folder0.id}" name="${folder1.name}" view="document"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id" />
+        </t:response>
+	</t:test>
+
+	<t:test id="CreateFolderRequest1c" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${folder1.id}" name="${folder2.name}" view="document"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder2.id" />
+        </t:response>
+	</t:test>
+
+	<t:test id="CreateFolderRequest1d" >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="${folder2.id}" name="${folder3.name}" view="document"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder3.id" />
+        </t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${folder1.name}']" attr="id" set="folder1.id"/>
+				<t:select path="//mail:folder[@name='${folder2.name}']" attr="id" set="folder2.id"/>
+				<t:select path="//mail:folder[@name='${folder3.name}']" attr="id" set="folder3.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${folder3.id}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse">
+              	<t:select path="//mail:folder" attr="view" match="document"/>
+              </t:select>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${folder2.id}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse">
+              	<t:select path="//mail:folder" attr="view" match="document"/>
+              </t:select>
+         </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetItemRequest xmlns="urn:zimbraMail">
+                <item id="${folder1.id}"/>
+            </GetItemRequest>
+        </t:request>
+         <t:response>
+              <t:select path="//mail:GetItemResponse">
+              	<t:select path="//mail:folder" attr="view" match="document"/>
+              </t:select>
+         </t:response>
+    </t:test>
+
+
+</t:test_case>    
+
+</t:tests>

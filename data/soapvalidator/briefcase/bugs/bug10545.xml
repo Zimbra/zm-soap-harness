@@ -1,0 +1,424 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="account1.document.attachfile1" value="${testMailRaw.root}/bug10545/testfile1.txt"/>
+<t:property name="account1.document.attachfile2" value="${testMailRaw.root}/bug10545/testfile2.txt"/>
+<t:property name="account1.document.attachfile3" value="${testMailRaw.root}/bug10545/testfile3.txt"/>
+<t:property name="account1.document.attachfile4" value="${testMailRaw.root}/bug10545/testfile4.txt"/>
+<t:property name="account1.document.attachfile5" value="${testMailRaw.root}/bug10545/testfile5.txt"/>
+
+<t:property name="grant.usr"		value="usr"/>
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.flag"			value="flag"/>
+<t:property name="op.unflag"		value="!flag"/>
+
+<t:test_case testcaseid="NoteFlag_Setup" type="always" >
+    <t:objective>basic system check</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>  
+  
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	 <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="NoteFlag_01" type="bhr">
+    <t:objective>Save a briefcase file with note flag and try to remove the note flag </t:objective>
+    
+    <t:steps>
+	    1. Upload a text file in the briefcase folder
+	    2. Save the document with f="t" and verify the save response has f="t	   
+    </t:steps>
+		
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.attachfile1}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attachfile1.id"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}"  f="t">
+			    <upload id="${document.attachfile1.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">			
+				<query> in:"briefcase" </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document1.id}']" attr="f" match="t"/>
+		</t:response>
+	</t:test>     
+	
+</t:test_case>
+
+<t:test_case testcaseid="NoteFlag_02" type="bhr">
+    <t:objective>Save a briefcase file with a note flag and try to remove the note flag </t:objective>
+    
+    <t:steps>
+	    1. Upload a text file in the briefcase folder
+	    2. Save the document with f="t" and verify the save response has f="t:
+	    3. Try to unflag the document
+	    4. Verify the Document has f="t"
+    </t:steps>
+
+		
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.attachfile2}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attachfile2.id"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test>
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}"  f="t">
+			    <upload id="${document.attachfile2.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">			
+				<query> in:"briefcase" </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document2.id}']" attr="f" match="t"/>
+		</t:response>
+	</t:test>
+	
+     <t:test >
+        <t:request>
+            <ItemActionRequest  xmlns="urn:zimbraMail">
+                <action id="${document2.id}" op="${op.unflag}"/>            
+            </ItemActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.unflag}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${document2.id}"/>
+        </t:response>
+    </t:test>
+     
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">			
+				<query> in:"briefcase" </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document2.id}']" attr="f" match="t"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="NoteFlag_03" type="bhr">
+    <t:objective>Save a document without a note flag and try add later note flag </t:objective>
+    
+    <t:steps>	   
+	    1. Upload a text file in the briefcase folder
+	    2. Save the document without any flag
+	    3. Search that document does not have f="t" 
+	    4. Try to a note flag to the doc	   
+    </t:steps>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.attachfile3}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attachfile3.id"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}">
+			    <upload id="${document.attachfile3.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document3.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">			
+				<query> in:"briefcase" </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document3.id}']" attr="f" match="t" emptyset="1"/>
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document3.id}']" attr="f" match="" />
+		</t:response>
+	</t:test>
+	
+    <t:test >
+        <t:request>
+            <ItemActionRequest  xmlns="urn:zimbraMail">
+                <action id="${document3.id}" op="${op.flag}" f="t"/>            
+            </ItemActionRequest >
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "op" match = "${op.flag}"/>
+            <t:select path = "//mail:ItemActionResponse/mail:action" attr = "id" match = "${document3.id}"/>
+        </t:response>
+    </t:test>
+     
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">			
+				<query> in:"briefcase" </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>			
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document3.id}']" attr="f" match="t" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="NoteFlag_04" type="sanity">
+    <t:objective>Verify that note flag cannot be added in later revision </t:objective>
+    
+    <t:steps>	    
+	    1. Upload a text file in the briefcase folder
+	    2. Save the document witout f="t" (note flag) for rev=1
+	    3. Save 2nd rev with f=t
+	    4. Verify the saved document does not have f=t.
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.attachfile4}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attachfile4.id"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}">
+			    <upload id="${document.attachfile4.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document4.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">			
+				<query> in:"briefcase" </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document4.id}']" attr="f" match="t" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.attachfile4}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attachfile4.id"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc id="${document4.id}" ver="1" f="t" onerror="continue" >
+			    <upload id="${document.attachfile4.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document4.id"/>
+        </t:response>
+    </t:test>	
+        
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">			
+				<query> in:"briefcase" </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document4.id}']" attr="f" match="t" emptyset="1"/>
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+<t:test_case testcaseid="NoteFlag_05" type="sanity">
+    <t:objective>Verify that multi-versioned document has note flag even though note flag is not added for later rev</t:objective>
+    
+    <t:steps>	    
+	    1. Upload a text file in the briefcase folder
+	    2. Save the document f="t" (note flag) for rev=1
+	    3. Save 2nd rev without f="t"
+	    4. Verify the saved document has f="t".
+    </t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.attachfile5}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attachfile5.id"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc l="${account1.folder.briefcase.id}" f="t">
+			    <upload id="${document.attachfile5.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document5.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">			
+				<query> in:"briefcase" </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document5.id}']" attr="f" match="t"/>
+		</t:response>
+	</t:test>
+	
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${account1.document.attachfile5}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="document.attachfile5.id"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+	     
+	<t:test >
+        <t:request>
+			<SaveDocumentRequest xmlns="urn:zimbraMail">
+			  <doc id="${document5.id}" ver="1"  onerror="continue" >
+			    <upload id="${document.attachfile5.id}"/>
+			  </doc>
+			</SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document5.id"/>
+        </t:response>
+    </t:test>	
+        
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="document">			
+				<query> in:"briefcase" </query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:doc[@id='${document5.id}']" attr="f" match=".*t.*" />
+		</t:response>
+	</t:test>
+	
+</t:test_case>
+
+</t:tests>
+

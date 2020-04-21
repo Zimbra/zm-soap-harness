@@ -1,0 +1,528 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="account1.name" value="test1${TIME}@${defaultdomain.name}" />
+	<t:property name="account1.password" value="${defaultpassword.value}" />
+
+	<t:property name="account2.name" value="test2${TIME}@${defaultdomain.name}" />
+	<t:property name="account2.password" value="${defaultpassword.value}" />
+
+	<t:property name="malformedEmail" value="abc.com" />
+	<t:property name="invalidRecoveryCode" value="abc1234" />
+
+	<t:property name="account3.name" value="test3${TIME}@${defaultdomain.name}" />
+	<t:property name="account3.password" value="${defaultpassword.value}" />
+
+	<t:property name="account4.name" value="test4${TIME}@${defaultdomain.name}" />
+	<t:property name="account4.password" value="${defaultpassword.value}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>Basic system check</t:objective>
+		<t:test id="ping">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="Account_Setup" type="always">
+		<t:objective>Create user account</t:objective>
+		<t:steps>1. Login to admin.
+			2. Create test accounts
+		</t:steps>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_testAccount1" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${account1.password}</password>
+					<a n="zimbraFeatureResetPasswordStatus">enabled</a>
+					<a n="zimbraPasswordLockoutEnabled">TRUE</a>
+					<a n="zimbraPasswordLockoutMaxFailures">2</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id" />
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_testAccount2" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account2.name}</name>
+					<password>${account2.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_testAccount3" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account3.name}</name>
+					<password>${account3.password}</password>
+					<a n="zimbraFeatureResetPasswordStatus">enabled</a>
+					<a n="zimbraPasswordLockoutEnabled">TRUE</a>
+					<a n="zimbraPasswordLockoutMaxFailures">2</a>
+					<a n="zimbraPasswordLockoutFailureLifetime">30s</a>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account3.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="create_testAccount4" required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account4.name}</name>
+					<password>${account4.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id" />
+			</t:response>
+		</t:test>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="Set_recovery_email_account1" type="bhr" bugids="ZCS-4798">
+		<t:objective>Set recovery email and validate it using code</t:objective>
+
+		<t:steps>
+			1. Log in as account 1.
+			2. Set recovery email as same as that of account 2.
+			3. Log in as account 2.
+			4. Verify that recovery code has
+			been sent.
+			5. Validate recovery email for account1.
+		</t:steps>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="sendCode">
+			<t:request>
+				<SetRecoveryAccountRequest op="sendCode" recoveryAccount="${account2.name}" channel="email" xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SetRecoveryAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth_testAccount2" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account2.name}</account>
+					<password>${account2.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:delay sec="20" />
+
+		<t:test id="SearchRequest_for_recoveryCode_email">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>${account1.name} </query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message.id1" />
+				<t:select path="//mail:SearchResponse/mail:c/mail:fr" set="message.content" />
+			</t:response>
+		</t:test>
+
+		<t:regex input="${message.content}" regex="^Verification of your recovery email address Recovery email verification code: (.*) The code expires by: (.*)$"
+			group="1" set="account1.recoverycode" />
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="validateCode">
+			<t:request>
+				<SetRecoveryAccountRequest op="validateCode" recoveryAccountVerificationCode="${account1.recoverycode}" channel="email" xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SetRecoveryAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_recoveryEmail_status">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefPasswordRecoveryAddress']" match="${account2.name}" />
+						<t:select path="//admin:a[@n='zimbraPrefPasswordRecoveryAddressStatus']" match="verified" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="Set_recovery_email_account3" type="bhr" bugids="ZCS-4798">
+		<t:objective>Set recovery email and validate it using code</t:objective>
+
+		<t:steps>
+			1. Log in as account 3.
+			2. Set recovery email as same as that of account 4.
+			3. Log in as account 4.
+			4. Verify that recovery code has
+			been sent.
+			5. Validate recovery email for account3.
+		</t:steps>
+
+		<t:test id="auth_testAccount3" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<password>${account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="sendCode">
+			<t:request>
+				<SetRecoveryAccountRequest op="sendCode" recoveryAccount="${account4.name}" channel="email" xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SetRecoveryAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="auth_testAccount4" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account4.name}</account>
+					<password>${account4.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:delay sec="20" />
+
+		<t:test id="SearchRequest_for_recoveryCode_email">
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>${account3.name} </query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="message.id3" />
+				<t:select path="//mail:SearchResponse/mail:c/mail:fr" set="message.content" />
+			</t:response>
+		</t:test>
+
+		<t:regex input="${message.content}" regex="^Verification of your recovery email address Recovery email verification code: (.*) The code expires by: (.*)$"
+			group="1" set="account3.recoverycode" />
+
+		<t:test id="auth_testAccount3" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<password>${account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="validateCode">
+			<t:request>
+				<SetRecoveryAccountRequest op="validateCode" recoveryAccountVerificationCode="${account3.recoverycode}" channel="email" xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SetRecoveryAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_recoveryEmail_status">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account3.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraPrefPasswordRecoveryAddress']" match="${account4.name}" />
+						<t:select path="//admin:a[@n='zimbraPrefPasswordRecoveryAddressStatus']" match="verified" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="Verify_for_lockout_on_max_attempts" type="bhr" bugids="ZCS-5102">
+		<t:objective>Get recovery details for the account and verify account lockout scenario .</t:objective>
+
+		<t:steps>
+			1. Log in with account 3.
+			2. Send recovery code to the recovery email.
+			3. Verify that recovery email account receives recovery code.
+			4.
+			Verify that the account gets locked on max invalid attempts.
+		</t:steps>
+
+		<t:test id="auth_testAccount1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="sendRecoveryCode_for_valid_user">
+			<t:request>
+				<RecoverAccountRequest op="sendRecoveryCode" email="${account1.name}" channel="email" xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select path="//mail:RecoverAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="invalid_auth_testAccount_attempt1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<recoveryCode>${invalidRecoveryCode}</recoveryCode>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Fault/soap:Reason/soap:Text" matches="authentication failed for [${account1.name}]" />
+			</t:response>
+		</t:test>
+
+		<t:test id="invalid_auth_testAccount_attempt2" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<recoveryCode>${invalidRecoveryCode}</recoveryCode>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Fault/soap:Reason/soap:Text" matches="authentication failed for [${account1.name}]" />
+			</t:response>
+		</t:test>
+
+		<t:test id="invalid_auth_testAccount_attempt3" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<recoveryCode>${invalidRecoveryCode}</recoveryCode>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Fault/soap:Reason/soap:Text" matches="authentication failed for [${account1.name}]" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_recoveryEmail_status">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account1.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraAccountStatus']" match="lockout" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+	<t:test_case testcaseid="Verify_zimbraPasswordLockoutFailureLifetime_honored" type="bhr" bugids="ZCS-5102">
+		<t:objective>Get recovery details for the account and verify account lockout scenario .</t:objective>
+
+		<t:steps>
+			1. Log in with account 3.
+			2. Send recovery code to the recovery email.
+			3. Verify that recovery email account receives recovery code.
+			4.
+			Verify that the account gets locked on max invalid attempts are not performed during zimbraPasswordLockoutFailureLifetime.
+		</t:steps>
+
+		<t:test id="auth_testAccount3" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<password>${account3.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="sendRecoveryCode_for_valid_user">
+			<t:request>
+				<RecoverAccountRequest op="sendRecoveryCode" email="${account3.name}" channel="email" xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:select path="//mail:RecoverAccountResponse" />
+			</t:response>
+		</t:test>
+
+		<t:test id="invalid_auth_testAccount_attempt1" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<recoveryCode>${invalidRecoveryCode}</recoveryCode>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Fault/soap:Reason/soap:Text" matches="authentication failed for [${account3.name}]" />
+			</t:response>
+		</t:test>
+		
+		<t:delay sec="30" />
+		
+		<t:test id="invalid_auth_testAccount_attempt2" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account3.name}</account>
+					<recoveryCode>${invalidRecoveryCode}</recoveryCode>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//soap:Fault/soap:Reason/soap:Text" matches="authentication failed for [${account3.name}]" />
+			</t:response>
+		</t:test>
+
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="Verify_recoveryEmail_status">
+			<t:request>
+				<GetAccountRequest xmlns="urn:zimbraAdmin">
+					<account by="id">${account3.id}</account>
+				</GetAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:GetAccountResponse">
+					<t:select path="//admin:account">
+						<t:select path="//admin:a[@n='zimbraAccountStatus']" match="active" />
+					</t:select>
+				</t:select>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+</t:tests>

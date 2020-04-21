@@ -1,0 +1,293 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+ 
+<t:property name="testdomain.name" value="domain${TIME}${COUNTER}.com"/>    
+    
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="op.grant"			value="grant"/>
+<t:property name="op.read"			value="read"/>
+<t:property name="grant.usr"			value="usr"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+<t:property name="rights.write"			value="w"/>
+<t:property name="rights.insert"		value="i"/>
+<t:property name="rights.delete"		value="d"/>
+<t:property name="rights.administer"	value="a"/>
+<t:property name="rights.workflow"		value="x"/>
+<t:property name="rights.manager"		value="${rights.read}${rights.write}${rights.insert}${rights.delete}${rights.workflow}"/>
+<t:property name="view.conversation"	value="conversation"/>
+<t:property name="view.message"			value="message"/>
+<t:property name="view.contact"			value="contact"/>
+<t:property name="view.appointment"		value="appointment"/>
+<t:property name="view.note"			value="note"/>
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+    
+<t:test_case testcaseid="CalendarSharing_OrphanShare_AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>
+        1. Login to admin.
+        2. Create accounts
+        3. Account1 shares calendar with account2 (manager rights)
+    </t:steps>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CalendarSharing_OrphanShare_01" type="bhr" bugids="39806">
+    <t:objective>Verify orphan share items are not accesible or are shown as strikethrough </t:objective>
+    <t:steps>
+        1. Login as account1.  Share calendar with account2.  
+        2. Login as account2.
+        3. Accept and mount the shared calendar
+        4. Delete account1 from admin
+	5. Login as account2
+	6. Verify that the appointment in shared calendar is no more accesible.
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder/mail:folder[@name='${globals.calendar}']" attr="id" set="account1.folder.calendar"/>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account1.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.folder.calendar}" op="${op.grant}">
+                    <grant d="${account2.name}" gt="${grant.usr}" perm="${rights.manager}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" attr="zid" set="folder.zid"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="appt.subject"		value="subject.${TIME}.${COUNTER}"/>
+	<t:property name="appt.timezone"	value="(GMT-05.00) Eastern Time (US &amp; Canada)"/>
+	<t:property name="appt.start.gmt"	value="1263902400000"/> <!-- 01/19/2010 12:00:00 UTC time -->
+	<t:property name="appt.start.tz"	value="${TIME(-5h)[${appt.start.gmt}]}"/>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+				<m d="${TIME}">
+					<inv >
+						<comp method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appt.subject}">
+							<s d="${ICALTIME[${appt.start.tz}]}" tz="${appt.timezone}"/>
+							<e d="${ICALTIME(+1h)[${appt.start.tz}]}" tz="${appt.timezone}"/>
+							<or a="${account1.name}"/>
+						</comp>
+					</inv>
+					<mp ct="multipart/alternative">
+						<mp ct="text/plain"><content/></mp>
+						<mp ct="text/html"><content><html><body></body></html></content></mp>
+					</mp>
+					<su>${appt.subject}</su>
+				</m>
+			</CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateAppointmentResponse" attr="apptId" set="appt.apptId"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.root}']" attr="id" set="account2.folder.root"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateMountpointRequest xmlns="urn:zimbraMail">
+                <link l="${account2.folder.root}" name="Calendar.${TIME}.${COUNTER}" view="appointment" rid="${account1.folder.calendar}" zid="${account1.id}"/>
+            </CreateMountpointRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.delegated.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" 
+            	l="${account2.delegated.id}"
+            	s="${TIME(-1d)[${appt.start.gmt}]}" 
+            	e="${TIME(+1d)(+1h)[${appt.start.gmt}]}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='${appt.subject}']" attr="invId" set="appt.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetAppointmentResponse">
+            	<t:select path="//mail:appt" attr="id" aid="appt.aid" id="appt.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <DeleteAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+            </DeleteAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:DeleteAccountResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:delay msec="5000"/>
+
+    <t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+   <t:test>
+	<t:request>
+		<FolderActionRequest xmlns="urn:zimbraMail" requestId="0">
+			<action op="check" id="${account2.delegated.id}"/>
+		</FolderActionRequest>
+	</t:request>
+	<t:response>
+		<t:select path="//mail:FolderActionResponse"/>
+	</t:response>
+   </t:test>
+
+    <t:test >
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${appt.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^mail.NO_SUCH_ITEM"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+

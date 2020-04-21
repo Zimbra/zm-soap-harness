@@ -1,0 +1,215 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="acct1.name" value="test1${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct2.name" value="test2${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+
+<t:property name="acct.password" value="test123"/>
+
+<t:property name="appointment1.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="appointment2.subject" value="Subj2${TIME}.${COUNTER}"/>
+<t:property name="appointment1a.subject" value="Subj${TIME}.${COUNTER}"/>
+<t:property name="timezone.pst" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
+
+<t:property name="appointment.location" value="Location of meeting${TIME}.${COUNTER}"/>
+<t:property name="appointment.content" value="Cont${TIME}.${COUNTER}"/>
+
+<t:property name="Time1" value="${ICALTIME(+30m)}"/>
+<t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="Time3" value="${ICALTIME(+1h)}"/>
+<t:property name="Time4" value="${ICALTIME(+2h)}"/>
+<t:property name="Time5" value="${ICALTIME(+2h)}"/>
+<t:property name="Time6" value="${ICALTIME(+3h)}"/>
+<t:property name="Time7" value="${ICALTIME(+30d)}"/>
+<t:property name="Time8" value="${CURRDATE}"/>
+<t:property name="Time9" value="${ICALTIME(+10d)}"/>
+<t:property name="Time10" value="${ICALTIME(+10d)(+1h)}"/>
+<t:property name="Time11" value="${ICALTIME(+11d)}"/>
+
+<t:property name="TimeRangeStart" value="${TIME(-1d)}"/>
+<t:property name="TimeRangeFinish" value="${TIME(+5d)}"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup1" type="always">
+    <t:objective>Create test accounts</t:objective>
+    <t:steps> 1.Login to admin
+              2.Create test accounts
+    </t:steps>
+
+    <!-- Login to admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:property name="admin.authToken" value="${authToken}"/>
+
+    <!-- Create test accounts -->
+    <t:test id="create_acct1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct1.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_acct2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct2.name}</name>
+                <password>${acct.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug62457_1" type="always" bugids="62457">
+    <t:objective>Login as the test account and create appointments</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	
+    <!-- login as the test account -->
+    <t:test id="auth1" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${acct1.name}</account>
+                <password>${acct.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:property name="mail1.authToken" value="${authToken}"/>
+
+    <!--Create Appointments-->
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
+                        <at role="OPT" ptst="NE" rsvp="1" a="${acct2.name}"/>
+                        <s d="${Time1}"/>  
+                        <e d="${Time2}"/>  
+                        <or a="${acct1.name}"/>
+                        <recur>
+                            <add>
+                                <rule freq="DAI" ival="1">
+                                    <until d="${Time7}"/>
+                                </rule>
+                            </add>
+                        </recur>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+          <t:select path = "//mail:CreateAppointmentResponse"/> 
+        </t:response>
+    </t:test>    
+</t:test_case> 
+
+  
+<t:test_case testcaseid="bug62457_2" type="always" bugids="62457">
+    <t:objective>If the appointment is a recurring one and there are exception instances,verify that SearchResponse responds with hasEx="true"</t:objective>
+    <t:steps> 1. Search recurring appointment.
+              2. Modify an instance of appointment (CreateAppointmentExceptionRequest). 
+              3. Search modified recurring appointment.
+    </t:steps>
+    
+  
+    <!--Search the appointment.-->
+        <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="hasEx" emptyset="1"/> 
+        </t:response>
+    </t:test>
+
+    <!--Modify an instance of appointment (CreateAppointmentExceptionRequest).-->
+    <t:test required="true">
+        <t:request>
+            <CreateAppointmentExceptionRequest xmlns="urn:zimbraMail" id="${appointment1.id}" comp="0">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" status="CONF" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
+                        <s d="${Time5}"/>  
+                        <e d="${Time6}"/>  
+                        <or a="${acct1.name}"/>
+                        <exceptId d="${Time1}"/>
+                    </inv>
+                    <e a="${acct2.name}" t="t"/>
+                    <mp content-type="text/plain">
+                        <content>${appointment.content}</content>
+                    </mp>
+                    <su>${appointment1.subject}</su>
+                </m>
+            </CreateAppointmentExceptionRequest>
+       </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentExceptionResponse"/>
+        </t:response>
+    </t:test>
+    
+   
+        <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
+				<query>${appointment1.subject}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
+            <t:select path = "//mail:SearchResponse/mail:appt" attr="hasEx" match="1"/>        
+        </t:response>
+    </t:test>      
+</t:test_case>
+
+</t:tests>
+

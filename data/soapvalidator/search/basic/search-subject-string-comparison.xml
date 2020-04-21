@@ -1,0 +1,170 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+<t:test required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="acct01.name" value="acct01.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct02.name" value="acct02.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct01.dir" value="${testMailRaw.root}/email47"/>
+
+<t:test_case testcaseid="acct01 setup" type="always" >
+        <t:objective> setup acct01 </t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct01.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct01.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+		<foldername>${acct01.dir}</foldername>
+		<to>${acct01.name}</to>
+		<from>${nonZimbraUser.name}</from>
+		<server>${test_acct.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${acct01.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SubjectSearch_StringComparison_01" type="bhr">
+ <t:objective>
+	Verify that a search for subject:>address and subject:>=address returns the correct email meessage
+ </t:objective>
+ <t:steps>
+	email is sent to acct01 in the body of the message
+	Search for subject:>kite and subject alphabet later to K is returned
+	Search for subject:>=kite subject alphabet equal or later to K is returned
+	check that the correct message is returned by checking the subject
+ </t:steps>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:">kite"</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^openwavemail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^mail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^xmlbeans.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^language test.*"/>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:">=kite"</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^openwavemail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^mail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^xmlbeans.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^language test.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^kite.*"/> 
+	</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SubjectSearch_StringComparison_02" type="bhr">
+ <t:objective>
+	Verify that a search for subject:&lt;address and subject&lt;=address returns the correct email meessage
+ </t:objective>
+ <t:steps>
+	email is sent to acct01 in the body of the message
+	Search for subject:&lt;kite and subject alphabet previous to K is returned
+	Search for subject:&lt;=kite subject alphabet equal or previous to K is returned
+	check that the correct message is returned by checking the subject
+ </t:steps>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:"&lt;kite"</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^fmail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^javamail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^ibibo.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^hotmail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^gmail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^email01A.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^bug8260.*"/> 
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:"&lt;=kite"</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^fmail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^javamail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^ibibo.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^hotmail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^gmail.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^email01A.*"/>
+		<t:select path="//mail:SearchResponse/mail:m/mail:su" match="^bug8260.*"/>  
+	</t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>
+

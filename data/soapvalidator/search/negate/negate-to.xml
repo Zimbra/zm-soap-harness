@@ -1,0 +1,191 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="acct01.name" value="acct01.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="acct01.dir" value="${testMailRaw.root}/email01"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct01 setup" type="always" >
+        <t:objective> setup acct01 </t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${acct01.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="acct01.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>  
+
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+			<foldername>${acct01.dir}</foldername>
+			<to>${acct01.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${test_acct.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${acct01.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(email01A)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse">
+			<t:select path="//mail:m" attr="id" set="email01A.id"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(email01C)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse">
+			<t:select path="//mail:m" attr="id" set="email01C.id"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="Negate_to_SearchRequest1" type="bhr">
+	 <t:objective>
+		Verify that a search for "not to:(address)" returns the correct email meessage
+	 </t:objective>
+	 <t:steps>
+		email is sent to acct01 in the body of the message
+		Search for not to:(destination_address)
+		Search for not to:(destination_address)@testsoap.com)
+	 </t:steps>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
+		   <query>not to:(destination_address)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse">
+			<t:select path="//mail:m[@id='${email01C.id}']" emptyset="1"/>
+			<t:select path="//mail:m[@id='${email01A.id}']"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
+		   <query>not to:(destination_address@destination_domain1.destination_domain2.com)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse">
+			<t:select path="//mail:m[@id='${email01C.id}']" emptyset="1"/>
+			<t:select path="//mail:m[@id='${email01A.id}']"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Negate_to_SearchRequest2" type="bhr">
+	 <t:objective>
+		Verify that a search for "-to:(address)" returns the correct email meessage
+	 </t:objective>
+	 <t:steps>
+		email is sent to acct01 in the body of the message
+		Search for -to:(acct01)
+		Search for -to:(acct01@testsoap.com)
+	 </t:steps>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
+		   <query>-to:(destination_address)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse">
+			<t:select path="//mail:m[@id='${email01C.id}']" emptyset="1"/>
+			<t:select path="//mail:m[@id='${email01A.id}']"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest limit="100" xmlns="urn:zimbraMail" types="message">
+		   <query>-to:(destination_address@destination_domain1.destination_domain2.com)</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse">
+			<t:select path="//mail:m[@id='${email01C.id}']" emptyset="1"/>
+			<t:select path="//mail:m[@id='${email01A.id}']"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+</t:tests>
+

@@ -1,0 +1,401 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="testDraft${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="message11.subject" value="Subject10${TIME}.${COUNTER}"/>
+<t:property name="message11.content" value="Content10${TIME}.${COUNTER}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.password" value="test123"/>
+<t:property name="test_account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.password" value="test123"/>
+<t:property name="compose.content" value="content${TIME}.${COUNTER}"/>
+<t:property name="compose.subject" value="subject${TIME}.${COUNTER}"/>
+<t:property name="message11.file" value="${soapxml.root}/Mail/Drafts/SaveDraftMime/test.pdf"/>
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always">
+    <t:objective>Create test account</t:objective>
+    <steps>
+        1. Login to admin account
+        2. Create user accounts
+    </steps>
+
+    <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- Creating the user account with quota of 1 mb - here specified in bytes -->
+    <t:test id="create_test_account1" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${test_account1.password}</password>
+                <a n="zimbraMailQuota">1048576</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account2" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${test_account2.password}</password>
+                <a n="zimbraMailQuota">1048576</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+    
+     <t:test id="create_test_account3" required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${test_account3.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid="DraftQuotaCheck" type="bhr">
+    <t:objective>To Send a draft mail</t:objective>
+    <t:steps>
+        1. Compose a message and save it as Draft
+        2. Upload the attachment
+        2. Reopen the draft and attach the attachment uploaded 
+    </t:steps>
+  
+  	<!-- Login to the user account -->
+  	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <!-- upload the attachment -->
+	<t:delay msec="2000"/>	
+
+	<t:property name="uploadServletServer" value="${test_acct.server}"/>
+
+    <t:uploadservlettest id="SaveDraftRequest11a" required="true">
+        <t:uploadServletRequest>
+            <filename>${message11.file}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="message11.aid"/>
+			<t:select attr="StatusCode" match="200"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+		
+	<t:delay msec="5000"/>
+	
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+				<e t="t" a='${test_account1.name}'/>
+				<su> ${compose.subject} </su>
+				<mp ct="text/plain">
+				<content> ${compose.content} </content>
+				</mp>
+				<attach aid="${message11.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="mail.QUOTA_EXCEEDED"/>
+		</t:response>
+	</t:test>
+	
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+      
+      <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account1.id}</id>
+                <a n="zimbraMailAllowReceiveButNotSendWhenOverQuota">TRUE</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+	<t:property name="uploadServletServer" value="${test_acct.server}"/>
+
+        <t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	  <t:uploadservlettest id="SaveDraftRequest11a">
+        <t:uploadServletRequest>
+            <filename>${message11.file}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="message1.aid"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+			
+	<t:test id="saveDraftRequest7a">
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${test_account1.name}'/>
+                    <su> Check sending of draft </su>
+                    <mp ct="text/plain">
+                        <content> Send the draft mail</content>
+                    </mp>
+                    <attach aid="${message1.aid}" />
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse/mail:m" attr="id" set="draft1.id"/>
+        </t:response>
+    </t:test>
+    
+  
+    <t:test depends="saveDraftRequest7a">
+        <t:request>
+            <SaveDraftRequest xmlns="urn:zimbraMail">
+                <m id="${draft1.id}">
+                    <e t="t" a='${test_account1.name}'/>
+                    <su> Check sending of draft with additional contents</su>
+                    <mp ct="text/plain">
+                        <content> Send the draft mail with additional data</content>
+                    </mp>
+                    <attach>
+						<mp mid="${draft1.id}" part="2" />
+					</attach>
+                </m>
+            </SaveDraftRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDraftResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="bug75108" type="bhr" bugids="75108">
+    <t:objective>zimbraMailAllowReceiveButNotSendWhenOverQuota doesn't deliver mail when over quota</t:objective>
+    <t:steps>
+        1. Create user U1, U2 and set zimbraMailAllowReceiveButNotSendWhenOverQuota TRUE, zimbraMailQuota 1MB
+		2. send mail to U1 so that 1MB quota should be reached. 
+		3. Login as U2, Compose a mail and send to U1
+		4. User U1 should receive the message.
+
+    </t:steps>
+  
+  	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+  	   
+  	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+       <!-- upload the attachment -->
+	<t:delay msec="2000"/>	
+
+	<t:property name="uploadServletServer" value="${test_acct2.server}"/>
+
+    <t:uploadservlettest id="SaveDraftRequest11a" required="true">
+        <t:uploadServletRequest>
+            <filename>${message11.file}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="message11.aid"/>
+			<t:select attr="StatusCode" match="200"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+		
+	<t:delay msec="5000"/>
+	
+	<t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+				<e t="t" a='${test_account1.name}'/>
+				<su> ${compose.subject} </su>
+				<mp ct="text/plain">
+				<content> ${compose.content} </content>
+				</mp>
+				<attach aid="${message11.aid}"/>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="mail.QUOTA_EXCEEDED"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+      
+      <t:test id="admin_login" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+     <t:test >
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account2.id}</id>
+                <a n="zimbraMailAllowReceiveButNotSendWhenOverQuota">TRUE</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
+        </t:response>
+    </t:test>
+    
+	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+	
+	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${test_account3.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+				<e t="t" a="${test_account2.name}"/>
+				<su> ${compose.subject} </su>
+				<mp ct="text/plain">
+				<content> ${compose.content} </content>
+				</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message2.id"/>
+		</t:response>
+	</t:test>
+    
+    <t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+  
+  	<t:test id="auth" required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account2.name}</account>
+                <password>${test_account2.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+         
+	<t:test required="true">
+	 	<t:request>
+	   		<SearchRequest xmlns="urn:zimbraMail" types="message">
+	   			<query>in:inbox ${compose.subject}</query>
+	   		</SearchRequest>
+	 	</t:request>
+	  	<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id"/>
+	 	</t:response>
+	</t:test>		
+	
+</t:test_case>
+
+</t:tests>
+
+

@@ -1,0 +1,390 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+
+<t:test_case testcaseid="admin_login" type="always">
+    <t:objective>Login to Admin Account</t:objective>
+        
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	
+    <t:test>
+		<t:request>
+			<GetServerRequest xmlns="urn:zimbraAdmin">
+				<server by="name">${zimbraServer.name}</server>
+			</GetServerRequest>
+		</t:request>
+		<t:response>
+	            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraSmtpHostname"]' set="mta.server"/>
+		</t:response>
+    </t:test>
+    
+   
+	
+    
+</t:test_case>
+
+
+<t:finally areas="spam, noncluster">
+
+	<!-- After all tests have run, reset the zimbraSpamCheckEnabled setting to the default -->
+	
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+						<a n="zimbraMtaRestriction"></a>
+						<a n="zimbraMtaCommonBlockedExtension"></a>
+						<a n="zimbraMtaBlockedExtension"></a>
+                </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+
+	
+
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+
+
+    <t:test>
+        <t:request>
+            <GetAllConfigRequest  xmlns="urn:zimbraAdmin"/>
+        </t:request>
+    </t:test>
+
+</t:finally>
+
+
+
+
+<t:test_case testcaseid="ModifyConfigRequest_spam1" type="deprecated">
+
+    <t:objective>Set zimbraSpamCheckEnabled = TRUE</t:objective>
+
+    
+
+    <t:test>
+
+        <t:request>
+
+			<ModifyConfigRequest xmlns="urn:zimbraAdmin">
+
+				<a n="zimbraSpamCheckEnabled">${globals.true}</a>
+
+			</ModifyConfigRequest>
+
+        </t:request>
+
+        <t:response>
+
+            <t:select path="//admin:ModifyConfigResponse"/>
+
+        </t:response>
+
+    </t:test>
+
+
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+
+
+    <t:test>
+
+        <t:request>
+
+            <GetAllConfigRequest  xmlns="urn:zimbraAdmin"/>
+
+        </t:request>
+
+        <t:response>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraSpamCheckEnabled']" match="${globals.true}"/>
+
+        </t:response>
+
+    </t:test>
+
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="ModifyConfigRequest_spam2" type="deprecated" >
+
+    <t:objective>Set zimbraSpamCheckEnabled = FALSE</t:objective>
+
+    
+
+    <t:test>
+
+        <t:request>
+
+			<ModifyConfigRequest xmlns="urn:zimbraAdmin">
+
+				<a n="zimbraSpamCheckEnabled">${globals.false}</a>
+
+			</ModifyConfigRequest>
+
+        </t:request>
+
+        <t:response>
+
+            <t:select path="//admin:ModifyConfigResponse"/>
+
+        </t:response>
+
+    </t:test>
+
+
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+
+
+
+    <t:test>
+
+        <t:request>
+
+            <GetAllConfigRequest  xmlns="urn:zimbraAdmin"/>
+
+        </t:request>
+
+        <t:response>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraSpamCheckEnabled']" match="${globals.false}"/>
+
+        </t:response>
+
+    </t:test>
+
+
+
+</t:test_case>
+
+
+
+
+
+<t:test_case testcaseid="ModifyConfigRequest_spam11" type="deprecated" >
+
+    <t:objective>Set anti spam configuration settings</t:objective>
+
+    
+
+    <t:test>
+
+        <t:request>
+
+			<ModifyConfigRequest xmlns="urn:zimbraAdmin">
+
+				<a n="zimbraSpamHeader">X-Spam-Flag</a>
+
+				<a n="zimbraSpamHeaderValue">YES</a>
+
+				<a n="zimbraSpamTagPercent">33</a>
+
+				<a n="zimbraSpamKillPercent">75</a>
+
+				<a n="zimbraMtaRestriction">reject_invalid_hostname</a>
+
+				<a n="zimbraMtaRestriction">reject_non_fqdn_hostname</a>
+
+				<a n="zimbraMtaRestriction">reject_non_fqdn_sender</a>
+
+				<a n="zimbraMtaRestriction">reject_unknown_client</a>
+
+				<a n="zimbraMtaRestriction">reject_unknown_hostname</a>
+
+				<a n="zimbraMtaRestriction">reject_unknown_sender_domain</a>
+
+				<a n="zimbraMtaCommonBlockedExtension">wsh</a>
+
+				<a n="zimbraMtaCommonBlockedExtension">xl</a>
+
+				<a n="zimbraMtaBlockedExtension">xl</a>
+
+				<a n="zimbraMtaBlockedExtension">mov</a>
+
+				<a n="zimbraSpamSubjectTag">SPAM</a>
+
+				<a n="zimbraSpamCheckEnabled">${globals.true}</a>
+
+			</ModifyConfigRequest>
+
+        </t:request>
+
+        <t:response>
+
+            <t:select path="//admin:ModifyConfigResponse"/>
+
+        </t:response>
+
+    </t:test>
+
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+
+    <t:test>
+
+        <t:request>
+
+            <GetAllConfigRequest  xmlns="urn:zimbraAdmin"/>
+
+        </t:request>
+
+        <t:response>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraSpamHeader']" match="X-Spam-Flag"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraSpamHeaderValue']" match="YES"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraSpamTagPercent']" match="33"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraSpamKillPercent']" match="75"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaRestriction']" match="reject_invalid_hostname"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaRestriction']" match="reject_non_fqdn_hostname"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaRestriction']" match="reject_non_fqdn_sender"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaRestriction']" match="reject_unknown_client"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaRestriction']" match="reject_unknown_hostname"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaRestriction']" match="reject_unknown_sender_domain"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaCommonBlockedExtension']" match="^wsh$"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaCommonBlockedExtension']" match="^xl$"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaBlockedExtension']" match="^xl$"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraMtaBlockedExtension']" match="^mov$"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraSpamSubjectTag']" match="^SPAM$"/>
+
+            <t:select path="//admin:GetAllConfigResponse/admin:a[@n='zimbraSpamCheckEnabled']" match="^${globals.true}$"/>
+
+        </t:response>
+
+    </t:test>
+
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="ModifyConfigRequest_spam12" type="sanity" bugids="2329" areas="spam,noncluster" >
+    <t:objective>Verify that the value of zimbraSpamHeaderValue can be null</t:objective>
+        
+    <t:test>
+        <t:request>
+            <ModifyConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraSpamHeaderValue"></a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:staftask >
+		<t:request>
+			<server>${mta.server}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmtactl reload\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+		</t:request>
+	</t:staftask>
+
+
+    <t:test>
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraSpamHeaderValue"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse"/>
+            <t:select path="//zimbra:Code" emptyset="1"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+</t:tests>
+

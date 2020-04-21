@@ -1,0 +1,366 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="gmail${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="${defaultpassword.value}"/>
+<t:property name="account2.name" value="gmail${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.password" value="${defaultpassword.value}"/>
+<t:property name="account3.name" value="gmail${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.password" value="${defaultpassword.value}"/>
+<t:property name="account4.name" value="gmail${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.password" value="${defaultpassword.value}"/>
+<t:property name="account5.name" value="gmail${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.password" value="${defaultpassword.value}"/>
+
+
+<t:property name="base.dir" value="${soapxml.root}/Settings/externalContacts/data/"/>
+<t:property name="gmail1.file" value="${base.dir}/gmail_to_gmail.csv"/>
+<t:property name="gmail1.count" value="0"/>
+<t:property name="gmail2.file" value="${base.dir}/gmail_1contact.csv"/>
+<t:property name="gmail2.count" value="1"/>
+<t:property name="gmail3.file" value="${base.dir}/gmail_2contact.csv"/>
+<t:property name="gmail3.count" value="2"/>
+<t:property name="gmail4.file" value="${base.dir}/gmail_to_outlook.csv"/>
+<t:property name="gmail4.count" value="1"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="CS_Account_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${account1.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${account2.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account3.name}</name>
+				<password>${account3.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account4.name}</name>
+				<password>${account4.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account5.name}</name>
+				<password>${account5.password}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+                     <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:property name="uploadServletServer" value="${test_acct1.server}"/>
+
+
+
+<t:test_case testcaseid="import_Gmail_contacts_01" type="bhr">
+	<t:objective>
+		Import a basic Gmail to Outlook csv file (1 contact)
+	</t:objective>
+
+        <t:test >
+                <t:request>
+                        <AuthRequest xmlns="urn:zimbraAccount">
+                                <account by="name">${account1.name}</account>
+                                <password>${account1.password}</password>
+                        </AuthRequest>
+                </t:request>
+                <t:response>
+                        <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                        <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+                </t:response>
+        </t:test>
+
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${gmail2.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="gmail2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+	  <t:request>
+		<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+		  <content aid="${gmail2.aid}"/>
+		</ImportContactsRequest>
+	  </t:request>
+	  <t:response>
+	         <t:select path="//mail:ImportContactsResponse/mail:cn" attr="n" match="${gmail2.count}"/>
+	         <t:select path="//mail:ImportContactsResponse/mail:cn" attr="ids" set="contact1.id"/>
+	   </t:response>
+	</t:test>
+
+	<t:test >
+	 <t:request>
+	   <GetContactsRequest xmlns="urn:zimbraMail">
+		<cn id="${contact1.id}"/>
+	   </GetContactsRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetContactsResponse/mail:cn[@id='${contact1.id}']">
+			<t:select path="mail:a[@n='email']" match="foo@gmail.com"/>
+			<t:select path="mail:a[@n='firstName']" match="First"/>
+			<t:select path="mail:a[@n='lastName']" match="Last"/>
+			<t:select path="mail:a[@n='mobilePhone']" match="9923600383"/>
+			<t:select path="mail:a[@n='company']" match="MyCompany"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="import_Gmail_contacts_02" type="bhr">
+	<t:objective>
+		Import a basic Gmail to Outlook csv file (2 contacts)
+	</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="uploadServletServer" value="${test_acct2.server}"/>
+
+    <t:test >
+            <t:request>
+                    <AuthRequest xmlns="urn:zimbraAccount">
+                            <account by="name">${account2.name}</account>
+                            <password>${account2.password}</password>
+                    </AuthRequest>
+            </t:request>
+            <t:response>
+                    <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                    <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+            </t:response>
+    </t:test>
+
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${gmail3.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="gmail3.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+	  <t:request>
+		<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+		  <content aid="${gmail3.aid}"/>
+		</ImportContactsRequest>
+	  </t:request>
+	  <t:response>
+	         <t:select path="//mail:ImportContactsResponse/mail:cn" attr="n" match="${gmail3.count}"/>
+	         <t:select path="//mail:ImportContactsResponse/mail:cn" attr="ids" set="contact3.id"/>
+	   </t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<GetContactsRequest xmlns="urn:zimbraMail">
+				<cn id="${contact3.id}"/>
+			</GetContactsRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//mail:GetContactsResponse/mail:cn[@fileAsStr='Last, First']" emptyset="0"/>
+            <t:select path="//mail:GetContactsResponse/mail:cn[@fileAsStr='SecondLastName, SecondFirstName']" emptyset="0"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="import_Gmail_contacts_03" type="deprecated">
+	<t:objective>
+		Import a basic Gmail contacts csv file with special characters
+	</t:objective>
+</t:test_case>
+
+<t:test_case testcaseid="import_Gmail_contacts_04" type="sanity">
+	<t:objective>
+		Import a basic Gmail to Gmail csv file.  Verify that no failures occur.
+	</t:objective>
+
+<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+<t:property name="uploadServletServer" value="${test_acct4.server}"/>
+
+        <t:test >
+                <t:request>
+                        <AuthRequest xmlns="urn:zimbraAccount">
+                                <account by="name">${account4.name}</account>
+                                <password>${account4.password}</password>
+                        </AuthRequest>
+                </t:request>
+                <t:response>
+                        <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                        <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+                </t:response>
+        </t:test>
+
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${gmail1.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="gmail1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+	  <t:request>
+		<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+		  <content aid="${gmail1.aid}"/>
+		</ImportContactsRequest>
+	  </t:request>
+	  <t:response>
+	         <t:select path="//mail:ImportContactsResponse"/>
+	   </t:response>
+	</t:test>
+
+</t:test_case>
+
+<!-- Poonam: Below tc is same as import_Gmail_contacts_01 hance deprecating it -->
+<t:test_case testcaseid="import_Gmail_contacts_05" type="deprecated">
+	<t:objective>
+		Import a basic Gmail to Outlook csv file.  Verify that no failures occur.
+	</t:objective>
+
+<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+<t:property name="uploadServletServer" value="${test_acct5.server}"/>
+
+        <t:test >
+                <t:request>
+                        <AuthRequest xmlns="urn:zimbraAccount">
+                                <account by="name">${account5.name}</account>
+                                <password>${account5.password}</password>
+                        </AuthRequest>
+                </t:request>
+                <t:response>
+                        <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+                        <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+                </t:response>
+        </t:test>
+
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${gmail4.file}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="gmail4.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+	<t:test >
+	  <t:request>
+		<ImportContactsRequest xmlns="urn:zimbraMail" ct="csv">
+		  <content aid="${gmail4.aid}"/>
+		</ImportContactsRequest>
+	  </t:request>
+	  <t:response>
+	         <t:select path="//mail:ImportContactsResponse/mail:cn" attr="n" match="${gmail4.count}"/>
+	         <t:select path="//mail:ImportContactsResponse/mail:cn" attr="ids" set="contact4.id"/>
+	   </t:response>
+	</t:test>
+
+	<t:test >
+	 <t:request>
+	   <GetContactsRequest xmlns="urn:zimbraMail">
+		<cn id="${contact4.id}"/>
+	   </GetContactsRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:GetContactsResponse/mail:cn[@id='${contact4.id}']">
+			<t:select path="mail:a[@n='email']" match="email@foo.com"/>
+			<t:select path="mail:a[@n='firstName']" match="First"/>
+			<t:select path="mail:a[@n='lastName']" match="Last"/>
+		</t:select>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

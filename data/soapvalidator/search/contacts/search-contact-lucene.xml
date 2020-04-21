@@ -1,0 +1,819 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="contact1.firstname" value="a" />
+<t:property name="contact1.lastname" value="an" />
+<t:property name="contact1.email" value="an@and.com" />
+<t:property name="contact2.firstname" value="ann" />
+<t:property name="contact2.lastname" value="andy" />
+<t:property name="contact2.email" value="test@xyz.com" />
+<t:property name="contact3.firstname" value="area" />
+<t:property name="contact3.lastname" value="aset" />
+<t:property name="contact3.email" value="butt@fort.com" />
+<t:property name="contact4.firstname" value="asean" />
+<t:property name="contact4.lastname" value="at" />
+<t:property name="contact4.email" value="as_at@at.in" />
+<t:property name="contact5.firstname" value="be" />
+<t:property name="contact5.lastname" value="there" />
+<t:property name="contact5.email" value="there_be@was.com" />
+<t:property name="contact6.firstname" value="bye" />
+<t:property name="contact6.lastname" value="bet" />
+<t:property name="contact6.email" value="bye@bit.com" />
+<t:property name="contact7.firstname" value="withy" />
+<t:property name="contact7.lastname" value="will" />
+<t:property name="contact7.email" value="willy_withy@was.com" />
+<t:property name="contact8.firstname" value="wasen" />
+<t:property name="contact8.lastname" value="tone" />
+<t:property name="contact8.email" value="wasen.to@will.li" />
+<t:property name="contact9.firstname" value="this" />
+<t:property name="contact9.lastname" value="theyn" />
+<t:property name="contact9.email" value="theybor@into.in" />
+<t:property name="contact10.firstname" value="thesen" />
+<t:property name="contact10.lastname" value="theny" />
+<t:property name="contact10.email" value="their_of@pony.of" />
+<t:property name="contact11.firstname" value="thatr" />
+<t:property name="contact11.lastname" value="sucht" />
+<t:property name="contact11.email" value="orange@those.for" />
+<t:property name="contact12.firstname" value="only" />
+<t:property name="contact12.lastname" value="notch" />
+<t:property name="contact12.email" value="iten@onf.co" />
+<t:property name="contact13.firstname" value="forten" />
+<t:property name="contact13.lastname" value="inoova" />
+<t:property name="contact13.email" value="offseat@ggoat.com" />
+<t:property name="contact14.firstname" value="isetent" />
+<t:property name="contact14.lastname" value="ifto" />
+<t:property name="contact14.email" value="ifis@isoif.is" />
+<t:property name="contact15.firstname" value="at" />
+<t:property name="contact15.lastname" value="at" />
+<t:property name="contact15.email" value="at@at.com" />
+
+	<t:test_case testcaseid="Ping" type="always" >
+	    <t:objective>basic system check</t:objective>
+	    
+	    <t:test id="ping">
+	        <t:request>
+	            <PingRequest xmlns="urn:zimbraAdmin"/>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:PingResponse"/>
+	        </t:response>
+	    </t:test>
+	
+	</t:test_case>
+	
+	<t:test_case testcaseid="acct_setup" type="always" >
+	    <t:objective>Create test accounts</t:objective>
+	   
+	    <!-- Login to admin -->
+	    <t:test id="admin_login" required="true" depends="ping">
+	        <t:request>
+	            <AuthRequest xmlns="urn:zimbraAdmin">
+	                <name>${admin.user}</name>
+	                <password>${admin.password}</password>
+	            </AuthRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	        </t:response>
+	    </t:test>
+	    
+	    <t:test id="create_account1" required="true" depends="admin_login">
+	        <t:request>
+	            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	                <name>${account1.name}</name>
+	                <password>${defaultpassword.value}</password>
+	            </CreateAccountRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+	            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test id="create_account2" required="true" depends="admin_login">
+	        <t:request>
+	            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	                <name>${account2.name}</name>
+	                <password>${defaultpassword.value}</password>
+	            </CreateAccountRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+	            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+	        </t:response>
+	    </t:test>
+	
+	    <t:test>
+	        <t:request>
+	            <AuthRequest xmlns="urn:zimbraAccount">
+	                <account by="name">${account1.name}</account>
+	                <password>${defaultpassword.value}</password>
+	            </AuthRequest>
+	        </t:request>
+	        <t:response>
+	            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+	
+	        </t:response>
+	    </t:test>
+	
+	
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact1.firstname}</a>
+		                    <a n="lastName">${contact1.lastname}</a>
+		                    <a n="fullName">${contact1.firstname} ${contact1.lastname}</a>
+		                    <a n="email">${contact1.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact2.firstname}</a>
+		                    <a n="lastName">${contact2.lastname}</a>
+		                    <a n="fullName">${contact2.firstname} ${contact2.lastname}</a>
+		                    <a n="email">${contact2.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact3.firstname}</a>
+		                    <a n="lastName">${contact3.lastname}</a>
+		                    <a n="fullName">${contact3.firstname} ${contact3.lastname}</a>
+		                    <a n="email">${contact3.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact3.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact4.firstname}</a>
+		                    <a n="lastName">${contact4.lastname}</a>
+		                    <a n="fullName">${contact4.firstname} ${contact4.lastname}</a>
+		                    <a n="email">${contact4.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact4.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact5.firstname}</a>
+		                    <a n="lastName">${contact5.lastname}</a>
+		                    <a n="fullName">${contact5.firstname} ${contact5.lastname}</a>
+		                    <a n="email">${contact5.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact5.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact6.firstname}</a>
+		                    <a n="lastName">${contact6.lastname}</a>
+		                    <a n="fullName">${contact6.firstname} ${contact6.lastname}</a>
+		                    <a n="email">${contact6.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact6.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact7.firstname}</a>
+		                    <a n="lastName">${contact7.lastname}</a>
+		                    <a n="fullName">${contact7.firstname} ${contact7.lastname}</a>
+		                    <a n="email">${contact7.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact7.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact8.firstname}</a>
+		                    <a n="lastName">${contact8.lastname}</a>
+		                    <a n="fullName">${contact8.firstname} ${contact8.lastname}</a>
+		                    <a n="email">${contact8.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact8.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact9.firstname}</a>
+		                    <a n="lastName">${contact9.lastname}</a>
+		                    <a n="fullName">${contact9.firstname} ${contact9.lastname}</a>
+		                    <a n="email">${contact9.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact9.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact10.firstname}</a>
+		                    <a n="lastName">${contact10.lastname}</a>
+		                    <a n="fullName">${contact10.firstname} ${contact10.lastname}</a>
+		                    <a n="email">${contact10.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact10.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact11.firstname}</a>
+		                    <a n="lastName">${contact11.lastname}</a>
+		                    <a n="fullName">${contact11.firstname} ${contact11.lastname}</a>
+		                    <a n="email">${contact11.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact11.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact12.firstname}</a>
+		                    <a n="lastName">${contact12.lastname}</a>
+		                    <a n="fullName">${contact12.firstname} ${contact12.lastname}</a>
+		                    <a n="email">${contact12.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact12.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact13.firstname}</a>
+		                    <a n="lastName">${contact13.lastname}</a>
+		                    <a n="fullName">${contact13.firstname} ${contact13.lastname}</a>
+		                    <a n="email">${contact13.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact13.id"/>          
+		        </t:response>
+		</t:test>
+		<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact14.firstname}</a>
+		                    <a n="lastName">${contact14.lastname}</a>
+		                    <a n="fullName">${contact14.firstname} ${contact14.lastname}</a>
+		                    <a n="email">${contact14.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact14.id"/>          
+		        </t:response>
+		</t:test>
+			<t:test>
+		        <t:request>
+		         <CreateContactRequest xmlns="urn:zimbraMail">
+		                <cn >
+		                    <a n="firstName">${contact15.firstname}</a>
+		                    <a n="fullName">${contact15.firstname}</a>
+		                    <a n="email">${contact15.email}</a>
+		                </cn>     
+		         </CreateContactRequest>
+		        </t:request>
+		        <t:response>
+		         <t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact15.id"/>          
+		        </t:response>
+		</t:test>
+
+	</t:test_case>
+	
+	<t:test_case testcaseid="SearchContact_Lucene_1" type="smoke">
+		<t:objective>Lucene SearchContact test for "a"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>a</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact1.email}" />
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact2.email}" />
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact3.email}" /> 
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact4.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_2" type="bhr">
+		<t:objective>Lucene SearchContact test for "an"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>an</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact2.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_3" type="bhr">
+		<t:objective>Lucene SearchContact test for "and"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>"and"</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact2.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_4" type="bhr">
+		<t:objective>Lucene SearchContact test for "are"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>are</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact3.email}" />
+	       	</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_5" type="bhr">
+		<t:objective>Lucene SearchContact test for "as"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>as</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact4.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_6" type="bhr" bugids="53606">
+		<t:objective>Lucene SearchContact test for "at"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>at</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact4.email}" />
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact15.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_7" type="bhr">
+		<t:objective>Lucene SearchContact test for "be"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>be</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact5.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_8" type="bhr">
+		<t:objective>Lucene SearchContact test for "but"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>but</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact3.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_9" type="bhr">
+		<t:objective>Lucene SearchContact test for "by"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>by</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact6.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_10" type="bhr">
+		<t:objective>Lucene SearchContact test for "for"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>for</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact13.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_11" type="bhr">
+		<t:objective>Lucene SearchContact test for "if"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>if</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact14.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_12" type="bhr">
+		<t:objective>Lucene SearchContact test for "in"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>"in"</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact13.email}" />
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact9.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_13" type="bhr">
+		<t:objective>Lucene SearchContact test for "into"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>into</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_14" type="bhr">
+		<t:objective>Lucene SearchContact test for "is"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>is</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact14.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_15" type="bhr">
+		<t:objective>Lucene SearchContact test for "it"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>it</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact12.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_16" type="bhr">
+		<t:objective>Lucene SearchContact test for "no"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>"no"</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact12.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_17" type="bhr">
+		<t:objective>Lucene SearchContact test for "not"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>"not"</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact12.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_18" type="bhr">
+		<t:objective>Lucene SearchContact test for "of"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>of</query>
+				</SearchRequest>
+			</t:request>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact13.email}" />
+			<t:response>
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_19" type="bhr">
+		<t:objective>Lucene SearchContact test for "on"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>on</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact12.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_20" type="bhr">
+		<t:objective>Lucene SearchContact test for "or"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>"or"</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact11.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_21" type="bhr">
+		<t:objective>Lucene SearchContact test for "such"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>such</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact11.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_22" type="bhr">
+		<t:objective>Lucene SearchContact test for "that"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>that</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact11.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_23" type="bhr">
+		<t:objective>Lucene SearchContact test for "the"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>the</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact9.email}" />
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact5.email}" />
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact10.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_24" type="bhr">
+		<t:objective>Lucene SearchContact test for "their"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>their</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact10.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_25" type="bhr">
+		<t:objective>Lucene SearchContact test for "then"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>then</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact10.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_26" type="bhr">
+		<t:objective>Lucene SearchContact test for "there"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>there</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact5.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_27" type="bhr">
+		<t:objective>Lucene SearchContact test for "these"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>these</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact10.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_28" type="bhr">
+		<t:objective>Lucene SearchContact test for "they"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>they</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact9.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_29" type="bhr">
+		<t:objective>Lucene SearchContact test for "this"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>this</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact9.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_30" type="bhr">
+		<t:objective>Lucene SearchContact test for "to"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>to</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+	        	<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact8.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_31" type="bhr">
+		<t:objective>Lucene SearchContact test for "was"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>was</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact7.email}" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_32" type="bhr">
+		<t:objective>Lucene SearchContact test for "will"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>will</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact7.email}" />
+	        </t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="SearchContact_Lucene_33" type="bhr">
+		<t:objective>Lucene SearchContact test for "with"</t:objective>
+		<t:property name="server.zimbraAccount" value="${account1.server}"/>
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="contact">
+					<query>with</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select  path="//mail:SearchResponse/mail:cn/mail:a[@n='email']" match="${contact7.email}" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	
+</t:tests>

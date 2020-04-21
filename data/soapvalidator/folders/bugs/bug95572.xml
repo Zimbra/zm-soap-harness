@@ -1,0 +1,67 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="password" value="test123"/>
+
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="bug95572" type="bhr" bugids="95572">
+    <t:objective>Create a folder with fie=1 i.e. no parent folder</t:objective>
+    <t:steps>
+            1. Login to admin.
+            2. Get auth token of the admin.
+            3. Create a folder with fie=1 i.e. no parent folder
+    </t:steps>
+   
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+     
+  
+    
+    <t:test>
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder l="1" name="folder${COUNTER}" fie="1"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+    </t:test>
+
+   
+    
+</t:test_case>
+  
+  
+</t:tests>
+  

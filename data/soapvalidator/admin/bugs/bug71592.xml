@@ -1,0 +1,58 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+	<t:test_case testcaseid="Ping" type="always">
+		<t:objective>basic system check</t:objective>
+		<t:test id="ping" required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin" />
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse" />
+			</t:response>
+		</t:test>
+	</t:test_case>
+
+	<t:test_case testcaseid="bug71592" type="bhr">
+		<t:objective>Verify zimbraThrottleSafeHosts set on global config</t:objective>
+		
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+    </t:test_case>
+	
+	<t:test>
+        <t:request>
+            <ModifyConfigRequest  xmlns="urn:zimbraAdmin">
+                <a n="zimbraThrottleSafeHosts">127.0.0.1</a>
+            </ModifyConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyConfigResponse"/>
+        </t:response>
+    </t:test> 
+	
+	 <t:test required="true">
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+            	<a n="zimbraThrottleSafeHosts"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse">
+            	<t:select path="//admin:a[@n='zimbraThrottleSafeHosts']" match="127.0.0.1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+	
+</t:tests>	
+	

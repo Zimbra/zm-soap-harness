@@ -1,0 +1,50 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="search.name" value="search${TIME}.${COUNTER}"/>
+<t:property name="search1" value="test"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="AdminSavedSearchesRequest_01" type="bhr" >
+    <t:objective>Sanity test for GetAdminSavedSearchesRequest and  ModifyAdminSavedSearchesRequest</t:objective>
+ 
+	<t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyAdminSavedSearchesRequest xmlns="urn:zimbraAdmin">
+				<search name="${search.name}">(uid=*${search1}*)</search>
+			</ModifyAdminSavedSearchesRequest>            
+		</t:request>
+		<t:response>
+			<t:select path="//admin:ModifyAdminSavedSearchesResponse" />
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<GetAdminSavedSearchesRequest xmlns="urn:zimbraAdmin"/>         
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAdminSavedSearchesResponse/admin:search" attr="name" match="${search.name}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>
+
+
+
+

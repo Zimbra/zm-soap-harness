@@ -1,0 +1,842 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account3.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account4.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account5.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account6.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>Create test accounts</t:objective>
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_account1"  depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account2"  depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account3"  depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account3.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account4"  depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account3"  depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account5.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_account3"  depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account6.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account6.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test required="true">
+        <t:request>
+            <GetConfigRequest xmlns="urn:zimbraAdmin">
+                <a n="zimbraMilterServerEnabled"/>
+            </GetConfigRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetConfigResponse">
+            </t:select>
+        </t:response>
+    </t:test>
+    
+    <t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol status \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
+		</t:request>
+	</t:staftask>
+	
+	<t:staftask>
+		<t:request>
+			<server>${zimbraServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmilterctl status \'" RETURNSTDOUT RETURNSTDERR WAIT 1200000</params>
+		</t:request>
+	</t:staftask>
+	
+</t:test_case>
+
+<t:test_case testcaseid="BounceMsgRequest01" type="smoke">
+<t:objective>Send bounce message from sender to third user.</t:objective>
+  <t:property name="server.zimbraAccount" value="${account1.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    <t:property name="subject1" value="sub1${TIME}${COUNTER}"/>
+    <t:test >
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account2.name}'/>
+                    <su>${subject1}</su>
+                    <mp ct="text/plain">
+                        <content>Hello</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="account1.message1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test >
+        <t:request>
+            <BounceMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.message1.id}">
+                 <e t="t" a='${account3.name}'/>
+                </m>
+                </BounceMsgRequest>
+    	</t:request>
+     	<t:response>
+         	<t:select path="//mail:BounceMsgResponse" />       	
+       	</t:response>
+     </t:test>
+    
+   <t:property name="server.zimbraAccount" value="${account3.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages">
+                <query>subject:(${subject1})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account3.message1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account3.message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='t']" attr="a" match="${account2.name}"  />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='f']" attr="a" match="${account1.name}" />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='rf']" attr="a" match="${account1.name}" />
+        </t:response>
+    </t:test>
+  	
+  	<t:resttest>
+		<t:restServletRequest>
+			<id>${account3.message1.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Resent-To" match="${account3.name}"/>
+			<t:select attr="Resent-From" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+</t:test_case>
+
+<t:test_case testcaseid="BounceMsgRequest02" type="bhr">
+<t:objective>Send bounce message from one recipient to third user   </t:objective>
+  <t:property name="server.zimbraAccount" value="${account1.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:property name="subject2" value="sub1${TIME}${COUNTER}"/>
+    
+    <t:test >
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account2.name}'/>
+                    <su>${subject2}</su>
+                    <mp ct="text/plain">
+                        <content>Hello</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="account1.msg1.id"/>
+        </t:response>
+    </t:test>
+    
+<t:property name="server.zimbraAccount" value="${account2.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+      <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages">
+                <query>subject:(${subject2})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account2.message2.id"/>
+        </t:response>
+    </t:test>
+
+	
+      <t:test >
+        <t:request>
+            <BounceMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account2.message2.id}">
+                 <e t="t" a='${account3.name}'/>
+                </m>
+                </BounceMsgRequest>
+    	</t:request>
+     	<t:response>
+         	<t:select path="//mail:BounceMsgResponse" />       	
+       	</t:response>
+     </t:test>
+    
+   <t:property name="server.zimbraAccount" value="${account3.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+      <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages">
+                <query>subject:(${subject2})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account3.message2.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account3.message2.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='t']" attr="a" match="${account2.name}"  />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='f']" attr="a" match="${account1.name}" />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='rf']" attr="a" match="${account2.name}" />
+        </t:response>
+    </t:test>
+  	
+  	<t:resttest>
+		<t:restServletRequest>
+			<id>${account3.message2.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Resent-To" match="${account3.name}"/>
+			<t:select attr="Resent-From" match="${account2.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="BounceMsgRequest03" type="bhr">
+<t:objective>Send bounce message to self.</t:objective>
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:property name="subject3" value="sub1${TIME}${COUNTER}"/>
+    
+    <t:test >
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account2.name}'/>
+                    <su>${subject3}</su>
+                    <mp ct="text/plain">
+                        <content>Hello</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="account1.message3.id"/>
+        </t:response>
+    </t:test>
+    
+      <t:test >
+        <t:request>
+            <BounceMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.message3.id}">
+                 <e t="t" a='${account1.name}'/>
+                </m>
+            </BounceMsgRequest>
+    	</t:request>
+     	<t:response>
+         	<t:select path="//mail:BounceMsgResponse" />       	
+       	</t:response>
+     </t:test>
+    
+    
+      <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages">
+                <query>in:inbox subject:(${subject3})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account1.message3.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.message3.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='f']" attr="a" match="${account1.name}" />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='rf']" attr="a" match="${account1.name}" />
+        </t:response>
+    </t:test>
+  	
+  	<t:resttest>
+		<t:restServletRequest>
+			<id>${account1.message3.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Resent-To" match="${account1.name}"/>
+			<t:select attr="Resent-From" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="BounceMsgRequest04" type="bhr">
+<t:objective>Send bounce message to recipient again from sender   </t:objective>
+  <t:property name="server.zimbraAccount" value="${account1.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:property name="subject4" value="sub1${TIME}${COUNTER}"/>
+    
+    <t:test >
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account2.name}'/>
+                    <su>${subject4}</su>
+                    <mp ct="text/plain">
+                        <content>Hello</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="account1.message4.id"/>
+        </t:response>
+    </t:test>
+    
+      <t:test >
+        <t:request>
+            <BounceMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.message4.id}">
+                 <e t="t" a='${account2.name}'/>
+                </m>
+                </BounceMsgRequest>
+    	</t:request>
+     	<t:response>
+         	<t:select path="//mail:BounceMsgResponse" />       	
+       	</t:response>
+     </t:test>
+    
+   <t:property name="server.zimbraAccount" value="${account2.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+      <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages" sortBy="dateDesc">
+                <query>subject:(${subject4})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m[1]" attr="id" set="account2.message4.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account2.message4.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='t']" attr="a" match="${account2.name}"  />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='f']" attr="a" match="${account1.name}" />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='rf']" attr="a" match="${account1.name}" />
+        </t:response>
+    </t:test>
+  	
+  	<t:resttest>
+		<t:restServletRequest>
+			<id>${account2.message4.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Resent-To" match="${account2.name}"/>
+			<t:select attr="Resent-From" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+   
+</t:test_case>
+
+
+<t:test_case testcaseid="BounceMsgRequest05" type="bhr">
+<t:objective>Send bounce message Add cc bcc etc. </t:objective>
+ <t:property name="server.zimbraAccount" value="${account1.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:property name="subject5" value="sub1${TIME}${COUNTER}"/>
+    
+    <t:test >
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m>
+                    <e t="t" a='${account2.name}'/>
+                    <su>${subject5}</su>
+                    <mp ct="text/plain">
+                        <content>Hello</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="account1.message5.id"/>
+        </t:response>
+    </t:test>
+    
+      <t:test >
+        <t:request>
+            <BounceMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.message5.id}">
+                 <e t="f" a='${account1.name}'/>
+                 <e t="s" a='${account2.name}'/>
+				 <e t="t" a='${account4.name}'/>
+				 <e t="c" a='${account5.name}'/>
+				 <e t="b" a='${account6.name}'/>				 
+                </m>
+                </BounceMsgRequest>
+    	</t:request>
+     	<t:response>
+         	<t:select path="//mail:BounceMsgResponse" />       	
+       	</t:response>
+     </t:test><t:property name="server.zimbraAccount" value="${account4.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+      <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages">
+                <query>subject:(${subject5})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account4.message5.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account4.message5.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='t']" attr="a" match="${account2.name}"  />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='f']" attr="a" match="${account1.name}" />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='rf']" attr="a" match="${account1.name}" />
+        </t:response>
+    </t:test>
+  	
+  	<t:resttest>
+		<t:restServletRequest>
+			<id>${account4.message5.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Resent-To" match="${account4.name}"/>
+			<t:select attr="Resent-Cc" match="${account5.name}"/>
+			<t:select attr="Resent-From" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+	 <t:property name="server.zimbraAccount" value="${account5.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account5.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+      <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages">
+                <query>subject:(${subject5})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account5.message5.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account5.message5.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='t']" attr="a" match="${account2.name}"  />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='f']" attr="a" match="${account1.name}" />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='rf']" attr="a" match="${account1.name}" />
+        </t:response>
+    </t:test>
+  	
+  	<t:resttest>
+		<t:restServletRequest>
+			<id>${account5.message5.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Resent-To" match="${account4.name}"/>
+			<t:select attr="Resent-Cc" match="${account5.name}"/>
+			<t:select attr="Resent-From" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+	
+	 <t:property name="server.zimbraAccount" value="${account6.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+      <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages">
+                <query>subject:(${subject5})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account6.message5.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account6.message5.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='t']" attr="a" match="${account2.name}"  />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='f']" attr="a" match="${account1.name}" />
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='rf']" attr="a" match="${account1.name}" />
+        </t:response>
+    </t:test>
+  	
+  	<t:resttest>
+		<t:restServletRequest>
+			<id>${account6.message5.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Resent-To" match="${account4.name}"/>
+			<t:select attr="Resent-Cc" match="${account5.name}"/>
+			<t:select attr="Resent-From" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+</t:test_case>
+
+
+<t:test_case testcaseid="BounceMsgRequest06" type="bhr">
+<t:objective>Send bounce message with attachment  </t:objective>
+  <t:property name="server.zimbraAccount" value="${account1.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+    <t:property name="subject6" value="BRICS ADVANTAGE 15 Dec 2010"/>
+    
+    <t:property name="mime.file" value="${testMailRaw.root}/email01/attachment_mime.txt"/>
+    <t:property name="nonZimbraUser.name" value="test@test.com"/>   
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${mime.file}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+  
+      <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages">
+                <query>subject:(${subject6})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account1.message6.id"/>
+        </t:response>
+    </t:test>
+      <t:test >
+        <t:request>
+            <BounceMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.message6.id}">
+                 <e t="t" a='${account3.name}'/>
+                </m>
+                </BounceMsgRequest>
+    	</t:request>
+     	<t:response>
+         	<t:select path="//mail:BounceMsgResponse" />       	
+       	</t:response>
+     </t:test>
+    
+   <t:property name="server.zimbraAccount" value="${account3.server}"/>
+   <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test> 
+    
+      <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" type="messages">
+                <query>subject:(${subject6})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+          <t:select path="//mail:SearchResponse/mail:c/mail:m" attr="id" set="account3.message6.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account3.message6.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:e[@t='rf']" attr="a" match="${account1.name}" />
+             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@cd='attachment']" attr="filename" match="pic29358.gif"/>
+             <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@cd='attachment']" attr="filename" match="ADVANTAGE 15\.12\.2010\.pdf"/>
+        </t:response>
+    </t:test>
+  	
+  	<t:resttest>
+		<t:restServletRequest>
+			<id>${account3.message6.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Resent-To" match="${account3.name}"/>
+			<t:select attr="Resent-From" match="${account1.name}"/>
+		</t:restServletResponse>
+	</t:resttest>
+</t:test_case>
+
+</t:tests>

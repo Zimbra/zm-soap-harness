@@ -1,0 +1,825 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account6.name" value="test6.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account7.name" value="test7.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account8.name" value="test8.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="uri" value="${admin.uri}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="im_acct_setup" type="deprecated" >
+    <t:objective>Set up test accounts</t:objective>
+    <t:steps>
+    1. Create test accounts
+    2. Add test accounts 1 and 2 to each others' buddy list
+    </t:steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid4.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid5.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account6.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid6.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
+        </t:response>
+    </t:test>
+
+		<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account7.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid7.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct7.server"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account8.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid8.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct8.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+	 <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:property name="authToken_acct1" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+    
+	<t:property name="authToken_acct2" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	<t:test>
+		<t:request>
+			<IMSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account2.name}" name="account2" op="add"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMSubscribeResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribe']" attr="from" match="${test_account1.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMAuthorizeSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account1.name}" authorized="true" add="true" name="account1"/>
+		</t:request>
+		<t:response>
+			<t:request path="//im:IMAuthorizeSubscribeResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribed']" attr="to" match="${test_account2.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+
+	<t:test>
+		<t:request>
+			<IMAuthorizeSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account2.name}" authorized="true"/>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMAuthorizeSubscribeResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+	<t:property name="authToken" value="${authToken_acct2}"/>
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribed']" attr="to" match="${test_account1.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+</t:test_case>
+
+<t:test_case testcaseid="im_subscribe01" type="deprecated">
+    <t:objective> Remove a buddy from the buddy list </t:objective>
+	<t:steps>
+		1. Login as account1
+		2. Remove account2 from account1's list
+		3. Verify that account2 is successfully removed 
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+	<t:property name="authToken" value="${authToken_acct1}"/>
+
+
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<IMSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account2.name}" name="account2" op="remove"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMSubscribeResponse"/>
+		</t:response>
+	</t:test>
+	<t:delay msec="3000"/>
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n[@type='unsubscribed']">
+				<t:header attr="to" match="${test_account2.name}"/>
+			</t:header>
+			<t:header path="//zimbra:im/zimbra:n[@type='presence']" attr="show" match="OFFLINE"/>
+				
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="im_subscribe02" type="deprecated">
+    <t:objective> Add a user to buddy list but dont accept and add </t:objective>
+	<t:steps>
+		1. Login with user3
+		2. Send a invitation to user4
+		3. Only accept the invitation from user3 but dont add
+		4. Check that user4 is added in user3 list without confirming acceptance
+	</t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+
+	 <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:property name="authToken_acct3" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+	<t:test>
+		<t:request>
+			<IMSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account4.name}" name="account4" op="add"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMSubscribeResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct4.server}"/>
+    <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account4.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+	<t:property name="authToken_acct4" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribe']" attr="from" match="${test_account3.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMAuthorizeSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account3.name}" authorized="true" name="account3"/>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMAuthorizeSubscribeResponse"/>
+		</t:response>
+	</t:test>
+	<t:delay msec="2000"/>
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n[@to='${test_account3.name}']" attr="type" match="unsubscribed"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+	<t:property name="authToken" value="${authToken_acct3}"/>
+
+
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n/zimbra:n[@type='subscribed']" attr="to" match="${test_account4.name}"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="im_subscribe03" type="deprecated">
+    <t:objective> Deny the add request </t:objective>
+	<t:steps>
+		Steps:
+		1. Login with the test account 5 and send invitation to another user 6
+		2. Deny the request
+		3. check whether the user6 is not subscribed in user5 list
+	</t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+
+	 <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account5.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:property name="authToken_acct5" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<IMSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account6.name}" name="account6" op="add"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMSubscribeResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct6.server}"/>
+
+	 <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account6.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:property name="authToken_acct6" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+		
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribe']" attr="from" match="${test_account5.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMAuthorizeSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account5.name}" authorized="false"/>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMAuthorizeSubscribeResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="authToken" value="${authToken_acct5}"/>
+
+	
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n[@type='unsubscribed']" attr="to" match="${test_account6.name}"/>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="im_subscribe04" type="deprecated">
+    <t:objective> Rename a buddy </t:objective>
+	<t:steps>
+		1. Login with user1
+		2. Send a invitation to user2
+		3. Rename the buddy and verify
+	</t:steps>
+	<t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
+
+	 <t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account7.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+	
+	<t:property name="authToken_acct7" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<IMSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account8.name}" name="account8" op="add"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMSubscribeResponse"/>
+		</t:response>
+	</t:test>
+	
+	<t:property name="server.zimbraAccount" value="${test_acct8.server}"/>
+	<t:test required = "true">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by = "name">${test_account8.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//acct:AuthResponse/acct:lifetime" match = "^\d+$"/>
+            <t:select path = "//acct:AuthResponse/acct:authToken" set = "authToken"/>
+
+        </t:response>
+    </t:test>
+	<t:property name="authToken_acct8" value="${authToken}"/>
+
+	<!-- Establish a session for this account -->
+	<t:test required="true">
+        <t:requestContext>
+            <authToken>${authToken}</authToken>
+            <session/>
+        </t:requestContext>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:NoOpResponse"/>
+        </t:response>
+    </t:test>
+    
+	<t:test>
+		<t:request>
+			<IMGatewayListRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMGatewayListResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribe']" attr="from" match="${test_account7.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+	<t:test>
+		<t:request>
+			<IMAuthorizeSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account7.name}" authorized="true" add="true" name="account7"/>
+		</t:request>
+		<t:response>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${test_acct7.server}"/>
+	<t:property name="authToken" value="${authToken_acct7}"/>
+
+
+	<t:for start="1" end="60" break="response">
+	
+		<t:delay msec="1000"/>
+	
+		<t:test >
+			<t:request>
+				<NoOpRequest xmlns="urn:zimbraMail" />
+			</t:request>
+			<t:response>
+				<t:header path="//zimbra:notify">
+					<t:header path="//zimbra:n[@type='subscribed']" attr="to" match="${test_account2.name}" query="response"/>
+				</t:header>
+			</t:response>
+		</t:test>
+
+	</t:for>
+
+
+	<t:test>
+		<t:request>
+			<IMAuthorizeSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account8.name}" authorized="true"/>
+		</t:request>
+		<t:response>
+			<t:select path="//im:IMAuthorizeSubscribeResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<IMSubscribeRequest xmlns="urn:zimbraIM" addr="${test_account8.name}" name="buddy8" op="add"/>
+		</t:request>
+		<t:response>
+            <t:select path="//im:IMSubscribeResponse"/>
+		</t:response>
+	</t:test>
+	<t:delay msec="2000"/>
+	<t:test>
+		<t:request>
+			<IMGetRosterRequest xmlns="urn:zimbraIM"/>
+		</t:request>
+		<t:response>
+			<t:header path="//zimbra:im/zimbra:n/zimbra:n[@type='subscribed']">
+				<t:header attr="name" match="buddy8"/>
+				<t:header attr="to" match="${test_account8.name}"/>
+			</t:header>
+		</t:response>
+	</t:test>
+</t:test_case>
+
+</t:tests>

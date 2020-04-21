@@ -1,0 +1,293 @@
+Return-Path: bounces+8732-4631-mmondal=vmware.com@email.socialcast.com
+Received: from 10.113.63.62 (LHLO mta02.zimbra.com) (10.113.63.62) by
+ dogfood.zimbra.com with LMTP; Thu, 11 Aug 2011 11:05:16 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mta02.zimbra.com (Postfix) with ESMTP id 283637C004D
+	for <mmondal@zimbra.com>; Thu, 11 Aug 2011 11:05:16 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at zimbra.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.999
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.999 tagged_above=-10 required=3
+	tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+	DKIM_VALID_AU=-0.1, HTML_MESSAGE=0.001] autolearn=ham
+Authentication-Results: mta02.zimbra.com (amavisd-new); dkim=pass
+	header.i=@email.socialcast.com
+Authentication-Results: mta02.zimbra.com (amavisd-new); domainkeys=pass
+	header.from=share@socialcast.com header.sender=support@socialcast.com
+Authentication-Results: mta02.zimbra.com (amavisd-new); dkim=softfail (fail,
+	body has been altered) header.i=@socialcast.com
+Received: from mta02.zimbra.com ([127.0.0.1])
+	by localhost (mta02.zimbra.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 7D0Lj54W+QUm for <mmondal@zimbra.com>;
+	Thu, 11 Aug 2011 11:05:06 -0700 (PDT)
+Received: from mailhost3.vmware.com (unknown [10.16.27.45])
+	by mta02.zimbra.com (Postfix) with ESMTP id 6B7417C0002
+	for <mmondal@zimbra.com>; Thu, 11 Aug 2011 11:05:06 -0700 (PDT)
+Received: by mailhost3.vmware.com (Postfix)
+	id 5F480CDB72; Thu, 11 Aug 2011 11:05:06 -0700 (PDT)
+Delivered-To: mmondal@vmware.com
+Received: from proofpoint-agent-2.vmware.com (proofpoint-agent-1.vmware.com [10.16.79.24])
+	by mailhost3.vmware.com (Postfix) with ESMTP id 55D7DCDB46
+	for <mmondal@vmware.com>; Thu, 11 Aug 2011 11:05:06 -0700 (PDT)
+Received: from sledgehammer.vmware.com (sledgehammer.vmware.com [10.16.79.36])
+	by proofpoint-agent-1 (8.14.3/8.14.3) with ESMTP id p7BI55JF024916
+	for <mmondal@vmware.com>; Thu, 11 Aug 2011 11:05:05 -0700
+Received: from o1.email.strid.es (o1.email.strid.es [208.115.214.220])
+	by sledgehammer.vmware.com (Postfix) with SMTP id C0BA83B002
+	for <mmondal@vmware.com>; Thu, 11 Aug 2011 11:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=email.socialcast.com; h=
+	date:from:sender:reply-to:to:subject:mime-version:content-type
+	:message-id; s=smtpapi; bh=Te/yCUzK0m8nkKsiaW35zRMANg4=; b=wAt/e
+	xk63IwhZnpjXLcQhHRNONb7eN+W7449yJNJuI/iPQ3lMz+Ddp2ZnWCRB91V9IMge
+	HnDkeBsOoOD33VEKPqaVL44bM8/BeeAbZd0plvJ2wgbzywzNTR0dmc8ISL/lJTeA
+	BttyOYrjv5ekr8+029Gad2EdugtAUjpXK+RTMo=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=socialcast.com; h=date:from
+	:sender:reply-to:to:subject:mime-version:content-type
+	:message-id; q=dns; s=smtpapi; b=HrzXWgctmBZa1ZJS9ARjyUYvNnP+DvS
+	4NZ37yyGNfvt6GIouAAw59dvMQlNzBoLBXvLSG/ySaJgqx50WErbXQcWuqTfe09e
+	m3I7zEPMMg1wveuTvr1rDDTN1/ZvmrIighqrDRsUMWGRk5CLtIUbzi/E0HgPfR1T
+	fcuXSURzY3KA=
+Received: by 10.8.49.76 with SMTP id mf36.24839.4E4419D06
+        Thu, 11 Aug 2011 13:05:04 -0500 (CDT)
+Received: from default.socialcast.com (unknown [10.9.180.5])
+	by mi8 (SG) with ESMTP id 4e4419d0.4036.379278e
+	for <mmondal@vmware.com>; Thu, 11 Aug 2011 13:05:04 -0500 (CST)
+Received: by default.socialcast.com (Postfix, from userid 500)
+	id 9A20514E013E; Thu, 11 Aug 2011 14:05:04 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=socialcast.com;
+	s=mail; t=1313085904;
+	bh=7P5ugEgOEW0ICTvaVBtangIHEZfK1RS0OdHJiyQEFOo=;
+	h=Date:From:Sender:Reply-To:To:Subject:Mime-Version:Content-Type:
+	 Message-Id;
+	b=CjS9HAlESDJkk+VjAWAIt30m0moGzCsIT4EZ9wIDCt7CNIw7twZ4zEg626McGFhTn
+	 sl3EmXlm2cIB+zp5UIis/z1r+fTAaR2u4/b00We+pmk/ytAWoA9dhWoNDWpjSAIjYn
+	 QiIwNls0GRVdrMJadw7ni7cyIMfYPBxKCFRDyVOU=
+Date: Thu, 11 Aug 2011 14:05:04 -0400
+From: VMware Community <share@socialcast.com>
+Sender: support@socialcast.com
+Reply-To: share@socialcast.com
+To: mmondal@vmware.com
+Subject: What are you working on at VMware?
+Mime-Version: 1.0
+Content-Type: multipart/alternative; boundary=mimepart_4e4419d08d488_2514d90695827f
+Precedence: Bulk
+Auto-Submitted: auto-generated
+Message-Id: <20110811180504.9A20514E013E@default.socialcast.com>
+X-Sendgrid-EID: agl9Hmw412ljvJQABkDsThHhPfF+flUxrtP/l8vSEO8hYcoFluvdk+25Vjzp8a6WNzFRX7mfb4Ni+9JnhKzA+QGgk/DZt9ceolsYSgvsHBhaZcbapkosynXMov1+DwOG4WqmLEBhSEh3OYe2pJjJQg==
+X-Sendgrid-ID: anlemXoup1q8ME85nWcPm2yBOmdxg7RFRtFP5ZF+vig6ZftpERRTcthYSWOHIPJr
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10432:5.4.6813,1.0.211,0.0.0000
+ definitions=2011-08-11_06:2011-08-11,2011-08-11,1970-01-01 signatures=0
+X-Proofpoint-Spam-Details: rule=quarantine_notspam policy=quarantine score=0 spamscore=0 ipscore=0
+ suspectscore=2 phishscore=3 bulkscore=0 adultscore=0 classifier=spam
+ adjust=0 reason=mlx engine=6.0.2-1012030000 definitions=main-1108110165
+
+
+--mimepart_4e4419d08d488_2514d90695827f
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: Quoted-printable
+Content-Disposition: inline
+
+
+-- reply above this line to post a message --
+
+Hi, Mithu Mondal
+
+It's been a while since you last logged in. What's happening at VMware?
+
+Reply to this email to instantly update your status, ask a question, or sha=
+re an idea.
+
+Click here to visit the VMware network:
+
+https://vmware-com.socialcast.com/
+
+See you there!
+___
+Want to control which emails you receive from the VMware Community? Click h=
+ere:
+
+
+--mimepart_4e4419d08d488_2514d90695827f
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: Quoted-printable
+Content-Disposition: inline
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang=3D'en'>
+<head>
+<meta content=3D'text/html; charset=3Dutf-8' http-equiv=3D'Content-Type' />
+</head>
+<body bgcolor=3D'#ffffff'>
+-- reply above this line to post a message --
+
+<a alt=3D'VMware' href=3D'https://vmware-com.socialcast.com' style=3D'text-=
+decoration: none; color: #404040; border: 0;display: block; clear: both; ma=
+rgin: 15px 15px 0;'>
+<img alt=3D'VMware' src=3D'https://socialcast.s3.amazonaws.com/logos/5194/v=
+mwareLink_poweredSocialcast_logo_logo.png' style=3D'border: 0px none;' />
+</a>
+<table bgcolor=3D'#ffffff' border=3D'0' cellpadding=3D'15' cellspacing=3D'0=
+' style=3D"margin: 0; background-color: #fff; color: #404040; font-family: =
+'Helvetica Neue', Helvetica, Arial, sans-serif;width: 600px;" width=3D'600'>
+<tbody>
+<tr>
+<td style=3D'padding: 15px; vertical-align: top; font-size: 12px; line-heig=
+ht: 15px;'>
+<h2 style=3D'font-size: 18px; font-weight: bold; margin:0 0 15px; line-heig=
+ht: 25px; color: #404040 !important;'>
+It's been a while since you last logged in. What's happening at VMware?
+</h2>
+<p>
+Reply to this email to instantly update your status, ask a question, or sha=
+re an idea.
+</p>
+<div class=3D'recommended_people' style=3D'padding: 15px 0; border-top: 1px=
+ dotted #d9d9d9;'>
+<h3 style=3D'font-size: 12px; margin: 0 0 15px; padding: 0; color: #404040 =
+!important;'>
+Here are some people you may know
+</h3>
+<table class=3D'recommended' style=3D'width: 100%; font-size: 11px; line-he=
+ight: 15px; color: #404040;'>
+<tr>
+<td style=3D'padding: 0 0 15px; width: 85px;' valign=3D'top'>
+<img alt=3D'Brian Byun' class=3D'avatar' src=3D'https://socialcast.s3.amazo=
+naws.com/tenants/5258/profile_photos/364423/IMG_4729-2_square70.JPG' style=
+=3D'border: 1px solid #c0c0c0;' />
+</td>
+<td class=3D'user_info' style=3D'padding: 0 0 15px; font-size: 13px;' valig=
+n=3D'top'>
+<a href=3D"https://vmware-com.socialcast.com/users/brianbyun" style=3D"colo=
+r:#187aab;font-weight:bold;margin-bottom:6px;text-decoration: none; font-si=
+ze: 14px;" target=3D"_blank">Brian Byun</a>
+<br />
+VP &amp; GM, Cloud Services and Applications
+<br />
+
+<a href=3D"https://vmware-com.socialcast.com/contacts/toggle?user_id=3D2237=
+76" style=3D"color: #187aab; display: block; margin-top: 10px;" target=3D"_=
+blank">Follow Brian Byun
+</a></td>
+<td style=3D'padding: 0 0 15px; width: 85px;' valign=3D'top'>
+<img alt=3D'Carl Eschenbach' class=3D'avatar' src=3D'https://socialcast.s3.=
+amazonaws.com/tenants/5258/profile_photos/554963/VMWEB_PIC_ESCH_square70.jp=
+g' style=3D'border: 1px solid #c0c0c0;' />
+</td>
+<td class=3D'user_info' style=3D'padding: 0 0 15px; font-size: 13px;' valig=
+n=3D'top'>
+<a href=3D"https://vmware-com.socialcast.com/users/carleschenbach" style=3D=
+"color:#187aab;font-weight:bold;margin-bottom:6px;text-decoration: none; fo=
+nt-size: 14px;" target=3D"_blank">Carl Eschenbach</a>
+<br />
+Co-President, Customer Operations
+<br />
+
+<a href=3D"https://vmware-com.socialcast.com/contacts/toggle?user_id=3D3449=
+41" style=3D"color: #187aab; display: block; margin-top: 10px;" target=3D"_=
+blank">Follow Carl Eschenbach
+</a></td>
+</tr>
+<tr>
+<td style=3D'padding: 0 0 15px; width: 85px;' valign=3D'top'>
+<img alt=3D'Paul Maritz' class=3D'avatar' src=3D'https://socialcast.s3.amaz=
+onaws.com/tenants/5258/profile_photos/550365/2010-Q4_Zambia_00037a_square70=
+.jpg' style=3D'border: 1px solid #c0c0c0;' />
+</td>
+<td class=3D'user_info' style=3D'padding: 0 0 15px; font-size: 13px;' valig=
+n=3D'top'>
+<a href=3D"https://vmware-com.socialcast.com/users/paulmaritz" style=3D"col=
+or:#187aab;font-weight:bold;margin-bottom:6px;text-decoration: none; font-s=
+ize: 14px;" target=3D"_blank">Paul Maritz</a>
+<br />
+Chief Executive Officer
+<br />
+
+<a href=3D"https://vmware-com.socialcast.com/contacts/toggle?user_id=3D3391=
+16" style=3D"color: #187aab; display: block; margin-top: 10px;" target=3D"_=
+blank">Follow Paul Maritz
+</a></td>
+<td style=3D'padding: 0 0 15px; width: 85px;' valign=3D'top'>
+<img alt=3D'Raghu Raghuram' class=3D'avatar' src=3D'https://socialcast.s3.a=
+mazonaws.com/tenants/5258/profile_photos/726447/raghu_raghuram_square70.jpg=
+' style=3D'border: 1px solid #c0c0c0;' />
+</td>
+<td class=3D'user_info' style=3D'padding: 0 0 15px; font-size: 13px;' valig=
+n=3D'top'>
+<a href=3D"https://vmware-com.socialcast.com/users/raghuraghuram" style=3D"=
+color:#187aab;font-weight:bold;margin-bottom:6px;text-decoration: none; fon=
+t-size: 14px;" target=3D"_blank">Raghu Raghuram</a>
+<br />
+SVP &amp; GM, Virtualization &amp; Cloud Platforms.
+<br />
+
+<a href=3D"https://vmware-com.socialcast.com/contacts/toggle?user_id=3D2678=
+37" style=3D"color: #187aab; display: block; margin-top: 10px;" target=3D"_=
+blank">Follow Raghu Raghuram
+</a></td>
+</tr>
+<tr>
+<td style=3D'padding: 0 0 15px; width: 85px;' valign=3D'top'>
+<img alt=3D'Richard McAniff' class=3D'avatar' src=3D'https://socialcast.s3.=
+amazonaws.com/tenants/5258/profile_photos/415744/IMG_1605_square70.JPG' sty=
+le=3D'border: 1px solid #c0c0c0;' />
+</td>
+<td class=3D'user_info' style=3D'padding: 0 0 15px; font-size: 13px;' valig=
+n=3D'top'>
+<a href=3D"https://vmware-com.socialcast.com/users/richardmcaniff" style=3D=
+"color:#187aab;font-weight:bold;margin-bottom:6px;text-decoration: none; fo=
+nt-size: 14px;" target=3D"_blank">Richard McAniff</a>
+<br />
+Co-President, Products and Chief Development Offic
+<br />
+
+<a href=3D"https://vmware-com.socialcast.com/contacts/toggle?user_id=3D2547=
+86" style=3D"color: #187aab; display: block; margin-top: 10px;" target=3D"_=
+blank">Follow Richard McAniff
+</a></td>
+<td style=3D'padding: 0 0 15px; width: 85px;' valign=3D'top'>
+<img alt=3D'Steve Herrod' class=3D'avatar' src=3D'https://socialcast.s3.ama=
+zonaws.com/tenants/5258/profile_photos/452851/_DSC0366_square70.jpg' style=
+=3D'border: 1px solid #c0c0c0;' />
+</td>
+<td class=3D'user_info' style=3D'padding: 0 0 15px; font-size: 13px;' valig=
+n=3D'top'>
+<a href=3D"https://vmware-com.socialcast.com/users/steveherrod" style=3D"co=
+lor:#187aab;font-weight:bold;margin-bottom:6px;text-decoration: none; font-=
+size: 14px;" target=3D"_blank">Steve Herrod</a>
+<br />
+Sr. VP of R&amp;D
+<br />
+
+<a href=3D"https://vmware-com.socialcast.com/contacts/toggle?user_id=3D2255=
+81" style=3D"color: #187aab; display: block; margin-top: 10px;" target=3D"_=
+blank">Follow Steve Herrod
+</a></td>
+</tr>
+</table>
+</div>
+<p style=3D'margin: 0;'>
+Click here to visit the VMware network:
+<a href=3D"https://vmware-com.socialcast.com/" style=3D"color: #187aab; tex=
+t-decoration: none;" target=3D"_blank">https://vmware-com.socialcast.com/</=
+a>
+</p>
+</td>
+</tr>
+
+</tbody>
+</table>
+<p style=3D"font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; ma=
+rgin: 10px 0; color: #a9a9a9; font-size: 11px;">
+Want to control which emails you receive from the VMware Community?  Go to:=
+ <a href=3D"https://vmware-com.socialcast.com/users/mithumondal/edit_notifi=
+cation_settings" style=3D"color: #7b7b7b; text-decoration: underline;">Adju=
+st your message settings</a>
+
+</p>
+</body>
+</html>
+
+
+--mimepart_4e4419d08d488_2514d90695827f--

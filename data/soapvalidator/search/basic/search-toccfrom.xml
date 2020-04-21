@@ -1,0 +1,474 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="alias.name" value="Alias.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="mail1.subject" value="Mail1"/>
+<t:property name="mail1.content" value="Mail is sent to user1"/>
+<t:property name="mail2.subject" value="Mail2"/>
+<t:property name="mail2.content" value="Mail is sent to user3 with user1 in Cc field"/>
+<t:property name="mail3.subject" value="Mail3"/>
+<t:property name="mail3.content" value="Mail is sent to user1's alias"/>
+<t:property name="mail4.subject" value="Mail4"/>
+<t:property name="mail4.content" value="Mail is sent to user3 with user1's alias in cc field"/>
+<t:property name="mail5.subject" value="Mail5"/>
+<t:property name="mail5.content" value="Mail is sent to user2"/>
+<t:property name="mail6.subject" value="Mail6"/>
+<t:property name="mail6.content" value="Mail is sent to user3"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="ping" type="always" >
+<t:objective>basic system check</t:objective>
+	<t:test id="ping" required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="search_toccfrom_setup" type="always" >
+	<t:objective>To create 3 test accounts and add an alias to the first test account.</t:objective>
+
+	<t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+		</t:response>
+    </t:test>  
+
+    <t:test>
+        <t:request>
+            <AddAccountAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${test_account1.id}</id>
+                <alias>${alias.name}</alias>
+            </AddAccountAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddAccountAliasResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+<t:test_case testcaseid="search_toccfrom_01" type="always">
+	<t:objective>Login to account 2 and send three mails</t:objective>
+	<t:steps>
+		1. Login to account2.
+		2. Send a mail "mail1" with account1 in "TO" field.
+		3. Send a mail "mail2" with account3 in "TO" field and account1 in "Cc" field.
+		4. Send a mail "mail3" with account3 in "TO" field and account1 in "Bcc" field.
+	</t:steps>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			 </AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${test_account1.name}'/>
+					<e t="c" a='${test_account3.name}'/>
+					<su>${mail1.subject}</su>
+					<mp ct="text/plain">
+						<content> ${mail1.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${test_account3.name}'/>
+					<e t="c" a='${test_account1.name}'/>
+					<su>${mail2.subject}</su>
+					<mp ct="text/plain">
+						<content> ${mail2.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${alias.name}'/>
+					<su>${mail3.subject}</su>
+					<mp ct="text/plain">
+						<content> ${mail3.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${test_account3.name}'/>
+					<e t="c" a='${alias.name}'/>
+					<su>${mail4.subject}</su>
+					<mp ct="text/plain">
+						<content> ${mail4.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="search_toccfrom_02" type="always">
+	<t:objective>Login to account 1 and send a mail</t:objective>
+	<t:steps>
+		1. Login to account1.
+		2. Send a mail "mail4" with account2 in "TO" field and account3 in "Bcc" field.
+	</t:steps>
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${test_account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			 </AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${test_account2.name}'/>
+					<su>${mail5.subject}</su>
+					<mp ct="text/plain">
+						<content> ${mail5.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${test_account3.name}'/>
+					<su>${mail6.subject}</su>
+					<mp ct="text/plain">
+						<content> ${mail6.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			 <t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="search_toccfrom_03" type="sanity">
+	<t:objective>Search for mails with all possible combinations of query operators "to", "from", "cc" and "bcc"</t:objective>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>to:${test_account1.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>from:${test_account1.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail6.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail6.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail5.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail5.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>cc:${test_account1.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail2.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail2.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>tofrom:${test_account1.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail6.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail6.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail5.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail5.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>tocc:${test_account1.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail2.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail2.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>fromcc:${test_account1.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail2.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail2.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail6.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail6.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail5.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail5.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>tofromcc:${test_account1.name}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail2.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail2.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail6.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail6.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail5.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail5.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>is:tome</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail3.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail3.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>is:ccme</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail2.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail2.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail4.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail4.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>is:tofromme</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail3.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail3.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail6.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail6.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail5.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail5.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>is:toccme</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail2.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail2.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail3.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail3.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail4.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail4.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>is:fromccme</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail2.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail2.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail4.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail4.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail5.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail5.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail6.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail6.content}"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail">
+				<query>is:tofromccme</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail1.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail1.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail2.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail2.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail3.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail3.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail4.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail4.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail6.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail6.content}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${mail5.subject}"/>
+ 			<t:select path="//mail:SearchResponse/mail:c" attr="fr" match="${mail5.content}"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,647 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="rights.none"			value=""/>
+<t:property name="rights.read"			value="r"/>
+
+<t:property name="op.read"				value="read"/>
+<t:property name="op.unread"			value="!read"/>
+<t:property name="op.move"				value="move"/>
+<t:property name="op.delete"			value="delete"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Sharing_Mail_AccountSetup" type="always">
+    <t:objective>create test account</t:objective>
+    <t:steps> 1. Login to Admin
+              2. Create test accounts
+    </t:steps>
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>        
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>        
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="getFolderRequest" required="true">
+        <t:request>
+             <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="account1.folder.inbox.id"/>
+            <t:select path="//mail:folder[@name='${globals.trash}']" attr="id" set="account1.folder.trash.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.folder.inbox.id}" op="grant">
+                    <grant d="${account2.name}" gt="usr" perm="${rights.read}"/>
+                </action>
+            </FolderActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest1a">
+        <t:request>
+            <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Sharing_Mail_01" type="bhr">
+    <t:objective>Verify that a new message in a shared folder is listed in the SyncResponse</t:objective>
+    <t:steps>
+    1. Login to the delegator
+    2. Share the inbox with delegatee
+    3. Login to the delegatee, get the Sync Token
+    4. Login to the delegator, add a new message
+    5. Login to the delegatee, send SyncRequest, verify the new message id appears in the response
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>To: foo@example.com
+From: bar@example.com
+Subject: Test Message For Sync
+Date: Mon, 26 Feb 2007 17:11:36 -0800
+
+Now is the time for all good men to come to the aid of their country
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message1.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
+            <t:select path="//mail:SyncResponse">
+            	<t:select path="//mail:m" attr="id" match="${account1.id}:${account1.message1.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.id}:${account1.message1.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Sharing_Mail_02" type="sanity" bugids="16710">
+    <t:objective>Verify that a deleted message in a shared folder is listed in the SyncResponse</t:objective>
+    <t:steps>
+    1. Login to the delegator
+    2. Share the inbox with delegatee
+    3. Login to the delegatee, get the Sync Token
+    4. Login to the delegator, add a new message
+    3. Login to the delegatee, get the Sync Token
+    4. Login to the delegator, delete the new message
+    5. Login to the delegatee, send SyncRequest, verify the message id appears in the response
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>To: foo@example.com
+From: bar@example.com
+Subject: Test Message For Sync
+Date: Mon, 26 Feb 2007 17:11:36 -0800
+
+Now is the time for all good men to come to the aid of their country
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message2.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest1a">
+        <t:request>
+            <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.message2.id}" op="${op.move}" l="${account1.folder.trash.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
+            <t:select path="//mail:SyncResponse">
+            	<t:select path="//mail:deleted" attr="ids" match="${account1.id}:${account1.message2.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SyncRequest_Sharing_Mail_03" type="sanity" >
+    <t:objective>Verify that a new message (moved) in a shared folder is listed in the SyncResponse</t:objective>
+    <t:steps>
+    1. Login to the delegator
+    2. Share the inbox with delegatee
+    3. Login to the delegatee, get the Sync Token
+    4. Login to the delegator, add a new message to the Trash folder
+    3. Login to the delegatee, get the Sync Token
+    4. Login to the delegator, mark the new message as read
+    5. Login to the delegatee, send SyncRequest, verify the message f="u" does not appear in the response
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.trash.id}">
+                    <content>To: foo@example.com
+From: bar@example.com
+Subject: Test Message For Sync
+Date: Mon, 26 Feb 2007 17:11:36 -0800
+
+Now is the time for all good men to come to the aid of their country
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message3.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest1a">
+        <t:request>
+            <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.message3.id}" op="${op.move}" l="${account1.folder.inbox.id}"/>
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
+            <t:select path="//mail:SyncResponse">
+            	<t:select path="//mail:m" attr="id" match="${account1.id}:${account1.message3.id}"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.id}:${account1.message3.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="SyncRequest_Sharing_Mail_04" type="sanity" >
+    <t:objective>Verify that a 'marked read' message in a shared folder is listed in the SyncResponse</t:objective>
+    <t:steps>
+    1. Login to the delegator
+    2. Share the inbox with delegatee
+    3. Login to the delegatee, get the Sync Token
+    4. Login to the delegator, add a new message
+    3. Login to the delegatee, get the Sync Token
+    4. Login to the delegator, mark the new message as read
+    5. Login to the delegatee, send SyncRequest, verify the message f="u" does not appear in the response
+    </t:steps>
+
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.inbox.id}">
+                    <content>To: foo@example.com
+From: bar@example.com
+Subject: Test Message For Sync
+Date: Mon, 26 Feb 2007 17:11:36 -0800
+
+Now is the time for all good men to come to the aid of their country
+
+</content>
+                </m>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="account1.message4.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.message4.id}" op="${op.unread}" />
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test id="syncRequest1a">
+        <t:request>
+            <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse"  attr="token" set="account2.token.id"/>            
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <MsgActionRequest xmlns="urn:zimbraMail">
+                <action id="${account1.message4.id}" op="${op.read}" />
+            </MsgActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:MsgActionResponse/mail:action"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SyncRequest l="${account1.id}:${account1.folder.inbox.id}" token="${account2.token.id}" xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response> 
+            <t:select path="//mail:SyncResponse" attr="token" set="${account2.token.id}"/>
+            <t:select path="//mail:SyncResponse">
+            	<t:select path="//mail:m[@id='${account1.id}:${account1.message1.id}']" attr="f" match="u" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${account1.id}:${account1.message4.id}" />
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" />
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+    
+</t:tests>

@@ -1,0 +1,297 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
+<t:property name="test_acct2.server" value="NOT_DEFINED"/>
+<t:property name="test_acct3.server" value="NOT_DEFINED"/>
+
+<t:property name="account1.name" value="acct${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="acct${COUNTER}.${TIME}@${defaultdomain.name}"/>
+<t:property name="account2.foldername" value="${testMailRaw.root}/email23"/>
+<t:property name="account3.name" value="acct${COUNTER}.${TIME}@${defaultdomain.name}"/>
+
+<t:property name="tag.name" value="zimbra"/>
+<t:property name="tag.newname" value="test"/>
+
+<t:property name="search.name" value="Satish"/>
+<t:property name="search.query" value="from:satish"/>
+
+<t:property name="search.newname" value="Unread"/>
+<t:property name="search.newquery" value="is:unread"/>
+
+<t:property name="msg.foldername" value="${testMailRaw.root}/email01"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+        <t:test required="true">
+         <t:request>
+           <PingRequest xmlns="urn:zimbraAdmin"/>
+         </t:request>
+          <t:response>
+                <t:select path="//admin:PingResponse"/>
+         </t:response>
+        </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_add_message" type="always" >
+    <t:objective>Create test account</t:objective>
+    <steps> 1. Login to admin account
+            2. Create a mail account 
+    </steps>
+
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <a n="zimbraBatchedIndexingSize">0</a> <!-- See bug 37742 -->
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos01.id"/>         
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+	        <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos01.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${msg.foldername}</foldername>
+                        <to>${account1.name}</to>
+                        <from>${nonZimbraUser.name}</from>
+                        <server>${test_acct1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+        <t:test id="auth" required="true">
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${account1.name}</account>
+            <password>${defaultpassword.value}</password>
+          </AuthRequest>
+         </t:request>
+         <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+        </t:test>
+
+</t:test_case>
+
+
+
+
+<t:delay msec="5000" />
+<!-- browseBy tests -->
+<t:test_case testcaseid="BrowseRequest1" type="bhr">
+ <t:objective>BrowseRequest: browseBy="domains"</t:objective>
+	<t:test>
+	 <t:request>
+	   <BrowseRequest xmlns="urn:zimbraMail" browseBy="domains" />
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:BrowseResponse/mail:bd"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="BrowseRequest2" type="bhr" bugids="4895">
+ <t:objective>BrowseRequest: browseBy="objects"</t:objective>
+
+	<t:test>
+	 <t:request>
+	   <BrowseRequest xmlns="urn:zimbraMail" browseBy="objects"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:BrowseResponse/mail:bd"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="BrowseRequest3" type="bhr">
+ <t:objective>BrowseRequest: browseBy="attachments"</t:objective>
+
+	<t:test>
+	 <t:request>
+	   <BrowseRequest xmlns="urn:zimbraMail" browseBy="attachments"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:BrowseResponse/mail:bd"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="BrowseRequest4" type="sanity" bugids="4925">
+ <t:objective>Verify BrowseRequest returns application/octet-stream, not application/exe</t:objective>
+ <t:steps>
+ 1. Inject mime with application/octet-stream attachment
+ 2. Issue browserequest
+ 3. verify "application/octet-stream" is returned, not "application/exe"
+ </t:steps>
+
+
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>    
+				
+    <t:test>
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">cos${TIME}${COUNTER}</name>        
+                <a n="zimbraBatchedIndexingSize">0</a> <!-- See bug 37742 -->
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos01.id"/>         
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+	        	<a n="zimbraCOSId">${cos01.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+        </t:response>
+    </t:test>
+  
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${account3.name}</name>
+                <password>${defaultpassword.value}</password>
+	        	<a n="zimbraCOSId">${cos01.id}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account3.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${account2.foldername}</foldername>
+                        <to>${account2.name}</to>
+                        <from>${nonZimbraUser.name}</from>
+                        <server>${test_acct2.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+        <t:test >
+         <t:request>
+          <AuthRequest xmlns="urn:zimbraAccount">
+            <account by="name">${account2.name}</account>
+            <password>${defaultpassword.value}</password>
+          </AuthRequest>
+         </t:request>
+         <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+         </t:response>
+        </t:test>
+
+	<t:test>
+	 <t:request>
+	   <BrowseRequest xmlns="urn:zimbraMail" browseBy="attachments"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:BrowseResponse[mail:bd='application/octet-stream']"/>
+		<t:select path="//mail:BrowseResponse[mail:bd='application']"/>
+		<t:select path="//mail:BrowseResponse[mail:bd='application/exe']" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+    <!-- Search a mail with text attachment-->
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> subject:(email01A) </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+        </t:response>
+    </t:test>
+
+    <!-- Forward that mail.-->
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m origid="${message1.id}" rt="w">
+                    <e t="t" a="${account3.name}"/>
+                    <su>Fwd: mail with exe attachment.</su>
+                    <attach>
+                        <mp mid="${message1.id}" part="2"/>
+                    </attach>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+	 <t:request>
+	   <BrowseRequest xmlns="urn:zimbraMail" browseBy="attachments"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:BrowseResponse[mail:bd='application/octet-stream']"/>
+		<t:select path="//mail:BrowseResponse[mail:bd='application']"/>
+		<t:select path="//mail:BrowseResponse[mail:bd='application/exe']" emptyset="1"/>
+	 </t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+</t:tests>

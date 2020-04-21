@@ -1,0 +1,876 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+	<t:property name="account1.name"
+		value="sieve1.${TIME}${COUNTER}@${defaultdomain.name}" />
+	<t:property name="test_account1.password" value="test123" />
+	<t:property name="subject1" value="sub1.${TIME}${COUNTER}" />
+	<t:property name="subject2" value="sub2.${TIME}${COUNTER}" />
+	<t:property name="subject3" value="sub3.${TIME}${COUNTER}" />
+	<t:property name="subject4" value="sub4.${TIME}${COUNTER}" />
+	<t:property name="subject5" value="sub5.${TIME}${COUNTER}" />
+	<t:property name="subject6" value="sub6.${TIME}${COUNTER}" />
+	<t:property name="subject7" value="sub7.${TIME}${COUNTER}" />
+	<t:property name="subject8" value="sub8.${TIME}${COUNTER}" />
+	<t:property name="subject9" value="sub9.${TIME}${COUNTER}" />
+	
+
+	<t:property name="sieve_test1"
+		value='require ["log","fileinto"];	
+if header :contains :comparator "i;ascii-casemap" "" ""
+   {	
+   		log "Should not be executed";
+       fileinto "Junk";
+       discard;	
+    }  
+' />
+
+<t:property name="sieve_test2"
+		value='require ["log","fileinto"];	
+if header :contains :comparator "i;ascii-casemap" "Subject_notexists" ""
+   {
+   		log "Should not be executed";
+       fileinto "Junk";
+       discard;	
+    }  
+' />
+
+<t:property name="sieve_test3"
+		value='require ["log","fileinto"];	
+if header :contains :comparator "i;ascii-casemap" "Subject" ""
+   {
+   		log "Should be executed";
+       fileinto "Junk";
+       discard;	
+    }  
+' />
+
+<t:property name="sieve_test4"
+		value='require ["log","fileinto"];	
+if header :contains :comparator "i;ascii-casemap" "" "sub4"
+   {
+   		log "Should not be executed";
+       fileinto "Junk";
+       discard;	
+    }  
+' />
+
+<t:property name="sieve_test5"
+		value='require ["log","fileinto"];	
+if header :contains :comparator "i;ascii-casemap" "Invalid" "Invalid"
+   {
+   		log "Should not be executed";
+       fileinto "Junk";
+       discard;	
+    }  
+' />
+
+<t:property name="sieve_test6"
+		value='require ["log","fileinto"];	
+if header :contains :comparator "i;ascii-casemap" "From" "user1"
+   {
+   		log "Should not be executed";
+       fileinto "Sent";
+       discard;	
+    } 
+ elsif header :contains :comparator "i;ascii-casemap" "" ""
+ {
+ 		log "Should not be  executed";
+       fileinto "Junk";
+       discard;	
+ }
+' />
+
+<t:property name="sieve_test7"
+		value='require ["log","fileinto"];	
+if header :contains :comparator "i;ascii-casemap" "Invalid" "\"
+   {
+   		log "Should not be executed";
+       fileinto "Junk";
+       discard;	
+    }  
+' />
+
+
+<t:property name="sieve_test8"
+		value='require ["log","fileinto"];	
+if header :contains :comparator "i;ascii-casemap" "\" "\"
+   {
+   		log "Should not be executed";
+       fileinto "Junk";
+       discard;	
+    }  
+' />
+
+	<t:property name="admin_script_value_before"
+		value='require ["fileinto","log"];
+if header :contains :comparator "i;ascii-casemap" "" ""
+{
+ 	log "Admin before should not be executed";
+ 	fileinto "Sent";
+}
+' />
+
+	<t:property name="sieve_test9"
+		value='require ["log","fileinto"];
+if header :contains :comparator "i;ascii-casemap" "" ""
+{
+ 	log "User script should not be executed";
+ 	fileinto "Sent";
+}
+' />
+
+	<t:property name="admin_script_value_after"
+		value='require ["fileinto","log"];
+if header :contains :comparator "i;ascii-casemap" "" ""
+{ 
+	log "Admin after should not be executed";
+ 	fileinto "Sent";
+ }
+' />
+
+
+<t:test_case testcaseid="AcctSetup1_filters_actions"
+		type="bhr">
+		<t:objective> Create test account and login to first account
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${account1.name}</name>
+					<password>${defaultpassword.value}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="id" set="account1.id" />
+				<t:select path="//admin:CreateAccountResponse/admin:account"
+					attr="name" set="account1.name" />
+				<t:select
+					path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+					set="account1.server" />
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+		
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_1"
+		type="bhr">
+		<t:objective> Set sieve script for with header name and value empty
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyAccountRequest_1">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test1}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject1}</su>
+						<mp ct="text/plain">
+							<content>content 1</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message1.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Junk subject:${subject1}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject1}" emptyset="1" />
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_2"
+		type="bhr">
+		<t:objective> Set sieve script for with invalid header name and value empty
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyAccountRequest_2">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test2}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject2}</su>
+						<mp ct="text/plain">
+							<content>content 2</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message2.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Junk subject:${subject2}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject2}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+	</t:test_case>
+
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_3"
+		type="bhr">
+		<t:objective> Set sieve script for with correct header name and value empty
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+		<t:test id="modifyAccountRequest_3">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test3}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject3}</su>
+						<mp ct="text/plain">
+							<content>content 3</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message3.id" />
+			</t:response>
+		</t:test>
+
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Junk subject:${subject3}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject3}"/>
+			</t:response>
+		</t:test>
+
+	 </t:test_case>
+	
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_4"
+		type="bhr">
+		<t:objective> Set sieve script for with empty header name and valid value
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_4">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test4}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject4}</su>
+						<mp ct="text/plain">
+							<content>content 4</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message4.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Junk subject:${subject4}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject4}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_5"
+		type="bhr">
+		<t:objective> Set sieve script for with invalid header name and value
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_5">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test5}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject5}</su>
+						<mp ct="text/plain">
+							<content>content 5</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message5.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Junk subject:${subject5}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject5}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+	
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_6"
+		type="bhr">
+		<t:objective> Set sieve script for with empty condition in else action
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_6">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test6}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject6}</su>
+						<mp ct="text/plain">
+							<content>content 6</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message6.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Junk subject:${subject6}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject6}" emptyset="1"/>
+			</t:response>
+		</t:test>
+		
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Sent subject:${subject6}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject6}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+	
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_7"
+		type="bhr">
+		<t:objective> Set sieve script for with Invalid header name and value as '\' which should be escaped
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_5">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test7}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<!-- Send a mail with admin as sender. Should go in Junk of account 1 user -->
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject7}</su>
+						<mp ct="text/plain">
+							<content>content 7</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message7.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Junk subject:${subject7}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject7}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+	
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_8"
+		type="bhr">
+		<t:objective> Set sieve script for with both header name and value as '\' to be escaped
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_8">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraMailSieveScript">${sieve_test8}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject8}</su>
+						<mp ct="text/plain">
+							<content>content 8</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message8.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Junk subject:${subject8}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject8}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+	
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_9"
+		type="bhr">
+		<t:objective> Set sieve script  with header name and value empty for admin before, user script and admin after
+		</t:objective>
+
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test id="modifyAccountRequest_9">
+			<t:request>
+				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${account1.id}</id>
+					<a n="zimbraAdminSieveScriptBefore">${admin_script_value_before}</a>
+					<a n="zimbraMailSieveScript">${sieve_test9}</a>
+					<a n="zimbraAdminSieveScriptAfter">${admin_script_value_after}</a>
+				</ModifyAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:ModifyAccountResponse/admin:account"
+					attr="name" match="${account1.name}" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a="${account1.name}" />
+						<su>${subject9}</su>
+						<mp ct="text/plain">
+							<content>content 9</content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
+					set="Sent_message9.id" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${account1.name}</account>
+					<password>${test_account1.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail">
+					<query>in:Sent subject:${subject9}</query>
+				</SearchRequest>
+			</t:request>	
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:c" attr="su"
+					match="${subject9}" emptyset="1"/>
+			</t:response>
+		</t:test>
+
+
+	</t:test_case>
+
+
+</t:tests>

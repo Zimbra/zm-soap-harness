@@ -1,0 +1,140 @@
+Date: Wed, 4 Aug 2010 05:15:41 -0700 (PDT)
+From: Vishal Mahajan <vmahajan@example.com>
+To: JJ Zhuang <jjzhuang@example.com>, Phoebe Shao <pshao@example.com>
+Cc: Maria Lo <mlo@example.com>, Jeff Sposetti <sposetti@example.com>
+Message-ID: <15925180.173.1280924259738.JavaMail.administrator@example.com>
+In-Reply-To: <11825985.94.1273059515788.JavaMail.administrator@example.com>
+Subject: Re: OAuth Provider review [Re: Blogs on server extensions [Re:
+ OAuth Support in Gmail - very HOT!]]
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_172_7785128.1280924259737"
+X-Mailer: Zimbra 6.0.8_GA_2614 (Zimbra Desktop/2.0_10497_Mac)
+
+------=_Part_172_7785128.1280924259737
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Did you guys get a chance to look at this stuff? Let me know how you want to do the review. We need to decide whether we can incorporate this code in our product and do enhancements over it. 
+
+Thanks, 
+
+Vishal 
+
+
+
+
+From: "Vishal Mahajan" <vmahajan@example.com> 
+To: "JJ Zhuang" <jjzhuang@example.com>, "Phoebe Shao" <pshao@example.com> 
+Cc: "Maria Lo" <mlo@example.com>, "Jeff Sposetti" <sposetti@example.com> 
+Sent: Wednesday, May 5, 2010 5:07:53 PM 
+Subject: OAuth Provider review [Re: Blogs on server extensions [Re: OAuth Support in Gmail - very HOT!]] 
+
+
+Hi JJ, Phoebe, 
+
+To initiate the technical review of Yutaka's OAuth Provider extension (http://www.zimbra.com/forums/developers/35150-oauth-provider-extension-zcs6-0-a.html), I have attached the following: 
+
+    1. The src code 
+    2. The setup required for the extension 
+    3. A sample OAuth Consumer program that I wrote to test the extension 
+    4. A sample user flow when you run the sample Consumer program against the extension 
+
+The extension basically hosts the following URLs using the ExtensionHttpHandler interface: 
+
+    1. /service/extension/oauth/req_token - Consumer calls this to get an OAuth Request Token 
+    2. /service/extension/oauth/req_token - Consumer calls this to get user's authorization for accessing resources on his/her behalf 
+    3. /service/extension/oauth/req_token - Finally, Consumer calls this to get an OAuth Access Token, which it stores and uses to access user's resources 
+
+An AuthProvider implementation is registered to look for an OAuth Access Token in the request. If an OAuth Access Token is present in the request and is valid, access is granted. 
+
+One known limitation of the current implementation is that nonces are not taken into account. This limitation should be pretty easy to fix. 
+
+I have not prepared a blog draft for this stuff yet. I guess what we would want to blog about is - This extension can be deployed on a zimbra system to allow third-party applications to access zimbra services using OAuth, i.e. access zimbra services on a user's behalf without requiring the user to provide his/her credentials to the application. 
+
+Thanks, 
+
+Vishal 
+
+
+From: "JJ Zhuang" <jjzhuang@example.com> 
+To: "Vishal Mahajan" <vmahajan@example.com> 
+Cc: "Maria Lo" <mlo@example.com>, "John Robb" <john.robb@example.com>, "Jeff Sposetti" <sposetti@example.com>, "Kevin Henrikson" <kevinh@example.com> 
+Sent: Thursday, April 22, 2010 11:43:07 AM 
+Subject: Re: Blogs on server extensions [Re: OAuth Support in Gmail - very HOT!] 
+
+Kevin, most of the stuff mentioned in the draft are already in use by the mobile sync code. As you know mobile sync code works as a drop-in extension. Since mobile sync has been using it for years, it should be OK to tell people about it :) 
+
+Jeff, Vishal, the doc looks good. For this piece I think the topics are pretty safe. However for the additional hooks you plan to cover in subsequent blogs, I share the same concerns with Kevin. We should do some more sanity check before telling people about it. That means both to verify the hooks work and to make sure the design is sound. This is especially important for SAML and OAuth. Because they are auth features we don't want to put out something people can pick on. Phoebe and I probably should review the design before that blog. 
+
+As to what to do with the current piece, any objection to post this as-is? My vote is to just go with it. 
+
+
+
+------=_Part_172_7785128.1280924259737
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html><head><style type=3D'text/css'>p { margin: 0; }</style></head><body><=
+div style=3D'font-family: Arial; font-size: 10pt; color: #000000'>Did you g=
+uys get a chance to look at this stuff? Let me know how you want to do the =
+review. We need to decide whether we can incorporate this code in our produ=
+ct and do enhancements over it.<br><br>Thanks,<br><br>Vishal<br><br><hr id=
+=3D"zwchr"><blockquote style=3D"border-left: 2px solid rgb(16, 16, 255); ma=
+rgin-left: 5px; padding-left: 5px;" mce_style=3D"border-left:2px solid #101=
+0ff;margin-left:5px;padding-left:5px;"><b>From: </b>"Vishal Mahajan" &lt;vm=
+ahajan@example.com&gt;<br><b>To: </b>"JJ Zhuang" &lt;jjzhuang@example.com&gt;=
+, "Phoebe Shao" &lt;pshao@example.com&gt;<br><b>Cc: </b>"Maria Lo" &lt;mlo@example.com=
+imbra.com&gt;, "Jeff Sposetti" &lt;sposetti@example.com&gt;<br><b>Sent: </b>=
+Wednesday, May 5, 2010 5:07:53 PM<br><b>Subject: </b>OAuth Provider review =
+[Re: Blogs on server extensions [Re: OAuth Support in Gmail - very HOT!]]<b=
+r><br><mce:style><!--
+p { margin: 0; }
+--></mce:style><style mce_bogus=3D"1"><!--
+p { margin: 0; }
+--></style><div style=3D"font-family: Arial; font-size: 10pt; color: rgb(0,=
+ 0, 0);" mce_style=3D"font-family: Arial; font-size: 10pt; color: #000000">=
+Hi JJ, Phoebe,<br><br>To initiate the technical review of Yutaka's OAuth Pr=
+ovider extension (http://www.zimbra.com/forums/developers/35150-oauth-provi=
+der-extension-zcs6-0-a.html), I have attached the following:<br><ol><li>The=
+ src code</li><li>The setup required for the extension</li><li>A sample OAu=
+th Consumer program that I wrote to test the extension</li><li>A sample use=
+r flow when you run the sample Consumer program against the extension</li><=
+/ol><br>The extension basically hosts the following URLs using the Extensio=
+nHttpHandler interface:<br><ol><li>/service/extension/oauth/req_token - Con=
+sumer calls this to get an OAuth Request Token</li><li>/service/extension/o=
+auth/req_token - Consumer calls this to get user's authorization for access=
+ing resources on his/her behalf</li><li>/service/extension/oauth/req_token =
+- Finally, Consumer calls this to get an OAuth Access Token, which it store=
+s and uses to access user's resources</li></ol>An AuthProvider implementati=
+on is registered to look for an OAuth Access Token in the request. If an OA=
+uth Access Token is present in the request and is valid, access is granted.=
+<br><br>One known limitation of the current implementation is that nonces a=
+re not taken into account. This limitation should be pretty easy to fix.<br=
+><br>I have not prepared a blog draft for this stuff yet. I guess what we w=
+ould want to blog about is&nbsp; -&nbsp; This extension can be deployed on =
+a zimbra system to allow third-party applications to access zimbra services=
+ using OAuth, i.e. access zimbra services on a user's behalf without requir=
+ing the user to provide his/her credentials to the application.<br><br>Than=
+ks,<br><br>Vishal<br><br><hr><b>From: </b>"JJ Zhuang" &lt;jjzhuang@example.com=
+om&gt;<br><b>To: </b>"Vishal Mahajan" &lt;vmahajan@example.com&gt;<br><b>Cc:=
+ </b>"Maria Lo" &lt;mlo@example.com&gt;, "John Robb" &lt;john.robb@example.com=
+m&gt;, "Jeff Sposetti" &lt;sposetti@example.com&gt;, "Kevin Henrikson" &lt;k=
+evinh@example.com&gt;<br><b>Sent: </b>Thursday, April 22, 2010 11:43:07 AM<b=
+r><b>Subject: </b>Re: Blogs on server extensions [Re: OAuth Support in Gmai=
+l - very HOT!]<br><br>Kevin, most of the stuff mentioned in the draft are a=
+lready in use by the mobile sync code. &nbsp;As you know mobile sync code w=
+orks as a drop-in extension. &nbsp;Since mobile sync has been using it for =
+years, it should be OK to tell people about it :)<br><br>Jeff, Vishal, the =
+doc looks good. &nbsp;For this piece I think the topics are pretty safe. &n=
+bsp;However for the additional hooks you plan to cover in subsequent blogs,=
+ I share the same concerns with Kevin. &nbsp;We should do some more sanity =
+check before telling people about it. &nbsp;That means both to verify the h=
+ooks work and to make sure the design is sound. &nbsp;This is especially im=
+portant for SAML and OAuth. &nbsp;Because they are auth features we don't w=
+ant to put out something people can pick on. &nbsp;Phoebe and I probably sh=
+ould review the design before that blog.<br><br>As to what to do with the c=
+urrent piece, any objection to post this as-is? &nbsp;My vote is to just go=
+ with it.<br><br></div></blockquote><br></div></body></html>
+------=_Part_172_7785128.1280924259737--
+

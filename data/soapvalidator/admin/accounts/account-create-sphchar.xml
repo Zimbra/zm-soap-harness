@@ -1,0 +1,389 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account.password" value="${defaultpassword.value}"/>
+<t:property name="testdomain.name" value="${TIME}.${COUNTER}.domain.com"/>
+
+<!-- Valid user names -->
+<t:property name="account.case.cap" value="USERA@${testdomain.name}"/>
+<t:property name="account.case.cap.lower" value="usera@${testdomain.name}"/>
+<t:property name="account.case.small" value="userb@${testdomain.name}"/>
+<t:property name="account.case.mix" value="UserC@${testdomain.name}"/>
+<t:property name="account.case.mix.lower" value="userc@${testdomain.name}"/>
+<t:property name="account.decimal" value="0123456789${TIME}@${testdomain.name}"/>
+<t:property name="account.allsphchars" value="!#$%&amp;\*\+-/=\?\^_`\{\|\}~@${testdomain.name}"/>
+<t:property name="account.charsdot" value="user.a${TIME}@${testdomain.name}"/>
+<t:property name="account.decimaldot" value="0123.456789${TIME}@${testdomain.name}"/>
+<t:property name="account.sphchardot" value="!#$%&amp;'\*\+.-/=\?\^_`\{\|\}~@${testdomain.name}"/>
+<t:property name="account.alphanum" value="user123${TIME}@${testdomain.name}"/>
+<t:property name="account.alphasphchar" value="user!#$~@${testdomain.name}"/>
+<t:property name="account.sphcharnum" value="1234%&amp;'\*\+/=\}~@${testdomain.name}"/>
+<t:property name="account.alphanumsphchardot" value="user\?\^.0987@${testdomain.name}"/>
+<t:property name="list1" value="distlist1${TIME}@${testdomain.name}"/>
+<t:property name="alias.name" value="''&lt;//\@${testdomain.name}"/>
+
+<!-- Invalid user names -->
+<t:property name="account.dotstart" value=".usera${TIME}@${testdomain.name}"/>
+<t:property name="account.dotend" value="usera${TIME}.@${testdomain.name}"/>
+<t:property name="account.invalidsphchar1" value=",${TIME}@${testdomain.name}"/>
+<t:property name="account.invalidsphchar2" value="${TIME}[]@${testdomain.name}"/>
+<t:property name="account.invalidsphchar3" value="()${TIME}@${testdomain.name}"/>
+<t:property name="account.invalidsphchar4" value="\\${TIME}@${testdomain.name}"/>
+<t:property name="account.invalidsphchar5" value="&lt;&gt;${TIME}@${testdomain.name}"/>
+<t:property name="account.invalidsphchar6" value=";${TIME}@${testdomain.name}"/>
+<t:property name="account.invalidsphchar7" value=":${TIME}@${testdomain.name}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="adminSetup_AcctCreateSpChar" type="always" >
+    <t:objective>login as the admin</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	
+	<t:test id="CreateDomainRequest">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${testdomain.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" match="${testdomain.name}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="CreateAccountSphchar1" type="sanity" bugids="18237">
+    <t:objective>Create an account to test case sensitive user names.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.case.cap}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.case.cap.lower}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="case.cap.id" />
+        </t:response>
+    </t:test>
+	
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.case.small}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.case.small}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="case.small.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.case.mix}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.case.mix.lower}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="case.mix.id" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="CreateAccountSphchar2" type="bhr" bugids="18237">
+    <t:objective>Create an account to test valid special characters and numbers.</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.decimal}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.decimal}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="decimal.id" />
+        </t:response>
+    </t:test>
+	
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.allsphchars}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+		<!-- Harness gives exception while comparing the special charaters from the response, if using variable, so matching with exact string -->
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="!#\$%&amp;\*\+-/=\?\^_`\{\|\}~@${testdomain.name}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="allsphchars.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.charsdot}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.charsdot}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="charsdot.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.decimaldot}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.decimaldot}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="decimaldot.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.sphchardot}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="!#\$%&amp;'\*\+.-/=\?\^_`\{\|\}~@${testdomain.name}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="sphchardot.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.alphanum}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.alphanum}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="alphanum.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.alphasphchar}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="user!#\$~@${testdomain.name}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="alphasphchar.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.sphcharnum}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="1234%&amp;'\*\+/=\}~@${testdomain.name}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="sphcharnum.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.alphanumsphchardot}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="user\?\^.0987@${testdomain.name}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="alphanumsphchardot.id" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateAccountSphchar3" type="functional" bugids="18237">
+    <t:objective>Create account to test invalid special charaters (not supported according to RFC2822)</t:objective>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.dotstart}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.dotstart}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.dotstart.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.dotend}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.dotend}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.dotend.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.invalidsphchar1}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" match="${account.invalidsphchar1}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.invalidsphchar1.id" />
+        </t:response>
+    </t:test>
+
+<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.invalidsphchar2}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST" />
+        </t:response>
+    </t:test>
+
+<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.invalidsphchar3}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" equals="${account.invalidsphchar3}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.invalidsphchar3.id" />
+        </t:response>
+    </t:test>
+
+<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.invalidsphchar4}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" equals="${account.invalidsphchar4}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.invalidsphchar4.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.invalidsphchar5}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.invalidsphchar6}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name" equals="${account.invalidsphchar6}" />
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account.invalidsphchar6.id" />
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.invalidsphchar7}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+           <t:select path="//zimbra:Code"  match="^service.INVALID_REQUEST" />
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateAccountSphchar4" type="bhr" bugids="14646">
+    <t:objective>Create an alias of distribution list with special characters.</t:objective>
+
+     <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${list1}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
+        </t:response>
+    </t:test>
+
+	 <t:test>
+        <t:request>
+            <AddDistributionListAliasRequest xmlns="urn:zimbraAdmin">
+                <id>${list1.id}</id>
+                <alias>${alias.name}</alias>
+            </AddDistributionListAliasRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//soap:Fault/soap:Detail/zimbra:Error/zimbra:Code" match="^service.INVALID_REQUEST"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+</t:tests>

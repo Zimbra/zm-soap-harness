@@ -1,0 +1,232 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="root"				value="${soapxml.root}/RestServlet/Calendar/Post/import_export/"/>
+<t:property name="ical1.ics"		value="${root}/bug-25845.ics"/>
+<t:property name="appt.subject"		value="Campus Picnic"/>
+<t:property name="ical1.start"		value="1148754600000"/> 
+<t:property name="ical1.end"		value="1152383400000"/> 
+
+<t:property name="ical2.ics"		value="${root}/espanol.ics"/>
+<t:property name="ical2.subject"	value="Cáléñdar Subject"/>
+<t:property name="ical2.start"		value="1245931200000"/>
+
+<t:test_case testcaseid="RestServlet_ImportExport_Account_Setup" type="always" >
+	<t:objective>setup accounts</t:objective>
+
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+	<t:test required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account1.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+		</t:response>
+	</t:test>
+
+	<t:test required="true">
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${account2.name}</name>
+				<password>${defaultpassword.value}</password>
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="RestServlet_ImportExport_01" type="smoke" bugids="25845">
+	<t:objective>Post a basic calendar ICS to the REST servlet and then Get it to verify</t:objective>
+	<t:steps>
+	1. Use the rest servlet to upload a calendar ICS
+	2. Verify that the calendar ICS meetings appear in the calendar
+	3. Download the REST interface and verify the appointments
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account1.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest method="POST">
+			<filename>${ical1.ics}</filename>
+			<folder>calendar</folder>
+			<fmt>ics</fmt>
+			<modify>
+				<ical a="ORGANIZER">${account1.name}</ical>
+			</modify>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<!-- Is it possible to set few values like DESCRIPTION, DTSTART here? -->
+		</t:restServletResponse>
+	</t:resttest>
+
+    <t:test >
+        <t:request>
+            <GetApptSummariesRequest xmlns="urn:zimbraMail" s="${ical1.start}" e="${ical1.end}"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='${appt.subject}']" attr="loc" set="ical1.location"/>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='${appt.subject}']" attr="d" set="ical1.duration"/>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='${appt.subject}']/mail:inst" attr="s" set="ical1.start"/>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='${appt.subject}']/mail:fr" set="ical1.description"/>
+            <t:select path="//mail:GetApptSummariesResponse/mail:appt[@name='${appt.subject}']" attr="id" set="ical1.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request> 
+            <GetAppointmentRequest  xmlns="urn:zimbraMail" id="${ical1.id}"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp" attr="name" match="${appt.subject}"/>
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp" attr="loc" match="${ical1.location}"/>
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:s" attr="tz" set="ical1.tz"/>
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:s" attr="d" set="ical1.start"/>
+            <t:select path = "//mail:GetAppointmentResponse/mail:appt/mail:inv/mail:comp/mail:e" attr="d" set="ical1.end"/>
+		</t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${ical1.id}</id>
+			<fmt>ics</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="SUMMARY" match="${appt.subject}"/>
+            <t:select attr="DESCRIPTION" match="Presidents House\. \\n\\n\\n$"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="RestServlet_ImportExport_02" type="bhr" bugids="38977">
+	<t:objective>Post a calendar ICS with Spanish characters</t:objective>
+	<t:steps>
+	1. Use the rest servlet to upload a calendar ICS
+	2. Verify that the calendar ICS meetings appear in the calendar
+	3. Download the REST interface and verify the appointments
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+
+	<t:test required="true">
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAccount">
+				<account by="name">${account2.name}</account>
+				<password>${defaultpassword.value}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+			<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+		</t:response>
+	</t:test>
+
+	<t:property name="server.restServlet" value="${account2.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest method="POST">
+			<filename>${ical2.ics}</filename>
+			<folder>Calendar</folder>
+			<fmt>ics</fmt>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+	<t:test>
+		<t:request>
+			<GetFolderRequest xmlns="urn:zimbraMail"/>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:GetFolderResponse">
+				<t:select path="//mail:folder[@name='${globals.calendar}']" attr="id" set="account1.calendar.folder.id"/>
+			</t:select>
+		</t:response>
+	</t:test>
+
+    <t:test required="true" >
+        <t:request>
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-2d)[${ical2.start}]}" calExpandInstEnd="${TIME(+2d)[${ical2.start}]}" types="appointment">
+				<query>inid:${account1.calendar.folder.id}</query>
+			</SearchRequest>
+        </t:request>
+        <t:response>      
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:appt" attr="invId" set="cal2.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${cal2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m">
+            	<t:select path="//mail:comp" attr="name" match="Cáléñdar Subject"/>
+            	<t:select path="//mail:comp" attr="loc" match="Cáléñdar Location"/>
+            	<t:select path="//mail:desc" match="Cáléñdar Description"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

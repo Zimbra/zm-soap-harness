@@ -1,0 +1,187 @@
+<t:tests xmlns:t = "urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+
+<t:property name="root"				value="${soapxml.root}/Filters/"/>
+<t:property name="bug2181.file"		value="${root}/Mime/bug2181.txt"/>
+<t:property name="bug2181.subject"	value="bug2181.subject"/>
+
+
+<t:property name="account1.name"		value="lmtp${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="folder1.name" value="folder1.${TIME}.${COUNTER}"/>
+<t:property name="folder1.pname" value="1"/> <!-- Folder's parent ID -->
+<t:property name="filter1.name" value="filter1.${TIME}.${COUNTER}"/>
+<t:property name="folder.spam" value="4"/> <!-- spam folder ID -->
+
+<t:property name="test_acct.server" value="NOT_DEFINED"/>
+
+
+
+<t:test_case testcaseid = "Ping" type="always">
+    <t:objective>basic system check</t:objective>
+    
+    <t:test id = "ping">
+        <t:request>
+            <PingRequest xmlns = "urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid = "acct1_setup" type="always">
+    <t:objective>create test account</t:objective>
+    
+    <t:test id = "admin_login" required = "true" depends = "ping">
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:AuthResponse/admin:authToken" set = "authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test id = "create_test_account1" required = "false" depends = "admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns = "urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//admin:CreateAccountResponse/admin:account" attr = "id" set = "account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct.server}"/>
+
+<t:test_case testcaseid = "filtersAndSpam_Bug2181" type="functional" bugids="2181, 23886">
+    <t:objective>Verify bug 2181 - verify that Filters take precedence over spam
+				 Bug 23886 says spam take precedence over spam
+	</t:objective>
+	<t:steps>
+		1. Login to a new account
+		2. Create a filter rule to route messages into a subfolder based on subject
+		3. Send in a Spam message (X-Spam-Flag is present and the subject matches the filter)
+		4. Send in another Spam message (X-Spam-Flag is present and the subject does NOT match the filter)
+		5. Verify that the message is routed to the spam not the subfolder
+	</t:steps>
+    
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns = "urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+                <folder name="${folder1.name}" l="${folder1.pname}"/>
+            </CreateFolderRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+        <t:request>
+            <SaveRulesRequest xmlns="urn:zimbraMail">
+                <rules>
+                    <r name="${filter1.name}" active="1">
+                        <g op="anyof">
+                            <c name="header" k0="subject" op=":is" k1="${bug2181.subject}"/>
+		        </g>
+                        <action name="fileinto">
+				<arg>/${folder1.name}</arg>
+			</action>
+                    </r>
+                 </rules>
+            </SaveRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveRulesResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bug2181.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${test_acct.server}</server>
+            <modify>
+                <header a="To">${account1.name}</header>
+                <header a="From">${nonZimbraUser.name}</header>
+                <header a="Subject">${bug2181.subject}</header>
+                <header a="X-Spam-Flag">YES</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${bug2181.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${test_acct.server}</server>
+            <modify>
+                <header a="To">${account1.name}</header>
+                <header a="From">${nonZimbraUser.name}</header>
+                <header a="Subject">not${bug2181.subject}</header>
+                <header a="X-Spam-Flag">YES</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+    
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>subject:(${bug2181.subject}) is:anywhere</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="l" match="${folder.spam}"/>
+	 </t:response>
+	</t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>subject:(not${bug2181.subject}) is:anywhere not in:trash</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="l" match="${folder.spam}"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

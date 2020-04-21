@@ -1,0 +1,114 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="cert2.issuer" value="Zimbra Collaboration Server"/>
+<t:property name="cert1.issuer" value="DigiCert"/>
+
+
+<t:test_case testcaseid="GetCertRequest_setup" type="always" >
+    <t:objective>basic system check</t:objective>
+    
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="admin_login" required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+    </t:response>
+    </t:test>
+
+	<t:test>
+	    <t:request>
+	        <GetServerRequest xmlns="urn:zimbraAdmin">
+	            <server by="name">${zimbraServer.name}</server>
+	        </GetServerRequest>
+	    </t:request>
+	    <t:response>
+			<t:select path="//admin:GetServerResponse/admin:server" attr="id" set="server.id"/>
+	    </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_01" type="bhr">
+    <t:objective>Sanity test for GetCertRequest</t:objective>
+	
+    <t:test >
+        <t:request>
+            <GetCertRequest type="staged" option="self" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCertResponse/admin:cert" attr="server" match="${zimbraServer.name}"/>
+			<t:select path="//admin:GetCertResponse/admin:cert" attr="type" match="staged"/>
+			<t:select path="//admin:GetCertResponse/admin:cert/admin:issuer" match=".*${cert2.issuer}.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_02" type="bhr">
+    <t:objective>Sanity test for GetCertRequest</t:objective>
+
+    <t:test >
+        <t:request>
+            <GetCertRequest type="all" option="self" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCertResponse/admin:cert" attr="server" match="${zimbraServer.name}"/>
+			<t:select path="//admin:GetCertResponse/admin:cert" attr="type" match="ldap"/>
+			<t:select path="//admin:GetCertResponse/admin:cert" attr="type" match="mailboxd"/>
+			<t:select path="//admin:GetCertResponse/admin:cert" attr="type" match="mta"/>
+			<t:select path="//admin:GetCertResponse/admin:cert/admin:issuer" match=".*${cert1.issuer}.*"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_03" type="bhr">
+    <t:objective>Sanity test for GetCertRequest</t:objective>
+
+    <t:test >
+        <t:request>
+            <GetCertRequest type="mta" option="self" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetCertResponse/admin:cert" attr="server" match="${zimbraServer.name}"/>
+            <t:select path="//admin:GetCertResponse/admin:cert/admin:issuer" match=".*${cert1.issuer}.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetCertRequest_04" type="bhr">
+    <t:objective>Sanity test for GetCertRequest</t:objective>
+
+    <t:test >
+        <t:request>
+            <GetCertRequest type="staged" option="comm" server="${server.id}" xmlns="urn:zimbraAdmin">
+			</GetCertRequest>
+        </t:request>
+        <t:response>
+			<!-- No server name and issuer should be returned as commercial cert is not installed. -->
+            <t:select path="//admin:GetCertResponse/admin:cert/admin:issuer" match=".*${cert1.issuer}.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

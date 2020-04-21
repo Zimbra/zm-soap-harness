@@ -1,0 +1,165 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message1.file" value="${testMailRaw.root}/Bugs/25449_28521/msg01.txt"/>
+<t:property name="message2.file" value="${testMailRaw.root}/Bugs/25449_28521/msg02.txt"/>
+    
+<t:property name="subject1.msg" value="Summit Park" />
+<t:property name="subject2.msg" value="No bodies of your emails test" />
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account1.userroot.id" value="1" />
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="AcctSetup1_filters_basic" type="always" >
+    <t:objective> Create test account and login to first account </t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="VerifyBug25449" type="sanity" bugids="25449">
+     <t:objective>Checking if i am getting a response to the injected message </t:objective>
+
+ 	<t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message1.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+      
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+ 
+    <t:test id="filters_basic02d" depends="filters_basic01a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${subject1.msg})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id" />
+        </t:response>
+    </t:test> 
+      
+    <t:test>
+    	<t:request>
+    	 	<GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id}"/>
+            </GetMsgRequest>
+    	</t:request>
+    	<t:response>
+    		<t:select path="//mail:GetMsgResponse">
+    			<t:select path="//mail:content" match="(?s).*playground equipment.*"/>
+    		</t:select>
+    	</t:response>    
+    </t:test>        
+      
+</t:test_case>
+ 
+<t:test_case testcaseid="VerifyBug28521" type="sanity" bugids="28521">
+     <t:objective>Checking if i am getting a response to the injected message </t:objective>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${message2.file}</filename>
+			<to>${account1.name}</to>
+			<from>${nonZimbraUser.name}</from>
+			<server>${account1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+        
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+ 
+      
+    <t:test id="filters_basic02d" depends="filters_basic01a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${subject2.msg})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message.id" />
+        </t:response>
+    </t:test> 
+      
+    <t:test>
+    	<t:request>
+    	 	<GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id}"/>
+            </GetMsgRequest>
+    	</t:request>
+    	<t:response>
+    		<t:select path="//mail:GetMsgResponse">
+    			<t:select path="//mail:content" match="(?s).*Sherwin and I use.*"/>
+    		</t:select>
+    	</t:response>    
+    </t:test>         
+    
+</t:test_case>
+ 
+</t:tests>
+

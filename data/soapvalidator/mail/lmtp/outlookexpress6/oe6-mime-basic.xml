@@ -1,0 +1,408 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="lmtp${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="root" value="${soapxml.root}/Mail/lmtp/OutlookExpress6/"/>
+
+<t:property name="msg01.file" value="${root}/OE6_textformat.txt"/>
+<t:property name="msg02.file" value="${root}/OE6_HTMLformat.txt"/>
+<t:property name="msg03.file" value="${root}/OE6_attachments.txt"/>
+<t:property name="msg04.file" value="${root}/OE6_encodingUTF8.txt"/>
+<t:property name="msg05.file" value="${root}/OE6_EncodingWesterEurpoean.txt"/>
+<t:property name="msg06.file" value="${root}/OE6_encodingLatin9.txt"/>    
+
+<t:property name="subject1.valid" value="Subject${TIME}${COUNTER}"/>
+<t:property name="subject2.valid" value="Subject${TIME}${COUNTER}"/>
+<t:property name="subject3.valid" value="Subject${TIME}${COUNTER}"/>
+<t:property name="subject4.valid" value="Subject${TIME}${COUNTER}"/>
+<t:property name="subject5.valid" value="Subject${TIME}${COUNTER}"/>
+<t:property name="subject6.valid" value="Subject${TIME}${COUNTER}"/>
+
+<t:property name="attachment1.type" value="application/msword"/>
+<t:property name="attachment1.name" value="Train2Raipur.doc"/>
+<t:property name="attachment2.type" value="image/jpeg"/>
+<t:property name="attachment2.name" value="Sample.jpg"/>
+<t:property name="attachment3.type" value="text/xml"/>
+<t:property name="attachment3.name" value="outlook_ical_basic.xml"/>
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+    
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup1_OE6_MIMEBasic" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>1. Login to admin
+             2. Create a test account        
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${account1.password}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="acctSetup2_OE6_MIMEBasic" type="always">
+    <t:objective>Login to the test account </t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="lmtp_OE6_MIMEBasic1" type="smoke">
+    <t:objective>Verify a MIME message in text format from an account configured to Outlook express6 is received properly</t:objective>
+    <t:steps>
+        1. Upload a message
+        2. Login to account
+        3. Search the message
+        4. Get the message
+    </t:steps>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct1.server}</server>
+            <modify>
+                <header a="To">${account1.name}</header>
+                <header a="From">First Last ${nonZimbraUser.name}</header>
+                <header a="Subject">${subject1.valid}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+    <t:test id="lmtp_OE6_MIMEBasic1a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject: (${subject1.valid})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${subject1.valid}$"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg1.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="lmtp_OE6_MIMEBasic1a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg1.id}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="text/plain"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="lmtp_OE6_MIMEBasic2" type="bhr">
+    <t:objective>Verify a MIME message in HTML format from an account configured to Outlook express6 is received properly</t:objective>
+    <t:steps>
+        1. Upload a message
+        2. Login to account
+        3. Search the message
+        4. Get the message
+    </t:steps>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg02.file}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct1.server}</server>
+            <modify>
+                <header a="To">${account1.name}</header>
+                <header a="From">First Last ${nonZimbraUser.name}</header>
+                <header a="Subject">${subject2.valid}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+    <t:test id="lmtp_OE6_MIMEBasic2a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject: (${subject2.valid})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${subject2.valid}$"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg2.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="lmtp_OE6_MIMEBasic2a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg2.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg2.id}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/related"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='multipart/alternative']"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp/mail:mp[@ct='text/html']"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+   
+
+<t:test_case testcaseid="lmtp_OE6_MIMEBasic3" type="bhr">
+    <t:objective>Verify a MIME message with attachments from an account configured to Outlook express6 is received properly</t:objective>
+    <t:steps>
+        1. Upload a message
+        2. Login to account
+        3. Search the message
+        4. Get the message
+    </t:steps>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg03.file}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct1.server}</server>
+            <modify>
+                <header a="To">${account1.name}</header>
+                <header a="From">First Last ${nonZimbraUser.name}</header>
+                <header a="Subject">${subject3.valid}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+    <t:test id="lmtp_OE6_MIMEBasic3a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject: (${subject3.valid})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${subject3.valid}$"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg3.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="lmtp_OE6_MIMEBasic3a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg3.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg3.id}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp" attr="ct" match="multipart/mixed"/>            
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='multipart/alternative']"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment1.type}']" attr="filename" match="${attachment1.name}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment2.type}']" attr="filename" match="${attachment2.name}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp/mail:mp[@ct='${attachment3.type}']" attr="filename" match="${attachment3.name}"/>
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+    
+    
+<t:test_case testcaseid="lmtp_OE6_MIMEBasic4" type="sanity">
+    <t:objective>Verify a MIME message in UTF encoding from an account configured to Outlook express6 is received properly</t:objective>
+    <t:steps>
+        1. Upload a message
+        2. Login to account
+        3. Search the message
+        4. Get the message
+    </t:steps>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg04.file}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct1.server}</server>
+            <modify>
+                <header a="To">${account1.name}</header>
+                <header a="From">First Last ${nonZimbraUser.name}</header>
+                <header a="Subject">${subject4.valid}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+    <t:test id="lmtp_OE6_MIMEBasic4a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject: (${subject4.valid})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${subject4.valid}$"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg4.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="lmtp_OE6_MIMEBasic4a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg4.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg4.id}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${subject4.valid}$"/>            
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+    
+    
+<t:test_case testcaseid="lmtp_OE6_MIMEBasic5" type="sanity">
+    <t:objective>Verify a MIME message in WesterEurpoean encoding from an account configured to Outlook express6 is received properly</t:objective>
+    <t:steps>
+        1. Upload a message
+        2. Login to account
+        3. Search the message
+        4. Get the message
+    </t:steps>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg05.file}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct1.server}</server>
+            <modify>
+                <header a="To">${account1.name}</header>
+                <header a="From">First Last ${nonZimbraUser.name}</header>
+                <header a="Subject">${subject5.valid}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+    <t:test id="lmtp_OE6_MIMEBasic5a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject: (${subject5.valid})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${subject5.valid}$"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg5.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="lmtp_OE6_MIMEBasic5a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg5.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg5.id}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${subject5.valid}$"/>            
+        </t:response>
+    </t:test> 
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="lmtp_OE6_MIMEBasic6" type="sanity">
+    <t:objective>Verify a MIME message in Latin9 encoding format from an account configured to Outlook express6 is received properly </t:objective>
+    <t:steps>
+        1. Upload a message
+        2. Login to account
+        3. Search the message
+        6. Get the message
+    </t:steps>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg06.file}</filename>
+            <to>${account1.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct1.server}</server>
+            <modify>
+                <header a="To">${account1.name}</header>
+                <header a="From">First Last ${nonZimbraUser.name}</header>
+                <header a="Subject">${subject6.valid}</header>
+            </modify>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+    <t:test id="lmtp_OE6_MIMEBasic6a">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject: (${subject6.valid})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m/mail:su" match="^${subject6.valid}$"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg6.id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test depends="lmtp_OE6_MIMEBasic6a">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg6.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m" attr="id" match="${msg6.id}"/>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:su" match="${subject6.valid}$"/>            
+        </t:response>
+    </t:test> 
+
+</t:test_case>    
+ 
+   
+
+</t:tests>

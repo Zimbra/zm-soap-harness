@@ -1,0 +1,776 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}"/>
+<t:property name="test_account2.name" value="testacct.${TIME}.${COUNTER}"/>
+<t:property name="test_account3.name" value="testacct.${TIME}.${COUNTER}"/>
+<t:property name="test_account4.name" value="testacct.${TIME}.${COUNTER}"/>
+<t:property name="domain.admin" value="domainadmin"/>
+
+<t:property name="domain.name1" value="Domain${TIME}${COUNTER}"/>
+<t:property name="domain.name2" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name3" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name4" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name5" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name6" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name7" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name8" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name9" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name10" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name11" value="testDomain${TIME}${COUNTER}"/>
+<t:property name="domain.name12" value="testDomain${TIME}${COUNTER}"/>
+
+<t:property name="domain.notes" value="Testing suspended domain functionality"/>
+<t:property name="domain.suspend" value="suspended"/>
+<t:property name="domain.active" value="active"/>
+<t:property name="galmode1" value="zimbra"/>
+<t:property name="galresult" value="10"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test  id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test  id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+  
+  <t:property name="admin.authToken" value="${authToken}"/>
+
+</t:test_case >
+
+
+<t:test_case testcaseid="DomainSuspend01" type="bhr">
+    <t:objective>Create a Domain with suspend status  </t:objective>
+    
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name1}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name1}</a>
+                <a n="zimbraNotes">${domain.name1}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id1"/>            
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DomainSuspend02" type="bhr" bugids="36096">
+    <t:objective> Verify account cannot be created in the suspended domain </t:objective>
+
+    <t:test>
+         <t:request>
+              <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}@${domain.name1}</name>
+                    <password>${defaultpassword.value}</password>
+              </CreateAccountRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+		 </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DomainSuspend03" type="bhr">
+    <t:objective> Verify admin can send getdomain request for suspended domain </t:objective>
+
+    <t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain.id1}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetDomainResponse/admin:domain/admin:a[@n="zimbraDomainStatus"]' match="${domain.suspend}"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DomainSuspend04" type="sanity" bugids="28021">
+    <t:objective> Modify a domain from supended to active through ModifyDomainRequest  </t:objective>
+
+<t:steps> 1. ModifyDomain and change the status only
+		  2. ModifyDomain and alone with status change the other attributes also
+</t:steps>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name4}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name4}</a>
+                <a n="zimbraNotes">${domain.name4}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id4"/>            
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id4}</id>
+                <a n="zimbraDomainStatus">active</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name5}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name5}</a>
+                <a n="zimbraNotes">${domain.name5}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id5"/>            
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id5}</id>
+                <a n="zimbraDomainStatus">active</a>
+				<a n="zimbraNotes">${domain.notes}</a>
+			      <a n="zimbraGalMaxResults">100</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+		</t:response>
+	</t:test>
+
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DomainSuspend05" type="sanity" >
+    <t:objective> Login to a user in the suspended domain  </t:objective>
+
+<t:steps>   1. Create an active domain
+			2. Create an account on it
+			3. modify that domain and suspend it
+			4. Authenticate with that user now
+</t:steps>
+
+     <t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name6}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name1}</a>
+                <a n="zimbraNotes">${domain.name1}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id6"/>            
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<CreateAccountRequest xmlns="urn:zimbraAdmin">
+				<name>${test_account2.name}@${domain.name6}</name>
+				<password>${defaultpassword.value}</password>   
+			</CreateAccountRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id2"/>
+			<t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="account.name2"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server2"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id6}</id>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account.server2}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account.name2}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.MAINTENANCE_MODE$"/>
+        </t:response>
+    </t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="DomainSuspend06" type="sanity" bugids="36096">
+    <t:objective> Modify an account and try to change the domain to suspended domain </t:objective>
+	
+    <t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name7}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name7}</a>
+                <a n="zimbraNotes">${domain.name7}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id7"/>            
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id3"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="account.name3"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server3"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <RenameAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account.id3}</id>
+                <newName>${test_account3.name}@${domain.name7}</newName>
+            </RenameAccountRequest >
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="DomainSuspend07" type="sanity" >
+    <t:objective> Verify mail do not get bounced if user's domain get suspended </t:objective>
+	<t:steps> 1. Create a domain
+			  2. Create an account on it
+			  3. Suspend that domain
+			  4. Login to an account and send a mail to the user whose domain is suspended. No error message.
+			  5. Activate that domain 
+			  6. Check mail got received properly
+	</t:steps>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name8}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name8}</a>
+                <a n="zimbraNotes">${domain.name8}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id8"/>            
+        </t:response>
+    </t:test>
+
+	<t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}@${defaultdomain.name}</name>
+                <password>${defaultpassword.value}</password>               
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id4"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="account.name4"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server4"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id5}</id>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+		</t:response>
+	</t:test>
+
+<t:property name="server.zimbraAccount" value="${zimbraServer.name}"/>
+
+	<t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${admin.user}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+<t:property name="compose.subject" value="Testing suspended domain functionality"/>
+<t:property name="compose.content" value="Testing suspended domain functionality"/>
+
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${account.name4}'/>
+					<su>${compose.subject}</su>
+					<mp ct="text/plain">
+						<content>${compose.content}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+  <t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id5}</id>
+                <a n="zimbraDomainStatus">${domain.active}</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+		</t:response>
+	</t:test>
+
+<t:property name="server.zimbraAccount" value="${account.server4}"/>
+
+	<t:test delay="10000">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account.name4}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation">
+				<query>in:inbox</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="conversation">
+				<query>subject:${compose.subject}</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:c" attr="su" match="${compose.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:c/mail:e" attr="a" match="${admin.user}"/>
+		</t:response>
+	</t:test>
+    
+</t:test_case>
+
+<t:test_case testcaseid="DomainSuspend08" type="sanity" >
+    <t:objective> Verify domain admin can't change the zimbraDomainStatus </t:objective>
+
+  <t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name9}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name9}</a>
+                <a n="zimbraNotes">${domain.name9}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraDomainStatus">${domain.active}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id9"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name9"/>            
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.admin}@${domain.name9}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraIsDomainAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="domain.admin.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="domain.admin.name"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain.admin.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAdmin" value="${domain.admin.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.admin.name}</name>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id9}</id>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id9}</id>
+                <a n="zimbraDomainStatus">${domain.active}</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="^service.PERM_DENIED$"/>
+		</t:response>
+	</t:test>
+   
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DomainSuspend09" type="sanity" >
+    <t:objective> Verify globaladmin can change the zimbraDomainStatus of its own domain  </t:objective>
+
+  <t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name10}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name10}</a>
+                <a n="zimbraNotes">${domain.name10}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraDomainStatus">${domain.active}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id10"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name10"/>            
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.admin}@${domain.name10}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraIsAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="global.admin.id"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="global.admin.name"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="global.admin.server"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.zimbraAdmin" value="${global.admin.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${global.admin.name}</name>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id10}</id>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:ModifyDomainResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id10}</id>
+                <a n="zimbraDomainStatus">${domain.active}</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:ModifyDomainResponse"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DomainSuspend10" type="sanity" >
+    <t:objective> Verify GetDomain by domain admin for suspended domain gives AUTH_EXPIRED (assuming it's already authed) </t:objective>
+
+  <t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name11}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name11}</a>
+                <a n="zimbraNotes">${domain.name11}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraDomainStatus">${domain.active}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id11"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name11"/>            
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.admin}@${domain.name11}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraIsDelegatedAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="domain.admin.id2"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="domain.admin.name2"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain.admin.server2"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+		<t:request >
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="domain" by="name">${domain.name11}</target>
+				<grantee type="usr" by="name">${domain.admin.name2}</grantee>
+				<right>get.domain.zimbraDomainStatus</right>
+				<right>set.domain.zimbraDomainStatus</right>
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAdmin" value="${domain.admin.server2}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.admin.name2}</name>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+  <t:property name="domain.admin.authToken" value="${authToken}"/>
+  <t:property name="authToken" value="${admin.authToken}"/>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id11}</id>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+            <t:select path='//admin:ModifyDomainResponse/admin:domain/admin:a[@n="zimbraDomainStatus"]' match="${domain.suspend}"/>
+		</t:response>
+	</t:test>
+
+  <t:property name="authToken" value="${domain.admin.authToken}"/>
+
+	<t:test>
+        <t:request>
+            <GetDomainRequest xmlns="urn:zimbraAdmin">
+                <domain by="id">${domain.id11}</domain>
+            </GetDomainRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^service.AUTH_EXPIRED$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="DomainSuspend11" type="sanity" >
+    <t:objective> Verify domainadmin can't login to if domain is suspended </t:objective>
+
+  <t:property name="authToken" value="${admin.authToken}"/>
+
+    <t:test>
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.name12}</name>
+                <a n="zimbraGalMode">${galmode1}</a>
+                <a n="zimbraAuthMech">${galmode1}</a>
+                <a n="description">${domain.name12}</a>
+                <a n="zimbraNotes">${domain.name12}</a>
+                <a n="zimbraGalMaxResults">${galresult}</a>
+                <a n="zimbraDomainStatus">${domain.active}</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain.id12"/>            
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="name" set="domain.name12"/>            
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.admin}@${domain.name12}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraIsDomainAdminAccount">TRUE</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="domain.admin.id4"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="name"  set="domain.admin.name4"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain.admin.server4"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyDomainRequest xmlns="urn:zimbraAdmin">
+				<id>${domain.id12}</id>
+                <a n="zimbraDomainStatus">${domain.suspend}</a>
+			</ModifyDomainRequest>
+		</t:request>
+		<t:response>
+            <t:select path='//admin:ModifyDomainResponse/admin:domain/admin:a[@n="zimbraDomainStatus"]' match="${domain.suspend}"/>
+		</t:response>
+	</t:test>
+
+
+	<t:property name="server.zimbraAdmin" value="${domain.admin.server4}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${domain.admin.name4}</name>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//zimbra:Code" match="^account.MAINTENANCE_MODE$"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+</t:tests>

@@ -1,0 +1,64 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+	<t:test required="true">
+	 <t:request>
+	   <PingRequest xmlns="urn:zimbraAdmin"/>
+	 </t:request>
+	  <t:response>
+		<t:select path="//admin:PingResponse"/>
+	 </t:response>
+	</t:test>
+
+	<t:test required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllRightsRequest01" type="bhr">
+ <t:objective>basic request check</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<GetAllRightsRequest xmlns="urn:zimbraAdmin">
+			</GetAllRightsRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetAllRightsResponse/admin:right"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAllRightRequest01" type="bhr">
+ <t:objective>basic request check</t:objective>
+
+	<t:test required="true" >
+		<t:request>
+			<GetRightRequest xmlns="urn:zimbraAdmin">
+			  <right>setCalendarResourcePassword</right>
+			</GetRightRequest>			
+		</t:request>
+		<t:response>
+			<t:select path="//admin:GetRightResponse/admin:right"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+
+</t:tests>

@@ -1,0 +1,355 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="test${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="filter1.name" value="filter1.${TIME}.${COUNTER}"/>
+<t:property name="filter2.name" value="filter2.${TIME}.${COUNTER}"/>
+
+<t:property name="account.dir" value="${testMailRaw.root}/email02"/>
+<t:property name="mail.content" value="Happy weekend"/>
+
+<t:property name="uploadFile.name" value="${testMailRaw.root}/email01/msg01.txt"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="FilterAttachment_AccountSetup" type="always" >
+    <t:objective>create test account</t:objective>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+	    <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+	    </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+<t:test_case testcaseid="Filter_Attachment_01" type="smoke">
+    <t:objective> Verify messages that has attachment get filtered </t:objective>
+	    <t:steps> 
+			  1. Login to test account 1
+			  2. Create a filter based on "has attachment"
+			  3. Inject two message with attachment using AddMsg and SendMsg request
+			  4. Verify both messages get filtered
+        </t:steps>
+        
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	   
+	 <t:test>
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="${filter1.name}" active="1">
+                         <filterTests condition="anyof">
+                         	 <attachmentTest/>                    	     
+                        </filterTests>
+                        <filterActions> 
+                        	<actionFlag flagName="flagged" />    
+                        	<actionStop />                 
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Get the rules to check if it has got created -->
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="uploadServletServer" value="${account1.server}"/>
+<t:property name="server.restServlet" value="${account1.server}"/>
+
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message2.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+
+	<t:property name="mail2.subject" value="subject${TIME}${COUNTER}"/>
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a="${account1.name}"/>
+					<su> ${mail2.subject} </su>
+					<mp ct="text/plain">
+						<content> ${mail.content} </content>
+					</mp>
+					<attach aid="${message2.aid}"/>
+				</m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id2"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${mail2.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="f" match=".*f.*"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Filter_Attachment_02" type="bhr">
+    <t:objective>Verify messages that do not has attachment are not filtered </t:objective>
+	    <t:steps> 
+			  1. Login to test account 1
+			  2. Create a filter based on "has attachment"
+			  3. Send a message to itself
+			  4. Verify the message is not filtered
+        </t:steps>
+        
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	   
+	   <t:test>
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="${filter1.name}" active="1">
+                         <filterTests condition="anyof">
+                         	 <attachmentTest/>                    	     
+                        </filterTests>
+                        <filterActions> 
+                        	<actionFlag flagName="flagged" />    
+                        	<actionStop />                 
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+   
+
+	<!-- Get the rules to check if it has got created -->
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+
+	<t:property name="mail.subject" value="subject${TIME}${COUNTER}"/>
+	<t:test >
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="t" a='${account1.name}'/>
+					<su> ${mail.subject} </su>
+					<mp ct="text/plain">
+					<content> ${mail.content} </content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SendMsgResponse"/>
+		</t:response>
+	</t:test>
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>Subject:${mail.subject}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            	<t:select attr="f" match=".*f.*" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+<t:test_case testcaseid="Filter_Attachment_03" type="bhr">
+    <t:objective> Verify messages that are uploaded as AddMsgRequest attachments do not get filtered </t:objective>
+	    <t:steps> 
+			  1. Login to test account 1
+			  2. Create a filter based on "has attachment"
+			  3. Inject message as attachment using AddMsg 
+			  4. Verify  message does not get filtered
+        </t:steps>
+        
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+	   
+    <t:test>
+        <t:request>
+            <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+                <filterRules>
+					<filterRule name="${filter1.name}" active="1">
+                         <filterTests condition="anyof">
+                         	 <attachmentTest/>                    	     
+                        </filterTests>
+                        <filterActions> 
+                        	<actionFlag flagName="flagged" />    
+                        	<actionStop />                 
+                        </filterActions>
+                    </filterRule>
+                 </filterRules>
+            </ModifyFilterRulesRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+    
+	<!-- Get the rules to check if it has got created -->
+	<t:test>
+        <t:request>
+            <GetFilterRulesRequest xmlns="urn:zimbraMail"/>
+	 </t:request>
+	 <t:response>
+            <t:select path="//mail:GetFilterRulesResponse"/>
+        </t:response>
+    </t:test>
+
+<t:property name="uploadServletServer" value="${account1.server}"/>
+<t:property name="server.restServlet" value="${account1.server}"/>
+
+	<t:uploadservlettest>
+		<t:uploadServletRequest>
+			<filename>${uploadFile.name}</filename>
+		</t:uploadServletRequest>
+		<t:uploadServletResponse>
+			<t:select attr="id" set="message1.aid"/>
+		</t:uploadServletResponse>
+	</t:uploadservlettest>
+
+    <t:test>
+        <t:request>
+               <GetFolderRequest xmlns = "urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:folder[@name='${globals.inbox}']" attr="id" set="inbox.id"/>
+        </t:response>
+    </t:test>
+
+	<t:property name="mail1.subject" value="email01A"/>
+    <t:test>
+        <t:request>
+            <AddMsgRequest xmlns="urn:zimbraMail">
+                <m l="${inbox.id}" aid="${message1.aid}"/>
+            </AddMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:AddMsgResponse/mail:m" attr="id" set="message.id1"/>
+        </t:response>
+    </t:test>
+
+
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${mail1.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+            	<t:select attr="f" match=".*f.*" emptyset="1"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+
+</t:test_case>
+
+
+</t:tests>
+

@@ -1,0 +1,708 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+
+<t:property name="account1.name" value="acct${COUNTER}.${TIME}@${defaultdomain.name}"/>
+
+<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="test123"/>
+<t:property name="positivenegative.address" value="+-test_account1"/>
+<t:property name="specialsymbol.address" value="#%^test_account1"/>
+<t:property name="digits.address" value="1"/>
+<t:property name="specialsymbols.domainname" value="test_account1@#%^"/>
+<t:property name="digits.domainname" value="test_account1@123"/>
+<t:property name="spaces.domainname" value="test_account1@ "/>
+<t:property name="space.address" value="@${defaultdomain.name}"/>
+
+<t:property name="specialsymbols" value="!:()+-||&lt;"/>
+
+<t:property name="msg.foldername" value="${testMailRaw.root}/user1"/>
+
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+ <t:objective>basic system check</t:objective>
+
+<t:test required="true">
+ <t:request>
+   <PingRequest xmlns="urn:zimbraAdmin"/>
+ </t:request>
+  <t:response>
+	<t:select path="//admin:PingResponse"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always" >
+ <t:objective>create test account</t:objective>
+
+<t:test required="true" >
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAdmin">
+    <name>${admin.user}</name>
+    <password>${admin.password}</password>
+  </AuthRequest>
+ </t:request>
+ <t:response>
+    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+ </t:response>
+</t:test>
+
+<t:test required="true" >
+ <t:request>
+  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+    <name>${account1.name}</name>
+    <password>${defaultpassword.value}</password>
+  </CreateAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+ </t:response>
+</t:test>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <foldername>${msg.foldername}</foldername>
+                        <to>${account1.name}</to>
+                        <from>${nonZimbraUser.name}</from>
+                        <server>${test_acct1.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+
+
+<t:test required="true" >
+ <t:request>
+  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+    <name>${test_account1.name}</name>
+    <password>${test_account1.password}</password>
+  </CreateAccountRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+       <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+<t:test_case testcaseid="SearchAuthRequest" type="always" >
+	<t:objective> Login as the appropriate test account
+	</t:objective>
+
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account1.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest1" type="smoke">
+ <t:objective> Verify that a search for simple text returns correctly (by message)</t:objective>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+	   <query>xml</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest2" type="bhr" bugids="1701">
+ <t:objective> Verify that a search for simple text with common terms (i.e. to) returns correctly (by message)</t:objective>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="conversation">
+	   <query>contributing to xmlbeans</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:c"/>
+	 </t:response>
+	</t:test>
+
+</t:test_case>
+
+<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
+
+<t:test_case testcaseid="acct1_login" type="always" >
+ <t:objective>login as the test account</t:objective>
+
+<t:test required="true">
+ <t:request>
+  <AuthRequest xmlns="urn:zimbraAccount">
+    <account by="name">${test_account1.name}</account>
+    <password>${test_account1.password}</password>
+    <!--<prefs/>-->
+  </AuthRequest>
+ </t:request>
+ <t:response>
+	<t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+	<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+ </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest11" type="sanity" >
+ <t:objective>Search with signs + and - in the starting of a sender name in "From" field.</t:objective>
+
+<t:test>
+  <t:request>
+     <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	    <query>from:${positivenegative.address}</query>
+     </SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest12" type="sanity" >
+ <t:objective>Search with special symbols in the starting of a sender name in "From" field.</t:objective>
+
+<t:test>
+  <t:request>
+     <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	    <query>from:${specialsymbol.address}</query>
+     </SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest13" type="sanity" >
+ <t:objective>Search with only digits in the sender name in "From" field.</t:objective>
+<t:test>
+  <t:request>
+     <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+    	    <query>from:${digits.address}</query>
+     </SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest14" type="sanity" >
+ <t:objective>Search with only special symbols in the domain name in "From" field. </t:objective>
+
+<t:test>
+  <t:request>
+        <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>from:${specialsymbols.domainname}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest15" type="sanity" >
+ <t:objective>Search with only digits in the domain name in "From" field. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>from:${digits.domainname}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest16" type="sanity" >
+ <t:objective>Search with space in the domain name in "From" field.</t:objective>
+
+<t:test >
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>from:${spaces.domainname}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest17" type="sanity" >
+ <t:objective>Search with special symbols in the starting of a receiver name in "To/Cc" field.</t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>to:${specialsymbol.address} OR cc:${specialsymbol.address}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest18" type="sanity" >
+ <t:objective>Search with only digits in the sender name in "To/Cc" field.</t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>to:${digits.address} OR cc:${digits.address}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest19" type="sanity" >
+ <t:objective> Search with only special symbols in the domain name in "To/Cc" field. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>to:${specialsymbols.domainname} OR cc:${specialsymbols.domainname}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest20" type="sanity" >
+ <t:objective>Search with only digits in the domain name in "To/Cc" field. </t:objective>
+
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>to:${digits.domainname} OR cc:${digits.domainname}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest21" type="sanity" >
+ <t:objective> Search with space in the domain name in "To/Cc" field. </t:objective>
+
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>to:${spaces.domainname} OR cc:${spaces.domainname}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest22" type="sanity" >
+ <t:objective> Search with no name and a valid domain name in the "From" field. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>from:${space.address}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest23" type="sanity" >
+ <t:objective> Search with no name and a valid domain name in the "To/Cc" field. </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>to:${space.address} OR cc:${space.address}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path="//mail:SearchResponse"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest24" type="sanity" >
+ <t:objective> Search with "and" in Subject field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>subject:(and)</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest25" type="sanity" >
+ <t:objective> Search with "and" in Content field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>content:(and)</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest26" type="sanity" >
+ <t:objective> Search with "Or " in Subject field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	<query>subject:(or)</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest27" type="sanity" >
+ <t:objective> Search with "Or " in Content field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>content:(or)</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest28" type="sanity" >
+ <t:objective> Search with "and" in From field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>from :(and)</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest29" type="sanity" >
+ <t:objective> Search with "and" in To/Cc field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>to:(and) OR cc:(and)</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest30" type="sanity" >
+ <t:objective> Search with "Or " in From field </t:objective>
+
+<t:test >
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>from:(or)</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest31" type="sanity" >
+ <t:objective> Search with "Or " in To/Cc field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>to:(or) OR cc:(or)</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest32" type="sanity">
+ <t:objective>Search with special symbols in Subject field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>subject:${specialsymbols}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest33" type="sanity" >
+ <t:objective>Search with special symbols in Content field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>content:${specialsymbols}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest34" type="sanity" >
+ <t:objective>Search with special symbols in "From" field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>from:${specialsymbols}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchRequest35" type="sanity" >
+ <t:objective>Search with special symbols in "To/Cc" field </t:objective>
+
+<t:test>
+  <t:request>
+	<SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+	       <query>to:${specialsymbols} OR cc:${specialsymbols}</query>
+	</SearchRequest>
+  </t:request>
+  <t:response>
+	<t:select path= "//zimbra:Code" match="^mail.QUERY_PARSE_ERROR"/>
+  </t:response>
+</t:test>
+
+</t:test_case>
+
+
+
+<t:test_case testcaseid="SearchRequest36" type="sanity" >
+ <t:objective>Verify specific emails from Jim that he said were unsearchable</t:objective>
+
+	<t:property name="account36.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+	
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:test required="true" >
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAdmin">
+	    <name>${admin.user}</name>
+	    <password>${admin.password}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+	    <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+	 </t:response>
+	</t:test>
+	
+	<t:test required="true" >
+	 <t:request>
+	  <CreateAccountRequest xmlns="urn:zimbraAdmin">
+	    <name>${account36.name}</name>
+	    <password>${defaultpassword.value}</password>
+	  </CreateAccountRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account36.id"/>
+	            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct36.server"/>
+	 </t:response>
+	</t:test>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${testMailRaw.root}/email25/mimeMsg0.txt</filename>
+            <to>${account36.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct36.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${testMailRaw.root}/email25/mimeMsg1.txt</filename>
+            <to>${account36.name}</to>
+            <from>${nonZimbraUser.name}</from>
+            <server>${test_acct36.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+<t:property name="server.zimbraAccount" value="${test_acct36.server}"/>
+
+	<t:test required="true">
+	 <t:request>
+	  <AuthRequest xmlns="urn:zimbraAccount">
+	    <account by="name">${account36.name}</account>
+	    <password>${defaultpassword.value}</password>
+	  </AuthRequest>
+	 </t:request>
+	 <t:response>
+		<t:select path="//acct:AuthResponse/acct:lifetime" 
+						match="^\d+$"/>
+		<t:select path="//acct:AuthResponse/acct:authToken"
+						set="authToken"/>
+
+
+	 </t:response>
+	</t:test>
+	
+	<t:test>
+	  <t:request>
+	     <SearchRequest xmlns="urn:zimbraMail" types="conversation" sortBy="dateDesc" offset="0" limit="25">
+		    <query>Abbate</query>
+	     </SearchRequest>
+	  </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:c/mail:m[1]" attr="id" set="account36.m1.id"/>
+		<t:select path="//mail:SearchResponse/mail:c/mail:m[2]" attr="id" set="account36.m2.id"/>
+	  </t:response>
+	</t:test>
+	
+	<t:test>
+	  <t:request>
+	     <SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25">
+		    <query>Abbate</query>
+	     </SearchRequest>
+	  </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${account36.m1.id}"/>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" match="${account36.m2.id}"/>
+	  </t:response>
+	</t:test>
+	
+</t:test_case>
+
+
+<t:test_case testcaseid="SearchRequest37" type="sanity" bugids="13436">
+ <t:objective> TC to verify SearchRequest can access specific headers</t:objective>
+
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message" sortBy="dateDesc" offset="0" limit="25" fetch="1">
+			      <header n="From"></header>
+			      <header n="To"></header>
+				<query>Abbate</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+            <t:select path='//mail:SearchResponse/mail:m/mail:header[@n="From"]' emptyset="0"/>
+            <t:select path='//mail:SearchResponse/mail:m//mail:header[@n="To"]' emptyset="0"/>
+		</t:response>
+	</t:test>
+
+</t:test_case>
+
+
+</t:tests>
+
+
+
+
+
+
+
+
+
+
+
+
+
