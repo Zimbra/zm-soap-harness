@@ -1,0 +1,49 @@
+body URG_BIZ      /urgent.{0,16}(?:assistance|business|buy|confidential|notice|proposal|reply|request|response)/i
+describe URG_BIZ    Contains urgent matter
+body     MONEY_BACK             /money back guarantee/i
+describe MONEY_BACK             Money back guarantee
+body FREE_QUOTE_INSTANT   /free.{0,12}(?:(?:instant|express|online|no.?obligation).{0,4})+.{0,32}\bquote/i
+describe FREE_QUOTE_INSTANT Free express or no-obligation quote
+body BAD_CREDIT           /\b(?:bad|poor|no\b|eliminate|repair|(?:re)?establish|damag).{0,10} (?:credit|debt)\b/i
+describe BAD_CREDIT   Eliminate Bad Credit
+body REFINANCE_YOUR_HOME  /\brefinance your(?: current)? (?:home|house)\b/i
+describe REFINANCE_YOUR_HOME  Home refinancing
+body REFINANCE_NOW              /time to refinance|refinanc\w{1,3}\b.{0,16}\bnow\b/i
+describe REFINANCE_NOW          Home refinancing
+body NO_MEDICAL           /\bno medical exam/i
+describe NO_MEDICAL   No Medical Exams
+# seems like we vastly reduce FPs on this one with a small change or two
+body DIET_1             /\b(?:(?:without|no) (?:exercis(?:e(?! price)|ing)|dieting)|weight.?loss|(?:extra|lose|lost|losing).{0,10}(?:pounds|weight|inches|lbs)|burn.{1,10}fat)\b/i
+describe DIET_1   Lose Weight Spam
+
+body FIN_FREE           /\bfinancial(?:ly)? free/i
+describe FIN_FREE     Freedom of a financial nature
+
+body FORWARD_LOOKING          /\bcontains forward-looking statements\b/i
+describe FORWARD_LOOKING  Stock Disclaimer Statement
+
+body ONE_TIME     /\bone\W+time (?:charge|investment|offer|promotion)/i
+describe ONE_TIME   One Time Rip Off
+
+body JOIN_MILLIONS          /\bjoin (?:millions|thousands)\b/i
+describe JOIN_MILLIONS    Join Millions of Americans
+
+body MARKETING_PARTNERS   /\b(?:marketing|network) partner|\bpartner (?:web)?site/i
+describe MARKETING_PARTNERS Claims you registered with a partner
+
+body LOW_PRICE                  /\blow.{0,4} (?-i:P)rice/i
+describe LOW_PRICE              Lowest Price
+
+body UNCLAIMED_MONEY            /\bunclaimed\s(?:assets?|accounts?|mon(?:ey|ies)|balance|funds?|prizes?|rewards?|payments?|deposits?)\b/i
+describe UNCLAIMED_MONEY        People just leave money laying around
+
+body OBSCURED_EMAIL   /\w+\^\S+\(\w{2,4}\b/
+describe OBSCURED_EMAIL   Message seems to contain rot13ed address
+
+body BANG_OPRAH         /\boprah!/i
+describe BANG_OPRAH       Talks about Oprah with an exclamation!
+
+body ACT_NOW_CAPS               /A(?i:ct) N(?i:ow)/
+describe ACT_NOW_CAPS   Talks about acting now with capitals
+body MORE_SEX               /increased?.{0,9}(?:sex|stamina)/i
+describe MORE_SEX     Talks about a bigger drive for sex
