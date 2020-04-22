@@ -1,0 +1,363 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="iso2022cn${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="iso2022cn${TIME}${COUNTER}@${defaultdomain.name}"/>
+
+<t:property name="message01.subject" value="subject${TIME}${COUNTER}"/>
+<t:property name="message01.content" value="abc國時期耐力賽def"/>
+
+<t:property name="message02.subject" value="abc國時期耐力賽def"/>
+<t:property name="message02.content" value="content${TIME}${COUNTER}"/>
+
+<t:property name="message03.subject" value="subject${TIME}${COUNTER}"/>
+<t:property name="contact03.first" value="abc國時期"/>
+<t:property name="contact03.last" value="耐力賽def"/>
+	
+	
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="AccountSetup" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>1. Login to admin.
+                  2. Create a test account.       
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailDefaultCharset">ISO-2022-CN</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraPrefMailDefaultCharset">ISO-2022-CN</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+
+<t:test_case testcaseid="Charsets_ISO_2022_CN_Send_01" type="sanity" bugids="98015" >
+    <t:objective>Verify zimbraPrefMailDefaultCharset=ISO-2022-CN sends the correct content encoding (SendMsgRequest)</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+	  	<t:request>
+	    	<SendMsgRequest xmlns="urn:zimbraMail">
+	      		<m>
+					<e t="t" a="${account2.name}"/>
+					<su>${message01.subject}</su>
+					<mp ct="text/plain">
+		    			<content>${message01.content}</content>
+					</mp>
+	     		</m>
+	    	</SendMsgRequest>
+	  	</t:request>
+	  	<t:response>
+			<t:select path="//mail:SendMsgResponse">
+				<t:select path="//mail:m" />
+			</t:select>
+	   	</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message01.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="id" set="message01.id"/>
+            </t:select>
+		</t:response>
+    </t:test>
+
+	<t:test >
+        <t:request> 
+            <GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${message01.id}"/>
+			</GetMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetMsgResponse">
+				<t:select path="//mail:m">
+					<t:select path="//mail:content" match="(?s).*${message01.content}.*"/>
+				</t:select>
+			</t:select> 
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message01.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<t:select attr="Content-Type" match="text/plain; charset=utf-8"/>
+			<t:select attr="Content-Transfer-Encoding" match="base64"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="Charsets_ISO_2022_CN_Send_02" type="sanity" bugids="38871" >
+    <t:objective>Verify zimbraPrefMailDefaultCharset=ISO-2022-CN sends the correct subject encoding (SendMsgRequest)</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+	  	<t:request>
+	    	<SendMsgRequest xmlns="urn:zimbraMail">
+	      		<m>
+					<e t="t" a="${account2.name}"/>
+					<su>${message02.subject}</su>
+					<mp ct="text/plain">
+		    			<content>${message02.content}</content>
+					</mp>
+	     		</m>
+	    	</SendMsgRequest>
+	  	</t:request>
+	  	<t:response>
+			<t:select path="//mail:SendMsgResponse">
+				<t:select path="//mail:m" />
+			</t:select>
+	   	</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>content:(${message02.content})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+            	<t:select path="//mail:m" attr="id" set="message02.id"/>
+            </t:select>
+		</t:response>
+    </t:test>
+
+	<t:test >
+        <t:request> 
+            <GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${message02.id}"/>
+			</GetMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetMsgResponse">
+				<t:select path="//mail:m">
+					<t:select path="//mail:su" match="${message02.subject}"/>
+				</t:select>
+			</t:select> 
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message02.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<!--  Should match utf-8 as some characters are not mapped. -->
+			<t:select attr="Subject" match=".*\?utf-8\?.*"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="Charsets_ISO_2022_CN_Send_03" type="sanity" bugids="38871" >
+    <t:objective>Verify zimbraPrefMailDefaultCharset=ISO-2022-CN sends the correct recipient encoding (SendMsgRequest)</t:objective>
+
+	<t:property name="server.zimbraAccount" value="${account1.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+	  	<t:request>
+	    	<SendMsgRequest xmlns="urn:zimbraMail">
+	      		<m>
+					<e t="t" a="${account2.name}" p="${contact03.first} ${contact03.last}"/>
+					<su>${message03.subject}</su>
+					<mp ct="text/plain">
+		    			<content>content${TIME}${COUNTER}</content>
+					</mp>
+	     		</m>
+	    	</SendMsgRequest>
+	  	</t:request>
+	  	<t:response>
+			<t:select path="//mail:SendMsgResponse">
+				<t:select path="//mail:m" />
+			</t:select>
+	   	</t:response>
+	</t:test>
+
+	<t:property name="server.zimbraAccount" value="${account2.server}"/>
+	
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query>subject:(${message03.subject})</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse">
+				<t:select path="//mail:m" attr="id" set="message03.id"/>
+            </t:select>
+		</t:response>
+    </t:test>
+
+	<t:test >
+        <t:request> 
+            <GetMsgRequest xmlns="urn:zimbraMail">
+				<m id="${message03.id}"/>
+			</GetMsgRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//mail:GetMsgResponse">
+				<t:select path="//mail:m">
+	            	<t:select path="//mail:e[@t='t']" attr="d" match="${contact03.first}"/>
+	            	<t:select path="//mail:e[@t='t']" attr="p" match="${contact03.first} ${contact03.last}"/>
+				</t:select>
+			</t:select> 
+        </t:response>
+    </t:test>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message03.id}</id>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<!--  
+				should match:
+				Should match utf-8 as some characters are not mapped.
+			-->
+			<t:select attr="To" match=".*\?utf-8\?.*"/>
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+
+
+</t:tests>
