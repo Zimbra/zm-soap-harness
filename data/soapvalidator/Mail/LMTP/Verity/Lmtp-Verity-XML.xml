@@ -1,0 +1,151 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:property name="account1.name" value="lmtp${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="root" value="${soapxml.root}/Mail/LMTP/Verity/MIME"/>
+
+<t:property name="msg.file" value="${root}/xml.txt"/>
+<t:property name="subject.value" value="XML"/>
+<t:property name="attachment1.type" value="text/xml"/>
+<t:property name="attachment1.name" value="LKManager.xml"/>
+<t:property name="sender.name" value="user1@test.com"/>
+
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>Basic system check</t:objective>
+    
+    <t:test id="ping">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup_lmtp_Verity_XML" type="always">
+    <t:objective>Create test account</t:objective>
+    <t:steps>1. Login to admin.
+                  2. Create a test account.       
+    </t:steps>
+    
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test id="create_test_account1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+    
+<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+<t:test_case testcaseid="lmtp_Verity_XML" type="sanity" bits="network">
+    <t:objective>Login to the test account </t:objective>
+
+    <t:mailinjecttest>
+        <t:lmtpInjectRequest>
+            <filename>${msg.file}</filename>
+            <to>${account1.name}</to>
+            <from>${sender.name}</from>
+            <server>${test_acct1.server}</server>
+         </t:lmtpInjectRequest>
+    </t:mailinjecttest>    
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+
+        </t:response>
+    </t:test>
+
+	<t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>subject:(${subject.value})</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+		<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+	 </t:response>
+	</t:test>
+
+    <t:test >
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message1.id}"/>
+            </GetMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetMsgResponse/mail:m/mail:mp[@ct='multipart/mixed']">
+            	<t:select path="mail:mp" attr="filename" match="${attachment1.name}"/>
+            	<t:select path="mail:mp[@ct='${attachment1.type}']" attr="part" set="message1.part1.id"/>
+            </t:select>
+        </t:response>
+    </t:test>
+
+	<t:property name="server.restServlet" value="${test_acct1.server}"/>
+
+	<t:resttest>
+		<t:restServletRequest>
+			<id>${message1.id}</id>
+			<part>${message1.part1.id}</part>
+			<view>html</view>
+		</t:restServletRequest>
+		<t:restServletResponse>
+			<t:select attr="StatusCode" match="200"/>
+			<!--t:select match='.*&#60;\?xml version="1\.0" encoding="UTF-8"\?&#62;.*'/>
+			<t:select match='.*&#60;ZimbraLicense verifier="ZV2"&#62;.*'/>
+			<t:select match='.*&#60;item name="AccountsLimit" value="-1"/&#62;.*'/>
+			<t:select match='.*&#60;item name="AttachmentConversionEnabled" value="true"/&#62;.*'/>
+			<t:select match='.*&#60;item name="BackupEnabled" value="true"/&#62;.*'/>
+			<t:select match='.*&#60;item name="CrossMailboxSearchEnabled" value="true"/&#62;.*'/>
+			<t:select match='.*&#60;item name="HierarchicalStorageManagementEnabled" value="true"/&#62;.*'/>
+			<t:select match='.*&#60;item name="ISyncAccountsLimit" value="-1"/&#62;.*'/>
+			<t:select match='.*&#60;item name="InstallType" value="trial"/&#62;.*'/>
+			<t:select match='.*&#60;item name="IssuedOn" value="20070405050550Z"/&#62;.*'/>
+			<t:select match='.*&#60;item name="IssuedToEmail" value="qa@zimbra\.com"/&#62;.*'/>
+			<t:select match='.*&#60;item name="IssuedToName" value="zimbra qa"/&#62;.*'/>
+			<t:select match='.*&#60;item name="LicenseId" value="5613d81e-666e-4baa-9952-8532672512aa"/&#62;.*'/>
+			<t:select match='.*&#60;item name="MAPIConnectorAccountsLimit" value="-1"/&#62;.*'/>
+			<t:select match='.*&#60;item name="MobileSyncAccountsLimit" value="-1"/&#62;.*'/>
+			<t:select match='.*&#60;item name="MobileSyncEnabled" value="true"/&#62;.*'/>
+			<t:select match='.*&#60;item name="ResellerName" value=""/&#62;.*'/>
+			<t:select match='.*&#60;item name="ValidFrom" value="20070404000000Z"/&#62;.*'/>
+			<t:select match='.*&#60;item name="ValidUntil" value="20070606160000Z"/&#62;.*'/>
+			<t:select match='.*&#60;signature value="22f1f8d95c16001f5532102f2603a5a39ec5b4b7e4e6dd90690d4128824ae705126a0da36a3ca3de0fbc4109dcf90c32adfc10d2fd7928dd68eea83b90b2f9e3755a000a9ea2d01f08cca249861dc704172401965dcf72f4f8e94d6b5e1fe6fa860a21487dc6454bb14f371b6d79c412fd07134f5a49057d5dfc4ce9559fdf98e5dd602447d9d9b0ef6cdbf8a0ad009403e1f022e96a50a8b66e1cd706d8e5a9d6dba887770418179cf1194d89d530847f41c3085100451b520699bb53d4a7fb55985ccfb9b0c01e490af274b541cef94ea7027315e18ee7da55dd956f6438d0a82d733bc83f32b7dd7e5dd60e209a64668811b201b2fdcbeb940ed393ce7294" key="zk1"/&#62;.*'/-->
+		</t:restServletResponse>
+	</t:resttest>
+
+</t:test_case>
+
+</t:tests>
