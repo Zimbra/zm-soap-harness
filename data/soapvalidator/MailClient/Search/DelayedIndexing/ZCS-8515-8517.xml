@@ -10,8 +10,7 @@
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>basic system check</t:objective>
-
-    <t:test required="true">
+    <t:test>
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
         </t:request>
@@ -19,7 +18,6 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-
 </t:test_case>
 
 <t:test_case testcaseid="acctSetup" type="always">
@@ -98,9 +96,7 @@
             </AuthRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
-
         </t:response>
     </t:test>
 
@@ -197,7 +193,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="disable_indexing" type="smoke">
+<t:test_case testcaseid="disable_indexing" type="smoke" bugids="ZCS-8515">
     <t:objective>Disable account indexing and verify indexes are deleted</t:objective>
     <t:steps>1. As Admin, disable indexing of account2, account3, account4 - verify zimbraFeatureDelayedIndexEnabled=TRUE, zimbraDelayedIndexStatus=suppressed
              2. Search email in account2, account3, account4 - verify no search results are returned
@@ -363,7 +359,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="re-enable_indexing_with_api" type="smoke">
+<t:test_case testcaseid="re-enable_indexing_with_api" type="smoke" bugids="ZCS-8515">
     <t:objective>Enable account indexing, verify email can be searched</t:objective>
     <t:steps>1. As Admin, enable indexing of account2 - verify zimbraFeatureDelayedIndexEnabled=TRUE, zimbraDelayedIndexStatus=indexing
              2. As account2, verify email can be searched
@@ -433,7 +429,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="re-enable_indexing_on_login" type="smoke">
+<t:test_case testcaseid="re-enable_indexing_on_login" type="smoke" bugids="ZCS-8517">
     <t:objective>Authenticating account with disabled indexing should re-enable indexing</t:objective>
     <t:steps>1. As account3, do auth - like login to Webclient
              2. As account3, verify email can be searched - also, verify zimbraFeatureDelayedIndexEnabled=TRUE, zimbraDelayedIndexStatus=indexing
@@ -497,7 +493,7 @@
     
 </t:test_case>
 
-<t:test_case testcaseid="re-enable_indexing_delegated_admin" type="functional">
+<t:test_case testcaseid="re-enable_indexing_delegated_admin" type="functional" bugids="ZCS-8517">
     <t:objective>Delegate auth by admin to account with disabled indexing should re-enable indexing on search</t:objective>
     <t:steps>1. As admin, do delegate auth for account4 (view email from Admin console) - verify zimbraDelayedIndexStatus=waitingForSearch
              2. Perform search on account4 - verify account4 is re-enabled for indexing i.e. zimbraDelayedIndexStatus=indexing
