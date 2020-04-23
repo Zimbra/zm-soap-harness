@@ -1,0 +1,106 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+	<t:property name="test_account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+	<t:property name="test_account1.password" value="${defaultpassword.value}"/>
+	<t:property name="compose.subject" value="Subject of the message is testing"/>
+	<t:property name="compose.content" value="Content in the message is contents..."/>
+	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+	<t:property name="test_acct.server" value="NOT_DEFINED"/>
+	<t:test_case testcaseid="ping" type="always">
+		<t:objective>basic system check</t:objective>
+		<t:test id="ping" required="true">
+			<t:request>
+				<PingRequest xmlns="urn:zimbraAdmin"/>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:PingResponse"/>
+			</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="acctSetup1_send_message" type="always">
+		<t:objective>create test account</t:objective>
+		<t:test id="admin_login" required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<CreateAccountRequest xmlns="urn:zimbraAdmin">
+					<name>${test_account1.name}</name>
+					<password>${test_account1.password}</password>
+				</CreateAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id"/>
+				<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
+			</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="acctLogin1_send_message" type="always">
+		<t:objective>login as the test account</t:objective>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account1.name}</account>
+					<password>${test_account1.password}</password>
+					<!--<prefs/>-->
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+	</t:test_case>
+	<t:test_case testcaseid="DeleteAccountRequest_WithMsg" type="smoke" bugids="8666">
+		<t:objective>Delete a valid account which has a message</t:objective>
+		<Steps> 1. Create a valid account.
+			2. Auth using test account
+			3. Send Msg to same account
+			4. Delete the account.
+		</Steps>
+		<t:test>
+			<t:request>
+				<SendMsgRequest xmlns="urn:zimbraMail">
+					<m>
+						<e t="t" a='${test_account1.name}'/>
+						<su>${compose.subject}</su>
+						<mp ct="text/plain">
+							<content> ${compose.content} </content>
+						</mp>
+					</m>
+				</SendMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SendMsgResponse"/>
+			</t:response>
+		</t:test>
+		<t:test required="true">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAdmin">
+					<name>${admin.user}</name>
+					<password>${admin.password}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+			</t:response>
+		</t:test>
+		<!-- Delete a valid account -->
+		<t:test>
+			<t:request>
+				<DeleteAccountRequest xmlns="urn:zimbraAdmin">
+					<id>${test_account1.id}</id>
+				</DeleteAccountRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//admin:DeleteAccountResponse"/>
+			</t:response>
+		</t:test>
+	</t:test_case>
+</t:tests>
