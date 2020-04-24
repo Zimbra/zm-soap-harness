@@ -459,6 +459,8 @@ public class SoapTestMain {
     }
     
 	public static void execute(File testCases) throws HarnessException, InterruptedException, IOException {
+		// TestProperties class re-initialization
+		TestProperties.testProperties = new TestProperties();
 		if (testCases.isDirectory()) {
 			// run wsdl tests only when root folder of xml test specified.
 
