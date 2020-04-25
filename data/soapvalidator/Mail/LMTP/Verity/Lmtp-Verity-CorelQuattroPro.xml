@@ -10,11 +10,11 @@
 <t:property name="attachment1.name" value="testsummary.wb3"/>
 <t:property name="sender.name" value="user1@test.com"/>
 
-<t:property name="test_acct1.server" value="NOT_DEFINED"/>    
+<t:property name="test_acct1.server" value="NOT_DEFINED"/>
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
-    
+
     <t:test id="ping">
         <t:request>
             <PingRequest xmlns="urn:zimbraAdmin"/>
@@ -23,16 +23,16 @@
             <t:select path="//admin:PingResponse"/>
         </t:response>
     </t:test>
-    
+
 </t:test_case>
 
 
 <t:test_case testcaseid="acctSetup_lmtp_Verity_CorelQuattroPro" type="always">
     <t:objective>Create test account</t:objective>
     <t:steps>1. Login to admin.
-                  2. Create a test account.       
+                  2. Create a test account.
     </t:steps>
-    
+
     <t:test id="admin_login" required="true" depends="ping">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
@@ -44,7 +44,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
+
     <t:test id="create_test_account1" required="true" depends="admin_login">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -59,7 +59,7 @@
     </t:test>
 
 </t:test_case>
-    
+
 <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
 
 <t:test_case testcaseid="lmtp_Verity_CorelQuattroPro" type="sanity" bits="network">
@@ -72,7 +72,7 @@
             <from>${sender.name}</from>
             <server>${test_acct1.server}</server>
          </t:lmtpInjectRequest>
-    </t:mailinjecttest>    
+    </t:mailinjecttest>
 
     <t:test required="true">
         <t:request>
@@ -123,36 +123,31 @@
 		</t:restServletRequest>
 		<t:restServletResponse>
 			<t:select attr="StatusCode" match="200"/>
-			<t:select match=".*MailClient/Folders/folder_action.xml.*" />				
-			<t:select match=".*MailClient/Prefs/externalContacts/importZimbraContacts.xml.*" />		
-			<t:select match=".*MailClient/Calendar/Sharing/appointment_move.xml.*" />				
-			<t:select match=".*MailClient/Calendar/Sharing/appointment_move.xml.*" />				
-			<t:select match=".*MailClient/Conversation/conversation_search.xml.*" />				
-			<t:select match=".*MailClient/Conversation/conversation_search_fetch.xml.*" />		
-			<t:select match=".*MailClient/Spam/spamBasic.xml.*" />				
-			<t:select match=".*MailClient/Spam/message_action_spam.xml.*" />				
-			<t:select match=".*MailClient/Search/search.date.xml.*" />		
-			<t:select match=".*MailClient/Search/Calendar/search_content.xml.*" />				
-			<t:select match=".*MailClient/Search/Attach/search_uuencode.xml.*" />		
-			<t:select match=".*MailClient/Search/Attach/search_specific.xml.*" />				
-			<t:select match=".*MailClient/Search/Basic/search_from.xml.*" />				
-			<t:select match=".*MailClient/Search/Basic/search_cc.xml.*" />				
-			<t:select match=".*MailClient/Search/Basic/search_combo_size.xml.*" />		
-			<t:select match=".*MailClient/Search/Basic/search_to.xml.*" />				
-			<t:select match=".*MailClient/Search/SearchDirectoryRequest.xml.*" />				
-			<t:select match=".*MailClient/Search/Size/search_size.xml.*" />		
-			<t:select match=".*MailClient/GAL/SyncGalRequest_basic.xml.*" />				
-			<t:select match=".*Admin/COS/cos_delete.xml.*" />		
-			<t:select match=".*Admin/Auth/auth_delegate.xml.*" />				
-			<t:select match=".*Admin/AdminSearch/Accounts/account_search.xml.*" />				
-			<t:select match=".*Admin/DistributionList/distributionlist_addmember.xml.*" />				
-			<t:select match=".*Admin/ExternalAuthentication/CheckGalConfigAD.xml.*" />		
-			<t:select match=".*Admin/Accounts/account_alias_add.xml.*" />				
-			<t:select match=".*RestServlet/Mail/Part/part_basic.xml.*" />				
-			<t:select match=".*RestServlet/Fmt/body/mail_body.xml.*" />		
-			<t:select match=".*RestServlet/Fmt/Sync/sync_appointment.xml.*" />				
-			<t:select match=".*MailClient/Mail/Bugs/bug_8055.xml.*" />		
-			<t:select match=".*MailClient/Misc/mailbox_limits.xml.*" />		
+			<t:select match=".*Folders/Folder-Action.xml.*" />
+			<t:select match=".*Settings/ExternalContacts/ImportZimbraContacts.xml.*" />
+			<t:select match=".*Calendar/Sharing/Appointment-Move.xml.*" />
+			<t:select match=".*Mail/Conversation/Conversation-Search.xml.*" />
+			<t:select match=".*Mail/Conversation/Conversation-Search-Fetch.xml.*" />
+			<t:select match=".*Mail/Spam/DspamBasic.xml.*" />
+			<t:select match=".*Mail/Spam/Message-Action-Spam.xml.*" />
+			<t:select match=".*Search/Search-Date.xml.*" />
+			<t:select match=".*Search/Calendar/Search-Content.xml.*" />
+			<t:select match=".*Search/Attach/Search-Uuencode.xml.*" />
+			<t:select match=".*Search/Attach/Search-Specific.xml.*" />
+			<t:select match=".*Search/Basic/Search-From.xml.*" />
+			<t:select match=".*Search/Basic/Search-Cc.xml.*" />
+			<t:select match=".*Search/Basic/Search-Combo-Size.xml.*" />
+			<t:select match=".*Search/Basic/Search-To.xml.*" />
+			<t:select match=".*Search/Size/Search-Size.xml.*" />
+			<t:select match=".*Contacts/GAL/SyncGalRequest-Basic.xml.*" />
+			<t:select match=".*Admin/COS/COS-Delete.xml.*" />
+			<t:select match=".*Admin/AdminSearch/Accounts/Account-Search.xml.*" />
+			<t:select match=".*Admin/AdminSearch/Accounts//SearchDirectoryRequest.xml.*" />
+			<t:select match=".*Admin/DistributionList/Distributionlist-Addmember.xml.*" />
+			<t:select match=".*Admin/Accounts/Account-Alias-Add.xml.*" />
+			<t:select match=".*REST/Mail/Part/Part-Basic.xml.*" />
+			<t:select match=".*REST/Fmt/Body/Mail-Body.xml.*" />
+			<t:select match=".*REST/Fmt/Sync/Sync-Appointment.xml.*" />
 		</t:restServletResponse>
 	</t:resttest>
 
