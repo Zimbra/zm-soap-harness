@@ -11,6 +11,8 @@ if  [ $? != 0 ]; then
         echo "Error occured while installing/activating license. Kindly install/activate the license manually. "
         exit -1
 fi
-su - zimbra -c "zmldappasswd -a test123; zmldappasswd -b test123; zmldappasswd -l test123; zmldappasswd -n test123; zmldappasswd -p test123; zmldappasswd -r test123; zmldappasswd zimbra"
+
+password="test123"
+su - zimbra -c "zmldappasswd -a ${password}; zmldappasswd -b ${password}; zmldappasswd -l ${password}; zmldappasswd -n ${password}; zmldappasswd -p ${password}; zmldappasswd -r ${password}; zmldappasswd zimbra"
 echo "Restarting mailbox"
 su - zimbra -c "zmmailboxdctl restart"

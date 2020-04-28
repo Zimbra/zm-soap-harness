@@ -25,7 +25,7 @@ public class Driver {
 		config.ssl = false;
 		config.startls = false;
 		config.user = "admin@qa60.lab.zimbra.com";
-		config.password = "test123";
+		config.password = "accountpassword";
 
 		INJECTStaf staf = new INJECTStaf();	
 		staf.createParser();

@@ -17,7 +17,7 @@ package com.zimbra.qa.soap;
 //Pragma: no-cache
 //Cookie: JSESSIONID=6g8y8eossk0g
 //
-//accountId=&accountFlavor=Zimbra&verb=add&accountName=yahooes1&email=yahooes1@qa60.lab.zimbra.com&password=test123&host=qa60.lab.zimbra.com&port=80&syncFreqSecs=900
+//accountId=&accountFlavor=Zimbra&verb=add&accountName=yahooes1&email=yahooes1@qa60.lab.zimbra.com&password=accountpassword&host=qa60.lab.zimbra.com&port=80&syncFreqSecs=900
 //
 
 
@@ -37,12 +37,12 @@ package com.zimbra.qa.soap;
 //Pragma: no-cache
 //Cookie: JSESSIONID=g4hizwbtfxbj
 //
-//accountId=&accountFlavor=YMP&domain=yahoo.com&verb=add&accountName=MattYMail&fromDisplay=First+Last&email=email@yahoo.com&password=test123&syncFreqSecs=900&syncAllServerFolders=true&calendarSyncEnabled=on&contactSyncEnabled=on
+//accountId=&accountFlavor=YMP&domain=yahoo.com&verb=add&accountName=MattYMail&fromDisplay=First+Last&email=email@yahoo.com&password=accountpassword&syncFreqSecs=900&syncAllServerFolders=true&calendarSyncEnabled=on&contactSyncEnabled=on
 //
 
 
 // Gmail account example
-// accountId=&accountFlavor=Gmail&domain=gmail.com&verb=add&accountName=_AccountName&fromDisplay=_FullName&email=zimbrazdctest@gmail.com&password=test1234&syncFreqSecs=900
+// accountId=&accountFlavor=Gmail&domain=gmail.com&verb=add&accountName=_AccountName&fromDisplay=_FullName&email=zimbrazdctest@gmail.com&password=accountpassword4&syncFreqSecs=900
 //
 
 
@@ -422,7 +422,7 @@ public class zDesktopAcctTest extends Test {
 //Pragma: no-cache
 //Cookie: JSESSIONID=glvbkv6nbnrz
 //
-//accountId=&accountFlavor=YMP&domain=yahoo.com&verb=add&accountName=AccountName&fromDisplay=YourFullName&email=zimbrazdctest@yahoo.com&password=test123&syncFreqSecs=900&calendarSyncEnabled=on&contactSyncEnabled=on
+//accountId=&accountFlavor=YMP&domain=yahoo.com&verb=add&accountName=AccountName&fromDisplay=YourFullName&email=zimbrazdctest@yahoo.com&password=accountpassword&syncFreqSecs=900&calendarSyncEnabled=on&contactSyncEnabled=on
 //
 
 

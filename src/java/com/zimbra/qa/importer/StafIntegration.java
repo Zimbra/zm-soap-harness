@@ -163,7 +163,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
          "\t{account domain} is the domain in which to create the account (email will be u<unique>@DOMAIN)" + fLineSep +
          "\t{account email} is the email account to create (format must be account@domain.com)" + fLineSep +
          "\t{zimbra server} is the server on which to create the account (default = localhost)" + fLineSep +
-         "\t{account password} is the account password to set (default = test123)" + fLineSep +
+         "\t{account password} is the account password to set (accountpassword)" + fLineSep +
          "\tYou must specify either DOMAIN or EMAIL" + fLineSep +
          fLineSep + 
          "VERSION" + fLineSep + fLineSep + 
