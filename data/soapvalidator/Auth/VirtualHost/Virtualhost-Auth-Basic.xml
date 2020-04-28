@@ -173,11 +173,11 @@
  <t:objective>Login with only the name (not full email address), where the account name exists in multiple virtual hosts</t:objective>
  <t:steps>
  1. Create account1@domain1.com (virtual domain = v.domain1.com) with password abc123
- 2. Create account1@domain2.com (virtual domain = v.domain2.com) with password test123
- 3. Auth with account1/test123 on virtual domain v.domain2.com - success
- 3. Auth with account1/test123 on virtual domain v.domain1.com - failure
- 3. Auth with account1@domain2.com/test123 on virtual domain v.domain2.com - success
- 3. Auth with account1@domain2.com/test123 on virtual domain v.domain1.com - failure
+ 2. Create account1@domain2.com (virtual domain = v.domain2.com) with password accountpassword
+ 3. Auth with account1/accountpassword on virtual domain v.domain2.com - success
+ 3. Auth with account1/accountpassword on virtual domain v.domain1.com - failure
+ 3. Auth with account1@domain2.com/accountpassword on virtual domain v.domain2.com - success
+ 3. Auth with account1@domain2.com/accountpassword on virtual domain v.domain1.com - failure
  </t:steps>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>

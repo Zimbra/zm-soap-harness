@@ -47,7 +47,7 @@ public class AccountMain {
 		Option h = new Option("h", "help", false, "print usage");
         Option i = new Option("i", "input", true, "text output from \"zmprov ga user@domain.com\"");
         Option e = new Option("e", "email", true, "new account to create (default=account<unique>@domain.com)");
-        Option p = new Option("p", "password", true, "new account's password (default=test123)");
+        Option p = new Option("p", "password", true, "new account's password (accountpassword)");
         Option d = new Option("d", "domain", true, "new account's domain (default=domain.com)");
         Option s = new Option("s", "server", true, "zimbra server (default=localhost)");
         Option g = new Option("g", "properties", true, "global properties file (default=conf/global.properties)");
