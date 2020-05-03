@@ -64,6 +64,7 @@ public class TestCase extends AbsTest {
 			"feature",
 			"negative",
 			"measurement",
+			"full",
 			"deprecated"
 		};
 
@@ -487,11 +488,12 @@ public class TestCase extends AbsTest {
 		/* If the test type is negative, run always, smoke, and negative */
 		String[] SMOKE_TYPES = {"always","smoke"};
 		String[] BHR_TYPES = {"always","bhr"};
-		String[] SANITY_TYPES = {"sanity"};
+		String[] SANITY_TYPES = {"always","sanity"};
 		String[] FUNCTIONAL_TYPES = {"always","functional"};
 		String[] FEATURE_TYPES = {"always","feature"};
 		String[] MEASUREMENT_TYPES = {"always","measurement"};
 		String[] NEGATIVE_TYPES = {"always","negative"};
+		String[] FULL_TYPES = {"always","smoke","bhr"};
 
 		for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext();)
 		{
@@ -535,6 +537,12 @@ public class TestCase extends AbsTest {
 
 			if (type.equalsIgnoreCase("negative")) {
 				if (hasType(NEGATIVE_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("full")) {
+				if (hasType(FULL_TYPES)) {
 					return false;
 				}
 			}
