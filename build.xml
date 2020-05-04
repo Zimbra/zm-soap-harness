@@ -492,9 +492,19 @@
 
 	<target name="Run-SoapTestCore" depends="compile,zm-network-soap-content" description="Run Staf Tests in non-STAF environment">
 		<property name="testRoot" value="build/temp/data/soapvalidator/"/>
-		<property name="testSuite" value="smoke"/>
+		<property name="testSuite1" value="smoke"/>
+		<property name="testSuite2" value="" />
 		<property name="testResultDir" value="."/>
 		<property name="testRootOption" value="f"/>
+		<if>
+			<equals arg1="${testSuite2}" arg2="" />
+			<then>
+				<property name="testSuite" value="${testSuite1}" />
+			</then>
+			<else>
+				<property name="testSuite" value="${testSuite1} -t ${testSuite2}" />
+			</else>
+		</if>
 		<echo>STAF: Executing ${testRoot} ${testSuite}</echo>
 		<java classname="com.zimbra.qa.soap.SoapTestMain" classpathref="test.class.path" fork="true" failonerror="true">
 			<arg line="-${testRootOption} ${testRoot} -l conf/log4j-dev.properties -p conf/global.properties -z . -t ${testSuite} -j -o ${testResultDir}"/>
