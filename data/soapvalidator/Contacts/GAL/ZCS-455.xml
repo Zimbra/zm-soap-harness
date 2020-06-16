@@ -1,6 +1,6 @@
 <t:tests xmlns:t="urn:zimbraTestHarness">
-    <t:property name="domain_name" value="new.domain.local" />
-    <t:property name="domain2_name" value="new.domain2.local" />
+    <t:property name="domain_name" value="new${TIME}${COUNTER}.domain1.local" />
+    <t:property name="domain2_name" value="new${TIME}${COUNTER}.domain2.local" />
     <t:property name="account1.name" value="test${TIME}${COUNTER}@${domain_name}"/>
     <t:property name="account2.name" value="test2${TIME}${COUNTER}@${domain2_name}"/>
     <t:property name="domain2.galdatasource1.name" value="datasource${TIME}${COUNTER}"/>
@@ -74,7 +74,7 @@
         </t:test>  
         <t:test >
             <t:request>
-                <AddGalSyncDataSourceRequest xmlns="urn:zimbraAdmin" name="${domain2.galdatasource2.name}" type="zimbra" domain="${domain2_name}" server="${server.zimbraAdmin}" folder="${domain2.galdatasource2.name}">
+                <AddGalSyncDataSourceRequest xmlns="urn:zimbraAdmin" name="${domain2.galdatasource2.name}" type="zimbra" domain="${domain2_name}"  folder="${domain2.galdatasource2.name}">
                     <account by="name">${domain2.galsync.name}</account>
                 </AddGalSyncDataSourceRequest>
             </t:request>
