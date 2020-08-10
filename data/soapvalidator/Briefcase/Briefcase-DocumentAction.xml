@@ -1,0 +1,638 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.document.textfile" value="${testMailRaw.root}/Contact/contact1.txt"/>
+<t:property name="account1.document.JPGfile" value="${testMailRaw.root}/Contact/Sunset.jpg"/>
+<t:property name="account1.document.pdffile" value="${testMailRaw.root}/email27/pdfAttachment.pdf"/>
+<t:property name="account1.document.csvfile" value="${testMailRaw.root}/Contact/ZContact2.csv"/>
+<t:property name="account1.document.htmlfile" value="${testMailRaw.root}/wiki01/basic.html"/>
+
+<t:test_case testcaseid="Briefcase_DocumentAction_Setup" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+                        <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account2.id"/>
+                        <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraId"]' set="account2.zid"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="Briefcase_DocumentAction_01" type="smoke"  >
+    <t:objective>Verify watch feature for DocumentActionRequest </t:objective>
+
+    <t:steps>
+    1. Login to account1
+    2. Upload a pdf file
+    3. Save documents and add to watch using docuent action request
+    4. Verify the document is added in watch list
+    5. Remove from watch list and verify if it is removed
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+        <t:test>
+                <t:request>
+                        <GetFolderRequest xmlns="urn:zimbraMail"/>
+                </t:request>
+                <t:response>
+                        <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+                </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+                <t:uploadServletRequest>
+                        <filename>${account1.document.pdffile}</filename>
+                </t:uploadServletRequest>
+                <t:uploadServletResponse>
+                        <t:select attr="id" set="document.pdffile.aid"/>
+                </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+    <t:test>
+        <t:request>
+                        <SaveDocumentRequest xmlns="urn:zimbraMail">
+                          <doc l="${account1.folder.briefcase.id}">
+                            <upload id="${document.pdffile.aid}"/>
+                          </doc>
+                        </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.pdffile.id"/>
+		
+        </t:response>
+    </t:test>
+	
+    <t:test>
+        <t:request>
+                        <DocumentActionRequest xmlns="urn:zimbraMail">
+                            <action id="${document.pdffile.id}" op="watch"/>
+                        </DocumentActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="id" match="${document.pdffile.id}" />
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="op" match="watch"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetWatchingItemsRequest xmlns="urn:zimbraMail">
+                        </GetWatchingItemsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetWatchingItemsResponse/mail:target/mail:item" attr="id" match="${document.pdffile.id}"/>
+            <t:select path="//mail:GetWatchingItemsResponse/mail:target" attr="email" match="${account1.name}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetNotificationsRequest xmlns="urn:zimbraMail">
+                        </GetNotificationsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetNotificationsResponse/mail:op" attr="name" match="Watch"/>
+            <t:select path="//mail:GetNotificationsResponse/mail:a" attr="email" match="${account1.name}"/>
+            <t:select path="//mail:GetNotificationsResponse/mail:a" attr="itemId" match="${document.pdffile.id}"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <DocumentActionRequest xmlns="urn:zimbraMail">
+                            <action id="${document.pdffile.id}" op="!watch"/>
+                        </DocumentActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DocumentActionResponse" attr="op" match="!watch"/>" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetWatchingItemsRequest xmlns="urn:zimbraMail">
+                        </GetWatchingItemsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetWatchingItemsResponse/mail:target" emptyset="1" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetNotificationsRequest xmlns="urn:zimbraMail">
+                        </GetNotificationsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetNotificationsResponse/mail:op" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Briefcase_DocumentAction_02" type="smoke"  >
+    <t:objective>Verify document share URL </t:objective>
+
+    <t:steps>
+    1. Login to account1
+    2. Upload a text file
+    3. Save documents and get share document URL
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+        <t:test>
+                <t:request>
+                        <GetFolderRequest xmlns="urn:zimbraMail"/>
+                </t:request>
+                <t:response>
+                        <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+                </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+                <t:uploadServletRequest>
+                        <filename>${account1.document.textfile}</filename>
+                </t:uploadServletRequest>
+                <t:uploadServletResponse>
+                        <t:select attr="id" set="document.textfile.aid"/>
+                </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+    <t:test>
+        <t:request>
+                        <SaveDocumentRequest xmlns="urn:zimbraMail">
+                          <doc l="${account1.folder.briefcase.id}">
+                            <upload id="${document.textfile.aid}"/>
+                          </doc>
+                        </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.textfile.id"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetDocumentShareURLRequest xmlns="urn:zimbraMail">
+                          <item id="${document.textfile.id}"/>
+                        </GetDocumentShareURLRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetDocumentShareURLResponse" contains="shf"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetShareDetailsRequest xmlns="urn:zimbraMail">
+                          <item id="${document.textfile.id}"/>
+                        </GetShareDetailsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item" attr="id" match="${document.textfile.id}" />
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Briefcase_DocumentAction_03" type="smoke"  >
+    <t:objective>Verify grant to user feature for DocumentActionRequest </t:objective>
+
+    <t:steps>
+    1. Login to account1
+    2. Upload a JPG file
+    3. Save document
+    4. Grant rights to user2 using DocumentActionRequest
+    5. Verify shared rights using GetShareDetailsRequest
+    6. Verify expiry time, grant should be revoked after the specified time.
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+        <t:test>
+                <t:request>
+                        <GetFolderRequest xmlns="urn:zimbraMail"/>
+                </t:request>
+                <t:response>
+                        <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+                </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+                <t:uploadServletRequest>
+                        <filename>${account1.document.JPGfile}</filename>
+                </t:uploadServletRequest>
+                <t:uploadServletResponse>
+                        <t:select attr="id" set="document.JPGfile.aid"/>
+                </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+    <t:test>
+        <t:request>
+                        <SaveDocumentRequest xmlns="urn:zimbraMail">
+                          <doc l="${account1.folder.briefcase.id}">
+                            <upload id="${document.JPGfile.aid}"/>
+                          </doc>
+                        </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.JPGfile.id"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <DocumentActionRequest xmlns="urn:zimbraMail">
+                            <action id="${document.JPGfile.id}" op="grant">
+                              <grant perm="rwd" gt="usr" zid="${account2.zid}"/>
+                            </action>
+                        </DocumentActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="id" match="${document.JPGfile.id}" />
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="op" match="grant"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetShareDetailsRequest xmlns="urn:zimbraMail">
+                          <item id="${document.JPGfile.id}"/>
+                        </GetShareDetailsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item" attr="id" match="${document.JPGfile.id}" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" attr="perm" match="rwd" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" attr="gt" match="usr" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <DocumentActionRequest xmlns="urn:zimbraMail">
+                            <action id="${document.JPGfile.id}" op="!grant" zid="${account2.zid}"/>
+                        </DocumentActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="id" match="${document.JPGfile.id}" />
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="op" match="!grant"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetShareDetailsRequest xmlns="urn:zimbraMail">
+                          <item id="${document.JPGfile.id}"/>
+                        </GetShareDetailsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" emptyset="1"/>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item" attr="id" match="${document.JPGfile.id}" />
+        </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+                        <DocumentActionRequest xmlns="urn:zimbraMail">
+                            <action id="${document.JPGfile.id}" op="grant">
+                              <grant perm="rwd" gt="usr" zid="${account2.zid}" expiry="${TIME(+30s)}"/>
+                            </action>
+                        </DocumentActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="id" match="${document.JPGfile.id}" />
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="op" match="grant"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetShareDetailsRequest xmlns="urn:zimbraMail">
+                          <item id="${document.JPGfile.id}"/>
+                        </GetShareDetailsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item" attr="id" match="${document.JPGfile.id}" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" attr="perm" match="rwd" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" attr="gt" match="usr" />
+        </t:response>
+    </t:test>
+
+<t:delay sec="120"/>
+
+    <t:test>
+        <t:request>
+                        <GetShareDetailsRequest xmlns="urn:zimbraMail">
+                          <item id="${document.JPGfile.id}"/>
+                        </GetShareDetailsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item" attr="id" match="${document.JPGfile.id}" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" emptyset="1"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+<t:test_case testcaseid="Briefcase_DocumentAction_04" type="smoke"  >
+    <t:objective>Verify grant to public feature for DocumentActionRequest </t:objective>
+
+    <t:steps>
+    1. Login to account1
+    2. Upload a html file
+    3. Save document
+    4. Grant rights to public using DocumentActionRequest
+    5. Verify shared rights using GetShareDetailsRequest.
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+        <t:test>
+                <t:request>
+                        <GetFolderRequest xmlns="urn:zimbraMail"/>
+                </t:request>
+                <t:response>
+                        <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+                </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+                <t:uploadServletRequest>
+                        <filename>${account1.document.htmlfile}</filename>
+                </t:uploadServletRequest>
+                <t:uploadServletResponse>
+                        <t:select attr="id" set="document.htmlfile.aid"/>
+                </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+    <t:test>
+        <t:request>
+                        <SaveDocumentRequest xmlns="urn:zimbraMail">
+                          <doc l="${account1.folder.briefcase.id}">
+                            <upload id="${document.htmlfile.aid}"/>
+                          </doc>
+                        </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.htmlfile.id"/>
+
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <DocumentActionRequest xmlns="urn:zimbraMail">
+                            <action id="${document.htmlfile.id}" op="grant">
+                              <grant perm="rwd" gt="pub" />
+                            </action>
+                        </DocumentActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="id" match="${document.htmlfile.id}" />
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="op" match="grant"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetShareDetailsRequest xmlns="urn:zimbraMail">
+                          <item id="${document.htmlfile.id}"/>
+                        </GetShareDetailsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item" attr="id" match="${document.htmlfile.id}" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" attr="perm" match="rwd" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" attr="gt" match="pub" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <DocumentActionRequest xmlns="urn:zimbraMail">
+                            <action id="${document.htmlfile.id}" op="!grant" zid="99999999-9999-9999-9999-999999999999"/>
+                        </DocumentActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="id" match="${document.htmlfile.id}" />
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="op" match="!grant"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetShareDetailsRequest xmlns="urn:zimbraMail">
+                          <item id="${document.htmlfile.id}"/>
+                        </GetShareDetailsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item" attr="id" match="${document.htmlfile.id}" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="Briefcase_DocumentAction_05" type="smoke"  >
+    <t:objective>Verify grant to all feature for DocumentActionRequest </t:objective>
+
+    <t:steps>
+    1. Login to account1
+    2. Upload a CSV file
+    3. Save document
+    4. Grant rights to all user using DocumentActionRequest
+    5. Verify shared rights using GetShareDetailsRequest
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+        <t:test>
+                <t:request>
+                        <GetFolderRequest xmlns="urn:zimbraMail"/>
+                </t:request>
+                <t:response>
+                        <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+                </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+                <t:uploadServletRequest>
+                        <filename>${account1.document.csvfile}</filename>
+                </t:uploadServletRequest>
+                <t:uploadServletResponse>
+                        <t:select attr="id" set="document.csvfile.aid"/>
+                </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+    <t:test>
+        <t:request>
+                        <SaveDocumentRequest xmlns="urn:zimbraMail">
+                          <doc l="${account1.folder.briefcase.id}">
+                            <upload id="${document.csvfile.aid}"/>
+                          </doc>
+                        </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.csvfile.id"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <DocumentActionRequest xmlns="urn:zimbraMail">
+                            <action id="${document.csvfile.id}" op="grant">
+                              <grant perm="rwd" gt="all" />
+                            </action>
+                        </DocumentActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="id" match="${document.csvfile.id}" />
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="op" match="grant"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetShareDetailsRequest xmlns="urn:zimbraMail">
+                          <item id="${document.csvfile.id}"/>
+                        </GetShareDetailsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item" attr="id" match="${document.csvfile.id}" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" attr="gt" match="all" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" attr="perm" match="rwd" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <DocumentActionRequest xmlns="urn:zimbraMail">
+                            <action id="${document.csvfile.id}" op="!grant" zid="00000000-0000-0000-0000-000000000000"/>
+                        </DocumentActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="id" match="${document.csvfile.id}" />
+            <t:select path="//mail:DocumentActionResponse/mail:action" attr="op" match="!grant"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+                        <GetShareDetailsRequest xmlns="urn:zimbraMail">
+                          <item id="${document.csvfile.id}"/>
+                        </GetShareDetailsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetShareDetailsResponse/mail:item" attr="id" match="${document.csvfile.id}" />
+            <t:select path="//mail:GetShareDetailsResponse/mail:item/mail:grantee" emptyset="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+</t:tests>
+
