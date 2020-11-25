@@ -9,6 +9,7 @@
 	<t:property name="variable_body_text" value="$\{body_text}"></t:property>
 	<t:property name="mail_subject_1" value="mail_subject"></t:property>
 	<t:property name="mail_content" value="Hi,\\rYou have got a mail!\\r."></t:property>
+        <t:property name="cos.name" value="cos106838${TIME}${COUNTER}" />
 
 	<t:property name="sieve_rule1"
 		value='
@@ -48,7 +49,7 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 			</t:response>
 		</t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -70,13 +71,28 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+            <t:test id="CreateCosRequest1">
+                <t:request>
+                    <CreateCosRequest xmlns="urn:zimbraAdmin">
+                        <name xmlns="">${cos.name}</name>
+                        <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+                    </CreateCosRequest>
+                </t:request>
+                <t:response>
+                   <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+                   <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id" />
+                </t:response>
+            </t:test>
+
 	    
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account1.name}</name>
 					<password>${defaultpassword.value}</password>
+                                        <a n="zimbraCOSId">${cos.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -93,6 +109,7 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account2.name}</name>
 					<password>${defaultpassword.value}</password>
+                                        <a n="zimbraCOSId">${cos.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -108,6 +125,7 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${test_account3.name}</name>
 					<password>${defaultpassword.value}</password>
+                                        <a n="zimbraCOSId">${cos.id}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -190,7 +208,7 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 
 	</t:test_case>
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
         
         <t:test required="true">
@@ -217,5 +235,5 @@ notify :message "Notification mail." "mailto:${test_account3.name}?Importance=Hi
 	        </t:response>
 	    </t:test>
 
-    </t:finally>		
+    </t:finally>-->		
 </t:tests>

@@ -18,6 +18,7 @@
 <t:property name="reject_mail_subject" value="Disposition notification" />
 <t:property name="reject_mail_content" value="Message matched the reject conditions (policy)" />
 <t:property name="ereject_mail_subject" value="Undelivered Mail Returned to Sender" />
+<t:property name="cos.name" value="cos105636${TIME}${COUNTER}" />
 
 <t:property name="server.name" value="testserver${TIME}${COUNTER}"/>
 <t:property name="server.spaceinname" value="testserver    ${TIME}${COUNTER}"/>
@@ -90,7 +91,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 		</t:response>
 	</t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -112,13 +113,27 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+    <t:test id="CreateCosRequest1">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos.name}</name>
+                 <a n="zimbraSieveRejectMailEnabled">TRUE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id" />
+        </t:response>
+    </t:test>
 	                    
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -132,6 +147,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -145,6 +161,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -158,6 +175,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account4.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -171,6 +189,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account5.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -184,6 +203,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account6.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -197,6 +217,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account7.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -211,6 +232,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
                 <name>${test_account8.name}</name>
                 <password>${defaultpassword.value}</password>
                 <a n = "zimbraPrefLocale">ja</a>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -224,6 +246,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account9.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -237,6 +260,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account10.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -249,6 +273,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${dl1.member1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -262,6 +287,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${dl1.member2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -896,7 +922,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 	        
 </t:test_case>
 
-<t:test_case testcaseid="bug105626_disable_sieve" type="bhr" bugids="105626">
+<t:test_case testcaseid="bug105626_disable_sieve" type="functional" bugids="105626">
    <t:objective>Mail filter misses the 'reject' action</t:objective>
     <steps> 
         1. Add sieve rule for the user
@@ -931,7 +957,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 	    <t:test >
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
-	                <id>${cosid}</id>
+	                <id>${cos.id}</id>
 	                <a n="zimbraSieveRejectMailEnabled">FALSE</a>
 	            </ModifyCosRequest>
 	        </t:request>
@@ -1005,7 +1031,7 @@ if envelope :domain :is "to" "${defaultdomain.name}"
     </t:test>		        
 </t:test_case> 
 
-<t:finally>
+<!--<t:finally>
 
 	<t:test required="true">
 		<t:request>
@@ -1031,6 +1057,6 @@ if envelope :domain :is "to" "${defaultdomain.name}"
 	        </t:response>
 	    </t:test>
 
-</t:finally>
+</t:finally>-->
 
 </t:tests>

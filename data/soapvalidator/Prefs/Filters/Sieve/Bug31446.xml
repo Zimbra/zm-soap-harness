@@ -12,6 +12,7 @@
 <t:property name="dl1.member1.name" value="mem1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="dl1.member2.name" value="mem2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="account1.dl1.name" value="dl1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="cos.name" value="cos31446${TIME}${COUNTER}" />
 
 <t:property name="notify_account2.name" value="notify2.${TIME}.${COUNTER}@${defaultdomain.name}" />
 
@@ -102,7 +103,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
 		</t:response>
 	</t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -124,13 +125,28 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+    <t:test id="CreateCosRequest1">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos.name}</name>
+                 <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+        </t:response>
+    </t:test>
+
 	        
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -144,6 +160,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -157,6 +174,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -170,6 +188,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account4.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -183,6 +202,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account5.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -196,6 +216,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account6.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -209,6 +230,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account7.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -222,6 +244,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account8.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -235,6 +258,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account9.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -917,7 +941,7 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
 
 </t:test_case>
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
         
         <t:test required="true">
@@ -944,5 +968,5 @@ addheader :last "${variable.name.varname}" "${variable.name.varvalue}";
 	        </t:response>
 	    </t:test>
 
-    </t:finally>
+    </t:finally>-->
 </t:tests>

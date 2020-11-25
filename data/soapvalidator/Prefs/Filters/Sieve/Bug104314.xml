@@ -26,6 +26,7 @@
 <t:property name="server.spaceinname" value="testserver    ${TIME}${COUNTER}"/>
 <t:property name="server.notes" value="test of adding Server via SOAP"/>
 <t:property name="server.desc" value="test server description"/>
+<t:property name="cos.name" value="cos104314${TIME}${COUNTER}" />
 
 <t:property name="sieve_rule1" value='require ["editheader", "log"];
 replaceheader :newvalue "[Spam] ${mail_subject}" :matches "subject" "*";
@@ -113,7 +114,7 @@ log "done";'/>
 		</t:response>
 	</t:test>
 
-		<t:test>
+		<!--<t:test>
 			<t:request>
 				<ModifyConfigRequest xmlns="urn:zimbraAdmin">
 					<a n="zimbraCustomMimeHeaderNameAllowed">X-Spam-Score</a>
@@ -148,8 +149,22 @@ log "done";'/>
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
-	    
+	    </t:test>-->
+
+        <t:test id="CreateCosRequest1">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name xmlns="">${cos.name}</name>
+                    <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+                    <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id" />
+            </t:response>
+        </t:test>
+
 </t:test_case>
 
 <t:test_case testcaseid="Accounts setup" type="bhr">  
@@ -159,6 +174,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -172,6 +188,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -185,6 +202,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -198,6 +216,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account4.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -211,6 +230,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account5.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -224,6 +244,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account6.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -237,6 +258,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account7.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -249,7 +271,8 @@ log "done";'/>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account8.name}</name>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>              
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -263,6 +286,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account9.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -276,6 +300,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account10.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -289,6 +314,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account11.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -302,6 +328,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account12.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -315,6 +342,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account13.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -328,6 +356,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account14.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -341,6 +370,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${dl1.member1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -354,6 +384,7 @@ log "done";'/>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${dl1.member2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -640,7 +671,7 @@ log "done";'/>
 		</t:response>
 	</t:test>
 
-    <t:test>
+    <!--<t:test>
         <t:request>
             <ModifyConfigRequest xmlns="urn:zimbraAdmin">
                 <a n="zimbraCustomMimeHeaderNameAllowed">X-Sieve-Header</a>
@@ -649,7 +680,7 @@ log "done";'/>
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test>
+    </t:test>-->
     	
     <t:test id = "modifyaccountrequest01">
         <t:request>
@@ -733,7 +764,7 @@ log "done";'/>
     <steps> 
         1. Add sieve rule for the user :index 1 :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "*";
 		2. Verify if there are multiple X-Headers in mime, the 1st one should be matched and replaced with newvalue -- X-Header: [NEWVAL] My header
-    </steps>	
+    </steps>
 
 	<t:test required="true">
 		<t:request>
@@ -841,7 +872,7 @@ log "done";'/>
 		</t:response>
 	</t:test>
 
-    <t:test>
+    <!--<t:test>
         <t:request>
             <ModifyConfigRequest xmlns="urn:zimbraAdmin">
                 <a n="zimbraCustomMimeHeaderNameAllowed">X-Sieve-Header</a>
@@ -850,7 +881,7 @@ log "done";'/>
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test>
+    </t:test>-->
     	
     <t:test id = "modifyaccountrequest01">
         <t:request>
@@ -948,7 +979,7 @@ log "done";'/>
 		</t:response>
 	</t:test>
 
-    <t:test>
+    <!--<t:test>
         <t:request>
             <ModifyConfigRequest xmlns="urn:zimbraAdmin">
                 <a n="zimbraCustomMimeHeaderNameAllowed">X-Sieve-Header</a>
@@ -957,7 +988,7 @@ log "done";'/>
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test>
+    </t:test>-->
     	
     <t:test id = "modifyaccountrequest01">
         <t:request>
@@ -1055,7 +1086,7 @@ log "done";'/>
 		</t:response>
 	</t:test>
 
-    <t:test>
+    <!--<t:test>
         <t:request>
             <ModifyConfigRequest xmlns="urn:zimbraAdmin">
                 <a n="zimbraCustomMimeHeaderNameAllowed">X-Sieve-Header</a>
@@ -1064,7 +1095,7 @@ log "done";'/>
         <t:response>
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
-    </t:test>
+    </t:test>-->
     	
     <t:test id = "modifyaccountrequest01">
         <t:request>
@@ -1689,7 +1720,7 @@ log "done";'/>
     </t:test>
      
 </t:test_case>
-
+<!--
     <t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
         
@@ -1729,5 +1760,5 @@ log "done";'/>
 	        </t:response>
 	    </t:test>
 
-    </t:finally>   
+    </t:finally>   -->
 </t:tests>

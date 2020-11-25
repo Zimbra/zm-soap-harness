@@ -31,6 +31,7 @@
 	<t:property name="tag2_expected" value="e" />
 	<t:property name="tag3_expected" value="e" />
 	<t:property name="tag4_expected" value="Seive Test DeMo To Be Executed 5" />
+        <t:property name="cos.name" value="cos1${TIME}${COUNTER}" />
 	
 	<t:property name="sieve_test1"
 		value='require ["log","fileinto","relational","variables"];	
@@ -130,7 +131,7 @@
 			</t:response>
 		</t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -152,13 +153,27 @@
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
 	    
+                <t:test id="CreateCosRequest1">
+        	    <t:request>
+                        <CreateCosRequest xmlns="urn:zimbraAdmin">
+                            <name xmlns="">${cos.name}</name>
+                            <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+                        </CreateCosRequest>
+                    </t:request>
+                    <t:response>
+                        <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+                        <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+                    </t:response>
+                </t:test>
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${account1.name}</name>
 					<password>${defaultpassword.value}</password>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -982,6 +997,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule1}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -995,6 +1011,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule2}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1008,6 +1025,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account3.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule3}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1021,6 +1039,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account4.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule4}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1034,6 +1053,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account5.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule5}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1047,6 +1067,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account6.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule6}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1060,6 +1081,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account7.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule7}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1073,6 +1095,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account8.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule8}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1086,6 +1109,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account9.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule9}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1099,6 +1123,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account10.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule10}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1112,6 +1137,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account11.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule11}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1125,6 +1151,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account12.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule12}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1138,6 +1165,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${zcs616_account13.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraMailSieveScript">${sieve_rule13}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -1896,7 +1924,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 		value="test14.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="account15.name"
 		value="test15.${TIME}.${COUNTER}@${defaultdomain.name}" />
-	<t:property name="Subject" value="${defaultpassword.value}" />
+	<t:property name="Subject" value="test123" />
 	<t:property name="00009" value="$\{00009}" />
 	<t:property name="00002" value="$\{00002}" />
 	<t:property name="000004" value="$\{000004}" />
@@ -1938,6 +1966,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${account14.name}</name>
 					<password>${defaultpassword.value}</password>
+                                        <a n="zimbraCOSId">${cosid}</a>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_test14}</a>
 				</CreateAccountRequest>
 			</t:request>
@@ -1950,6 +1979,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${account15.name}</name>
 					<password>${defaultpassword.value}</password>
+                                        <a n="zimbraCOSId">${cosid}</a>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_test15}</a>
 				</CreateAccountRequest>
 			</t:request>
@@ -2103,7 +2133,7 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 		</t:resttest>
 	</t:test_case>
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
         
         <t:test required="true">
@@ -2130,5 +2160,5 @@ if header :contains "Subject" "sieve\\\\\\\\test"
 	        </t:response>
 	    </t:test>
 
-    </t:finally>	
+    </t:finally>-->	
 </t:tests>
