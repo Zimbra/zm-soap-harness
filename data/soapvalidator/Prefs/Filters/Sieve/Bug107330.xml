@@ -15,6 +15,7 @@
     <t:property name="test_account6.name" value="test6_${address_prefix}$\{sample}${address_suffix}${account_partial}@${defaultdomain.name}" />
     <t:property name="account_partial2" value=".${TIME}.${COUNTER}" />
     <t:property name="test_redirect_account6.name" value="redirect6_${address_prefix}$\{sample}${address_suffix}${account_partial}@${defaultdomain.name}" />
+    <t:property name="cos.name" value="cos107330${TIME}${COUNTER}" />
 
     <!-- Variables declaration -->
     <t:property name="folder_inbox" value="Inbox" />
@@ -154,7 +155,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="GlobalConfigSetup" type="always">
+    <!--<t:test_case testcaseid="GlobalConfigSetup" type="always">
         <t:objective>set globalconfig and restart mailboxd</t:objective>
         <t:test required="true">
             <t:request>
@@ -186,7 +187,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
         </t:test>
 
 
-    </t:test_case>
+    </t:test_case>-->
 
     <t:test_case testcaseid="AcctSetup1_create_account" type="always">
         <t:objective>create test accounts</t:objective>
@@ -202,7 +203,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
             </t:response>
         </t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -225,13 +226,28 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
-        
+	    </t:test>-->
+
+        <t:test id="CreateCosRequest1">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name xmlns="">${cos.name}</name>
+                    <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+                    <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+            </t:response>
+        </t:test>
+ 
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -245,6 +261,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -258,6 +275,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account3.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -271,6 +289,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account4.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -284,6 +303,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_notify_account4.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -296,6 +316,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account5_1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -308,6 +329,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account5_2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule5}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -321,6 +343,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account6.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule6}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -334,6 +357,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_redirect_account6.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -810,7 +834,7 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
         </t:test>
     </t:test_case>
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig</t:objective>
         <t:test required="true">
             <t:request>
@@ -847,5 +871,5 @@ ereject "${prefix}${dollar_variable}{sample}${suffix}";
 	        </t:response>
 	    </t:test>
     
-    </t:finally>
+    </t:finally>-->
 </t:tests>

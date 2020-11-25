@@ -12,6 +12,7 @@
 <t:property name="test_account10.name" value="test10.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="test_account11.name" value="test11.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="test_account12.name" value="test12.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="cos.name" value="cos107212${TIME}${COUNTER}" />
 
 <t:property name="mail_subject" value="Sieve Mail" />
 <t:property name="msg01.file" value="${testMailRaw.root}/bug107212/mime1.txt"/>
@@ -98,7 +99,7 @@ log "Sieve rule 11";
 		</t:response>
 	</t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -120,13 +121,27 @@ log "Sieve rule 11";
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+        <t:test id="CreateCosRequest1">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos.name}</name>
+                 <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+        </t:response>
+       </t:test>
 	                
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -140,6 +155,7 @@ log "Sieve rule 11";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -153,6 +169,7 @@ log "Sieve rule 11";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -166,6 +183,7 @@ log "Sieve rule 11";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account4.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -180,6 +198,7 @@ log "Sieve rule 11";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account5.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -193,6 +212,7 @@ log "Sieve rule 11";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account6.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -206,6 +226,7 @@ log "Sieve rule 11";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account7.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -218,7 +239,8 @@ log "Sieve rule 11";
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account8.name}</name>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>                
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -231,7 +253,8 @@ log "Sieve rule 11";
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account9.name}</name>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>              
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -244,7 +267,8 @@ log "Sieve rule 11";
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account10.name}</name>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>                
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -257,7 +281,8 @@ log "Sieve rule 11";
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account11.name}</name>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>                
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -270,7 +295,8 @@ log "Sieve rule 11";
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account12.name}</name>
-                <password>${defaultpassword.value}</password>                
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>               
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -1163,7 +1189,7 @@ log "Sieve rule 11";
 			<t:request>
 				<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
 					<account by="name">${test_account12.name}</account>
-					<password>accountpassword</password>
+					<password>${defaultpassword.value}</password>
 				</AuthRequest>
 			</t:request>
 			<t:response>
@@ -1196,7 +1222,7 @@ log "Sieve rule 11";
 		</t:resttest>
 	</t:test_case>	     
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
         
         <t:test required="true">
@@ -1223,5 +1249,5 @@ log "Sieve rule 11";
 	        </t:response>
 	    </t:test>
 
-    </t:finally>    
+    </t:finally>-->   
 </t:tests>
