@@ -4,6 +4,7 @@
     <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="cos.name" value="cos107222${TIME}${COUNTER}" />
 
     <!-- Variables declaration -->
     <t:property name="folder_inbox" value="Inbox" />
@@ -50,7 +51,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
             </t:response>
         </t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -72,13 +73,28 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+        <t:test id="CreateCosRequest1">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name xmlns="">${cos.name}</name>
+                    <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+            </t:response>
+        </t:test>
+
 	    
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -92,6 +108,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -105,6 +122,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account3.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -118,6 +136,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account4.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -381,7 +400,7 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
         </t:resttest>
     </t:test_case>
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
         
         <t:test required="true">
@@ -408,5 +427,5 @@ replaceheader :newvalue "[追加]: ${dollar1}" :comparator "i;ascii-casemap" :ma
 	        </t:response>
 	    </t:test>
 
-    </t:finally>
+    </t:finally>-->
 </t:tests>

@@ -190,6 +190,7 @@
             <t:request>
                 <CreateCosRequest xmlns="urn:zimbraAdmin">
                     <name xmlns="">${cos1.name}</name>
+                    <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
                 </CreateCosRequest>
             </t:request>
             <t:response>
@@ -198,7 +199,7 @@
             </t:response>
         </t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cos1.id}</id>
@@ -208,7 +209,7 @@
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
 	    
 		<t:test required="true">
 			<t:request>
@@ -472,7 +473,7 @@
 		<t:objective>Add a sieve rule to delete custom header and verify the
 			mime via rest servlet</t:objective>
 
-		<t:test>
+		<!--<t:test>
 			<t:request>
 				<ModifyConfigRequest xmlns="urn:zimbraAdmin">
 					<a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header</a>
@@ -482,7 +483,7 @@
 			<t:response>
 				<t:select path="//admin:ModifyConfigResponse" />
 			</t:response>
-		</t:test>
+		</t:test>-->
 
 		<t:test id="modifyaccountrequest01">
 			<t:request>
@@ -1507,7 +1508,7 @@
 			</t:response>
 		</t:test>
 		
-	    <t:test>
+	    <!--<t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cos1.id}</id>
@@ -1517,7 +1518,7 @@
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
 		
 		<t:test required="true">
 			<t:request>
@@ -1536,6 +1537,7 @@
 				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
 					<id>${test_account13.id}</id>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule14}</a>
+                                        <a n="zimbraSieveImmutableHeaders">${defaultzimbraSieveImmutableHeaders},X-Sieve-Header1</a>
 				</ModifyAccountRequest>
 			</t:request>
 			<t:response>
@@ -1604,7 +1606,7 @@
 			</t:response>
 		</t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cos1.id}</id>
@@ -1614,7 +1616,7 @@
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
 		
 	</t:test_case>
  
