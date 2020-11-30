@@ -8,6 +8,8 @@
 <t:property name="test_account6.name" value="test6.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="test_account7.name" value="test7.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="test_account8.name" value="test8.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="cos.name" value="cos283${TIME}${COUNTER}" />
+
 <t:property name="msg01.file" value="${testMailRaw.root}/zcs-283/mime01.txt"/>
 
 <t:property name="mail_subject" value="Spam Mail" />
@@ -69,7 +71,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 </t:test_case>
 
 
-<t:test_case testcaseid="acctSetup1" type="smoke">
+<t:test_case testcaseid="acctSetup1" type="always">
     <t:objective>create test account</t:objective>
     
 	<t:test required="true">
@@ -84,7 +86,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 		</t:response>
 	</t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -106,13 +108,27 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+    <t:test id="CreateCosRequest1">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos.name}</name>
+                 <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+        </t:response>
+    </t:test>
 	        
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -126,6 +142,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
                 <a n = "zimbraAdminSieveScriptAfter">${sieve_rule1}</a>
             </CreateAccountRequest>
         </t:request>
@@ -140,6 +157,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account3.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
                 <a n = "zimbraAdminSieveScriptAfter">${sieve_rule2}</a>
             </CreateAccountRequest>
         </t:request>
@@ -154,6 +172,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account4.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
                 <a n = "zimbraAdminSieveScriptAfter">${sieve_rule3}</a>
             </CreateAccountRequest>
         </t:request>
@@ -168,6 +187,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account5.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
                 <a n = "zimbraAdminSieveScriptAfter">${sieve_rule4}</a>
             </CreateAccountRequest>
         </t:request>
@@ -182,6 +202,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account6.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
                 <a n = "zimbraAdminSieveScriptAfter">${sieve_rule5}</a>
             </CreateAccountRequest>
         </t:request>
@@ -196,6 +217,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account7.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
                 <a n = "zimbraAdminSieveScriptAfter">${sieve_rule6}</a>
             </CreateAccountRequest>
         </t:request>
@@ -210,6 +232,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account8.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
                 <a n = "zimbraAdminSieveScriptAfter">${sieve_rule7}</a>
             </CreateAccountRequest>
         </t:request>
@@ -721,7 +744,7 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 		             
 </t:test_case>
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
         
         <t:test required="true">
@@ -748,5 +771,5 @@ replaceheader :newname "X-New-Header2" :newvalue "NEWVAL" :matches "X-NEW-HEADER
 	        </t:response>
 	    </t:test>
 
-    </t:finally>    
+    </t:finally>-->  
 </t:tests>

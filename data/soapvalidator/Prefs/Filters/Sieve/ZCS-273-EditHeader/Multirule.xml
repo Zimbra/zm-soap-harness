@@ -4,6 +4,7 @@
 <t:property name="account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="cos.name" value="cos273-3${TIME}${COUNTER}" />
 
 <t:property name="mail_subject" value="Sieve Mail" />
 
@@ -45,7 +46,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -67,13 +68,27 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
 	        
+    <t:test id="CreateCosRequest1">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos.name}</name>
+                 <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+        </t:response>
+    </t:test>
+
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -87,6 +102,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -100,6 +116,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account3.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -113,6 +130,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account4.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
                 <a n="zimbraAdminSieveScriptAfter">${sieve_rule1}</a>
             </CreateAccountRequest>
         </t:request>
@@ -556,7 +574,7 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	  </t:test>
 </t:test_case>
 	  
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
         
         <t:test required="true">
@@ -583,5 +601,5 @@ replaceheader :newname "X-New-Sieve-Header1" :newvalue "NewVal1" :comparator "i;
 	        </t:response>
 	    </t:test>
 		
-    </t:finally>
+    </t:finally>-->
 </t:tests>

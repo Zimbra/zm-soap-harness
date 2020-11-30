@@ -21,6 +21,7 @@
 <t:property name="account19.name" value="test19.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="account20.name" value="test20.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="outgoing.name" value="outgoing.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="cos.name" value="cos273-1${TIME}${COUNTER}" />
 
 <t:property name="mail_subject" value="Sieve Mail" />
 <t:property name="msg01.file" value="${testMailRaw.root}/zcs-273/mime1.txt"/>
@@ -60,7 +61,7 @@
 	<!-- Remember these values for later -->
 	<t:property name="authToken.admin" value="${authToken}"/>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -93,13 +94,27 @@
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+    <t:test id="CreateCosRequest1">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos.name}</name>
+                 <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+        </t:response>
+    </t:test>
 	    
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -113,6 +128,7 @@
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -126,6 +142,7 @@
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account3.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -139,6 +156,7 @@
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account4.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -152,6 +170,7 @@
     	<CreateAccountRequest xmlns="urn:zimbraAdmin">
      		<name>${account5.name}</name>
      		<password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
     	</CreateAccountRequest>
    	</t:request>
    <t:response>
@@ -165,6 +184,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account6.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -181,6 +201,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account7.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -197,6 +218,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account8.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -213,6 +235,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account9.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -229,6 +252,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account10.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -245,6 +269,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account11.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -261,6 +286,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account12.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -277,6 +303,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account13.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -293,6 +320,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account14.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -309,6 +337,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account15.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -325,6 +354,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account16.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -341,6 +371,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account17.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -357,6 +388,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account18.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -373,6 +405,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account19.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -389,6 +422,7 @@
     <CreateAccountRequest xmlns="urn:zimbraAdmin">
      <name>${account20.name}</name>
      <password>${defaultpassword.value}</password>
+     <a n="zimbraCOSId">${cosid}</a>
     </CreateAccountRequest>
    </t:request>
    <t:response>
@@ -405,6 +439,7 @@
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${outgoing.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cosid}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -2759,7 +2794,7 @@
     </t:test>                	    
 </t:test_case>
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
         
         <t:test required="true">
@@ -2797,5 +2832,5 @@
 			</t:response>
 		</t:test>
 		
-    </t:finally> 
+    </t:finally>--> 
 </t:tests>
