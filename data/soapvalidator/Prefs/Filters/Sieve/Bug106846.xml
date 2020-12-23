@@ -2,6 +2,7 @@
     <!-- Test accounts declaration -->
     <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="test_notify_account1.name" value="notify1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="cos.name" value="cos106846${TIME}${COUNTER}" />
 
     <!-- Variables declaration -->
     <t:property name="folder_inbox" value="Inbox" />
@@ -43,11 +44,25 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
             </t:response>
         </t:test>
 
+        <t:test id="CreateCosRequest1">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name xmlns="">${cos.name}</name>
+                    <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+            </t:response>
+       </t:test>
+
         <t:test required="true">
             <t:request>
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                     <a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
                 </CreateAccountRequest>
             </t:request>
@@ -61,6 +76,7 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${test_notify_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -68,7 +84,7 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
             </t:response>
         </t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -90,7 +106,7 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
     
     </t:test_case>
 
@@ -197,7 +213,7 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
         </t:test>
     </t:test_case>
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig </t:objective>
         
         <t:test required="true">
@@ -224,5 +240,5 @@ notify :from "notification_test@${defaultdomain.name}" :message "notify_msg3"
 	        </t:response>
 	    </t:test>
 
-    </t:finally>
+    </t:finally>-->
 </t:tests>
