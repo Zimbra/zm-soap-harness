@@ -2,6 +2,7 @@
 
 <t:property name="account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
 <t:property name="account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+<t:property name="cos.name" value="cos840${TIME}${COUNTER}" />
 
 <t:property name="mail_subject" value="Test Mail" />
 <t:property name="dollar" value="$"/>
@@ -81,7 +82,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
         </t:response>
     </t:test>
 
-	    <t:test>
+	   <!-- <t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -103,13 +104,27 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+    <t:test id="CreateCosRequest1">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos.name}</name>
+                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos.id" />
+        </t:response>
+    </t:test>
 	        
     <t:test required="true">
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account1.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
@@ -122,6 +137,7 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${account2.name}</name>
                 <password>${defaultpassword.value}</password>
+                <a n="zimbraCOSId">${cos.id}</a>
                 <a n = "zimbraAdminSieveScriptAfter">${sieve_rule1}</a>
             </CreateAccountRequest>
         </t:request>
@@ -220,17 +236,14 @@ replaceheader :newvalue "Replaced" :matches "${dollar}{headerName}" "*";
             </t:response>
         </t:test>
 
-	    <t:test>
-	        <t:request>
-	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
-	                <id>${cosid}</id>
-	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
-	            </ModifyCosRequest>
-	        </t:request>
-	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
-	        </t:response>
-	    </t:test>
+        <t:test>
+            <t:request>
+                <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                    <id>${cos.id}</id>
+                </DeleteCosRequest>
+            </t:request>
+        </t:test>
 
-    </t:finally> 
+    </t:finally>
+
 </t:tests>

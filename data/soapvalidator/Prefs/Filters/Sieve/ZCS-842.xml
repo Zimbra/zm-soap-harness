@@ -22,6 +22,7 @@
 		value="reciever9${TIME}${COUNTER}@${defaultdomain.name}" />
 	<t:property name="reciever_account10.name"
 		value="reciever10${TIME}${COUNTER}@${defaultdomain.name}" />
+        <t:property name="cos.name" value="cos842${TIME}${COUNTER}" />
 	
 	<t:property name="subject" value="sample abc test 123 test ABC test" />
 	<t:property name="0" value="$\{0}" />
@@ -130,7 +131,7 @@ tag "${1}";
 			</t:response>
 		</t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -152,13 +153,27 @@ tag "${1}";
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+            <t:test id="CreateCosRequest1">
+                <t:request>
+                    <CreateCosRequest xmlns="urn:zimbraAdmin">
+                        <name xmlns="">${cos.name}</name>
+                        <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+                    </CreateCosRequest>
+                </t:request>
+                <t:response>
+                    <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+                    <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+                </t:response>
+            </t:test>
 	    
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${sender_account.name}</name>
 					<password>${defaultpassword.value}</password>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -178,6 +193,7 @@ tag "${1}";
 					<name>${reciever_account1.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraMailSieveScript">${sieve_test1}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -197,6 +213,7 @@ tag "${1}";
 					<name>${reciever_account2.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraMailSieveScript">${sieve_test2}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -216,6 +233,7 @@ tag "${1}";
 					<name>${reciever_account3.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraMailSieveScript">${sieve_test3}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -235,6 +253,7 @@ tag "${1}";
 					<name>${reciever_account4.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraMailSieveScript">${sieve_test4}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -254,6 +273,7 @@ tag "${1}";
 					<name>${reciever_account5.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraMailSieveScript">${sieve_test5}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -273,6 +293,7 @@ tag "${1}";
 					<name>${reciever_account6.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraMailSieveScript">${sieve_test6}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -292,6 +313,7 @@ tag "${1}";
 					<name>${reciever_account7.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraMailSieveScript">${sieve_test7}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -311,6 +333,7 @@ tag "${1}";
 					<name>${reciever_account8.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptAfter">${sieve_test8}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -330,6 +353,7 @@ tag "${1}";
 					<name>${reciever_account9.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptAfter">${sieve_test9}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -349,6 +373,7 @@ tag "${1}";
 					<name>${reciever_account10.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraMailSieveScript">${sieve_test10}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -1115,17 +1140,13 @@ tag "${1}";
             </t:response>
         </t:test>
 
-	    <t:test>
-	        <t:request>
-	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
-	                <id>${cosid}</id>
-	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
-	            </ModifyCosRequest>
-	        </t:request>
-	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
-	        </t:response>
-	    </t:test>
+        <t:test>
+            <t:request>
+                <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                    <id>${cosid}</id>
+            </DeleteCosRequest>
+            </t:request>
+        </t:test>
+    </t:finally>
 
-    </t:finally>	
 </t:tests>

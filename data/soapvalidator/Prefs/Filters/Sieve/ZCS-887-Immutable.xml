@@ -245,7 +245,7 @@
 			</t:response>
 		</t:test>
 		
-	    <t:test>
+	    <!--<t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cos1.id}</id>
@@ -255,7 +255,19 @@
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+            <t:test>
+                <t:request>
+                    <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                        <id>${test_account3.id}</id>
+                        <a n="zimbraSieveImmutableHeaders">Received,DKIM-Signature,Authentication-Results,Received-SPF,Message-ID,Content-Type,Content-Disposition,Content-Transfer-Encoding,MIME-Version</a>
+                    </ModifyAccountRequest>
+                </t:request>
+                <t:response>
+                    <t:select path="//admin:ModifyAccountResponse/admin:account"/>            
+                </t:response>
+            </t:test>
 	    
     <t:test >
         <t:request>

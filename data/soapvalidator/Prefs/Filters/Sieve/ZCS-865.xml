@@ -56,6 +56,7 @@
 <t:property name="account25.name"
 		value="test25_${TIME}${COUNTER}@${defaultdomain.name}" />
 <t:property name="msg.subject2" value="1" />
+<t:property name="cos.name" value="cos865${TIME}${COUNTER}" />
 
 	<t:property name="sieve_rule1"
 		value='require  ["editheader", "relational"];
@@ -314,7 +315,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
             </t:response>
         </t:test>
 
-		<t:test>
+		<!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -336,13 +337,28 @@ require ["editheader", "comparator-i;ascii-numeric"];
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+
+        <t:test id="CreateCosRequest1">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name xmlns="">${cos.name}</name>
+                    <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+            </t:response>
+        </t:test>
 	    
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${account.name}</name>
 					<password>${defaultpassword.value}</password>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -360,6 +376,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account1.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule1}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -377,6 +394,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account2.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule2}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -394,6 +412,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account3.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule3}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -411,6 +430,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account4.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule4}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -428,6 +448,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account5.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule5}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -445,6 +466,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account6.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule6}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -462,6 +484,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account7.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule7}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -479,6 +502,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account8.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule8}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -496,6 +520,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account9.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule9}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -513,6 +538,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account10.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule10}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -530,6 +556,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account11.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule11}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -547,6 +574,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account12.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule12}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -564,6 +592,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account13.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule13}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -581,6 +610,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account14.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule14}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -598,6 +628,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account15.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule15}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -615,6 +646,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account16.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule16}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -632,6 +664,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account17.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule17}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -649,6 +682,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account18.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule18}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -666,6 +700,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account19.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule19}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -683,6 +718,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account20.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule20}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -700,6 +736,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account21.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule21}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -717,6 +754,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account22.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule22}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -734,6 +772,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account23.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule23}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -751,6 +790,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account24.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule24}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -768,6 +808,7 @@ require ["editheader", "comparator-i;ascii-numeric"];
 					<name>${account25.name}</name>
 					<password>${defaultpassword.value}</password>
 					<a n="zimbraAdminSieveScriptBefore">${sieve_rule25}</a>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
@@ -3137,17 +3178,14 @@ require ["editheader", "comparator-i;ascii-numeric"];
             </t:response>
         </t:test>
 
-	    <t:test>
-	        <t:request>
-	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
-	                <id>${cosid}</id>
-	                <a n="zimbraSieveEditHeaderEnabled">FALSE</a>
-	            </ModifyCosRequest>
-	        </t:request>
-	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
-	        </t:response>
-	    </t:test>
+        <t:test>
+            <t:request>
+                <DeleteCosRequest xmlns="urn:zimbraAdmin">
+                    <id>${cosid}</id>
+                </DeleteCosRequest>
+            </t:request>
+        </t:test>
 
     </t:finally>
+
 </t:tests>

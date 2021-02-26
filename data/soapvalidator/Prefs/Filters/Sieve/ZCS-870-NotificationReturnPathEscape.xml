@@ -10,6 +10,7 @@
     <t:property name="notify_account7.name" value="notify7.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="notify_account8.name" value="notify8.${TIME}.${COUNTER}@${defaultdomain.name}" />
     <t:property name="notify_account9.name" value="notify9.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="cos.name" value="cos870${TIME}${COUNTER}" />
 
     <!-- Variables declaration -->
     <t:property name="mail_subject" value="mail_subject.${COUNTER}"></t:property>
@@ -99,7 +100,7 @@
             </t:response>
         </t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -121,7 +122,20 @@
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+        <t:test id="CreateCosRequest1">
+            <t:request>
+                <CreateCosRequest xmlns="urn:zimbraAdmin">
+                    <name xmlns="">${cos.name}</name>
+                    <a n="zimbraSieveNotifyActionRFCCompliant">TRUE</a>
+                </CreateCosRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+                <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+            </t:response>
+        </t:test>
 	    
         <t:test required="true">
             <t:request>
@@ -129,6 +143,7 @@
                     <name>${test_account.name}</name>
                     <password>${defaultpassword.value}</password>
                     <a n="zimbraMailSieveScript">${sieve_rule1}</a>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -141,6 +156,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${notify_account1.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -153,6 +169,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${notify_account2.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -165,6 +182,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${notify_account3.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -177,6 +195,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${notify_account4.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -189,6 +208,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${notify_account5.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -201,6 +221,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${notify_account6.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -213,6 +234,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${notify_account7.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -225,6 +247,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${notify_account8.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -237,6 +260,7 @@
                 <CreateAccountRequest xmlns="urn:zimbraAdmin">
                     <name>${notify_account9.name}</name>
                     <password>${defaultpassword.value}</password>
+                    <a n="zimbraCOSId">${cosid}</a>
                 </CreateAccountRequest>
             </t:request>
             <t:response>
@@ -1003,17 +1027,14 @@
         </t:response>
     </t:test>
 
-	    <t:test>
-	        <t:request>
-	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
-	                <id>${cosid}</id>
-	                <a n="zimbraSieveNotifyActionRFCCompliant">FALSE</a>
-	            </ModifyCosRequest>
-	        </t:request>
-	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
-	        </t:response>
-	    </t:test>        
+    <t:test>
+        <t:request>
+	    <DeleteCosRequest xmlns="urn:zimbraAdmin">
+	        <id>${cosid}</id>
+	    </DeleteCosRequest>
+	</t:request>
+    </t:test>        
 
-</t:finally>
+  </t:finally>
+
 </t:tests>
