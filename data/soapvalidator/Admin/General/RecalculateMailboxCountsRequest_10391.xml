@@ -17,6 +17,13 @@
 
    <t:test_case testcaseid="Chk-Msg-Count-After-RecalculateMailboxCountRequest" type="smoke" bugids="ZCS-10391">
       <t:objective>Verify Total Msg Count Before and After hiting RecalculateMailboxCountsRequest API</t:objective>
+      <t:steps> 1. Create test account
+	      2. Inject 3 messages in inbox
+	      3. Hit GetFolderRequest and verify n=3 in inbox
+	      4. Hit RecalculateMailboxCountsRequest
+	      5. Again  Hit GetFolderRequest and verify n=3 in inbox
+      </t:steps>
+
       <t:test required="true">
          <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
