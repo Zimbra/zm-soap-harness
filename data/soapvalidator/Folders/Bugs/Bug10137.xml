@@ -1,0 +1,128 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+   <t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}" />
+   <t:property name="test_account1.password" value="${defaultpassword.value}" />
+   <t:property name="folder.trash" value="3" />
+   <t:property name="folder1.name" value="folder${TIME}${COUNTER}" />
+   <t:property name="folder1.pname" value="1" />
+   <!-- Folder's parent ID -->
+   <t:property name="subfolder1.name" value="subfolder${TIME}${COUNTER}" />
+
+   <t:test_case testcaseid="Ping" type="always">
+      <t:objective>basic system check</t:objective>
+      <t:test id="ping" required="true">
+         <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin" />
+         </t:request>
+         <t:response>
+            <t:select path="//admin:PingResponse" />
+         </t:response>
+      </t:test>
+   </t:test_case>
+
+   <t:test_case testcaseid="acct1_setup" type="always">
+      <t:objective>create test account</t:objective>
+      <t:test id="admin_login" required="true" depends="ping">
+         <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+               <name>${admin.user}</name>
+               <password>${admin.password}</password>
+            </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+         </t:response>
+      </t:test>
+
+      <t:test id="create_test_account1" required="false" depends="admin_login">
+         <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+               <name>${test_account1.name}</name>
+               <password>${test_account1.password}</password>
+            </CreateAccountRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+            <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n=&quot;zimbraMailHost&quot;]" set="test_acct1.server" />
+         </t:response>
+      </t:test>
+   </t:test_case>
+
+   <t:property name="server.zimbraAccount" value="${test_acct1.server}" />
+   <t:test_case testcaseid="acct1_login" type="always">
+      <t:objective>login as the test account</t:objective>
+      <t:test required="true">
+         <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+               <account by="name">${test_account1.name}</account>
+               <password>${test_account1.password}</password>
+               <!--<prefs/>-->
+            </AuthRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+         </t:response>
+      </t:test>
+   </t:test_case>
+
+   <t:test_case testcaseid="EmptyTrashFolder" type="smoke" bugids="ZCS-10137">
+      <t:objective>Trash  with nested folders should  be emptied.</t:objective>
+      <t:steps>1.Create a Parent  folder.
+             2.Create a sub folder in that folder.
+             3.Delete parent folder or move parent folder to Trash.
+             4.Empty Trash folder
+             5.Check whether the parent folder exists (Should not exist).</t:steps>
+      <!-- Create a new folder.-->
+      <t:test>
+         <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+               <folder name="${folder1.name}" l="${folder1.pname}" />
+            </CreateFolderRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" attr="id" set="folder1.id" />
+         </t:response>
+      </t:test>
+      <!-- Create a new sub folder in the newly created folder.-->
+      <t:test>
+         <t:request>
+            <CreateFolderRequest xmlns="urn:zimbraMail">
+               <folder name="${subfolder1.name}" l="${folder1.id}" />
+            </CreateFolderRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//mail:CreateFolderResponse/mail:folder" />
+         </t:response>
+      </t:test>
+      <t:test>
+         <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+               <action op="move" id="${folder1.id}" l="${folder.trash}" />
+            </FolderActionRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" />
+         </t:response>
+      </t:test>
+      <t:test>
+         <t:request>
+            <FolderActionRequest xmlns="urn:zimbraMail">
+               <action op="empty" id="3" />
+            </FolderActionRequest>
+         </t:request>
+         <t:response>
+            <t:select path="//mail:FolderActionResponse/mail:action" />
+         </t:response>
+      </t:test>
+      <!--Search the parent  folder-->
+      <t:test>
+         <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail" l="${folder1.id}" />
+         </t:request>
+         <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder/mail:folder[@id='${folder.trash}']" emptyset="1" />
+            <t:select path="//mail:GetFolderResponse/mail:folder" attr="name" match="${folder1.name}" emptyset="1" />
+         </t:response>
+      </t:test>
+   </t:test_case>
+</t:tests>
