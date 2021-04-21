@@ -58,7 +58,7 @@
     </t:test>  
 
 </t:test_case>
-
+<!--Make sure zmlocalconfig -e ssl_allow_untrusted_certs=true this has to be set true along with all Migration pods should up and running -->
 <t:test_case testcaseid="ValidateRemoteZimbraConnectionRequest" type="smoke" bugids="9805">
     <t:objective>ValidateRemoteZimbraConnection API will connect to source host and validate the admin credentials..</t:objective>
 
@@ -140,7 +140,7 @@
     <t:test >
            <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>subject: (${subject1.valid})</query>
+                <query>is:anywhere subject: (${subject1.valid})</query>
             </SearchRequest>
         </t:request>
         <t:response>
