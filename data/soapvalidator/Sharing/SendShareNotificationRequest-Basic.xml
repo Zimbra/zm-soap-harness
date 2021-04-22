@@ -281,10 +281,11 @@
 
     <t:test >
         <t:request>
-            <SendShareNotificationRequest xmlns="urn:zimbraMail">
-                <share l="${account2.folder.calendar.id}" gt="${grant.usr}" d="${account1.name}"/>
-				<notes>test notes ${TIME}</notes>
-            </SendShareNotificationRequest>
+		<SendShareNotificationRequest xmlns="urn:zimbraMail">
+			<item id="${account2.folder.calendar.id}"/>
+			<grant  gt="${grant.usr}" d="${account1.name}"/>
+			<notes>test notes ${TIME}</notes>
+                </SendShareNotificationRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SendShareNotificationResponse"/>
@@ -357,7 +358,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="SendShareNotificationRequest_Basic_02" type="bhr">
+<t:test_case testcaseid="SendShareNotificationRequest_Basic_02" type="sanity" bugids="10507">
     <t:objective>Verify that SendShareNotificationRequest gives error if folder not shared</t:objective>
      <t:steps>
      1.Login to Account2
@@ -396,9 +397,10 @@
 
     <t:test >
         <t:request>
-            <SendShareNotificationRequest xmlns="urn:zimbraMail">
-                <share l="${account2.folder.Briefcase.id}" gt="${grant.usr}" d="${account1.name}"/>
-				<notes>test notes ${TIME}</notes>
+	    <SendShareNotificationRequest xmlns="urn:zimbraMail">
+			<item id="${account2.folder.calendar.id}"/>
+			<grant  gt="${grant.usr}" d="${account1.name}"/>
+			<notes>test notes ${TIME}</notes>
             </SendShareNotificationRequest>
         </t:request>
         <t:response>
@@ -462,10 +464,11 @@
 
     <t:test >
         <t:request>
-            <SendShareNotificationRequest xmlns="urn:zimbraMail">
-                <share l="${account3.folder.calendar.id}" gt="${grant.grp}" d="${dl1.name}"/>
-				<notes>test notes ${TIME}</notes>
-            </SendShareNotificationRequest>
+		<SendShareNotificationRequest xmlns="urn:zimbraMail">
+			<item id="${account3.folder.calendar.id}"/>
+			<grant  gt="${grant.grp}" d="${dl1.name}"/>
+			<notes>test notes ${TIME}</notes>
+                </SendShareNotificationRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SendShareNotificationResponse"/>
@@ -653,10 +656,11 @@
 
     <t:test >
         <t:request>
-            <SendShareNotificationRequest xmlns="urn:zimbraMail">
-                <share l="${account3.folder.Briefcase.id}" gt="${grant.grp}" d="${dl1.name}"/>
-				<notes>test notes ${TIME}</notes>
-            </SendShareNotificationRequest>
+		<SendShareNotificationRequest xmlns="urn:zimbraMail">
+			<item id="${account3.folder.Briefcase.id}"/>
+			<grant  gt="${grant.grp}" d="${dl1.name}"/>
+			<notes>test notes ${TIME}</notes>
+                </SendShareNotificationRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SendShareNotificationResponse"/>
@@ -769,10 +773,11 @@
 
 	<t:test >
         <t:request>
-            <SendShareNotificationRequest xmlns="urn:zimbraMail">
-                <share l="${account3.folder.Briefcase.id}" gt="${grant.grp}" d="${dl1.name}"/>
-				<notes>test notes ${TIME}</notes>
-            </SendShareNotificationRequest>
+		<SendShareNotificationRequest xmlns="urn:zimbraMail">
+			<item id="${account3.folder.Briefcase.id}"/>
+			<grant  gt="${grant.grp}" d="${dl1.name}"/>
+			<notes>test notes ${TIME}</notes>
+                </SendShareNotificationRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SendShareNotificationResponse"/>
@@ -897,10 +902,11 @@
 
     <t:test >
         <t:request>
-            <SendShareNotificationRequest xmlns="urn:zimbraMail">
-                <share l="${account5.folder.calendar.id}" gt="${grant.grp}" d="${dl2.name}"/>
-				<notes>test notes ${TIME}</notes>
-            </SendShareNotificationRequest>
+		<SendShareNotificationRequest xmlns="urn:zimbraMail">
+			<item id="${account5.folder.calendar.id}"/>
+			<grant  gt="${grant.grp}" d="${dl2.name}"/>
+			<notes>test notes ${TIME}</notes>
+                </SendShareNotificationRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SendShareNotificationResponse"/>
@@ -1000,10 +1006,11 @@
 
     <t:test >
         <t:request>
-            <SendShareNotificationRequest xmlns="urn:zimbraMail">
-                <share l="${account5.folder.calendar.id}" gt="${grant.grp}" zid="${dl2.id}"/>
-				<notes>test notes ${TIME}</notes>
-            </SendShareNotificationRequest>
+		<SendShareNotificationRequest xmlns="urn:zimbraMail">
+			<item id="${account5.folder.calendar.id}"/>
+			<grant  gt="${grant.grp}" zid="${dl2.id}"/>
+			<notes>test notes ${TIME}</notes>
+                </SendShareNotificationRequest>
         </t:request>
         <t:response>
             <t:select path = "//zimbra:Code" match="^service.INVALID_REQUEST"/>

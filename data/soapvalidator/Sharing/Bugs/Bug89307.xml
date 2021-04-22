@@ -184,10 +184,11 @@
     
     <t:test >
         <t:request>
-            <SendShareNotificationRequest xmlns="urn:zimbraMail">
-                <share l="${account1.folder.inbox.id}" gt="${grant.usr}" d="${account2.name}"/>
-				<notes>test notes ${TIME}</notes>
-            </SendShareNotificationRequest>
+		<SendShareNotificationRequest xmlns="urn:zimbraMail">
+			<item id="${account1.folder.inbox.id}"/>
+			<e a="${account2.name}"/>
+			<notes>test notes ${TIME}</notes>
+                </SendShareNotificationRequest>
         </t:request>
         <t:response>
             <t:select path="//mail:SendShareNotificationResponse"/>
