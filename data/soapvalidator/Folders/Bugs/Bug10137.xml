@@ -117,11 +117,12 @@
       <!--Search the parent  folder-->
       <t:test>
          <t:request>
-            <GetFolderRequest xmlns="urn:zimbraMail" l="${folder1.id}" />
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
          </t:request>
          <t:response>
-            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder/mail:folder[@id='${folder.trash}']" emptyset="1" />
-            <t:select path="//mail:GetFolderResponse/mail:folder" attr="name" match="${folder1.name}" emptyset="1" />
+		 <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder/mail:folder[@id='${folder.trash}']" emptyset="1" />
+		 <t:select path="//mail:GetFolderResponse/mail:folder" attr="id" match="${folder1.id}" emptyset="1" />
+		 <t:select path="//mail:GetFolderResponse/mail:folder" attr="name" match="${subfolder1.name}" emptyset="1" />
          </t:response>
       </t:test>
    </t:test_case>
