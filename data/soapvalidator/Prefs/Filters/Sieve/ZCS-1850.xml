@@ -63,6 +63,7 @@ deleteheader :index 1 "X-Header" "Test";
             <t:request>
                 <CreateCosRequest xmlns="urn:zimbraAdmin">
                     <name xmlns="">${cos1.name}</name>
+                    <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
                 </CreateCosRequest>
             </t:request>
             <t:response>
@@ -70,18 +71,6 @@ deleteheader :index 1 "X-Header" "Test";
                 <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cos1.id" />
             </t:response>
         </t:test>
-
-	    <t:test>
-	        <t:request>
-	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
-	                <id>${cos1.id}</id>
-	                <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
-	            </ModifyCosRequest>
-	        </t:request>
-	        <t:response>
-	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
-	        </t:response>
-	    </t:test>
 	    	    		
 		<t:test required="true">
 			<t:request>
@@ -270,7 +259,7 @@ deleteheader :index 1 "X-Header" "Test";
 		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-1850_rule2" type="bhr" bugids="ZCS-1850">
+<t:test_case testcaseid="ZCS-1850_rule2" type="functional" bugids="ZCS-1850">
 		<t:objective>Verify header cannot be deleted if any header is added in COS's immutable list</t:objective>
 		<t:steps>			
 			1. add header to COS's immutable list
@@ -363,7 +352,7 @@ deleteheader :index 1 "X-Header" "Test";
 		</t:resttest>
 </t:test_case>
 
-<t:test_case testcaseid="ZCS-1850_rule3" type="bhr" bugids="ZCS-1850">
+<t:test_case testcaseid="ZCS-1850_rule3" type="functional" bugids="ZCS-1850">
 		<t:objective>Verify header cannot be deleted if any header is added in domain's immutable list</t:objective>
 		<t:steps>			
 			1. add header to domain's immutable list
@@ -558,7 +547,7 @@ deleteheader :index 1 "X-Header" "Test";
 		</t:resttest>
 </t:test_case>
 
-    <t:finally type="always">
+    <!--<t:finally type="always">
         <t:objective>reset cosconfig to default </t:objective>
         
         <t:test required="true">
@@ -606,5 +595,5 @@ deleteheader :index 1 "X-Header" "Test";
 	        </t:response>
 	    </t:test>
 	    		
-    </t:finally> 
+    </t:finally>-->
 </t:tests>

@@ -20,6 +20,7 @@
 	<t:property name="subject11" value="sub11.${TIME}${COUNTER}" />
 	<t:property name="subject12" value="sub12.${TIME}${COUNTER}" />
 	<t:property name="subject13" value="sub13.${TIME}${COUNTER}" />
+        <t:property name="cos.name" value="cos-zcs-860${TIME}${COUNTER}" />
 
 	<t:property name="sieve_test1"
 		value='require ["tag","editheader"];
@@ -155,7 +156,7 @@
 			</t:response>
 		</t:test>
 
-	    <t:test>
+	    <!--<t:test>
 	        <t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
@@ -177,13 +178,28 @@
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
+	    </t:test>-->
+
+
+    <t:test id="CreateCosRequest1">
+        <t:request>
+            <CreateCosRequest xmlns="urn:zimbraAdmin">
+                <name xmlns="">${cos.name}</name>
+                 <a n="zimbraSieveEditHeaderEnabled">TRUE</a>
+            </CreateCosRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="name" match="${cos.name}" />
+            <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="cosid" />
+        </t:response>
+    </t:test>
 	    
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
 					<name>${account1.name}</name>
 					<password>${defaultpassword.value}</password>
+                                        <a n="zimbraCOSId">${cosid}</a>
 				</CreateAccountRequest>
 			</t:request>
 			<t:response>
