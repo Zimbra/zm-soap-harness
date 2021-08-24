@@ -1,0 +1,102 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+<t:property name="domain1.name" value="test${TIME}${COUNTER}"/>
+
+<t:property name="test_account1.name" value="test.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account1.password" value="${defaultpassword.value}"/>
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+	<t:objective>basic system check</t:objective>
+    
+	<t:test id="ping" required="true">
+		<t:request>
+			<PingRequest xmlns="urn:zimbraAdmin"/>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:PingResponse"/>
+		</t:response>
+	</t:test>
+    
+</t:test_case>
+
+
+<t:test_case testcaseid="acctSetup_domains_get" type="always" >
+	<t:objective>Login to Admin Account</t:objective>
+    
+	<t:test id="admin_login" required="true" >
+		<t:request>
+			<AuthRequest xmlns="urn:zimbraAdmin">
+				<name>${admin.user}</name>
+				<password>${admin.password}</password>
+			</AuthRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+		</t:response>
+	</t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.name}</name>
+                <a n="zimbraNotes">test of adding via SOAP</a>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id"  set="domain1.id"/>
+        </t:response>        
+    </t:test>
+    <t:test required="true">
+        <t:request>
+		<GetCosRequest xmlns="urn:zimbraAdmin">
+                <cos by="name">default</cos>			
+            </GetCosRequest>
+        </t:request>
+	<t:response>
+            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cos.id1"/>		
+        </t:response>
+    </t:test>
+    <t:test>
+        <t:request>
+            <ModifyDomainRequest xmlns="urn:zimbraAdmin">
+                <id>${domain1.id}</id>
+                <a n="zimbraDomainDefaultCOSId">${cos.id1}</a>
+            </ModifyDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyDomainResponse/admin:domain"/>
+		</t:response>
+    </t:test>
+
+
+        <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_accountid.id"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="GetAccountRequest1" type="smoke" bugids="zbug2026">
+        <t:objective> GetAccountRequest with valid value of "id" </t:objective>
+                <t:test>
+                        <t:request>
+                                <GetAccountRequest xmlns="urn:zimbraAdmin">
+                                        <account by="id">${test_accountid.id}</account>
+                                </GetAccountRequest>
+                        </t:request>
+                        <t:response>
+                                <t:select path="//admin:GetAccountResponse/admin:account" />
+								<t:select path='//admin:GetAccountResponse/admin:account/admin:a[@n="zimbraCOSId"]' match="${cos.id1}"/>
+                        </t:response>
+                </t:test>
+
+	</t:test_case>
+</t:tests>
