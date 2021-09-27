@@ -121,11 +121,11 @@
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
 
     <t:test id="GetAppointmentRequest1a">
-		<t:requestContext>
+		<t:request>
 			<authToken>${authToken.admin}</authToken>
 
 			<account by="id">${account1.id}</account>
-		</t:requestContext>
+		</t:request>
         <t:request> 
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TIME(-2d)[${appointment1.start}]}" calExpandInstEnd="${TIME(+2d)[${appointment1.start}]}">
 				<query>${appointment1.subject}</query>
