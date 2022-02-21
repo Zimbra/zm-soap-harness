@@ -94,8 +94,8 @@
     <t:objective>Send a meeting request with reminder to an invitee.</t:objective>
 
 
-	<t:property name="time.20220708120000.gmt" value="1657282156000"/>
-	<t:property name="time.20220708120000.pst" value="${TIME(-8h)[${time.20220708120000.gmt}]}"/>
+	<t:property name="time.20200101120000.gmt" value="1577836800000"/>
+	<t:property name="time.20200101120000.pst" value="${TIME(-8h)[${time.20200101120000.gmt}]}"/>
     <t:property name="timezone.pst.regex" value="America\/Los_Angeles"/>
 
 	<t:test>
@@ -115,8 +115,8 @@
                 <m>
                     <inv > 
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${time.20220708120000.gmt}]}"/>
-	                        <e d="${ICALTIME(+1h)[${time.20220708120000.gmt}]}"/>
+	                        <s d="${ICALTIME[${time.20200101120000.gmt}]}"/>
+	                        <e d="${ICALTIME(+1h)[${time.20200101120000.gmt}]}"/>
 	                        <or a="${organizer1.name}"/>
 							<at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="1"/>
 						<alarm action="DISPLAY">
@@ -155,7 +155,7 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt1.invId}']">
         		<t:select path="//mail:comp">
-                    <t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20220708120000.gmt}]}"/>
+                    <t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20200101120000.gmt}]}"/>
             	</t:select>
             </t:select>
         </t:response>
@@ -163,7 +163,7 @@
 
     <t:test>
         <t:request>
-			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20220708120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20220708120000.gmt}]}" types="appointment">
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20200101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20200101120000.gmt}]}" types="appointment">
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
@@ -206,7 +206,7 @@
 
     <t:test delay="5000" required="true">
         <t:request>
-			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20220708120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20220708120000.gmt}]}" types="appointment">
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20200101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20200101120000.gmt}]}" types="appointment">
 				<query>inid:${invitee1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>

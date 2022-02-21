@@ -136,8 +136,8 @@
 	<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
 
 	
-	<t:property name="time.08Jul2022100000.gmt" value="1657282156000"/>
-	<t:property name="time.08Jul2022100000.pst" value="${TIME(-8h)[${time.08Jul2022100000.gmt}]}"/>
+	<t:property name="time.08Jul2018100000.gmt" value="1528416000000"/>
+	<t:property name="time.08Jul2018100000.pst" value="${TIME(-8h)[${time.08Jul2018100000.gmt}]}"/>
 
 	<!-- Create Series of Appointment with a resource-->
     <t:test required="true" delay="10000" >
@@ -148,13 +148,13 @@
 						<comp status="CONF" fb="B" transp="O" class="PUB" allDay="0" name="${appointment.subject}">
 							<or a="${organizer1.name}"/>
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
-							<s d="${ICALTIME[${time.08Jul2022100000.pst}]}" tz="${timezone.pst}" />
-							<e d="${ICALTIME(+3h)[${time.08Jul2022100000.pst}]}" tz="${timezone.pst}" />
+							<s d="${ICALTIME[${time.08Jul2018100000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+3h)[${time.08Jul2018100000.pst}]}" tz="${timezone.pst}" />
 							<recur>
 								<add>
 									<rule freq="DAI">
 										<interval ival="1"/>
-										<until d="20220715"/>
+										<until d="20180715"/>
 									</rule>
 								</add>
 							</recur>
@@ -188,8 +188,8 @@
 						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.overlap.subject}">
 							<or a="${organizer1.name}"/>							
 							<at role="NON" ptst="NE" cutype="RES" a="${resource1.name}" rsvp="1"/>
-							<s d="${ICALTIME(+7d)(+1h)[${time.08Jul2022100000.pst}]}" tz="${timezone.pst}" />
-							<e d="${ICALTIME(+7d)(+7h)[${time.08Jul2022100000.pst}]}" tz="${timezone.pst}" />							
+							<s d="${ICALTIME(+7d)(+1h)[${time.08Jul2018100000.pst}]}" tz="${timezone.pst}" />
+							<e d="${ICALTIME(+7d)(+7h)[${time.08Jul2018100000.pst}]}" tz="${timezone.pst}" />							
 						</comp>
 					</inv>					
 					<e a="${resource1.name}" t="t"/>
