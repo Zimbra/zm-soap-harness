@@ -37,7 +37,8 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.ibm.staf.STAFException;
@@ -55,7 +56,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class MailInjectTest extends Test {
 
-	private static Logger mLog = Logger.getLogger(MailInjectTest.class.getName());
+	private static Logger mLog = LogManager.getLogger(MailInjectTest.class.getName());
 
     public static final QName E_MAILINJECTTEST = QName.get("mailinjecttest", SoapTestCore.NAMESPACE);
 	public static final QName E_LMTP_INJECT_REQUEST = QName.get("lmtpInjectRequest", SoapTestCore.NAMESPACE);
@@ -393,7 +394,6 @@ public class MailInjectTest extends Test {
 
 		String lmtpTo = elem.getAttribute(A_LMTP_TO, null); // TODO: update to support multiple To: recipients
 		String lmtpFrom = elem.getAttribute(A_LMTP_FROM, null);
-		mLmtpServer = elem.getAttribute(A_LMTP_SERVER, null);
 
 		Element modifyElement = elem.getOptionalElement(A_LMTP_MODIFY);
 
@@ -553,7 +553,14 @@ public class MailInjectTest extends Test {
 		mLog.debug("elem: "+ elem);
 
 		String lmtpFileName = elem.getAttribute(A_LMTP_FILENAME, null);
-		String lmtpFolderName = elem.getAttribute(A_LMTP_FOLDERNAME, null);
+		String lmtpFolderName = elem.getAttribute(A_LMTP_FOLDERNAME, null);		
+		boolean mZimbraCloud = Boolean.parseBoolean(TestProperties.testProperties.getProperty("server.zimbrax", "false"));
+		
+		//If deployment is Zimbra Cloud, then get LMTP server value from global.properties. For Zimbra classic, get it from testcase
+		if( mZimbraCloud ) 
+			mLmtpServer = TestProperties.testProperties.getProperty("zimbraLMTPServer.name", "zmc-lmtp");
+		else
+			mLmtpServer = elem.getAttribute(A_LMTP_SERVER, null);
 
 
 		String resultMessage = "doLMTPInject: filename ("+lmtpFileName+
@@ -571,7 +578,7 @@ public class MailInjectTest extends Test {
 
 		mRequestDetails = mRequestDetails + "To: " + elem.getAttribute(A_LMTP_TO) + "\n";
 		mRequestDetails = mRequestDetails + "From: " + elem.getAttribute(A_LMTP_FROM) + "\n";
-		mRequestDetails = mRequestDetails + "Server: " + elem.getAttribute(A_LMTP_SERVER) + "\n";
+		mRequestDetails = mRequestDetails + "Server: " + mLmtpServer + "\n";
 
 		if ( lmtpFileName != null ) {
 

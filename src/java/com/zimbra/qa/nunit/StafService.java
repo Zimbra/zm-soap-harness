@@ -12,9 +12,9 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ibm.staf.STAFException;
 import com.ibm.staf.STAFHandle;
@@ -35,7 +35,7 @@ public class StafService implements STAFServiceInterfaceLevel30  {
     private static final int kDeviceInvalidSerialNumber = 4001;
 
 	// Basic Debug Logger
-    static private Logger mLog = Logger.getLogger(StafService.class);
+    static private Logger mLog = LogManager.getLogger(StafService.class);
     static private final String mDefaultConfiguratorFile = "/opt/qa/soapvalidator/conf/log4jSTAF.properties";
     
     static private final String mCurrentStatusFile = "/Program Files/ZimbraQA/current.txt";
@@ -203,7 +203,7 @@ public class StafService implements STAFServiceInterfaceLevel30  {
         
 		// Now, do the SoapTestCore specific stuff ...
 		// Set up Log4j
-        PropertyConfigurator.configure(mDefaultConfiguratorFile);
+        Configurator.initialize(null, mDefaultConfiguratorFile);
 		
         
         
@@ -219,7 +219,7 @@ public class StafService implements STAFServiceInterfaceLevel30  {
     {               
 
 		// Refresh Log4j
-        PropertyConfigurator.configure(mDefaultConfiguratorFile);
+        Configurator.initialize(null, mDefaultConfiguratorFile);
 		
         mLog.info("StafTestStaf: acceptRequest ...");
 
@@ -370,11 +370,11 @@ public class StafService implements STAFServiceInterfaceLevel30  {
         	String value = parsedRequest.optionValue(aLOG4JPROPERTIESFILE);
 	    	mLog.debug(aLOG4JPROPERTIESFILE + " is " + value);
 	        	
-            PropertyConfigurator.configure(value);
+            Configurator.initialize(null, value);
         	
         } else {
         	
-        	BasicConfigurator.configure();
+            Configurator.reconfigure();
         	
         }
 

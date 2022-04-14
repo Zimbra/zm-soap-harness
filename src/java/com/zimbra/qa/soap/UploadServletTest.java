@@ -35,7 +35,8 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.methods.multipart.PartBase;
 import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.zimbra.common.soap.Element;
@@ -43,7 +44,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class UploadServletTest extends Test {
 
-	static Logger mLog = Logger.getLogger(UploadServletTest.class.getName());
+	static Logger mLog = LogManager.getLogger(UploadServletTest.class.getName());
 
     public static final QName E_UPLOADSERVLETTEST = QName.get("uploadservlettest", SoapTestCore.NAMESPACE);
 	public static final QName E_US_REQUEST = QName.get("uploadServletRequest", SoapTestCore.NAMESPACE);

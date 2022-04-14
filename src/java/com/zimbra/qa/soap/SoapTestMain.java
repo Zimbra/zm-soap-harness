@@ -24,11 +24,14 @@ import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import com.zimbra.common.localconfig.LC;
 import com.zimbra.common.net.SocketFactories;
@@ -42,7 +45,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 public class SoapTestMain {
 
     // General debug logger
-    protected static Logger mLog = Logger.getLogger(SoapTestMain.class.getName());
+    protected static Logger mLog = LogManager.getLogger(SoapTestMain.class.getName());
 
 	// Global properties translated settings
     //static private final String defaultZimbraServer = "localhost";
@@ -134,7 +137,7 @@ public class SoapTestMain {
                 String propertiesFile = cl.getOptionValue("l");
                 File log4jProperties = new File(propertiesFile);
                 if (log4jProperties.exists()) {
-                    PropertyConfigurator.configure(propertiesFile);
+                    Configurator.initialize(null, propertiesFile);
                     mLog.debug("Loaded log4j.properites: " + propertiesFile);
 
                 }
@@ -207,17 +210,14 @@ public class SoapTestMain {
             	SoapTestCore.testType = new ArrayList<String>(Arrays.asList(cl.getOptionValues("t")));
             
             if ( SoapTestCore.testType != null ) {
-            	
-            	
-            	for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext();)
-        		{
-        			String type = iterator.next();
-        			
-        			if (type.equalsIgnoreCase("sanity") && !globalProperties.getProperty("ignoreFiles").toString().equalsIgnoreCase("true")) {
-        				SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
-        			}
-        		}
-        	}
+                for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext();) {
+                    String type = iterator.next();
+
+                    if (type.equalsIgnoreCase("sanity") && !globalProperties.getProperty("ignore.files").toString().equalsIgnoreCase("true")) {
+                        SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
+                    }
+                }
+            }
             
             // Option: -a <comma separated list of areas to test>
             if (cl.hasOption("a"))
@@ -247,13 +247,21 @@ public class SoapTestMain {
                 	path.mkdirs();
                 	
                     // Add a new log file
-                    FileAppender executeAppender = new FileAppender(new PatternLayout("%m%n"),
-                                                                    logFileName, false);
+                    FileAppender appender = FileAppender.newBuilder()
+                            .setName("file")
+                            .setLayout(PatternLayout.newBuilder()
+                                    .withPattern("%m%n")
+                                    .build())
+                            .withFileName(logFileName)
+                            .build();
+                    LoggerContext context = (LoggerContext) LogManager.getContext(false);
+                    LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mLog.getName());
+                    loggerConfig.addAppender(appender, Level.INFO, null);
+                    context.updateLoggers();
 
-                    mLog.addAppender(executeAppender);
                     mLog.debug("added " + logFileName);
 
-                } catch (IOException ex) {
+                } catch (Exception ex) {
 
                     mLog.warn("unable to set logger to: " + logFileName, ex);
 
@@ -435,9 +443,13 @@ public class SoapTestMain {
 			FileReader fr = new FileReader(sHarnessTestSuite);
 			BufferedReader bufferedReader = new BufferedReader(fr);
 			while ((line = bufferedReader.readLine()) != null) {
-				File enlistedTestCases = new File(SoapTestCore.rootZimbraQA + File.separatorChar + line);
-
-				execute(enlistedTestCases);
+				// Get each test xml file from the list to execute.
+				File enlistedTestCases = new File(line);
+				try {
+					execute(enlistedTestCases);
+				} catch (Exception e) {
+					mLog.error("Error Running test case file - " + enlistedTestCases, e);
+				}
 
 			}
 			bufferedReader.close();
@@ -458,6 +470,8 @@ public class SoapTestMain {
     }
     
 	public static void execute(File testCases) throws HarnessException, InterruptedException, IOException {
+		// TestProperties class re-initialization
+		TestProperties.testProperties = new TestProperties();
 		if (testCases.isDirectory()) {
 			// run wsdl tests only when root folder of xml test specified.
 
@@ -606,48 +620,48 @@ public class SoapTestMain {
 
         	
         	// Build the parsable return result
-        	resultString.append("Tests Executed:" + (mTotalTestStepPass + mTotalTestStepFail)).append(Layout.LINE_SEP);
-        	resultString.append("Pass:" + mTotalTestStepPass).append(Layout.LINE_SEP);
-        	resultString.append("Fail:" + mTotalTestStepFail).append(Layout.LINE_SEP).append(Layout.LINE_SEP);
-        	resultString.append("Test Cases Executed:" + (mTotalTestCasePass + mTotalTestCaseFail)).append(Layout.LINE_SEP);
-        	resultString.append("Pass:" + mTotalTestCasePass).append(Layout.LINE_SEP);
-        	resultString.append("Fail:" + mTotalTestCaseFail).append(Layout.LINE_SEP);
-        	resultString.append("Script Errors:" + mTotalTestCaseError).append(Layout.LINE_SEP).append(Layout.LINE_SEP);
+        	resultString.append("Tests Executed:" + (mTotalTestStepPass + mTotalTestStepFail)).append(System.lineSeparator());
+        	resultString.append("Pass:" + mTotalTestStepPass).append(System.lineSeparator());
+        	resultString.append("Fail:" + mTotalTestStepFail).append(System.lineSeparator()).append(System.lineSeparator());
+        	resultString.append("Test Cases Executed:" + (mTotalTestCasePass + mTotalTestCaseFail)).append(System.lineSeparator());
+        	resultString.append("Pass:" + mTotalTestCasePass).append(System.lineSeparator());
+        	resultString.append("Fail:" + mTotalTestCaseFail).append(System.lineSeparator());
+        	resultString.append("Script Errors:" + mTotalTestCaseError).append(System.lineSeparator()).append(System.lineSeparator());
 
             if (sFailedTestFiles.size() > 0) {
-            	resultString.append("These tests had failures:").append(Layout.LINE_SEP);
+            	resultString.append("These tests had failures:").append(System.lineSeparator());
                 for (String filename : sFailedTestFiles)
-                    resultString.append("	").append(filename).append(Layout.LINE_SEP);
+                    resultString.append("	").append(filename).append(System.lineSeparator());
             }
 
             if (sExceptionTestFiles.size() > 0) {
-            	resultString.append("These tests had exceptions:").append(Layout.LINE_SEP);
+            	resultString.append("These tests had exceptions:").append(System.lineSeparator());
                 for (String filename : sExceptionTestFiles)
-                    resultString.append("	").append(filename).append(Layout.LINE_SEP);
+                    resultString.append("	").append(filename).append(System.lineSeparator());
             }
 
-        	resultString.append("Tests Rerun Executed:" + (mTotalRerunTestStepPass + mTotalRerunTestStepFail)).append(Layout.LINE_SEP);
-        	resultString.append("Pass:" + mTotalRerunTestStepPass).append(Layout.LINE_SEP);
-        	resultString.append("Fail:" + mTotalRerunTestStepFail).append(Layout.LINE_SEP).append(Layout.LINE_SEP);
-        	resultString.append("Test Cases Executed:" + (mTotalRerunTestCasePass + mTotalRerunTestCaseFail)).append(Layout.LINE_SEP);
-        	resultString.append("Pass:" + mTotalRerunTestCasePass).append(Layout.LINE_SEP);
-        	resultString.append("Fail:" + mTotalRerunTestCaseFail).append(Layout.LINE_SEP);
-        	resultString.append("Script Errors:" + mTotalRerunTestCaseError).append(Layout.LINE_SEP).append(Layout.LINE_SEP);
+        	resultString.append("Tests Rerun Executed:" + (mTotalRerunTestStepPass + mTotalRerunTestStepFail)).append(System.lineSeparator());
+        	resultString.append("Pass:" + mTotalRerunTestStepPass).append(System.lineSeparator());
+        	resultString.append("Fail:" + mTotalRerunTestStepFail).append(System.lineSeparator()).append(System.lineSeparator());
+        	resultString.append("Test Cases Executed:" + (mTotalRerunTestCasePass + mTotalRerunTestCaseFail)).append(System.lineSeparator());
+        	resultString.append("Pass:" + mTotalRerunTestCasePass).append(System.lineSeparator());
+        	resultString.append("Fail:" + mTotalRerunTestCaseFail).append(System.lineSeparator());
+        	resultString.append("Script Errors:" + mTotalRerunTestCaseError).append(System.lineSeparator()).append(System.lineSeparator());
 
             if (sFailedRerunTestFiles.size() > 0) {
-            	resultString.append("These tests had rerun failures:").append(Layout.LINE_SEP);
+            	resultString.append("These tests had rerun failures:").append(System.lineSeparator());
                 for (String filename : sFailedRerunTestFiles)
-                    resultString.append("	").append(filename).append(Layout.LINE_SEP);
+                    resultString.append("	").append(filename).append(System.lineSeparator());
             }
 
             if (sExceptionRerunTestFiles.size() > 0) {
-            	resultString.append("These tests had rerun exceptions:").append(Layout.LINE_SEP);
+            	resultString.append("These tests had rerun exceptions:").append(System.lineSeparator());
                 for (String filename : sExceptionRerunTestFiles)
-                    resultString.append("	").append(filename).append(Layout.LINE_SEP);
+                    resultString.append("	").append(filename).append(System.lineSeparator());
             }
             
-            resultString.append(Layout.LINE_SEP).append(Layout.LINE_SEP);
-            resultString.append("Test finished: " + ( (mTotalTestCaseFail + mTotalTestCaseError > 0) ? "FAIL" : "PASS")).append(Layout.LINE_SEP);
+            resultString.append(System.lineSeparator()).append(System.lineSeparator());
+            resultString.append("Test finished: " + ( (mTotalTestCaseFail + mTotalTestCaseError > 0) ? "FAIL" : "PASS")).append(System.lineSeparator());
 
 	        mLog.info(resultString.toString());
 	        System.out.print(resultString.toString());

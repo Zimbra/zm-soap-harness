@@ -6,7 +6,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.ibm.staf.STAFException;
@@ -20,7 +21,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class zDesktopTest extends SoapTest {
 		
-	private static Logger mLog = Logger.getLogger(zDesktopTest.class.getName());
+	private static Logger mLog = LogManager.getLogger(zDesktopTest.class.getName());
 		
 
     public static final QName E_ZDESKTOPTEST = QName.get("zdesktop", SoapTestCore.NAMESPACE);

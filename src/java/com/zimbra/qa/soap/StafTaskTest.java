@@ -4,7 +4,8 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.ibm.staf.STAFException;
@@ -43,7 +44,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
  */
 public class StafTaskTest extends Test {
 
-	private static Logger mLog = Logger.getLogger(StafTaskTest.class.getName());
+	private static Logger mLog = LogManager.getLogger(StafTaskTest.class.getName());
 
 
     public static final QName E_STAFTEST = QName.get("staftask", SoapTestCore.NAMESPACE);

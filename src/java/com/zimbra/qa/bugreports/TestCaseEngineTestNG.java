@@ -3,7 +3,8 @@ package com.zimbra.qa.bugreports;
 import java.io.*;
 import java.util.*;
 
-import org.apache.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.*;
 
 

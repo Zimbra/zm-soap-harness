@@ -12,10 +12,15 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 
 import com.zimbra.common.net.SocketFactories;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.PropertyConfigurator;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import com.ibm.staf.STAFException;
 import com.ibm.staf.STAFHandle;
@@ -32,7 +37,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
     private static final int kDeviceInvalidSerialNumber = 4001;
 
 	// Basic Debug Logger
-    static public Logger mLog = Logger.getLogger(StafIntegration.class);
+    static public Logger mLog = LogManager.getLogger(StafIntegration.class);
     static protected String mDefaultConfiguratorFile = "/opt/qa/soapvalidator/conf/log4jSTAF.properties";
     
 
@@ -109,7 +114,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 
         
         // EXECUTE command parser
-        // EXECUTE <zimbra server> < SANITY | SMOKE | FULL | DIRECTORY <DIR> | FILE <FILE> | TESTCASE <ID> > [ AREAS | BITS | HOSTS | TYPES ] 
+        // EXECUTE <zimbra server> < SMOKE | BHR | SANITY | FUNCTIONAL | FULL | DIRECTORY <DIR> | FILE <FILE> | TESTCASE <ID> > [ AREAS | BITS | HOSTS | TYPES ] 
         fExecuteParser = new STAFCommandParser();
 
         // EXECUTE
@@ -235,7 +240,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
         
 		// Now, do the SoapTestCore specific stuff ...
 		// Set up Log4j
-        PropertyConfigurator.configure(mDefaultConfiguratorFile);
+        Configurator.initialize(null, mDefaultConfiguratorFile);
 		
         // Set up SSL
 		// Always accept self-signed SSL certificates.
@@ -254,7 +259,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
     {               
 
 		// Refresh Log4j
-        PropertyConfigurator.configure(mDefaultConfiguratorFile);
+        Configurator.initialize(null, mDefaultConfiguratorFile);
 		
         mLog.info("StafTestStaf: acceptRequest ...");
 
@@ -461,8 +466,9 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 	    		
 	    		// Close out the log file
 	    		if ( executeAppender != null ) {
-	    			mLog.removeAppender(executeAppender);
-	    			executeAppender.close();
+	    		    LoggerContext context = (LoggerContext) LogManager.getContext(false);
+	    	        LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mLog.getName());
+	    		    loggerConfig.removeAppender(executeAppender.getName());
 	    			executeAppender = null;
 	    		}
 	    		
@@ -498,7 +504,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 				
         	mLog.debug(aLOG4JPROPERTIESFILE + " is " + log4jPropertiesFile);
 	        	
-            PropertyConfigurator.configure(log4jPropertiesFile);
+            Configurator.initialize(null, log4jPropertiesFile);
         	
         }
 
@@ -511,34 +517,38 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 
         	
         	
-	        	
+        	LoggerContext context = (LoggerContext) LogManager.getContext(false);
+            LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mLog.getName());
         	try {
         		
             	// Create the folder, if it doesn't exist
             	File path = new File(SoapTestCore.mLogDirectory);
             	path.mkdirs();
-            	
 	        	// Remove any previous appender
             	if ( executeAppender != null ) {
-            		mLog.removeAppender(executeAppender);
-            		executeAppender.close();
+            	    loggerConfig.removeAppender(executeAppender.getName());
             		executeAppender=null;
             	}
             	
             	
             	// Create a new log file
-	        	executeAppender = new FileAppender(new PatternLayout("%m%n"), logFileName, false);
-	        	
-	        	mLog.addAppender(executeAppender);
+            	FileAppender appender = FileAppender.newBuilder()
+                        .setName("file")
+                        .setLayout(PatternLayout.newBuilder()
+                                .withPattern("%m%n")
+                                .build())
+                        .withFileName(logFileName)
+                        .build();
+                loggerConfig.addAppender(appender, Level.INFO, null);
+                context.updateLoggers();
 				mLog.debug("added " + logFileName);
 
-			} catch (IOException e) {
+			} catch (Exception e) {
 				
 				mLog.warn("unable to set logger to: " + logFileName + ": " + e.toString());
 				if ( executeAppender != null ) {
-	    			mLog.removeAppender(executeAppender);
-	    			executeAppender.close();
-					executeAppender = null;
+				    loggerConfig.removeAppender(executeAppender.getName());
+                    executeAppender=null;
 				}
 				SoapTestCore.mLogDirectory = null;
 				
@@ -640,12 +650,6 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
             	
             	String value = parsedRequest.optionValue(aSUITE);
             	mLog.debug(aSUITE + " is " + value);
-            	
-            	
-            	// Set the test case types accordingly
-            	if ( value.equalsIgnoreCase("SANITY") ) {
-            		SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
-            	}
         	}
             
             mLog.debug(aDIRECTORY + " is " + SoapTestMain.sHarnessTestCases);
@@ -660,11 +664,6 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 				String value = parsedRequest.optionValue(aSUITE);
 				mLog.debug(aSUITE + " is " + value);
 
-				// Set the test case types accordingly
-				if (value.equalsIgnoreCase("SANITY")) {
-					SoapTestMain.sHarnessTestCases = new File(
-							SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
-				}
 			}
 
 			mLog.debug(aTESTSUITES + " is " + SoapTestMain.sHarnessTestSuite);
@@ -673,15 +672,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
             	
             	String value = parsedRequest.optionValue(aSUITE);
             	mLog.debug(aSUITE + " is " + value);
-            	
-            	
-            	// Set the test case types accordingly
-            	if ( value.equalsIgnoreCase("SANITY") ) {
-            		SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator/SanityTest");
-            	}else{
-				// Use the default XML path (soap tests)
-            		SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator");
-            	}
+            	SoapTestMain.sHarnessTestCases = new File(SoapTestCore.rootZimbraQA + "/data/soapvalidator");
             	mLog.debug("default "+ aDIRECTORY +" is " + SoapTestMain.sHarnessTestCases);   
         } 
         
@@ -767,27 +758,24 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
         	
         	String value = parsedRequest.optionValue(aSUITE);
         	mLog.debug(aSUITE + " is " + value);
-        	
-        	
-        	// Set the test case types accordingly
-        	if ( value.equalsIgnoreCase("SANITY") ) {
-            	SoapTestCore.testType = new ArrayList<String>(Arrays.asList("sanity".split(",")));            	
-        	} else if ( value.equalsIgnoreCase("SMOKE") ) {
-            	SoapTestCore.testType = new ArrayList<String>(Arrays.asList("sanity,smoke".split(",")));        		
-        	} else if ( value.equalsIgnoreCase("FULL") ) {
-        		SoapTestCore.testType = null;        		
-        	} else if (value!=null){
-        		SoapTestCore.testType =new ArrayList<String>(Arrays.asList(value.split(",")));   ;		       		
-        	} else {
-        		SoapTestCore.testType=null; // default - All tests
-        	}
-       
-        	mLog.debug(aSUITE + " is " + value);
-	        
-        }
-        
 
-        
+            if ( value.equalsIgnoreCase("SMOKE") ) {
+                SoapTestCore.testType = new ArrayList<String>(Arrays.asList("smoke".split(",")));
+            } else if ( value.equalsIgnoreCase("BHR") ) {
+                SoapTestCore.testType = new ArrayList<String>(Arrays.asList("bhr".split(",")));
+            } else if ( value.equalsIgnoreCase("SANITY") ) {
+                SoapTestCore.testType = new ArrayList<String>(Arrays.asList("sanity".split(",")));
+            } else if ( value.equalsIgnoreCase("FUNCTIONAL") ) {
+                SoapTestCore.testType = new ArrayList<String>(Arrays.asList("functional".split(",")));
+            } else if ( value.equalsIgnoreCase("FULL") ) {
+                SoapTestCore.testType = null;
+            } else if ( value != null ) {
+                SoapTestCore.testType =new ArrayList<String>(Arrays.asList(value.split(",")));
+            } else {
+                SoapTestCore.testType=null; // default - All tests
+            }
+        	mLog.debug(aSUITE + " is " + value);
+        }
     }
 
     private STAFResult handleHalt(STAFServiceInterfaceLevel30.RequestInfo info)

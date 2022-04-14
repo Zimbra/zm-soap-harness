@@ -11,9 +11,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
-
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
 import com.zimbra.qa.soap.SoapTestCore.HarnessException;
@@ -26,13 +26,13 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
  */
 public class TestCase extends AbsTest {
 
-	static Logger mLog = Logger.getLogger(TestCase.class.getName());
+	static Logger mLog = LogManager.getLogger(TestCase.class.getName());
 
 	public static final QName E_TESTCASE = QName.get("test_case", SoapTestCore.NAMESPACE);
 	public static final QName E_OBJECTIVE = QName.get("objective", SoapTestCore.NAMESPACE);
 	public static final QName E_STEPS = QName.get("steps", SoapTestCore.NAMESPACE);
 	public static final QName E_TESTLOOP = QName.get("test_loop", SoapTestCore.NAMESPACE);
-	
+
 	public static final String A_BUGIDS = "bugids";
 	public static final String A_TESTCASEID = "testcaseid";
 	public static final String A_TYPE = "type";
@@ -43,10 +43,11 @@ public class TestCase extends AbsTest {
 
 	public boolean mSkipped = false;
 	public int mNumTestFailures = 0;
-	
+
 	/**
 	 NO_TYPE:		Default value for all tests w/o a type definition
 	 always:		always execute the test (ping test, authentication)
+	 bhr:			bhr test cases
 	 smoke:			basic tests to smoke test an installed build as 'sane'
 	 functional:	tests of requirements and core functionality
 	 feature:		tests of features that are not requirements, but are not negative tests either
@@ -57,12 +58,18 @@ public class TestCase extends AbsTest {
 			"NO_TYPE",
 			"always",
 			"smoke",
+			"bhr",
 			"sanity",
 			"functional",
 			"feature",
 			"negative",
 			"measurement",
-			"deprecated"
+			"full",
+			"deprecated",
+			"smoke-temp",
+			"bhr-temp",
+			"sanity-temp",
+			"functional-temp"
 		};
 
 	public static final String[] DURATIONS = {
@@ -77,18 +84,18 @@ public class TestCase extends AbsTest {
 	public Element mTestCase;
 
 	public TestCase(Element testcase) throws ServiceException {
-		
+
 		mTestCase = testcase;
-		
+
 		setObjective(testcase.getElement(E_OBJECTIVE).getText());
 		Element steps = testcase.getOptionalElement(E_STEPS);
 		if (steps != null) {
 			setSteps(steps.getText());
 		}
-		
+
 
 	}
-		
+
 	public String getId() {
 		try {
 			return mTestCase.getAttribute(A_TESTCASEID);
@@ -117,16 +124,16 @@ public class TestCase extends AbsTest {
 	}
 
 	public String getAreas(String cmdlineArea) {
-		 
+
 		String[] attrAreas= (mTestCase.getAttribute(A_AREAS, "NO_AREAS").split("[,\\s]+"));
-		
-		for (int i=0; i< attrAreas.length; i++){				
+
+		for (int i=0; i< attrAreas.length; i++){
 			if(cmdlineArea.equalsIgnoreCase(attrAreas[i].trim()))
 				return cmdlineArea;
-		}			
+		}
 		return null;
 	}
-		
+
 	public String getBugIDs() {
 		return mTestCase.getAttribute(A_BUGIDS, "NO_BUGS_LOGGED");
 	}
@@ -134,7 +141,7 @@ public class TestCase extends AbsTest {
 	public int getHostCount() {
 		return Integer.parseInt(mTestCase.getAttribute(A_HOST_COUNT, "1"));
 	}
-	
+
 	public String getDuration() {
 		String duration=mTestCase.getAttribute(A_DURATION, "short");
 		for (int i = 0; i < DURATIONS.length; i++) {
@@ -149,12 +156,12 @@ public class TestCase extends AbsTest {
 			return null;
 		}
 	}
-	
+
 	public String getSupportedAfter()
 	{
 		return (mTestCase.getAttribute(A_SUPPORTEDAFTER, null));
 	}
-	
+
 	public void setObjective(String o) {
 		objective = o.trim();
 	}
@@ -181,10 +188,10 @@ public class TestCase extends AbsTest {
 	}
 
 	public boolean hasArea(List<String> list) {
-		
+
 		if (list == null)
 			return true;
-		
+
 		for (Iterator<String> i = list.iterator(); i.hasNext();)
 		{
 			if ( getAreas(i.next()) != null )
@@ -192,26 +199,26 @@ public class TestCase extends AbsTest {
 		}
 		return false;
 	}
-	
+
 	public boolean hasArea(String[] tempAreas) {
 		return (hasArea(new ArrayList<String>(Arrays.asList(tempAreas))));
 	}
-	
+
 	private int releaseToInt(String major, String minor, String patch)
 	{
 		return (releaseToInt(Integer.parseInt(major), Integer.parseInt(minor), Integer.parseInt(patch)));
 	}
-	
+
 	private int releaseToInt(int major, int minor, int patch)
 	{
 		int value = patch;
 		value += minor * 100;
 		value += major * 10000;
-		
+
 		return (value);
 	}
-	
-	
+
+
 	// Returns true if the install path
 	// includes builds that were earlier than
 	// the release that the feature was first
@@ -220,50 +227,50 @@ public class TestCase extends AbsTest {
 		throws HarnessException
 	{
 		String supportedAfter = getSupportedAfter();
-		
-		if ( supportedAfter == null ) 
+
+		if ( supportedAfter == null )
 		{
 			return (false); // If supportedAfter is not specified, then it was always supported
 		}
-		
-		if ( supportedAfter.equalsIgnoreCase("*") ) 
+
+		if ( supportedAfter.equalsIgnoreCase("*") )
 		{
 			// supportedAfter="*" means all releases support the feature
 			return (false);
 		}
-		
+
 		if ( SoapTestCore.installHistory == null )
 		{
 			throw new HarnessException("Need to define .install_history property, i.e. <t:system command=\"cat\" parms=\"/opt/zimbra/.install_history\" stdout=\".install_history\"/>");
 		}
-		
+
 		// Parse through the install history
 		// If any install history release is earlier
 		// than the supportedAfter value, then skip the test
 		String[] myParts = supportedAfter.split("\\.");
 		int myRelease = releaseToInt(myParts[0], myParts[1], myParts[2]);
-		
+
 		Iterator<String> i = SoapTestCore.installHistory.iterator();
 		while (	i.hasNext() )
 		{
 			String[] parts=i.next().split("\\.");
 			int release = releaseToInt(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
-			
+
 			if ( release < myRelease )
 			{
 				return (true);
 			}
 		}
-		
+
 		// Scrolled through all the releases, none were less than the required
 		return (false);
-		
+
 	}
-	
+
 	public boolean testPassed() {
 		return (!testFailed());
 	}
-	
+
 	public boolean testFailed() {
 		return (mNumTestFailures > 0);
 	}
@@ -272,15 +279,15 @@ public class TestCase extends AbsTest {
 		mNumTestFailures += count;
 		return (mNumTestFailures);
 	}
-	
+
 	public boolean testSkipped() {
 		return (mSkipped);
 	}
-	
-	public String getSummary() {	
+
+	public String getSummary() {
 		return ("Test Case Object: getSummary() TODO");
 	}
-	public boolean dumpTest() {	
+	public boolean dumpTest() {
 		return (false);
 	}
 	public String getDetails() {
@@ -302,31 +309,31 @@ public class TestCase extends AbsTest {
 		return status.toString();
 	}
 
-	protected boolean shouldSkip(SoapTestCore core) throws HarnessException	
+	protected boolean shouldSkip(SoapTestCore core) throws HarnessException
 	{
 
 		if ( SoapTestMain.testCaseId != null ) {
 			if ( getId().equalsIgnoreCase(SoapTestMain.testCaseId) ) {
-				return (false);			
+				return (false);
 			}
 			if ( getType().equalsIgnoreCase("always")) {
 				return (false);
 			}
 			return (true); // skip all others
 		}
-		
+
 		if ( hasType("deprecated") ) {
-			
+
 			mLog.debug("shouldSkip: Never Run Deprecated");
 			return true;
-			
+
 		}
 
 		if ( hasArea("selfcheck".split(",")) ) {
-			
+
 			// Skip test cases with area="selfcheck",
 			// unless the harness is running the self check
-			
+
 			if ( SoapTestCore.testAreas == null ) {
 				// Skip this test - no AREAS were specified, so the selfcheck is not being executed
 				return (true);
@@ -337,29 +344,29 @@ public class TestCase extends AbsTest {
 					return (false); // Don't skip
 				}
 			}
-			
+
 			// We made it through the list of areas and didn't find selfcheck
 			return (true); // Skip the test
-			
+
 		}
-			
+
 		if ( getHostCount() > SoapTestCore.hostCount ) {
-			
+
 			mLog.debug("shouldSkip: The required hosts for the test case are more than the SUT has.  Don't run the test.");
 			return ( true );
-			
+
 		}
-		
+
 		// If any excludes are specified, and the excludes match the test case, then skip
 		if ( (SoapTestCore.testExcludes != null) && (!SoapTestCore.testExcludes.isEmpty()) ) {
-			
-			mLog.debug("shouldSkip: If there are excludes to skip, skip this test if there is a match");	
+
+			mLog.debug("shouldSkip: If there are excludes to skip, skip this test if there is a match");
 			if ( hasArea(SoapTestCore.testExcludes) ) {
 				return (true);
 			}
 		}
-			
-			
+
+
 		if ( (SoapTestCore.testAreas != null) && (!SoapTestCore.testAreas.isEmpty()) )
 		{
 
@@ -374,70 +381,70 @@ public class TestCase extends AbsTest {
 			if ( hasArea(SoapTestCore.testAreasToSkip) ) {
 				return (true);
 			}
-			
+
 		}
-		
+
 		// Check the supportedAfter attribute
 		// Make sure that all server versions (i.e. upgrades)
 		// are after the specified supportedAfter value
-		if ( installPathShouldSkip(core) ) 
+		if ( installPathShouldSkip(core) )
 		{
 			// The test case is not supported in the release.  Skip it.
 			return (true);
 		}
-		
+
 		if ( SoapTestCore.testServerBits.equalsIgnoreCase("open") )
 		{
-			
+
 			// Skip the following test areas if the open source tests are being asked for
 			// Use "network" when a feature is available for both network and OSS, but behaves differently for network
 			String[] networkAreas = { "network", "verity", "backup", "restore", "cluster", "mapi", "crossMailboxSearch", "HSM", "domainAdmin" };
-			
+
 			if ( hasArea(networkAreas) ) {
 				mLog.debug("shouldSkip: If the server is running OSS, then skip Network features");
-				return ( true );					
+				return ( true );
 			}
 
 			String[] comcastAreas = { "voicemail" };
 			if ( hasArea(comcastAreas) ) {
 				mLog.debug("shouldSkip: If the server is running OSS, then skip Comcast features");
-				return ( true );					
+				return ( true );
 			}
 
 		}
 
 		if ( SoapTestCore.testServerBits.equalsIgnoreCase("network") )
 		{
-			
+
 			// Skip the following test areas if the network tests are being asked for
 			// Use "open" when a feature is available for both network and OSS, but behaves differently for OSS
 			String[] openAreas = { "open" };
-			
+
 
 			if ( hasArea(openAreas) ) {
 				mLog.debug("shouldSkip: If the server is running Network, then skip open features");
-				return ( true );					
+				return ( true );
 			}
 
 			String[] comcastAreas = { "voicemail" };
 			if ( hasArea(comcastAreas) ) {
 				mLog.debug("shouldSkip: If the server is running OSS, then skip Comcast features");
-				return ( true );					
+				return ( true );
 			}
 
 		}
 
 		if ( SoapTestCore.testServerBits.equalsIgnoreCase("comcast") )
 		{
-			
+
 			// Skip the following test areas if the network tests are being asked for
 			// Use "open" when a feature is available for both network and OSS, but behaves differently for OSS
 			String[] openAreas = { "open" };
-			
+
 
 			if ( hasArea(openAreas) ) {
 				mLog.debug("shouldSkip: If the server is running Network, then skip open features");
-				return ( true );					
+				return ( true );
 			}
 
 		}
@@ -449,58 +456,70 @@ public class TestCase extends AbsTest {
 				return (true); // When duration not specified, skip long tests
 			}
 		} else { // testDuration is specified
-			
+
 			if ( (SoapTestCore.testDuration.equalsIgnoreCase("short")) && (getDuration().equalsIgnoreCase("long")) ) {
 				return (true); // When duration is short, skip long tests
 			}
 
 			if ( SoapTestCore.testDuration.equalsIgnoreCase("long") ) {
-				
+
 				// If running long tests, always run type="always"
 				// but, skip type!=always and duration=short
 				if ( (!hasType("always")) && (getDuration().equalsIgnoreCase("short")) ) {
 					return (true);
 				}
-				
+
 			}
-			
+
 		}
-			
+
 		if (SoapTestCore.testType == null) {
-			
+
 			/* If the test type (-t option) is not specified, always run everything */
 			return false;
-			
+
 		}
 
 
 		/* The type was specified */
-		
+
 
 		/* If the test type is sanity, run always and sanity */
 		/* If the test type is smoke, run always and smoke */
+		/* If the test type is bhr, run always and bhr */
 		/* If the test type is functional, run always, smoke, and functional */
 		/* If the test type is feature, run always, smoke, and feature */
 		/* If the test type is negative, run always, smoke, and negative */
 		String[] SMOKE_TYPES = {"always","smoke"};
-		String[] SANITY_TYPES = {"sanity"};
+		String[] BHR_TYPES = {"always","bhr"};
+		String[] SANITY_TYPES = {"always","sanity"};
 		String[] FUNCTIONAL_TYPES = {"always","functional"};
 		String[] FEATURE_TYPES = {"always","feature"};
-		String[] MEASUREMENT_TYPES = {"always","measurement"};
 		String[] NEGATIVE_TYPES = {"always","negative"};
+		String[] MEASUREMENT_TYPES = {"always","measurement"};
+		String[] FULL_TYPES = {"always","smoke","bhr"};
+		String[] SMOKE_TEMP_TYPES = {"always","smoke-temp"};
+		String[] BHR_TEMP_TYPES = {"always","bhr-temp"};
+		String[] SANITY_TEMP_TYPES = {"always","sanity-temp"};
+		String[] FUNCTIONAL_TEMP_TYPES = {"always","functional-temp"};
 
-		for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext();)
-		{
+		for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext(); ) {
 			String type = iterator.next();
-			
-			if (type.equalsIgnoreCase("sanity")) {
-				if (hasType(SANITY_TYPES)) {
+
+			if (type.equalsIgnoreCase("smoke")) {
+				if (hasType(SMOKE_TYPES)) {
 					return false;
 				}
 			}
-			
-			if (type.equalsIgnoreCase("smoke")) {
-				if (hasType(SMOKE_TYPES)) {
+
+			if (type.equalsIgnoreCase("bhr")) {
+				if (hasType(BHR_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("sanity")) {
+				if (hasType(SANITY_TYPES)) {
 					return false;
 				}
 			}
@@ -517,27 +536,50 @@ public class TestCase extends AbsTest {
 				}
 			}
 
+			if (type.equalsIgnoreCase("negative")) {
+				if (hasType(NEGATIVE_TYPES)) {
+					return false;
+				}
+			}
+
 			if (type.equalsIgnoreCase("measurement")) {
 				if (hasType(MEASUREMENT_TYPES)) {
 					return false;
 				}
 			}
 
-			if (type.equalsIgnoreCase("negative")) {
-				if (hasType(NEGATIVE_TYPES)) {
+			if (type.equalsIgnoreCase("full")) {
+				if (hasType(FULL_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("smoke-temp")) {
+				if (hasType(SMOKE_TEMP_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("bhr-temp")) {
+				if (hasType(BHR_TEMP_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("sanity-temp")) {
+				if (hasType(SANITY_TEMP_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("functional-temp")) {
+				if (hasType(FUNCTIONAL_TEMP_TYPES)) {
 					return false;
 				}
 			}
 		}
-		
+
 		mLog.debug("shouldSkip: No match - skip the test");
 		return true;
-
-			
-
-
 	}
-
-
-
 }

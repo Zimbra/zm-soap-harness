@@ -3,7 +3,8 @@ package com.zimbra.qa.soap;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.zimbra.common.soap.Element;
@@ -11,7 +12,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class SystemCommandTest extends Test {
 
-	private static Logger mLog = Logger.getLogger(SystemCommandTest.class.getName());
+	private static Logger mLog = LogManager.getLogger(SystemCommandTest.class.getName());
 
     public static final QName E_SYSTEM = QName.get("system", SoapTestCore.NAMESPACE);
 

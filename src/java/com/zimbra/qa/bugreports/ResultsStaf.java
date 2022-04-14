@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.dom4j.DocumentException;
 
 import com.ibm.staf.STAFException;
@@ -20,7 +20,7 @@ import com.zimbra.qa.bugreports.ResultsCore.ResultsException;
 
 
 public class ResultsStaf implements STAFServiceInterfaceLevel30 {
-    static private Logger mLog = Logger.getLogger(ResultsStaf.class);
+    static private Logger mLog = LogManager.getLogger(ResultsStaf.class);
 
 	// STAF Specifics
     private static final int kDeviceInvalidSerialNumber = 4001;
@@ -86,7 +86,7 @@ public class ResultsStaf implements STAFServiceInterfaceLevel30 {
 		// If specified, load the log4j property file first
 		// so that we start logging immediately
 		if (request.optionTimes(argLog4j) > 0 ) {
-        	PropertyConfigurator.configure(request.optionValue(argLog4j));
+		    Configurator.initialize(null, request.optionValue(argLog4j));
 		}
 		        
         // Convert the args to variables
@@ -151,9 +151,9 @@ public class ResultsStaf implements STAFServiceInterfaceLevel30 {
 		
         File f = new File(defaultLog4jProperties);
         if ( f.exists() ) {
-            PropertyConfigurator.configure(defaultLog4jProperties);
+            Configurator.initialize(null, defaultLog4jProperties);
         } else {
-        	BasicConfigurator.resetConfiguration();
+            Configurator.reconfigure();
         }
 
 	}

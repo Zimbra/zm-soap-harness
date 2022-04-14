@@ -8,7 +8,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.ibm.staf.STAFException;
@@ -20,7 +21,7 @@ import com.zimbra.common.soap.Element;
 
 public class MigrationTest extends Test {
 
-	static Logger mLog = Logger.getLogger(MigrationTest.class.getName());
+	static Logger mLog = LogManager.getLogger(MigrationTest.class.getName());
 
 	/**
 	 * Option Attributes from SOAP XML

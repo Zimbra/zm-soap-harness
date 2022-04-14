@@ -2,16 +2,19 @@ package com.zimbra.qa.sample;
 
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import com.zimbra.cs.util.BuildInfo;
 
 public class StafCore {
 
     // General debug logger
-    static Logger mLog = Logger.getLogger(StafCore.class.getName());
+    static Logger mLog = LogManager.getLogger(StafCore.class.getName());
 
 
     public static void version() {
@@ -44,10 +47,15 @@ public class StafCore {
 
     public StafCore() {
 
-    	// Add a console appender so that output goes to the console
-        mLog.addAppender(new ConsoleAppender());
-        mLog.setLevel(Level.INFO);
-
+        // Add a console appender so that output goes to the console
+        ConsoleAppender appender = ConsoleAppender.newBuilder()
+                .setName("console")
+                .setTarget(ConsoleAppender.Target.SYSTEM_OUT)
+                .build();
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mLog.getName());
+        loggerConfig.addAppender(appender, Level.INFO, null);
+        context.updateLoggers();
         mLog.info("New StafCore object");
     	
     }

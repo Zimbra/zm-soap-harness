@@ -4,7 +4,8 @@ import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.*;
 import org.dom4j.io.*;
 
@@ -14,7 +15,7 @@ import org.dom4j.io.*;
  *
  */
 public class ResultsXml {
-	private static Logger mLog = Logger.getLogger(SoapTestCore.class.getName());
+	private static Logger mLog = LogManager.getLogger(SoapTestCore.class.getName());
 
 	public enum ResultStatus {
 		Pass, Fail, Skipped, Exception

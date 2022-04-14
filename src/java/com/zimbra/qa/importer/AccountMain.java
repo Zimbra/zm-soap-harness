@@ -15,9 +15,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -27,7 +27,7 @@ import com.zimbra.cs.account.soap.SoapProvisioning;
 public class AccountMain {
 
     // General debug logger
-    private static Logger mLog = Logger.getLogger(AccountMain.class.getName());
+    private static Logger mLog = LogManager.getLogger(AccountMain.class.getName());
     private static String log4jproperties = "conf/log4j.properties";
     private static String globalproperties = "conf/global.properties";
 
@@ -47,7 +47,7 @@ public class AccountMain {
 		Option h = new Option("h", "help", false, "print usage");
         Option i = new Option("i", "input", true, "text output from \"zmprov ga user@domain.com\"");
         Option e = new Option("e", "email", true, "new account to create (default=account<unique>@domain.com)");
-        Option p = new Option("p", "password", true, "new account's password (default=test123)");
+        Option p = new Option("p", "password", true, "new account's password (accountpassword)");
         Option d = new Option("d", "domain", true, "new account's domain (default=domain.com)");
         Option s = new Option("s", "server", true, "zimbra server (default=localhost)");
         Option g = new Option("g", "properties", true, "global properties file (default=conf/global.properties)");
@@ -127,9 +127,9 @@ public class AccountMain {
 	
 	public static void main(String[] args) throws IOException {
 
-		BasicConfigurator.configure();
+		Configurator.reconfigure();
 		if ( (new File(log4jproperties)).exists() )
-			PropertyConfigurator.configure(log4jproperties);
+		    Configurator.initialize(null, log4jproperties);
 		
         // Set up SSL to accept untrusted certificates
         SocketFactories.registerProtocols(true);

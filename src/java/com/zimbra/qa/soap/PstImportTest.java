@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.ibm.staf.STAFException;
@@ -17,7 +19,7 @@ import com.zimbra.common.soap.Element;
 
 public class PstImportTest extends Test {
 
-	static Logger mLog = Logger.getLogger(PstImportTest.class.getName());
+	static Logger mLog = LogManager.getLogger(PstImportTest.class.getName());
 
 
     public static final QName E_PSTIMPORTTEST = QName.get("pstimporttest", SoapTestCore.NAMESPACE);
