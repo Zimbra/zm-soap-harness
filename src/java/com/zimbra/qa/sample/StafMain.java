@@ -5,11 +5,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import com.ibm.staf.STAFException;
 import com.ibm.staf.STAFHandle;
@@ -28,7 +31,7 @@ public class StafMain implements STAFServiceInterfaceLevel30  {
     private static final int kDeviceInvalidSerialNumber = 4002;
 
 	// Basic Debug Logger
-    static public Logger mLog = Logger.getLogger(StafMain.class);
+    static public Logger mLog = LogManager.getLogger(StafMain.class);
 	public static final String mLogFileName = "staf.txt";
     
 
@@ -110,10 +113,22 @@ public class StafMain implements STAFServiceInterfaceLevel30  {
 		// Now, do the StafCore specific stuff ...
 		// Set up the Logger
         try {
-            mLog.addAppender(new ConsoleAppender());
-			mLog.addAppender(new FileAppender(new PatternLayout(PatternLayout.DEFAULT_CONVERSION_PATTERN), mLogFileName));
-	        mLog.setLevel(Level.INFO);
-			
+            ConsoleAppender consoleAppender = ConsoleAppender.newBuilder()
+                    .setName("console")
+                    .setTarget(ConsoleAppender.Target.SYSTEM_OUT)
+                    .build();
+            FileAppender fileAppender = FileAppender.newBuilder()
+                    .setName("file")
+                    .setLayout(PatternLayout.newBuilder()
+                            .withPattern(PatternLayout.DEFAULT_CONVERSION_PATTERN)
+                            .build())
+                    .withFileName(mLogFileName)
+                    .build();
+            LoggerContext context = (LoggerContext) LogManager.getContext(false);
+            LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mLog.getName());
+            loggerConfig.addAppender(consoleAppender, Level.INFO, null);
+            loggerConfig.addAppender(fileAppender, Level.INFO, null);
+            context.updateLoggers();
 	        File l = new File(mLogFileName);
 	        System.out.print("Logging to " + l.getCanonicalPath());
 	        

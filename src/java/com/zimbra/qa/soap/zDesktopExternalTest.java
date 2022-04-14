@@ -2,7 +2,8 @@ package com.zimbra.qa.soap;
 
 
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.dom4j.QName;
 
@@ -12,7 +13,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class zDesktopExternalTest extends zDesktopTest {
 		
-	private static Logger mLog = Logger.getLogger(zDesktopExternalTest.class.getName());
+	private static Logger mLog = LogManager.getLogger(zDesktopExternalTest.class.getName());
 	
     public static final QName E_ZEXTERNALTEST = QName.get("zexternal", SoapTestCore.NAMESPACE);
 

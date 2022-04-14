@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.common.soap.Element;
@@ -24,7 +26,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
  */
 public class TestCase extends AbsTest {
 
-	static Logger mLog = Logger.getLogger(TestCase.class.getName());
+	static Logger mLog = LogManager.getLogger(TestCase.class.getName());
 
 	public static final QName E_TESTCASE = QName.get("test_case", SoapTestCore.NAMESPACE);
 	public static final QName E_OBJECTIVE = QName.get("objective", SoapTestCore.NAMESPACE);

@@ -27,7 +27,8 @@ package com.zimbra.qa.extensions.auth;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -40,7 +41,7 @@ import com.zimbra.cs.extension.ZimbraExtension;
 
 public class ExtensionCustomAuthQA implements ZimbraExtension {
 
-    private static Logger mLog = Logger.getLogger(ExtensionCustomAuthQA.class.getName());
+    private static Logger mLog = LogManager.getLogger(ExtensionCustomAuthQA.class.getName());
     
     private static final String EXTENSION_NAME = "ExtensionCustomAuthQA";
     

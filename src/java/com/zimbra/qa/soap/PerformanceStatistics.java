@@ -3,7 +3,13 @@ package com.zimbra.qa.soap;
 import java.io.*;
 import java.util.*;
 
-import org.apache.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 
 /**
  * Record SOAP performance metrics.  Output a summary at the end of the test.
@@ -11,8 +17,8 @@ import org.apache.log4j.*;
  *
  */
 public class PerformanceStatistics {
-	protected static Logger mLog = Logger.getLogger(PerformanceStatistics.class.getName() + ".debugger");
-	protected static Logger mReport = Logger.getLogger(PerformanceStatistics.class.getName());
+	protected static Logger mLog = LogManager.getLogger(PerformanceStatistics.class.getName() + ".debugger");
+	protected static Logger mReport = LogManager.getLogger(PerformanceStatistics.class.getName());
 
     /** to trace each request performance time - all tests **/
     protected static HashMap<String, Long> statistics = null;
@@ -29,22 +35,26 @@ public class PerformanceStatistics {
 	 * @param output The folder to place 'performance.txt'
 	 */
 	public static void writeReport(String output) {
-        FileAppender appender = null;
+	    String filename = output + File.separator + "performance.txt";
+        FileAppender appender = FileAppender.newBuilder()
+                .setName("file")
+                .setLayout(PatternLayout.newBuilder()
+                        .withPattern("%m%n")
+                        .build())
+                .withFileName(filename)
+                .build();
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mReport.getName());
+        loggerConfig.addAppender(appender, Level.INFO, null);
+        context.updateLoggers();
 
 		// Add an output file in the output folder
         try {
-        	
-			appender = new FileAppender(new PatternLayout("%m%n"), output + File.separator + "performance.txt", false);
-	        mReport.addAppender(appender);
-	        mReport.setLevel(Level.INFO);
 	        writeReport();
-
-		} catch (IOException e) {
+		} catch (Exception e) {
 			mReport.error("Unable to write the performance report", e);
 		} finally {
-			mReport.removeAppender(appender);
-			appender.close();
-			appender = null;
+		    loggerConfig.removeAppender(appender.getName());
 		}
 
 	}

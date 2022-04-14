@@ -37,7 +37,8 @@ import net.fortuna.ical4j.model.Calendar;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.ibm.staf.STAFException;
@@ -55,7 +56,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class MailInjectTest extends Test {
 
-	private static Logger mLog = Logger.getLogger(MailInjectTest.class.getName());
+	private static Logger mLog = LogManager.getLogger(MailInjectTest.class.getName());
 
     public static final QName E_MAILINJECTTEST = QName.get("mailinjecttest", SoapTestCore.NAMESPACE);
 	public static final QName E_LMTP_INJECT_REQUEST = QName.get("lmtpInjectRequest", SoapTestCore.NAMESPACE);

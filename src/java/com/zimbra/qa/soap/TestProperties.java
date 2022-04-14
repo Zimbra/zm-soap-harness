@@ -17,7 +17,8 @@ import java.util.Map;
 import java.io.*;
 import com.zimbra.common.soap.Element;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
@@ -29,7 +30,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
  */
 public class TestProperties {
 
-	static public Logger mLog = Logger.getLogger(TestProperties.class.getName());	
+	static public Logger mLog = LogManager.getLogger(TestProperties.class.getName());	
 
 	public String fDynamicPropertiesFile = null;
 	

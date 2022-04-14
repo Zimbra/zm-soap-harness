@@ -8,7 +8,8 @@ import java.sql.Statement;
 
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.ibm.staf.service.STAFCommandParseResult;
 import com.zimbra.cs.util.BuildInfo;
@@ -16,7 +17,7 @@ import com.zimbra.cs.util.BuildInfo;
 public class ResultsCore {
 
     // General debug logger
-    static public Logger mLog = Logger.getLogger(ResultsStaf.class);
+    static public Logger mLog = LogManager.getLogger(ResultsStaf.class);
 
     // STAF stuff
     STAFCommandParseResult stafRequest = null;

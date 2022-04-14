@@ -15,7 +15,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.zimbra.common.soap.Element;
@@ -31,7 +32,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
  */
 public abstract class Test extends AbsTest {
 
-	protected static Logger mLog = Logger.getLogger(Test.class.getName());
+	protected static Logger mLog = LogManager.getLogger(Test.class.getName());
 	
 	static protected AtomicInteger mTestNumbers = new AtomicInteger();
 

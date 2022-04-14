@@ -15,9 +15,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import com.zimbra.common.service.ServiceException;
 import com.zimbra.cs.account.Account;
@@ -27,7 +27,7 @@ import com.zimbra.cs.account.soap.SoapProvisioning;
 public class AccountMain {
 
     // General debug logger
-    private static Logger mLog = Logger.getLogger(AccountMain.class.getName());
+    private static Logger mLog = LogManager.getLogger(AccountMain.class.getName());
     private static String log4jproperties = "conf/log4j.properties";
     private static String globalproperties = "conf/global.properties";
 
@@ -127,9 +127,9 @@ public class AccountMain {
 	
 	public static void main(String[] args) throws IOException {
 
-		BasicConfigurator.configure();
+		Configurator.reconfigure();
 		if ( (new File(log4jproperties)).exists() )
-			PropertyConfigurator.configure(log4jproperties);
+		    Configurator.initialize(null, log4jproperties);
 		
         // Set up SSL to accept untrusted certificates
         SocketFactories.registerProtocols(true);

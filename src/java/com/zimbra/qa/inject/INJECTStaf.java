@@ -9,10 +9,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ibm.staf.STAFException;
 import com.ibm.staf.STAFHandle;
@@ -26,7 +26,7 @@ import com.ibm.staf.service.STAFServiceInterfaceLevel30;
 
 public class INJECTStaf implements STAFServiceInterfaceLevel30 {
 	
-    private static Logger mLog = Logger.getLogger(INJECTStaf.class.getName());
+    private static Logger mLog = LogManager.getLogger(INJECTStaf.class.getName());
     private static String mLogConfig = "/tmp/log4j.properties";
 
     protected STAFHandle fHandle;
@@ -93,14 +93,14 @@ public class INJECTStaf implements STAFServiceInterfaceLevel30 {
     {
         File log4jProperties = new File(mLogConfig);
         if (log4jProperties.exists()) {
-            PropertyConfigurator.configure(mLogConfig);
+            Configurator.initialize(null, mLogConfig);
             mLog.debug("Loaded log4j.properites: " + mLogConfig);
         }
         else {
-	    BasicConfigurator.configure();
+            Configurator.reconfigure();
 	    // force root logger to be info to go around default DEBUG level issue
-	    Logger root = Logger.getRootLogger();
-	    root.setLevel(Level.INFO);
+	    Logger root = LogManager.getRootLogger();
+	    Configurator.setLevel(LogManager.getRootLogger().getName(), Level.INFO);
 	    mLog.debug("Root logger changed to info");
 
         }

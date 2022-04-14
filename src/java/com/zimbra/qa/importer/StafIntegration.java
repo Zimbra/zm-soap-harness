@@ -3,9 +3,11 @@ package com.zimbra.qa.importer;
 
 import java.util.StringTokenizer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+
 import com.zimbra.common.net.SocketFactories;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
 
 import com.ibm.staf.STAFException;
 import com.ibm.staf.STAFHandle;
@@ -22,7 +24,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
     private static final int kDeviceInvalidSerialNumber = 4001;
 
 	// Basic Debug Logger
-    static private Logger mLog = Logger.getLogger(StafIntegration.class);
+    static private Logger mLog = LogManager.getLogger(StafIntegration.class);
 
 	// STAF Specifics
     private String fServiceName;
@@ -103,7 +105,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
         
         
 		// Set up Log4j
-        BasicConfigurator.configure();
+        Configurator.reconfigure();
 		
         // Set up SSL to always accept untrusted certs
         SocketFactories.registerProtocols(true);

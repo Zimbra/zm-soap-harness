@@ -59,7 +59,8 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.zimbra.common.service.ServiceException;
@@ -68,7 +69,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class zDesktopAcctTest extends Test {
 
-	static Logger mLog = Logger.getLogger(zDesktopAcctTest.class.getName());
+	static Logger mLog = LogManager.getLogger(zDesktopAcctTest.class.getName());
 
 
 	// XML definitions

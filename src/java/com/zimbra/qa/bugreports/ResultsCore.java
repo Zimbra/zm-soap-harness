@@ -3,7 +3,13 @@ package com.zimbra.qa.bugreports;
 import java.io.*;
 import java.util.*;
 
-import org.apache.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.dom4j.DocumentException;
 
 import com.zimbra.qa.bugreports.BugStatus.BugState;
@@ -220,14 +226,19 @@ public class ResultsCore {
 
 		// Create the BugReport.txt file as a log4j logger
 		String filename = root.getAbsolutePath() + "/BugReports/BugReport.txt";
-		Layout layout = new PatternLayout("%m%n");
-		FileAppender appender = new FileAppender(layout, filename, false);
+		FileAppender appender = FileAppender.newBuilder()
+		        .setName("file")
+		        .setLayout(PatternLayout.newBuilder()
+		                .withPattern("%m%n")
+		                .build())
+		        .withFileName(filename)
+		        .build();
 		Logger report = LogManager.getLogger("report");
-		report.setLevel(Level.INFO);
-		
+		LoggerContext context = (LoggerContext) LogManager.getContext(false);
+		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(report.getName());
+		loggerConfig.addAppender(appender, Level.INFO, null);
+		context.updateLoggers();
 		try {
-			
-			report.addAppender(appender);
 			
 			report.info("--------------------------------------------------------------------------------------------");
 			report.info("");
@@ -293,9 +304,7 @@ public class ResultsCore {
 			report.info("");
 		
 		} finally {
-			
-			report.removeAllAppenders();
-			
+		    loggerConfig.removeAppender(report.getName());
 		}
 		
 		// Update the status string
@@ -308,17 +317,20 @@ public class ResultsCore {
 	
 	private void writeEmailSummary(File root, List<TestCaseResult> results) throws IOException {
 
-		// Create the email-results-summary.txt file as a log4j logger
+		String filename = root.getAbsolutePath() + "/BugReports/email-results-summary.txt";
+		FileAppender appender = FileAppender.newBuilder()
+                .setName("file")
+                .setLayout(PatternLayout.newBuilder()
+                        .withPattern("%m%n")
+                        .build())
+                .withFileName(filename)
+                .build();
 		Logger report = LogManager.getLogger("report");
-		report.setLevel(Level.INFO);
-		
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(report.getName());
+        loggerConfig.addAppender(appender, Level.INFO, null);
+        context.updateLoggers();		
 		try {
-			
-			report.addAppender(	new FileAppender(
-					new PatternLayout("%m%n"),
-					root.getAbsolutePath() + "/BugReports/email-results-summary.txt",
-					false) );
-
 			report.info("Total Tests: " +results.size());
 
 			for (TestCaseResult.Status s : TestCaseResult.Status.values()) {
@@ -328,7 +340,7 @@ public class ResultsCore {
 			}
 
 		} finally {
-			report.removeAllAppenders();
+		    loggerConfig.removeAppender(report.getName());
 		}
 		
 

@@ -47,10 +47,13 @@ import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.dom4j.DocumentException;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -70,7 +73,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 public class SoapTestCore {
 
     // General debug logger
-    private static Logger mLog = Logger.getLogger(SoapTestCore.class.getName());
+    private static Logger mLog = LogManager.getLogger(SoapTestCore.class.getName());
 
     // Logger for test case output (details and summary)
     protected Logger mTraceLogger = null;
@@ -288,7 +291,7 @@ public class SoapTestCore {
     				core.summaryResults.append(" (Fixed Bug: #" + core.mCurrTestCase.getBugIDs() + ")");
     			}
     		}
-    		core.summaryResults.append(Layout.LINE_SEP);
+    		core.summaryResults.append(System.lineSeparator());
 
         	if ( testStep.testFailed() ) {
         		core.mCurrTestCase.addTestStepFailure(1);	// TestCase Failed!
@@ -363,11 +366,11 @@ public class SoapTestCore {
             e1.printStackTrace();
         }
         FileAppender fileAppender = null;
-        mTraceLogger = Logger.getLogger("zimbra.qa.trace");
-        mResultLogger = Logger.getLogger("zimbra.qa.trace.result");
+        mTraceLogger = LogManager.getLogger("zimbra.qa.trace");
+        mResultLogger = LogManager.getLogger("zimbra.qa.trace.result");
 
         //Additivity has been set to false in order to avoid duplicate log being printed in the console during execution
-        mTraceLogger.setAdditivity(false);
+        //mTraceLogger.setAdditivity(false);
 
 
         mTestPass = 0;	// Individual test steps
@@ -391,7 +394,7 @@ public class SoapTestCore {
 
         // Clear mtests array
 //        mTests.clear();
-        summaryResults = new StringBuffer(Layout.LINE_SEP + "-------------------SUMMARY---------------------" + Layout.LINE_SEP + Layout.LINE_SEP);
+        summaryResults = new StringBuffer(System.lineSeparator() + "-------------------SUMMARY---------------------" + System.lineSeparator() + System.lineSeparator());
 
         try {
         	
@@ -401,7 +404,10 @@ public class SoapTestCore {
 	        //
 	        fileAppender = createFileAppender(mLogDirectory, mLogSubDirectory, inputFile);
 	        if (fileAppender != null) {
-	            mTraceLogger.addAppender(fileAppender);
+	            LoggerContext context = (LoggerContext) LogManager.getContext(false);
+	            LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mTraceLogger.getName());
+	            loggerConfig.addAppender(fileAppender, Level.INFO, null);
+	            context.updateLoggers();
 	        }
 	
 	        mResultLogger.info("***************************************************************************************");
@@ -501,10 +507,11 @@ public class SoapTestCore {
 
             // remove the file appenders for this XML
             if (fileAppender != null) {
-                mTraceLogger.removeAppender(fileAppender);
-                mResultLogger.removeAppender(fileAppender);
-                fileAppender.close();
-                fileAppender = null;
+                LoggerContext context = (LoggerContext) LogManager.getContext(false);
+                LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mTraceLogger.getName());
+                loggerConfig.removeAppender(fileAppender.getName());
+                loggerConfig = context.getConfiguration().getLoggerConfig(mResultLogger.getName());
+                loggerConfig.removeAppender(fileAppender.getName());
             }
             
             mTraceLogger = null;
@@ -560,16 +567,16 @@ public class SoapTestCore {
 
             // Display the request/response times
             //
-            summary.append(Layout.LINE_SEP);
-            summary.append("-----------------------------REQUEST PERFORMANCE SUMMARY---------------------------------").append(Layout.LINE_SEP).append(Layout.LINE_SEP);
-            summary.append("Request Name                              ExecutionTime(msec)  ExecutionCount  AvgExecutionTime(msec)").append(Layout.LINE_SEP).append(Layout.LINE_SEP);
+            summary.append(System.lineSeparator());
+            summary.append("-----------------------------REQUEST PERFORMANCE SUMMARY---------------------------------").append(System.lineSeparator()).append(System.lineSeparator());
+            summary.append("Request Name                              ExecutionTime(msec)  ExecutionCount  AvgExecutionTime(msec)").append(System.lineSeparator()).append(System.lineSeparator());
 
             for (Iterator it = mReqTime.keySet().iterator(); it.hasNext();) {
                 String str = (String) it.next();
 
                 long tmpTime = ((Long) mReqTime.get(str)).longValue();
 
-                summary.append(getReqSummary(str, tmpTime)).append(Layout.LINE_SEP);
+                summary.append(getReqSummary(str, tmpTime)).append(System.lineSeparator());
 
             }
         }
@@ -967,7 +974,7 @@ public class SoapTestCore {
 					summaryResults.append(" (Fixed Bug: #" + mCurrTestCase.getBugIDs() + ")");
 				}
 			}
-	    	summaryResults.append(Layout.LINE_SEP);
+	    	summaryResults.append(System.lineSeparator());
 	
 	    	if ( test.testFailed() ) {
 	        	mCurrTestCase.addTestStepFailure(1);	// TestCase Failed!
@@ -1007,7 +1014,7 @@ public class SoapTestCore {
         if (mCurrTestCase.shouldSkip(this)) {
 
             mCurrTestCase.setSkipped(true);
-            summaryResults.append("SKIP "+ mCurrTestCase.getId()).append(Layout.LINE_SEP);
+            summaryResults.append("SKIP "+ mCurrTestCase.getId()).append(System.lineSeparator());
             
     		// Keep track of the test cases status
     		ResultsXml.addTestCaseResults(mCurrTestCase.getId(), ResultsXml.ResultStatus.Skipped);
@@ -1253,7 +1260,7 @@ public class SoapTestCore {
 	                    // Save the details for the summary report
 	                    summaryResults.append(test.getSummary());
 	                    summaryResults.append("\t" + E_FINALLY.getName());
-	                    summaryResults.append(Layout.LINE_SEP);
+	                    summaryResults.append(System.lineSeparator());
 	
 	                } else {
 	                	
@@ -2259,7 +2266,7 @@ public class SoapTestCore {
 	                    } else {
 	                    	summaryResults.append("\tFAIL is ok.  for("+i+")");
 	                    }
-	                	summaryResults.append(Layout.LINE_SEP);
+	                	summaryResults.append(System.lineSeparator());
 	                    
 	                    
 	                } else {
@@ -3282,7 +3289,14 @@ public class SoapTestCore {
         mLog.debug("using logfile: " + logFileName);
         mLog.debug("using debug dir: " + rootDebugDir);
 
-        return (new FileAppender(new PatternLayout("%m%n"), logFileName, false));
+        FileAppender appender = FileAppender.newBuilder()
+                .setName("file")
+                .setLayout(PatternLayout.newBuilder()
+                        .withPattern("%m%n")
+                        .build())
+                .withFileName(logFileName)
+                .build();
+        return appender;
     }
 
     public static class HarnessException extends Exception {

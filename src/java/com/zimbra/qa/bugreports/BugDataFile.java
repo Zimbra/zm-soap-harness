@@ -4,7 +4,9 @@ import java.io.*;
 import java.security.*;
 import java.util.*;
 
-import org.apache.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * A class to help locate the folder containing the Bug Reports

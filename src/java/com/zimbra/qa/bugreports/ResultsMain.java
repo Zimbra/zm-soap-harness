@@ -3,7 +3,9 @@ package com.zimbra.qa.bugreports;
 import java.io.File;
 
 import org.apache.commons.cli.*;
-import org.apache.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 
 public class ResultsMain {
@@ -42,7 +44,7 @@ public class ResultsMain {
                 String propertiesFile = cl.getOptionValue("l");
                 File log4jProperties = new File(propertiesFile);
                 if (log4jProperties.exists()) {
-                    PropertyConfigurator.configure(propertiesFile);
+                    Configurator.initialize(null, propertiesFile);
                     mLogger.debug("Loaded log4j.properites: " + propertiesFile);
                 }
 
@@ -66,7 +68,7 @@ public class ResultsMain {
 	public static void main(String[] args) throws Exception {
 		
 		// Configure logging
-		BasicConfigurator.configure();
+	    Configurator.reconfigure();
 		mLogger.info("Starting ...");
 
 		// Parse any args

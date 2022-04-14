@@ -9,7 +9,8 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.QName;
 
 import com.ibm.staf.STAFResult;
@@ -19,7 +20,7 @@ import com.zimbra.qa.soap.SoapTestCore.HarnessException;
 
 public class SmtpInjectTest extends Test {
 
-	private static Logger mLog = Logger.getLogger(SmtpInjectTest.class.getName());
+	private static Logger mLog = LogManager.getLogger(SmtpInjectTest.class.getName());
 
 
     public static final QName E_SMTPINJECTTEST = QName.get("smtpinjecttest", SoapTestCore.NAMESPACE);

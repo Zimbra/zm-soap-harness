@@ -4,9 +4,9 @@ package com.zimbra.qa.results;
 import java.io.File;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 import com.ibm.staf.STAFException;
 import com.ibm.staf.STAFHandle;
@@ -26,7 +26,7 @@ public class ResultsStaf implements STAFServiceInterfaceLevel30  {
     private static final int kDeviceInvalidSerialNumber = 4002;
 
 	// Basic Debug Logger
-    static public Logger mLog = Logger.getLogger(ResultsStaf.class);
+    static public Logger mLog = LogManager.getLogger(ResultsStaf.class);
 	public static final String mLogFileName = "staf.txt";
     
 
@@ -124,10 +124,10 @@ public class ResultsStaf implements STAFServiceInterfaceLevel30  {
             "A non-numeric value was specified for serial number");
 
 
-        BasicConfigurator.configure();
+        Configurator.reconfigure();
         File props = new File("/tmp/log4j.properties");
         if ( props.exists() ) {
-        	PropertyConfigurator.configure("/tmp/log4j.properties");
+            Configurator.initialize(null, "/tmp/log4j.properties");
         }
         
 		// Now, the service is ready ...
