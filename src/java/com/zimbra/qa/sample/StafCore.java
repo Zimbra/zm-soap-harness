@@ -56,6 +56,7 @@ public class StafCore {
         LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mLog.getName());
         loggerConfig.addAppender(appender, Level.INFO, null);
         context.updateLoggers();
+		appender.start();
         mLog.info("New StafCore object");
     	
     }

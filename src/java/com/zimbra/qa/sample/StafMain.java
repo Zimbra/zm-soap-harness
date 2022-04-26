@@ -129,6 +129,8 @@ public class StafMain implements STAFServiceInterfaceLevel30  {
             loggerConfig.addAppender(consoleAppender, Level.INFO, null);
             loggerConfig.addAppender(fileAppender, Level.INFO, null);
             context.updateLoggers();
+			consoleAppender.start();
+			fileAppender.start();
 	        File l = new File(mLogFileName);
 	        System.out.print("Logging to " + l.getCanonicalPath());
 	        

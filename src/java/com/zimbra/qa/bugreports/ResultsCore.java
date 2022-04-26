@@ -238,6 +238,7 @@ public class ResultsCore {
 		LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(report.getName());
 		loggerConfig.addAppender(appender, Level.INFO, null);
 		context.updateLoggers();
+		appender.start();
 		try {
 			
 			report.info("--------------------------------------------------------------------------------------------");
@@ -329,7 +330,8 @@ public class ResultsCore {
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
         LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(report.getName());
         loggerConfig.addAppender(appender, Level.INFO, null);
-        context.updateLoggers();		
+        context.updateLoggers();
+		appender.start();
 		try {
 			report.info("Total Tests: " +results.size());
 

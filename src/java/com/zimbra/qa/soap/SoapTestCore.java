@@ -408,6 +408,7 @@ public class SoapTestCore {
 	            LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mTraceLogger.getName());
 	            loggerConfig.addAppender(fileAppender, Level.INFO, null);
 	            context.updateLoggers();
+				fileAppender.start();
 	        }
 	
 	        mResultLogger.info("***************************************************************************************");

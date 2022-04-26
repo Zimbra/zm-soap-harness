@@ -541,6 +541,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
                         .build();
                 loggerConfig.addAppender(appender, Level.INFO, null);
                 context.updateLoggers();
+				appender.start();
 				mLog.debug("added " + logFileName);
 
 			} catch (Exception e) {
