@@ -47,6 +47,7 @@ public class PerformanceStatistics {
         LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mReport.getName());
         loggerConfig.addAppender(appender, Level.INFO, null);
         context.updateLoggers();
+		appender.start();
 
 		// Add an output file in the output folder
         try {

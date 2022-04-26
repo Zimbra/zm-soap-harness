@@ -258,6 +258,7 @@ public class SoapTestMain {
                     LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mLog.getName());
                     loggerConfig.addAppender(appender, Level.INFO, null);
                     context.updateLoggers();
+					appender.start();
 
                     mLog.debug("added " + logFileName);
 
