@@ -46,33 +46,26 @@ public class BugStatus extends BugDataFile {
 		BufferedReader reader = null;
 		String line;
 		
-		try {
-			
-			reader = new BufferedReader(new FileReader(getDatafile(DataFilename)));
-			while ( (line=reader.readLine()) != null ) {
-
-				// Example: 50208	RESOLVED
-				String[] values = line.split("\\s");
-				if ( values.length != 2 ) {
-					mLogger.warn("bugStatus: invalid line: "+ line);
-					continue;
-				}
-				
-				String bugid = values[0];
-				BugState bugState = BugState.valueOf(values[1]);
-							
-				bugStatusMap.put(bugid, bugState);
-				mLogger.debug("bugStatus: put "+ line);
-				
-			}
-			
-		} finally {
-			if ( reader != null ) {
-				reader.close();
-				reader = null;
-			}
-		}
-
+               try {
+                   reader = new BufferedReader(new FileReader(getDatafile(DataFilename)));
+                   while ((line = reader.readLine()) != null) {
+                       // Example: 50208 RESOLVED
+                       String[] values = line.split("\\s");
+                       if (values.length != 2) {
+                           mLogger.warn("bugStatus: invalid line: " + line);
+                           continue;
+                       }
+                       String bugid = values[0];
+                       BugState bugState = BugState.valueOf(values[1]);
+                       bugStatusMap.put(bugid, bugState);
+                       mLogger.debug("bugStatus: put " + line);
+                   }
+               } finally {
+                   if (reader != null) {
+                       reader.close();
+                       reader = null;
+                   }
+               }
 		return (bugStatusMap);
 	}
 	

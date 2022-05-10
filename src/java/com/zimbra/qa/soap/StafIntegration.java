@@ -467,9 +467,9 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
 	    		// Close out the log file
 	    		if ( executeAppender != null ) {
 	    		    LoggerContext context = (LoggerContext) LogManager.getContext(false);
-	    	        LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mLog.getName());
+	    		    LoggerConfig loggerConfig = context.getConfiguration().getLoggerConfig(mLog.getName());
 	    		    loggerConfig.removeAppender(executeAppender.getName());
-	    			executeAppender = null;
+	    		    executeAppender = null;
 	    		}
 	    		
 		        // Record the performance statistics
@@ -526,7 +526,7 @@ public class StafIntegration implements STAFServiceInterfaceLevel30  {
             	path.mkdirs();
 	        	// Remove any previous appender
             	if ( executeAppender != null ) {
-            	    loggerConfig.removeAppender(executeAppender.getName());
+            	        loggerConfig.removeAppender(executeAppender.getName());
             		executeAppender=null;
             	}
             	

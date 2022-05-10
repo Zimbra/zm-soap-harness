@@ -369,9 +369,6 @@ public class SoapTestCore {
         mTraceLogger = LogManager.getLogger("zimbra.qa.trace");
         mResultLogger = LogManager.getLogger("zimbra.qa.trace.result");
 
-        //Additivity has been set to false in order to avoid duplicate log being printed in the console during execution
-        //mTraceLogger.setAdditivity(false);
-
 
         mTestPass = 0;	// Individual test steps
         mTestFail = 0;
