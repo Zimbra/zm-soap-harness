@@ -56,8 +56,7 @@ public class ExtensionCustomAuthQA implements ZimbraExtension {
          * custom:sample should be set for domain attribute zimbraAuthMech 
          */
         ZimbraCustomAuth.register(EXTENSION_NAME, new CustomAuthQA());
-        
-    }
+        }
 	
 	public void destroy() {
         ExtensionDispatcherServlet.unregister(this);

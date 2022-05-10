@@ -59,7 +59,7 @@ public class TestCaseEngineTestNG extends TestCaseEngine {
 				}
 			}
 		}
-		sResults=null;
+		sResults = null;
 		return (results);
 	}
 

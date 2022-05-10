@@ -139,7 +139,7 @@ public class AccountMain {
                 try {
             	Properties gProperties= new Properties();
             	gProperties.load(new FileInputStream(new File(globalproperties)));
-            	password=gProperties.getProperty("admin.password");
+            	password = gProperties.getProperty("admin.password");
             }catch (IOException e) {
             	mLog.error("Password Not Set: Please specify password with -p option or path of property file with -g option");
             	System.err.println("Password Not Set: Please specify password with -p option or path of property file with -g option");
