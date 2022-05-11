@@ -30,7 +30,7 @@ public class BugQAContact extends BugDataFile {
 
         // New datafile was found. Clear the map
         Map<String, String> bugQAContactMap = new HashMap<String, String>();
-        
+
         // Read the file and build the map
         BufferedReader reader = null;
         String line;
