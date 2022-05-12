@@ -20,7 +20,6 @@ import com.zimbra.qa.results.ResultsCore.ResultsException;
 
 
 public class ResultsStaf implements STAFServiceInterfaceLevel30  {
-
     // ???
 	private final String kVersion = "1.0.0";
     private static final int kDeviceInvalidSerialNumber = 4002;
@@ -29,7 +28,6 @@ public class ResultsStaf implements STAFServiceInterfaceLevel30  {
     static public Logger mLog = LogManager.getLogger(ResultsStaf.class);
 	public static final String mLogFileName = "staf.txt";
     
-
 	// STAF Specifics
     private String fServiceName;
     private STAFHandle fHandle;

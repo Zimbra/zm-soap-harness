@@ -53,7 +53,6 @@ public abstract class BugDataFile {
                 return (file);
             }
         }
-
         throw new FileNotFoundException("Unable to locate " + filename + " in " + Arrays.toString(paths.toArray()));
     }
 }
