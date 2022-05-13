@@ -36,8 +36,7 @@ public class TestCaseEngineNUnit extends TestCaseEngine {
 
                 mLogger.info(String.format("%s: executed %s, success %s, time %s, asserts %s", name, executed, success,
                         time, asserts));
-                if (e.element("failure") != null
-                        && e.element("failure").elementText("message").contains("SyncHarness.HarnessException"))
+                if (e.element("failure") != null && e.element("failure").elementText("message").contains("SyncHarness.HarnessException"))
                     results.add(new TestCaseResult(name, "exception"));
                 else {
                     // In nunit results, if the test case is ignored, the "executed" property of the

@@ -13,11 +13,9 @@ public class ResultsMain {
     public static File mRoot = new File(".");
 
     public static void usage(Options o) {
-
         HelpFormatter hf = new HelpFormatter();
         hf.printHelp("ResultsMain -h | -b <arg> -d <arg> [ -l <log4j> ]", o, true);
         System.exit(1);
-
     }
 
     protected static void parseArgs(String[] args) {

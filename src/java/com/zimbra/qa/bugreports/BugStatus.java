@@ -9,16 +9,9 @@ import org.apache.logging.log4j.Logger;
 public class BugStatus extends BugDataFile {
     private static final Logger mLogger = LogManager.getLogger(BugStatus.class);
 
-	public enum BugState {
-		UNCONFIRMED,
-		NEW,
-		ASSIGNED,
-		REOPENED,
-		IN_PROGRESS,
-		RESOLVED,
-		VERIFIED,
-		CLOSED
-	}
+    public enum BugState {
+        UNCONFIRMED, NEW, ASSIGNED, REOPENED, IN_PROGRESS, RESOLVED, VERIFIED, CLOSED
+    }
 
     /**
      * Return the current list of "Bug ID" to "Bug Status"
@@ -68,5 +61,4 @@ public class BugStatus extends BugDataFile {
         }
         return (bugStatusMap);
     }
-	
 }
