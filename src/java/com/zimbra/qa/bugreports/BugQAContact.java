@@ -36,7 +36,6 @@ public class BugQAContact extends BugDataFile {
         String line;
 
         try {
-
             reader = new BufferedReader(new FileReader(getDatafile(DataFilename)));
             while ((line = reader.readLine()) != null) {
                 // Example: 42337 sarang@zimbra.com
@@ -50,14 +49,12 @@ public class BugQAContact extends BugDataFile {
                 bugQAContactMap.put(bugid, bugcontact);
                 mLogger.debug("bugQAContact: put " + line);
             }
-
         } finally {
             if (reader != null) {
                 reader.close();
                 reader = null;
             }
         }
-
         return (bugQAContactMap);
     }
 
