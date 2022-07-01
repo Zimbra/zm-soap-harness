@@ -64,14 +64,10 @@
 </t:test_case>
 
 <!-- Create accounts for testing -->
-<t:test_case testcaseid="CreateAccounts" type="functional">
-	<t:objective>create accounts</t:objective>
-		<t:steps>
-			1. Auth with admin
-			2. create accounts
-		</t:steps>
+<t:test_case testcaseid="ModifyCOS" type="always">
+	<t:objective>Modify COS</t:objective>
 		
-		<t:test required="true">
+	<t:test required="true">
             <t:request>
                 <AuthRequest xmlns="urn:zimbraAdmin">
                     <name>${admin.user}</name>
@@ -81,10 +77,10 @@
             <t:response>
                 <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
             </t:response>
-		</t:test>
+	</t:test>
 		
-		<t:test>
-	        <t:request xmlns="urn:zimbraAdmin">
+	<t:test>
+		<t:request xmlns="urn:zimbraAdmin">
 	            <GetCosRequest>
 	                <cos by="name">default</cos>
 	            </GetCosRequest>
@@ -93,9 +89,9 @@
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="name" match="default"/>
 	            <t:select path="//admin:GetCosResponse/admin:cos" attr="id" set="cosid"/>
 	        </t:response>
-	    </t:test>
+	</t:test>
 
-	    <t:test>
+	<t:test>
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
 	                <id>${cosid}</id>
@@ -105,8 +101,16 @@
 	        <t:response>
 	            <t:select path="//admin:ModifyCosResponse/admin:cos"/>            
 	        </t:response>
-	    </t:test>
-		
+	</t:test>
+</t:test_case>
+
+<t:test_case testcaseid="CreateAccounts" type="functional">
+        <t:objective>create accounts</t:objective>
+                <t:steps>
+                        1. Auth with admin
+                        2. create accounts
+		</t:steps>
+
 		<t:test required="true">
 			<t:request>
 				<CreateAccountRequest xmlns="urn:zimbraAdmin">
