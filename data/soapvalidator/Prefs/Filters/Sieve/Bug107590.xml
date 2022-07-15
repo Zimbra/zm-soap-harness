@@ -475,40 +475,6 @@ tag "${v_var_adminafter}";
         </t:test>
     </t:test_case>
 
-    <t:test_case testcaseid="GlobalConfigSetup1" type="always">
-        <t:objective>set globalconfig and restart mailboxd</t:objective>
-        <t:test required="true">
-            <t:request>
-                <AuthRequest xmlns="urn:zimbraAdmin">
-                    <name>${admin.user}</name>
-                    <password>${admin.password}</password>
-                </AuthRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-            </t:response>
-        </t:test>
-        <t:test>
-            <t:request>
-                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-1</a>
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-2</a>
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-3</a>
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-4</a>
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-5</a>
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-6</a>
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-7</a>
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-8</a>
-                    <a n="zimbraCustomMimeHeaderNameAllowed">X-Test-Header-9</a>
-                </ModifyConfigRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyConfigResponse" />
-            </t:response>
-        </t:test>
-
-    </t:test_case>
-
     <t:test_case testcaseid="AcctSetup1_create_account" type="always">
         <t:objective>create test accounts</t:objective>
         <t:test required="true">
@@ -3974,17 +3940,6 @@ tag "${v_var_adminafter}";
             </t:response>
         </t:test>
         
-        <t:test>
-            <t:request>
-                <ModifyConfigRequest xmlns="urn:zimbraAdmin">
-                    <a n="zimbraCustomMimeHeaderNameAllowed"></a>
-                </ModifyConfigRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:ModifyConfigResponse" />
-            </t:response>
-        </t:test>
-
 	    <t:test> 
 	        <t:request>
 	            <ModifyCosRequest xmlns="urn:zimbraAdmin">
