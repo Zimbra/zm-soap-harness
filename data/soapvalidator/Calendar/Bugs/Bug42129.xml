@@ -138,7 +138,7 @@
    	
 </t:test_case>
 
-<t:test_case testcaseid="Resources_AutoAcceptSignature01" type="smoke" bugids="42129">
+<t:test_case testcaseid="Resources_AutoAcceptSignature01" type="bhr" bugids="42129">
     <t:objective>Customizable accept message for auto-accepting on resources.</t:objective>
     <t:steps>
     	1. Login as resource1. Create a signature in plain text and assign it for 
@@ -222,8 +222,8 @@
 	
    
     <t:property name="appt1.timezone" value="${timezone5}"/>
-    <t:property name="appt1.start.gmt" value="1606800847000"/>						<!-- 12/1/2010 12:00:00 -->
-    <t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>	<!-- 12/1/2010 04:00:00 -->
+    <t:property name="appt1.startTime" value="${ICALTIME(+1h)}"/>
+    <t:property name="appt1.endTime" value="${ICALTIME(+2h)}"/>
     <t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
     <t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
     
@@ -234,9 +234,9 @@
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" >
                         <at role="REQ" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
-                        <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
-                        <or a="${account1.name}"/>
+                        <s d="${appt1.startTime}" tz="${appt1.timezone}"/>
+			<e d="${appt1.endTime}" tz="${appt1.timezone}"/>
+			<or a="${account1.name}"/>
                     </inv>
                     <e a="${resource1.name}" t="t"/>
                     <mp content-type="text/plain">
@@ -369,8 +369,8 @@
 
    
     <t:property name="appt2.timezone" value="${timezone5}"/>
-    <t:property name="appt2.start.gmt" value="1606800847000"/>						<!-- 12/1/2011 12:00:00 -->
-    <t:property name="appt2.start.pst" value="${TIME(-8h)[${appt2.start.gmt}]}"/>	<!-- 12/1/2011 04:00:00 -->
+    <t:property name="appt2.startTime" value="${ICALTIME(+1h)}"/>
+    <t:property name="appt2.endTime" value="${ICALTIME(+2h)}"/>
     <t:property name="appt2.subject" value="subject.${TIME}.${COUNTER}"/>
     <t:property name="appt2.content" value="content.${TIME}.${COUNTER}"/>
     
@@ -381,9 +381,9 @@
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt2.subject}" >
                         <at role="REQ" ptst="NE" rsvp="1" cutype="RES" a="${resource2.name}"/>
-                        <s d="${ICALTIME[${appt2.start.pst}]}" tz="${appt2.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt2.start.pst}]}" tz="${appt2.timezone}"/>  
-                        <or a="${account2.name}"/>
+                        <s d="${appt2.startTime}" tz="${appt2.timezone}"/>
+			<e d="${appt2.endTime}" tz="${appt2.timezone}"/>
+			<or a="${account2.name}"/>
                     </inv>
                     <e a="${resource2.name}" t="t"/>
                     <mp content-type="text/plain">
@@ -424,9 +424,9 @@
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt2.subject}" >
                         <at role="REQ" ptst="NE" rsvp="1" cutype="RES" a="${resource2.name}"/>
-                        <s d="${ICALTIME[${appt2.start.pst}]}" tz="${appt2.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt2.start.pst}]}" tz="${appt2.timezone}"/>  
-                        <or a="${account1.name}"/>
+                        <s d="${appt2.startTime}" tz="${appt2.timezone}"/>
+			<e d="${appt2.endTime}" tz="${appt2.timezone}"/>
+			<or a="${account1.name}"/>
                     </inv>
                     <e a="${resource2.name}" t="t"/>
                     <mp content-type="text/plain">

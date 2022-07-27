@@ -152,9 +152,12 @@
 	<t:property name="appointment.location" value="location${TIME}.${COUNTER}"/>
 	<t:property name="appointment.content" value="content${TIME}.${COUNTER}"/>
 
-	
-	<t:property name="time.08Jun2018100000.gmt" value="1528416000000"/>
-	<t:property name="time.08Jun2018100000.pst" value="${TIME(-8h)[${time.08Jun2018100000.gmt}]}"/>
+	<t:property name="StartTime1" value="${ICALTIME(+1h)}"/>
+	<t:property name="EndTime1" value="${ICALTIME(+4h)}"/>
+	<t:property name="StartTime2" value="${ICALTIME(+2d)(+1h)}"/>
+	<t:property name="EndTime2" value="${ICALTIME(+2d)(+7h)}"/>
+	<t:property name="StartTime3" value="${ICALTIME(+2d)(+2h)}"/>
+	<t:property name="EndTime3" value="${ICALTIME(+2d)(+8h)}"/>
 
 	<!-- Create Series of Appointment with a resource-->
     <t:test required="true" >
@@ -166,8 +169,8 @@
 							<or a="${organizer1.name}"/>
 						<!--  	<at role="REQ" ptst="NE" rsvp="1" a="${invitee1.name}" />-->
 							<at role="NON" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
-							<s d="${ICALTIME[${time.08Jun2018100000.pst}]}" tz="${timezone.pst}" />
-							<e d="${ICALTIME(+3h)[${time.08Jun2018100000.pst}]}" tz="${timezone.pst}" />
+							<s d="${StartTime1}" tz="${timezone.pst}" />
+							<e d="${EndTime1}" tz="${timezone.pst}" />
 							<recur>
 								<add>
 									<rule freq="DAI">
@@ -205,12 +208,12 @@
 				<m>
 					<inv >
 						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.exception.subject}">
-							<s d="${ICALTIME(+2d)[${time.08Jun2018100000.pst}]}" tz="${timezone.pst}"/>
-							<e d="${ICALTIME(+2d)(+6h)[${time.08Jun2018100000.pst}]}" tz="${timezone.pst}"/>
+							<s d="${StartTime2}" tz="${timezone.pst}"/>
+							<e d="${EndTime2}" tz="${timezone.pst}"/>
 							<!--  <at a="${invitee1.name}" role="REQ" ptst="NE" rsvp="1"/>-->							
 							<at a="${resource1.name}" role="NON" ptst="AC" cutype="RES" rsvp="1"/>
 							<or a="${organizer1.name}"/>
-							<exceptId d="${ICALTIME(+2d)[${time.08Jun2018100000.pst}]}" tz="${timezone.pst}"/>
+							<exceptId d="${StartTime2}" tz="${timezone.pst}"/>
 						</comp>
 					</inv>
 					<!--  <e t="t" a="${invitee1.name}"/> -->
@@ -242,8 +245,8 @@
 						<comp status="CONF" fb="B" transp="O" allDay="0" name="${appointment.overlap.subject}">
 							<or a="${organizer1.name}"/>							
 							<at role="NON" ptst="NE" cutype="RES" a="${resource1.name}" rsvp="1"/>
-							<s d="${ICALTIME(+2d)(+1h)[${time.08Jun2018100000.pst}]}" tz="${timezone.pst}" />
-							<e d="${ICALTIME(+2d)(+7h)[${time.08Jun2018100000.pst}]}" tz="${timezone.pst}" />							
+							<s d="${StartTime3}" tz="${timezone.pst}" />
+							<e d="${EndTime3}" tz="${timezone.pst}" />
 						</comp>
 					</inv>					
 					<e a="${resource1.name}" t="t"/>
