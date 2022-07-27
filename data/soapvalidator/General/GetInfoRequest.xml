@@ -45,12 +45,12 @@
 			<CreateAccountRequest xmlns="urn:zimbraAdmin">
 				<name>${test_account1.name}</name>
 				<password>${test_account1.password}</password>
-                <a n="zimbraFeatureMobileAppEnabled">TRUE</a>
+                <a n="zimbraFeatureEwsEnabled">TRUE</a>
 			</CreateAccountRequest>
 		</t:request>
 		<t:response>
 			<t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
-            <t:select path="//admin:CreateAccountResponse/admin:account//admin:a[@n='zimbraFeatureMobileAppEnabled']" match="TRUE"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account//admin:a[@n='zimbraFeatureEwsEnabled']" match="TRUE"/>
             <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct.server"/>
 		</t:response>
 	</t:test>
@@ -70,8 +70,8 @@
             <GetInfoRequest xmlns="urn:zimbraAccount"/>
         </t:request>
         <t:response>
-            <t:select path="//acct:GetInfoResponse/acct:license//acct:attr[@name='ZIMBRAFEATUREMOBILEAPPENABLED']" match="TRUE"/>
-            <t:select path="//acct:GetInfoResponse/acct:license//acct:attr[@name='ZIMBRAFEATUREMODERNDESKTOPENABLED']" match="FALSE"/>
+		<!--<t:select path="//acct:GetInfoResponse/acct:license//acct:attr[@name='ZIMBRAMOBILEAPP']" match="TRUE"/>-->
+            <t:select path="//acct:GetInfoResponse/acct:license//acct:attr[@name='EWS']" match="TRUE"/>
         </t:response>
     </t:test>
 
@@ -298,13 +298,11 @@ Content Text
             <CreateCosRequest xmlns="urn:zimbraAdmin">
                 <name>${COS.name}</name>
                 <a n="cn">${COS.name}</a>
-                <a n="zimbraFeatureModernDesktopEnabled">${globals.false}</a>
-                <a n="zimbraFeatureMobileAppEnabled">${globals.true}</a>
+                <a n="zimbraFeatureEwsEnabled">${globals.false}</a>
             </CreateCosRequest>
         </t:request>
         <t:response>
-            <t:select path="//admin:CreateCosResponse/admin:cos//admin:a[@n='zimbraFeatureModernDesktopEnabled']" match="${globals.false}" />
-            <t:select path="//admin:CreateCosResponse/admin:cos//admin:a[@n='zimbraFeatureMobileAppEnabled']" match="${globals.true}" />
+            <t:select path="//admin:CreateCosResponse/admin:cos//admin:a[@n='zimbraFeatureEwsEnabled']" match="${globals.false}" />
             <t:select path="//admin:CreateCosResponse/admin:cos" attr="id" set="zimbraCosId" />
         </t:response>
     </t:test>
@@ -313,15 +311,13 @@ Content Text
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
                 <name>${test_account2.name}</name>
                 <password>${test_account2.password}</password>
-                <a n="zimbraFeatureModernDesktopEnabled">TRUE</a>
                 <a n="zimbraFeatureEwsEnabled">TRUE</a>
                 <a n="zimbraCOSId">${zimbraCosId}</a>
             </CreateAccountRequest>
         </t:request>
         <t:response>
             <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
-            <t:select path="//admin:CreateAccountResponse/admin:account//admin:a[@n='zimbraFeatureMobileAppEnabled']" match="TRUE"/>
-            <t:select path="//admin:CreateAccountResponse/admin:account//admin:a[@n='zimbraFeatureModernDesktopEnabled']" match="TRUE"/>
+            <t:select path="//admin:CreateAccountResponse/admin:account//admin:a[@n='zimbraFeatureEwsEnabled']" match="TRUE"/>
         </t:response>
         </t:test>
         <t:test >
@@ -340,8 +336,8 @@ Content Text
                 <GetInfoRequest xmlns="urn:zimbraAccount"/>
             </t:request>
             <t:response>
-                <t:select path="//acct:GetInfoResponse/acct:license//acct:attr[@name='ZIMBRAFEATUREMOBILEAPPENABLED']" match="TRUE"/>
-                <t:select path="//acct:GetInfoResponse/acct:license//acct:attr[@name='ZIMBRAFEATUREMODERNDESKTOPENABLED']" match="TRUE"/>
+		    <!--<t:select path="//acct:GetInfoResponse/acct:license//acct:attr[@name='ZIMBRAMOBILEAPP']" match="TRUE"/>-->
+                <t:select path="//acct:GetInfoResponse/acct:license//acct:attr[@name='EWS']" match="TRUE"/>
             </t:response>
         </t:test>
 </t:test_case>

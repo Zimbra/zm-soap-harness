@@ -124,8 +124,8 @@
 
    
     <t:property name="appt1.timezone" value="${timezone5}"/>
-    <t:property name="appt1.start.gmt" value="1640977237000"/>						<!-- 1/1/2010 12:00:00 -->
-    <t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>	<!-- 1/1/2010 04:00:00 -->
+    <t:property name="appt1.startTime" value="${ICALTIME(+1h)}"/>
+    <t:property name="appt1.endTime" value="${ICALTIME(+3h)}"/>
     <t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
     <t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
     
@@ -136,9 +136,9 @@
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" >
                         <at role="REQ" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
-                        <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
-                        <or a="${account1.name}"/>
+                        <s d="${appt1.startTime}" tz="${appt1.timezone}"/>
+			<e d="${appt1.endTime}" tz="${appt1.timezone}"/>
+			<or a="${account1.name}"/>
                     </inv>
                     <e a="${resource1.name}" t="t"/>
                     <mp content-type="text/plain">
@@ -219,8 +219,8 @@
 
    
     <t:property name="appt1.timezone" value="${timezone5}"/>
-    <t:property name="appt1.start.gmt" value="1577880000000"/>						<!-- 1/1/2020 12:00:00 -->
-    <t:property name="appt1.start.pst" value="${TIME(-8h)[${appt1.start.gmt}]}"/>	<!-- 1/1/2020 04:00:00 -->
+    <t:property name="appt1.startTime" value="${ICALTIME(+2h)}"/>
+    <t:property name="appt1.endTime" value="${ICALTIME(+4h)}"/>
     <t:property name="appt1.subject" value="subject.${TIME}.${COUNTER}"/>
     <t:property name="appt1.content" value="content.${TIME}.${COUNTER}"/>
     
@@ -231,9 +231,9 @@
                 <m d="${TIME}">
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appt1.subject}" >
                         <at role="REQ" ptst="NE" cutype="RES" rsvp="1" a="${resource1.name}"/>
-                        <s d="${ICALTIME[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
-                        <e d="${ICALTIME(+1h)[${appt1.start.pst}]}" tz="${appt1.timezone}"/>  
-                        <or a="${account2.name}"/>
+                        <s d="${appt1.startTime}" tz="${appt1.timezone}"/>
+			<e d="${appt1.endTime}" tz="${appt1.timezone}"/>
+			<or a="${account2.name}"/>
                     </inv>
                     <e a="${resource1.name}" t="t"/>
                     <mp content-type="text/plain">
