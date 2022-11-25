@@ -1,0 +1,313 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+    <t:property name="account1.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+    <t:property name="account2.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
+
+    <t:property name="uploadFile.good.pdf" value="${testMailRaw.root}/email27/pdfattachment.pdf"/>
+    <t:property name="uploadFile.bad.with.virus" value="${testMailRaw.root}/virus/eicar.txt"/>
+
+    <t:property name="compose1.content" value="content${TIME}.${COUNTER}"/>
+    <t:property name="compose1.subject" value="subject${TIME}.${COUNTER}"/>
+    <t:property name="compose2.content" value="content${TIME}.${COUNTER}"/>
+    <t:property name="compose2.subject" value="subject${TIME}.${COUNTER}"/>
+
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:property name="zimbra.clamav.bind.address" value="localhost"/>
+    <t:property name="zimbra.attachment.scan.url" value="clam://localhost:3310/"/>
+    <t:property name="zimbra.attachment.scan.enabled" value="TRUE"/>
+    <t:property name="zimbra.clamav.bind.address.unset" value=""/>
+    <t:property name="zimbra.attachment.scan.url.unset" value=""/>
+    <t:property name="zimbra.attachment.scan.enabled.unset" value="FALSE"/>
+
+    <t:test_case testcaseid="MessageSend_AccSetup" type="always">
+        <t:objective>setup accounts</t:objective>
+
+        <t:test id="admin_login" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+        <t:test required="true" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]'
+                          set="test_acct1.server"/>
+            </t:response>
+        </t:test>
+
+        <t:test required="true" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+        </t:test>
+
+        <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+
+        <t:test id="getallserversrequest01" depends="admin_login">
+            <t:request>
+                <GetAllServersRequest xmlns="urn:zimbraAdmin"/>
+            </t:request>
+            <t:response>
+                <t:select
+                        path='//admin:GetAllServersResponse/admin:server[admin:a[@n="zimbraServiceEnabled"]="mailbox"][1]'
+                        attr="id" set="server.id1"/>
+            </t:response>
+        </t:test>
+
+        <t:test id="ModifyServer01" depends="admin_login">
+            <t:request>
+                <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                    <id>${server.id1}</id>
+                    <a n="zimbraClamAVBindAddress">${zimbra.clamav.bind.address}</a>
+                </ModifyServerRequest>
+            </t:request>
+        </t:test>
+
+        <t:test id="ModifyServer02" depends="admin_login">
+            <t:request>
+                <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                    <id>${server.id1}</id>
+                    <a n="zimbraAttachmentsScanURL">${zimbra.attachment.scan.url}</a>
+                </ModifyServerRequest>
+            </t:request>
+        </t:test>
+
+        <t:test id="ModifyServer03" depends="admin_login">
+            <t:request>
+                <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                    <id>${server.id1}</id>
+                    <a n="zimbraAttachmentsScanEnabled">${zimbra.attachment.scan.enabled}</a>
+                </ModifyServerRequest>
+            </t:request>
+        </t:test>
+
+        <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart\'" RETURNSTDOUT
+                    RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}
+                </params>
+            </t:request>
+        </t:staftask>
+
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+
+    <t:property name="uploadServletServer" value="${test_acct1.server}"/>
+    <t:property name="server.restServlet" value="${test_acct1.server}"/>
+
+    <t:test_case testcaseid="SendMsgRequest_wAttachment_01" type="bhr">
+        <t:objective>Send a message with a pdf file attached (via upload servlet)</t:objective>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile.good.pdf}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="message0.aid"/>
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m>
+                        <e t="t" a="${account2.name}"/>
+                        <su>${compose1.subject}</su>
+                        <mp ct="text/plain">
+                            <content>${compose1.content}</content>
+                        </mp>
+                        <attach aid="${message0.aid}"/>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message0.id"/>
+            </t:response>
+        </t:test>
+
+        <t:test>
+            <t:request>
+                <GetMsgRequest xmlns="urn:zimbraMail">
+                    <m id="${message0.id}" read="1" html="1"/>
+                </GetMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetMsgResponse">
+                    <t:select path="//mail:mp[@cd='attachment']" attr="filename" match="pdfattachment.pdf"/>
+                </t:select>
+            </t:response>
+        </t:test>
+
+        <!-- Verify message is received by recipient -->
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+        <t:test id="SearchRequest">
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>subject:(${compose1.subject})</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message0.id"/>
+            </t:response>
+        </t:test>
+
+        <!-- Do a get message to see if attachment is present-->
+        <t:test id="GetMsgRequest" depends="SearchRequest">
+            <t:request>
+                <GetMsgRequest xmlns="urn:zimbraMail">
+                    <m id="${message0.id}"/>
+                </GetMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetMsgResponse">
+                    <t:select path="//mail:GetMsgResponse//mail:content" contains="${compose1.content}"/>
+                    <t:select path="//mail:mp[@cd='attachment']" attr="filename" match="pdfattachment.pdf"/>
+                </t:select>
+            </t:response>
+        </t:test>
+
+
+    </t:test_case>
+
+
+    <t:test_case testcaseid="SendMsgRequest_wAttachment_02" type="bhr">
+        <t:objective>Send a message with a pdf file attached (via upload servlet)</t:objective>
+
+        <t:test required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+        <t:uploadservlettest>
+            <t:uploadServletRequest>
+                <filename>${uploadFile.bad.with.virus}</filename>
+            </t:uploadServletRequest>
+            <t:uploadServletResponse>
+                <t:select attr="id" set="message1.aid"/>
+            </t:uploadServletResponse>
+        </t:uploadservlettest>
+
+        <t:test>
+            <t:request>
+                <SendMsgRequest xmlns="urn:zimbraMail">
+                    <m>
+                        <e t="t" a="${account2.name}"/>
+                        <su>${compose2.subject}</su>
+                        <mp ct="text/plain">
+                            <content>${compose2.content}</content>
+                        </mp>
+                        <attach aid="${message1.aid}"/>
+                    </m>
+                </SendMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//zimbra:Code" match="mail.UPLOAD_REJECTED"/>
+            </t:response>
+        </t:test>
+
+    </t:test_case>
+
+    <t:finally>
+
+        <t:test>
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+        <t:test id="ModifyServer01">
+            <t:request>
+                <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                    <id>${server.id1}</id>
+                    <a n="zimbraClamAVBindAddress">${zimbra.clamav.bind.address.unset}</a>
+                </ModifyServerRequest>
+            </t:request>
+        </t:test>
+
+        <t:test id="ModifyServer02">
+            <t:request>
+                <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                    <id>${server.id1}</id>
+                    <a n="zimbraAttachmentsScanURL">${zimbra.attachment.scan.url.unset}</a>
+                </ModifyServerRequest>
+            </t:request>
+        </t:test>
+
+        <t:test id="ModifyServer03">
+            <t:request>
+                <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                    <id>${server.id1}</id>
+                    <a n="zimbraAttachmentsScanEnabled">${zimbra.attachment.scan.enabled.unset}</a>
+                </ModifyServerRequest>
+            </t:request>
+        </t:test>
+
+
+        <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmcontrol restart\'" RETURNSTDOUT
+                    RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}
+                </params>
+            </t:request>
+        </t:staftask>
+
+    </t:finally>
+
+</t:tests>
