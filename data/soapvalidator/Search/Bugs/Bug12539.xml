@@ -1,0 +1,211 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account.name" value="test1${TIME}${COUNTER}@${defaultdomain.name}"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="account.MailHost" value="${zimbraMailHost.name}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+         <t:response>
+             <t:select path="//admin:PingResponse"/>
+         </t:response>
+    </t:test>
+
+</t:test_case>
+
+
+<t:test_case testcaseid="acct_setup" type="always" >
+    <t:objective>create test accounts</t:objective>
+    <t:steps>
+        1. Auth with admin account.
+        2. Create a test account.
+        3. Inject a mail in test account.
+    </t:steps>
+
+    <t:test required="true" >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account.name}</name>
+                <password>${defaultpassword.value}</password>
+                <a n="zimbraMailHost">${account.MailHost}</a>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="msg01.file" value="${testMailRaw.root}/bug12539/bug12539.txt" />
+    
+    <t:mailinjecttest >
+        <t:lmtpInjectRequest>
+            <filename>${msg01.file}</filename>
+            <to>${account.name}</to>
+            <from>test@test.com</from>
+            <server>${account.server}</server>
+        </t:lmtpInjectRequest>
+    </t:mailinjecttest>
+
+</t:test_case>
+
+<t:test_case testcaseid="search_subject_present_in_mail_with_double_quotes" type="bhr" >
+    <t:objective>Verify Chinese subject with double quotes in injected mail</t:objective>
+    <t:steps>
+        1. Login to the account.
+        2. Search a mail with specified subject in double quotations - Successful result.
+    </t:steps>
+    
+    <t:property name="server.zimbraAccount" value="${account.server}"/>
+    <t:property name="subject" value="現金決済" />
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+            <query>"${subject}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+                <t:select attr="su" match="^今最も検索されている投資テーマは？" />
+            </t:select>
+        </t:response>
+    </t:test> 
+</t:test_case>
+
+<t:test_case testcaseid="search_subject_present_in_mail_without_double_quotes" type="bhr" >
+    <t:objective>Verify Chinese subject without double quotes in injected mail</t:objective>
+    <t:steps>
+        1. Login to the account.
+        2. Search a mail with specified subject - Successful result.
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${account.server}"/>
+    <t:property name="subject" value="現金決済" />
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+            <query>${subject}</query>
+            </SearchRequest>
+        </t:request>
+	    <t:response>
+            <t:select path="//mail:SearchResponse/mail:m">
+                <t:select attr="su" match="^今最も検索されている投資テーマは？" />
+            </t:select>
+        </t:response>
+    </t:test> 
+</t:test_case>
+
+<t:test_case testcaseid="search_subject_not_present_in_mail_with_double_quotes" type="bhr" >
+    <t:objective>Verify Chinese subject with double quotes in injected mail</t:objective>
+    <t:steps>
+        1. Login to the account.
+        2. Search a mail with specified subject in double quotations - no result.
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${account.server}"/>
+    <t:property name="subject" value="ツタンカーメン" />
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+            <query>"${subject}"</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+        <t:select path="//mail:SearchResponse/mail:m" emptyset="1">
+        </t:select>
+    </t:response>
+    </t:test> 
+</t:test_case>
+
+<t:test_case testcaseid="search_subject_not_present_in_mail_without_double_quotes" type="bhr" >
+    <t:objective>Verify Chinese subject without double quotes in injected mail</t:objective>
+    <t:steps>
+        1. Login to the account.
+        2. Search a mail with specified subject - no result.
+    </t:steps>
+
+    <t:property name="server.zimbraAccount" value="${account.server}"/>
+    <t:property name="subject" value="ツタンカーメン" />
+
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+            <query>${subject}</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+        <t:select path="//mail:SearchResponse/mail:m" emptyset="1">
+        </t:select>
+    </t:response>
+    </t:test> 
+</t:test_case>
+
+</t:tests>
