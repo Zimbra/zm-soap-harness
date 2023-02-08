@@ -378,6 +378,68 @@
 
 </t:test_case>
 
+<t:test_case testcaseid="SearchDirectoryRequest_10" type="bhr" bugids="733">
+    <t:objective>Verify searching where types="accounts" limit="-1" domain="${domain1.name} with empty query string in ZBUG-733". </t:objective>
 
+        <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domain1.name}" limit="-1" types="accounts">
+
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse" attr="searchTotal" match="1"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchDirectoryRequest_11" type="bhr" bugids="733">
+    <t:objective>Verify searching where types="accounts" limit="1000" maxResults="1" domain="${domain1.name} with empty query string in ZBUG-733". </t:objective>
+
+        <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domain1.name}" limit="1000" maxResults="1" types="accounts">
+
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//zimbra:Code" match="^account.TOO_MANY_SEARCH_RESULTS"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchDirectoryRequest_12" type="bhr" bugids="733">
+    <t:objective>Verify searching where types="accounts" limit="0" maxResults="-1" domain="${domain1.name} with empty query string in ZBUG-733". </t:objective>
+
+        <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domain1.name}" limit="0" maxResults="-1" types="accounts">
+
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse" attr="searchTotal" match="2"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
+
+<t:test_case testcaseid="SearchDirectoryRequest_13" type="bhr" bugids="733">
+    <t:objective>Verify searching where types="accounts" limit="0" maxResults="1000" domain="${domain1.name} with empty query string in ZBUG-733". </t:objective>
+
+        <t:test>
+        <t:request>
+            <SearchDirectoryRequest xmlns="urn:zimbraAdmin" domain="${domain1.name}" limit="0" maxResults="1000" types="accounts">
+
+            </SearchDirectoryRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:SearchDirectoryResponse" attr="searchTotal" match="2"/>
+        </t:response>
+    </t:test>
+
+</t:test_case>
 
 </t:tests>
