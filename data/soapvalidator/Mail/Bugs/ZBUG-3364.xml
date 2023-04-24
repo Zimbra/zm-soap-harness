@@ -1,0 +1,516 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_account6.name" value="test6.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_list1.name" value="testdl1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="test_list2.name" value="testdl2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="msg01.subject" value="test mail"/>
+<t:property name="message.content1" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="persona.zimbraPrefFromDisplay" value="First${TIME} Last${COUNTER}"/>
+<t:property name="persona.name" value="persona${TIME}${COUNTER}"/>
+<t:property name="msg02.subject" value="test mail from persona"/>
+<t:property name="message.content2" value="content of the message${TIME}.${COUNTER}"/>
+<t:property name="msg03.subject" value="test mail - sendOnBehalfOfDistList test"/>
+<t:property name="persona02.name" value="persona2${TIME}${COUNTER}"/>
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+<t:property name="persona02.zimbraPrefFromDisplay" value="First2${TIME} Last${COUNTER}"/>
+
+<t:test_case testcaseid="Ping" type="always" >
+    <t:objective>basic system check</t:objective>
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+</t:test_case>
+
+
+<t:test_case testcaseid="acct1_setup" type="always">
+    <t:objective>Create test accounts and DL</t:objective>
+    
+	<!-- Login as the admin to get an auth token -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<!-- Create test accounts -->
+    <t:test id="create_acct1" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server"/>
+            </t:response>
+    </t:test>
+    
+    <t:test id="create_acct2" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server"/>
+            </t:response>
+    </t:test>
+    
+    <t:test id="create_acct3" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account3.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account3.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct3.server"/>
+            </t:response>
+    </t:test>
+    
+    <t:test id="create_acct4" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account4.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
+            </t:response>
+    </t:test>
+    
+    <t:test id="create_acct5" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account5.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account5.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
+            </t:response>
+    </t:test>
+    
+    <t:test id="create_acct6" required="true" depends="admin_login">
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${test_account6.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account6.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
+            </t:response>
+    </t:test>
+    
+    <!-- Create test DL -->
+    <t:test required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${test_list1.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="test_list1.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Add members to DL -->
+    <t:test id="addDistributionListMemberRequest">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list1.id}</id>
+                <dlm>${test_account1.name}</dlm>
+                <dlm>${test_account5.name}</dlm>
+                <dlm>${test_account6.name}</dlm>             
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>    
+    
+    <!-- Create test DL -->
+    <t:test id="CreateDistributionListRequest01" required="true">
+        <t:request>
+            <CreateDistributionListRequest xmlns="urn:zimbraAdmin">
+                <name>${test_list2.name}</name>
+                <a n="description">A test distribution list</a>
+            </CreateDistributionListRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="test_list2.id"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Add members to DL -->
+    <t:test id="addDistributionListMemberRequest02">
+        <t:request>
+            <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
+                <id>${test_list2.id}</id>
+                <dlm>${test_account1.name}</dlm>
+                <dlm>${test_account5.name}</dlm>
+                <dlm>${test_account6.name}</dlm>             
+            </AddDistributionListMemberRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AddDistributionListMemberResponse"/>
+        </t:response>
+    </t:test>    
+</t:test_case> 
+
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="sendMailAsDL" type="bhr">
+    <t:objective>Verify sendAsDistList DL rights and no service.PERM_DENIED error when sending email to distribution list and using persona</t:objective>
+    <t:steps>
+			1. Login into Admin.
+			2. Grant Permission "sendAsDistList" to Account1 on Distribution list.
+			3. Login into Account1.
+			4. Send DiscoverRightsRequest to discover grants granted.
+			5. Send email with From: set to DL and Verify message details using GetMsgRequest
+			6. Create a persona for DL 
+			7. Send an email using persona and verify service.PERM_DENIED error is not encountered
+			8. Verify message details using GetMsgRequest
+	</t:steps>
+	
+    <!-- Login as the admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Grant test_account1.name sendAsDistList permission on DL -->
+    <t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="dl" by="name">${test_list1.name}</target>
+				<grantee type="usr" by="name">${test_account1.name}</grantee>
+				<right>sendAsDistList</right>
+				
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+	
+	<!-- Login as gratee test_account1.name -->
+	<t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+    <t:test id="auth_acct1" required="true" depends="acct1_setup">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- verify right using DiscoverRightsRequest -->
+    <t:test>
+		<t:request>
+			<DiscoverRightsRequest xmlns="urn:zimbraAccount">
+				<right>sendAsDistList</right>		
+			</DiscoverRightsRequest>    
+		</t:request>
+		<t:response>
+            	<t:select path="//acct:DiscoverRightsResponse/acct:targets" attr="right" match="sendAsDistList"/>
+            	<t:select path="//acct:DiscoverRightsResponse/acct:targets/acct:target/acct:email[@addr='${test_list1.name}']"/>
+		</t:response>
+	</t:test>
+
+	<!-- Send email with From: set to DL -->
+	<t:test id="sendmail1" required="true">
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="f" a="${test_list1.name}"/>
+					<e t="t" a="${test_account4.name}"/>
+					<su> ${msg01.subject}</su>
+					<mp ct="text/plain">
+					<content> ${message.content1}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="service.PERM_DENIED" emptyset="1"/>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id1"/>
+		</t:response>
+	</t:test>
+	
+	<!-- Verify message details using GetMsgRequest -->
+    <t:test id="GetMsgRequest">
+       <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id1}"/>
+            </GetMsgRequest>
+       </t:request>
+       <t:response>
+				<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id1}']">
+            	<t:select path="//mail:e[@t='f']" attr="a" match="${test_list1.name}"/>
+            	<t:select path="//mail:e[@t='t']" attr="a" match="${test_account4.name}"/>
+            	<t:select path="//mail:su" match="${msg01.subject}"/>
+            </t:select>
+		</t:response>
+    </t:test>
+	
+	<!-- Create a persona for DL -->
+	 <t:test id="CreateIdentityRequest01" required="true">
+        <t:request>
+			<CreateIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${persona.name}">
+					<a name="zimbraPrefIdentityName">${persona.name}</a>
+					<a name="zimbraPrefFromDisplay">${persona.zimbraPrefFromDisplay}</a>
+					<a name="zimbraPrefFromAddress">${test_list1.name}</a>
+					<a name="zimbraPrefFromAddressType">sendAs</a>
+				</identity>
+			</CreateIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="name" set="persona.name"/>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="persona.id"/>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity/acct:a[@ name='zimbraPrefFromAddress']" match="${test_list1.name}"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Send an email using persona and verify no error is encountered -->
+    <t:test id="sendmail1" required="true">
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m idnt="${persona.id}">
+					<e t="f" a="${test_list1.name}" p='${persona.name}'/>
+					<e t="t" a="${test_account4.name}"/>
+					<su> ${msg02.subject}</su>
+					<mp ct="text/plain">
+					<content> ${message.content2}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="service.PERM_DENIED" emptyset="1"/>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id2"/>
+		</t:response>
+	</t:test>
+
+	
+	<!-- Verify message details using GetMsgRequest -->
+    <t:test id="GetMsgRequest">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id2}"/>
+            </GetMsgRequest>
+        </t:request>
+       <t:response>
+				<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id2}']">
+            	<t:select path="//mail:e[@t='f']" attr="a" match="${test_list1.name}"/>
+            	<t:select path="//mail:e[@t='f']" attr="p" match="${persona.name}"/>
+            	<t:select path="//mail:e[@t='t']" attr="a" match="${test_account4.name}"/>
+            	<t:select path="//mail:su" match="${msg02.subject}"/>
+				</t:select>
+			</t:response>
+	</t:test>
+</t:test_case>
+    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+<t:test_case testcaseid="sendMailOnBehalfOfDL" type="bhr">
+    <t:objective>Verify sendOnBehalfOfDistList DL rights and no service.PERM_DENIED error when sending email to distribution list and using persona</t:objective>
+    <t:steps>
+			1. Login into Admin.
+			2. Grant Permission "sendOnBehalfOfDistList" to Account1 on Distribution list.
+			3. Login into Account1.
+			4. Send DiscoverRightsRequest to discover grants granted.
+			5. Send email with From: set to DL and Verify message details using GetMsgRequest
+			6. Create a persona for DL 
+			7. Send an email using persona and verify service.PERM_DENIED error is not encountered
+			8. Verify message details using GetMsgRequest
+	</t:steps>
+	
+    <!-- Login as the admin -->
+    <t:test id="admin_login" required="true" depends="ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Grant test_account5.name sendOnBehalfOfDistList permission on DL -->
+    <t:test>
+		<t:request>
+			<GrantRightRequest xmlns="urn:zimbraAdmin">
+				<target type="dl" by="name">${test_list2.name}</target>
+				<grantee type="usr" by="name">${test_account5.name}</grantee>
+				<right>sendOnBehalfOfDistList</right>
+				
+			</GrantRightRequest>    
+		</t:request>
+		<t:response>
+            <t:select path="//admin:GrantRightResponse"/>
+		</t:response>
+	</t:test>
+	
+	<!-- Login as gratee test_account1.name -->
+	<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+    <t:test id="auth_acct2" required="true" depends="acct1_setup">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account5.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <!-- verify right using DiscoverRightsRequest -->
+    <t:test>
+		<t:request>
+			<DiscoverRightsRequest xmlns="urn:zimbraAccount">
+				<right>sendOnBehalfOfDistList</right>		
+			</DiscoverRightsRequest>    
+		</t:request>
+		<t:response>
+            	<t:select path="//acct:DiscoverRightsResponse/acct:targets" attr="right" match="sendOnBehalfOfDistList"/>
+            	<t:select path="//acct:DiscoverRightsResponse/acct:targets/acct:target/acct:email[@addr='${test_list2.name}']"/>
+		</t:response>
+	</t:test>
+
+	<!-- Send email with From: set to DL -->
+	<t:test id="sendmail2" required="true">
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m>
+					<e t="f" a="${test_list2.name}"/>
+					<e t="t" a="${test_account4.name}"/>
+					<su> ${msg03.subject}</su>
+					<mp ct="text/plain">
+					<content> ${message.content2}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="service.PERM_DENIED" emptyset="1"/>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id3"/>
+		</t:response>
+	</t:test>
+	
+	<!-- Verify message details using GetMsgRequest -->
+    <t:test id="GetMsgRequest">
+       <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id3}"/>
+            </GetMsgRequest>
+       </t:request>
+       <t:response>
+				<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id3}']">
+            	<t:select path="//mail:e[@t='f']" attr="a" match="${test_list2.name}"/>
+            	<t:select path="//mail:e[@t='t']" attr="a" match="${test_account4.name}"/>
+            	<t:select path="//mail:su" match="${msg03.subject}"/>
+            </t:select>
+		</t:response>
+    </t:test>
+	
+	<!-- Create a persona for DL -->
+	 <t:test id="CreateIdentityRequest02" required="true">
+        <t:request>
+			<CreateIdentityRequest xmlns="urn:zimbraAccount">
+				<identity name="${persona02.name}">
+					<a name="zimbraPrefIdentityName">${persona02.name}</a>
+					<a name="zimbraPrefFromDisplay">${persona02.zimbraPrefFromDisplay}</a>
+					<a name="zimbraPrefFromAddress">${test_list2.name}</a>
+					<a name="zimbraPrefFromAddressType">sendOnBehalfOf</a>
+				</identity>
+			</CreateIdentityRequest>
+        </t:request>
+        <t:response>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="name" set="persona02.name"/>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="persona02.id"/>
+			<t:select path="//acct:CreateIdentityResponse/acct:identity/acct:a[@ name='zimbraPrefFromAddress']" match="${test_list2.name}"/>
+        </t:response>
+    </t:test>
+    
+    <!-- Send an email using persona and verify no error is encountered -->
+    <t:test id="sendmail1" required="true">
+		<t:request>
+			<SendMsgRequest xmlns="urn:zimbraMail">
+				<m idnt="${persona02.id}">
+					<e t="f" a="${test_list2.name}" p='${persona02.name}'/>
+					<e t="t" a="${test_account4.name}"/>
+					<su> ${msg03.subject}</su>
+					<mp ct="text/plain">
+					<content> ${message.content2}</content>
+					</mp>
+				</m>
+			</SendMsgRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//zimbra:Code" match="service.PERM_DENIED" emptyset="1"/>
+			<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="message.id3"/>
+		</t:response>
+	</t:test>
+	</t:test_case>
+	
+	<!-- Verify message details using GetMsgRequest -->
+    <t:test id="GetMsgRequest">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${message.id3}"/>
+            </GetMsgRequest>
+        </t:request>
+       <t:response>
+				<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id3}']">
+            	<t:select path="//mail:e[@t='f']" attr="a" match="${test_list2.name}"/>
+            	<t:select path="//mail:e[@t='f']" attr="p" match="${persona02.name}"/>
+            	<t:select path="//mail:e[@t='t']" attr="a" match="${test_account4.name}"/>
+            	<t:select path="//mail:su" match="${msg03.subject}"/>
+				</t:select>
+			</t:response>
+    </t:test>
+	
+</t:tests>
