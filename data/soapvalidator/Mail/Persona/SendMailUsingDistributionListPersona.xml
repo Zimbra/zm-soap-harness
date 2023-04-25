@@ -3,9 +3,6 @@
 <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-<t:property name="test_account4.name" value="test4.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-<t:property name="test_account5.name" value="test5.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-<t:property name="test_account6.name" value="test6.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_list1.name" value="testdl1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_list2.name" value="testdl2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="msg01.subject" value="test mail"/>
@@ -88,45 +85,6 @@
             </t:response>
     </t:test>
     
-    <t:test id="create_acct4" required="true" depends="admin_login">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account4.name}</name>
-                <password>${defaultpassword.value}</password>
-            </CreateAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account4.id"/>
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct4.server"/>
-            </t:response>
-    </t:test>
-    
-    <t:test id="create_acct5" required="true" depends="admin_login">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account5.name}</name>
-                <password>${defaultpassword.value}</password>
-            </CreateAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account5.id"/>
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct5.server"/>
-            </t:response>
-    </t:test>
-    
-    <t:test id="create_acct6" required="true" depends="admin_login">
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${test_account6.name}</name>
-                <password>${defaultpassword.value}</password>
-            </CreateAccountRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="test_account6.id"/>
-                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct6.server"/>
-            </t:response>
-    </t:test>
-    
     <!-- Create test DL -->
     <t:test required="true">
         <t:request>
@@ -146,8 +104,7 @@
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
                 <id>${test_list1.id}</id>
                 <dlm>${test_account1.name}</dlm>
-                <dlm>${test_account5.name}</dlm>
-                <dlm>${test_account6.name}</dlm>             
+                <dlm>${test_account2.name}</dlm>          
             </AddDistributionListMemberRequest>
         </t:request>
         <t:response>
@@ -174,8 +131,7 @@
             <AddDistributionListMemberRequest xmlns="urn:zimbraAdmin">
                 <id>${test_list2.id}</id>
                 <dlm>${test_account1.name}</dlm>
-                <dlm>${test_account5.name}</dlm>
-                <dlm>${test_account6.name}</dlm>             
+                <dlm>${test_account2.name}</dlm>            
             </AddDistributionListMemberRequest>
         </t:request>
         <t:response>
@@ -261,7 +217,7 @@
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
 					<e t="f" a="${test_list1.name}"/>
-					<e t="t" a="${test_account4.name}"/>
+					<e t="t" a="${test_account3.name}"/>
 					<su> ${msg01.subject}</su>
 					<mp ct="text/plain">
 					<content> ${message.content1}</content>
@@ -285,7 +241,7 @@
        <t:response>
 			<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id1}']">
             <t:select path="//mail:e[@t='f']" attr="a" match="${test_list1.name}"/>
-            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account4.name}"/>
+            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account3.name}"/>
             <t:select path="//mail:su" match="${msg01.subject}"/>
             </t:select>
 		</t:response>
@@ -316,7 +272,7 @@
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m idnt="${persona.id}">
 					<e t="f" a="${test_list1.name}" p='${persona.name}'/>
-					<e t="t" a="${test_account4.name}"/>
+					<e t="t" a="${test_account3.name}"/>
 					<su> ${msg02.subject}</su>
 					<mp ct="text/plain">
 					<content> ${message.content2}</content>
@@ -342,11 +298,56 @@
 			<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id2}']">
             <t:select path="//mail:e[@t='f']" attr="a" match="${test_list1.name}"/>
             <t:select path="//mail:e[@t='f']" attr="p" match="${persona.name}"/>
-            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account4.name}"/>
+            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account3.name}"/>
             <t:select path="//mail:su" match="${msg02.subject}"/>
 			</t:select>
 			</t:response>
 	</t:test>
+	
+	<!-- Login as recipient test_account3.name -->
+	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+    <t:test id="auth_acct3" required="true" depends="acct1_setup">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>from:(${test_list1.name})</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${msg02.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg02.id"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Verify message details using GetMsgRequest -->
+    <t:test id="GetMsgRequest">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg02.id}"/>
+            </GetMsgRequest>
+        </t:request>
+       <t:response>
+			<t:select path="//mail:GetMsgResponse/mail:m[@id='${msg02.id}']">
+            <t:select path="//mail:e[@t='f']" attr="a" match="${test_list1.name}"/>
+            <t:select path="//mail:e[@t='f']" attr="p" match="${persona.name}"/>
+            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account3.name}"/>
+            <t:select path="//mail:su" match="${msg02.subject}"/>
+			</t:select>
+			</t:response>
+	</t:test>
+    
 </t:test_case>
     
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -382,7 +383,7 @@
 		<t:request>
 			<GrantRightRequest xmlns="urn:zimbraAdmin">
 				<target type="dl" by="name">${test_list2.name}</target>
-				<grantee type="usr" by="name">${test_account5.name}</grantee>
+				<grantee type="usr" by="name">${test_account2.name}</grantee>
 				<right>sendOnBehalfOfDistList</right>
 				
 			</GrantRightRequest>    
@@ -393,11 +394,11 @@
 	</t:test>
 	
 	<!-- Login as gratee test_account1.name -->
-	<t:property name="server.zimbraAccount" value="${test_acct5.server}"/>
+	<t:property name="server.zimbraAccount" value="${test_acct2.server}"/>
     <t:test id="auth_acct2" required="true" depends="acct1_setup">
         <t:request>
             <AuthRequest xmlns="urn:zimbraAccount">
-                <account by="name">${test_account5.name}</account>
+                <account by="name">${test_account2.name}</account>
                 <password>${defaultpassword.value}</password>
             </AuthRequest>
         </t:request>
@@ -426,7 +427,7 @@
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m>
 					<e t="f" a="${test_list2.name}"/>
-					<e t="t" a="${test_account4.name}"/>
+					<e t="t" a="${test_account3.name}"/>
 					<su> ${msg03.subject}</su>
 					<mp ct="text/plain">
 					<content> ${message.content2}</content>
@@ -450,7 +451,7 @@
        <t:response>
 			<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id3}']">
             <t:select path="//mail:e[@t='f']" attr="a" match="${test_list2.name}"/>
-            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account4.name}"/>
+            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account3.name}"/>
             <t:select path="//mail:su" match="${msg03.subject}"/>
             </t:select>
 		</t:response>
@@ -481,10 +482,10 @@
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m idnt="${persona02.id}">
 					<e t="f" a="${test_list2.name}" p='${persona02.name}'/>
-					<e t="t" a="${test_account4.name}"/>
-					<su> ${msg03.subject}</su>
+					<e t="t" a="${test_account3.name}"/>
+					<su>${msg03.subject}</su>
 					<mp ct="text/plain">
-					<content> ${message.content2}</content>
+					<content>${message.content2}</content>
 					</mp>
 				</m>
 			</SendMsgRequest>
@@ -507,7 +508,51 @@
 			<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id3}']">
             <t:select path="//mail:e[@t='f']" attr="a" match="${test_list2.name}"/>
             <t:select path="//mail:e[@t='f']" attr="p" match="${persona02.name}"/>
-            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account4.name}"/>
+            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account3.name}"/>
+            <t:select path="//mail:su" match="${msg03.subject}"/>
+			</t:select>
+			</t:response>
+    </t:test>
+    
+    <!-- Login as recipient test_account3.name -->
+	<t:property name="server.zimbraAccount" value="${test_acct3.server}"/>
+    <t:test id="auth_acct3" required="true" depends="acct1_setup">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${test_account3.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:lifetime"  match="^\d+$"/>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+	 <t:request>
+	   <SearchRequest xmlns="urn:zimbraMail" types="message">
+		   <query>from:(${test_list2.name})</query>
+	   </SearchRequest>
+	 </t:request>
+	  <t:response>
+			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="${msg03.subject}"/>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg03.id"/>
+	 </t:response>
+	</t:test>
+	
+	<!-- Verify message details using GetMsgRequest -->
+    <t:test id="GetMsgRequest">
+        <t:request>
+            <GetMsgRequest xmlns="urn:zimbraMail">
+                <m id="${msg03.id}"/>
+            </GetMsgRequest>
+        </t:request>
+       <t:response>
+			<t:select path="//mail:GetMsgResponse/mail:m[@id='${msg03.id}']">
+            <t:select path="//mail:e[@t='f']" attr="a" match="${test_list2.name}"/>
+            <t:select path="//mail:e[@t='f']" attr="p" match="${persona02.name}"/>
+            <t:select path="//mail:e[@t='t']" attr="a" match="${test_account3.name}"/>
             <t:select path="//mail:su" match="${msg03.subject}"/>
 			</t:select>
 			</t:response>
