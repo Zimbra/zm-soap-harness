@@ -4,15 +4,11 @@
 	<t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
 	<t:property name="msg01.subject" value="test mail" />
 	<t:property name="message.content1" value="content of the message${TIME}.${COUNTER}" />
-	<t:property name="persona.zimbraPrefFromDisplay" value="First${TIME} Last${COUNTER}" />
-	<t:property name="persona.name" value="persona${TIME}${COUNTER}" />
+	<t:property name="persona.default.name" value="DEFAULT" />
 	<t:property name="msg02.subject" value="test mail from persona" />
 	<t:property name="message.content2" value="content of the message${TIME}.${COUNTER}" />
-	<t:property name="msg03.subject" value="test mail - sendOnBehalfOfDistList test" />
-	<t:property name="persona02.name" value="persona2${TIME}${COUNTER}" />
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
-	<t:property name="persona02.zimbraPrefFromDisplay" value="First2${TIME} Last${COUNTER}" />
-
+	
 	<t:test_case testcaseid="Ping" type="always">
 		<t:objective>basic system check</t:objective>
 		<t:test id="ping" required="true">
@@ -90,7 +86,7 @@
 			</t:response>
 		</t:test>
 		
-		<!-- Grant test_account1.name sendAs permission on test_account2.name -->
+		<!-- Grant test_account1.name sendOnBehalfOf permission on test_account2.name -->
 		<t:test required="true">
 			<t:request>
 				<GrantRightRequest xmlns="urn:zimbraAdmin">
@@ -108,11 +104,11 @@
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
 
 	<t:test_case testcaseid="sendMailOnBehalfOfPrimaryAccount" type="bhr">
-		<t:objective>Verify user is able to send an email with sendAs right
+		<t:objective>Verify user is able to send an email with sendOnBehalfOf right
 		</t:objective>
 		<t:steps>
 			1. Login into Admin.
-			2. Grant Permission "sendAs" to Account1 on Account2
+			2. Grant Permission "sendOnBehalfOf" to Account1 on Account2
 			3. Login into Account1.
 			4. Send DiscoverRightsRequest to discover grants granted.
 			5. Send email with From: Primary Account to Account3 and Verify message details using GetMsgRequest
@@ -184,6 +180,8 @@
 						match="${test_account2.name}" />
 					<t:select path="//mail:e[@t='t']" attr="a"
 						match="${test_account3.name}" />
+					<t:select path="//mail:e[@t='s']" attr="a"
+						match="${test_account1.name}" />
 					<t:select path="//mail:su" match="${msg01.subject}" />
 				</t:select>
 			</t:response>
@@ -231,6 +229,8 @@
 						match="${test_account2.name}" />
 					<t:select path="//mail:e[@t='t']" attr="a"
 						match="${test_account3.name}" />
+					<t:select path="//mail:e[@t='s']" attr="a"
+						match="${test_account1.name}" />
 					<t:select path="//mail:su" match="${msg01.subject}" />
 				</t:select>
 			</t:response>
@@ -247,11 +247,11 @@
 	</t:test_case>
 
 	<t:test_case testcaseid="sendMailOnBehalfOfAccountPersona" type="bhr">
-		<t:objective>Verify user is able to send an email with sendAs right
+		<t:objective>Verify user is able to send an email with sendOnBehalfOf right
 		</t:objective>
 		<t:steps>
 			1. Login into Admin.
-			2. Grant Permission "sendAs" to Account1 on Account2
+			2. Grant Permission "sendOnBehalfOf" to Account1 on Account2
 			3. Login into Account1.
 			4. Send DiscoverRightsRequest to discover grants granted.
 			5. Send email with From: Primary Account to Account3 and Verify message details using GetMsgRequest
@@ -288,21 +288,6 @@
 			</t:response>
 		</t:test>
 
-		<!-- Login as gratee test_account1.name -->
-		<t:property name="server.zimbraAccount" value="${test_acct2.server}" />
-		<t:test id="auth_acct1" required="true" depends="acct1_setup">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAccount">
-					<account by="name">${test_account2.name}</account>
-					<password>${defaultpassword.value}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
-				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
-			</t:response>
-		</t:test>
-
 		<t:test required="true">
 			<t:request>
 				<GetIdentitiesRequest xmlns="urn:zimbraAccount" />
@@ -318,8 +303,8 @@
 		<t:test required="true">
 			<t:request>
 				<ModifyIdentityRequest xmlns="urn:zimbraAccount">
-					<identity name="DEFAULT">
-						<a name="zimbraPrefFromAddress">${test_account1.name}</a>
+					<identity name="${persona.default.name}">
+						<a name="zimbraPrefFromAddress">${test_account2.name}</a>
 					</identity>
 				</ModifyIdentityRequest>
 			</t:request>
@@ -333,7 +318,7 @@
 			<t:request>
 				<SendMsgRequest xmlns="urn:zimbraMail">
 					<m>
-						<e t="f" a="${test_account2.name}" />
+						<e t="f" a="${test_account2.name}" p="${persona.default.name}" />
 						<e t="t" a="${test_account3.name}" />
 						<su> ${msg02.subject}</su>
 						<mp ct="text/plain">
@@ -361,12 +346,67 @@
 				<t:select path="//mail:GetMsgResponse/mail:m[@id='${message.id2}']">
 					<t:select path="//mail:e[@t='f']" attr="a"
 						match="${test_account2.name}" />
+					<t:select path="//mail:e[@t='f']" attr="p"
+						match="${persona.default.name}" />
 					<t:select path="//mail:e[@t='t']" attr="a"
 						match="${test_account3.name}" />
+					<t:select path="//mail:e[@t='s']" attr="a"
+						match="${test_account1.name}" />
+					<t:select path="//mail:su" match="${msg02.subject}" />
+				</t:select>
+			</t:response>
+		</t:test>
+		
+		<!-- Login as recipient test_account3.name -->
+		<t:property name="server.zimbraAccount" value="${test_acct3.server}" />
+		<t:test id="auth_acct3" required="true" depends="acct1_setup">
+			<t:request>
+				<AuthRequest xmlns="urn:zimbraAccount">
+					<account by="name">${test_account3.name}</account>
+					<password>${defaultpassword.value}</password>
+				</AuthRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+			</t:response>
+		</t:test>
+
+		<t:test>
+			<t:request>
+				<SearchRequest xmlns="urn:zimbraMail" types="message">
+					<query>subject:(${msg02.subject})</query>
+				</SearchRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:SearchResponse/mail:m/mail:su"
+					match="${msg02.subject}" />
+				<t:select path="//mail:SearchResponse/mail:m" attr="id"
+					set="msg02.id" />
+			</t:response>
+		</t:test>
+
+		<!-- Verify message details using GetMsgRequest -->
+		<t:test id="GetMsgRequest">
+			<t:request>
+				<GetMsgRequest xmlns="urn:zimbraMail">
+					<m id="${msg02.id}" />
+				</GetMsgRequest>
+			</t:request>
+			<t:response>
+				<t:select path="//mail:GetMsgResponse/mail:m[@id='${msg02.id}']">
+					<t:select path="//mail:e[@t='f']" attr="a"
+						match="${test_account2.name}" />
+					<t:select path="//mail:e[@t='f']" attr="p"
+						match="${persona.default.name}" />
+					<t:select path="//mail:e[@t='t']" attr="a"
+						match="${test_account3.name}" />
+					<t:select path="//mail:e[@t='s']" attr="a"
+						match="${test_account1.name}" />
 					<t:select path="//mail:su" match="${msg02.subject}" />
 				</t:select>
 			</t:response>
 		</t:test>
 	</t:test_case>
-
+	
 </t:tests>
