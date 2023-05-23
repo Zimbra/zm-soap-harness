@@ -1,0 +1,283 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+<t:property name="account1.document.htmlfile" value="${testMailRaw.root}/wiki01/basic.html"/>
+<t:property name="account1.document.textfile" value="${testMailRaw.root}/contact/contact1.txt"/>
+<t:property name="account1.document.JPGfile" value="${testMailRaw.root}/contact/sunset.jpg"/>
+<t:property name="account1.document.csvfile" value="${testMailRaw.root}/contact/zcontact2.csv"/>
+<t:property name="account1.document.pdffile" value="${testMailRaw.root}/email27/pdfattachment.pdf"/>
+
+<t:test_case testcaseid="Briefcase_ZimbraFileUploadMaxSize_Setup" type="always" >
+    <t:objective>Basic system check</t:objective>
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:test id="ping" required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id"  set="account1.id"/>
+            <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="name">${account1.server}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:GetServerResponse/admin:server" attr="id" set="server_id"/>
+        </t:response>
+    </t:test>
+    
+    <t:test>
+        <t:request>
+            <GetServerRequest xmlns="urn:zimbraAdmin">
+                <server by="id">${server_id}</server>
+            </GetServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path='//admin:GetServerResponse/admin:server/admin:a[@n="zimbraFileUploadMaxSize"]' set="zimbraFileUploadMaxSize"/>
+        </t:response>
+    </t:test>
+    
+    <t:objective> Modify server attribute zimbraFileUploadMaxSize with 20 GB </t:objective>
+    <t:test id="modifyserverrequest1">
+        <t:request>
+            <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                <id>${server_id}</id>
+                <a n="zimbraFileUploadMaxSize">21474836480</a>
+            </ModifyServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyServerResponse"/>
+        </t:response>
+    </t:test>
+    
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+
+    <t:staftask>
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmmailboxdctl restart\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+        </t:request>
+    </t:staftask>
+
+    <!-- Sleep for 5 minutes to wait for mailbox to come up -->
+    <t:delay sec="60"/>
+    
+</t:test_case>
+ 
+<t:test_case testcaseid="Briefcase_Upload_Files_01" type="bhr" bugids="ZBUG-3204">
+    <t:objective>Upload different type files to the Briefcase </t:objective>
+    
+    <t:steps>
+    1. Login to created account
+    2. Upload a text, html, jpg, csv, pdf files
+    3. Save documents and verify the save response
+    </t:steps>
+
+<t:property name="server.zimbraAccount" value="${account1.server}"/>
+
+    <t:test >
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <GetFolderRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:GetFolderResponse/mail:folder/mail:folder[@name='${globals.briefcase}']" attr="id" set="account1.folder.briefcase.id"/>
+        </t:response>
+    </t:test>
+
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${account1.document.htmlfile}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="document.htmlfile.aid"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${account1.document.textfile}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="document.textfile.aid"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${account1.document.JPGfile}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="document.JPGfile.aid"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${account1.document.csvfile}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="document.csvfile.aid"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${account1.document.pdffile}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="document.pdffile.aid"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
+
+     <t:test >
+        <t:request>
+            <SaveDocumentRequest xmlns="urn:zimbraMail">
+              <doc l="${account1.folder.briefcase.id}">
+                <upload id="${document.htmlfile.aid}"/>
+              </doc>
+            </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse/mail:doc" attr="id" set="document.htmlfile.id"/>
+        </t:response>
+    </t:test>   
+
+    <t:test >
+        <t:request>
+            <ItemActionRequest xmlns="urn:zimbraMail">
+                <action id="${document.htmlfile.id}" op="trash"/>
+            </ItemActionRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ItemActionResponse" />
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SaveDocumentRequest xmlns="urn:zimbraMail">
+              <doc l="${account1.folder.briefcase.id}">
+                <upload id="${document.textfile.aid}"/>
+              </doc>
+            </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SaveDocumentRequest xmlns="urn:zimbraMail">
+              <doc l="${account1.folder.briefcase.id}">
+                <upload id="${document.JPGfile.aid}"/>
+              </doc>
+            </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SaveDocumentRequest xmlns="urn:zimbraMail">
+              <doc l="${account1.folder.briefcase.id}">
+                <upload id="${document.csvfile.aid}"/>
+              </doc>
+            </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test >
+        <t:request>
+            <SaveDocumentRequest xmlns="urn:zimbraMail">
+              <doc l="${account1.folder.briefcase.id}">
+                <upload id="${document.pdffile.aid}"/>
+              </doc>
+            </SaveDocumentRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SaveDocumentResponse"/>
+        </t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:finally>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <!--  Modify server attribute zimbraFileUploadMaxSize with original value  -->
+
+    <t:test id="modifyserverrequest2">
+        <t:request>
+            <ModifyServerRequest xmlns="urn:zimbraAdmin">
+                <id>${server_id}</id>
+                <a n="zimbraFileUploadMaxSize">${zimbraFileUploadMaxSize}</a>
+            </ModifyServerRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyServerResponse"/>
+        </t:response>
+    </t:test>
+</t:finally>
+
+</t:tests>
+
+
