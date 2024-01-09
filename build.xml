@@ -61,7 +61,8 @@
 				<include name="**/commons-logging-1.0.3.jar"/>
 				<include name="**/commons-httpclient-3.1.jar"/>
 				<include name="**/dom4j-1.5.2.jar"/>
-				<include name="**/log4j-1.2.16.jar"/>
+				<include name="**/log4j-core-2.17.1.jar"/>
+				<include name="**/log4j-api-2.17.1.jar"/>
 				<include name="**/javamail-1.4.5.jar"/>
 				<include name="**/mail-1.4.5.jar"/>
 			</tarfileset>
@@ -113,16 +114,15 @@
 			<fileset dir="${build.classes.dir}" />
 		</copy>
 
-		<ivy:install organisation="log4j" module="apache-log4j-extras" revision="1.0" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 		<ivy:install organisation="jaxen" module="jaxen" revision="1.1.3" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 
 		<copy todir="${build.staf.bugreports.jars.dir}">
 			<fileset dir="${dist.dir}">
-				<include name="apache-log4j-extras-1.0.jar" />
 				<include name="commons-cli-1.2.jar" />
 				<include name="dom4j-1.5.2.jar" />
 				<include name="jaxen-1.1.3.jar" />
-				<include name="log4j-1.2.16.jar" />
+				<include name="log4j-core-2.17.1.jar" />
+				<include name="log4j-api-2.17.1.jar" />
 			</fileset>
 		</copy>
 
@@ -131,7 +131,7 @@
 				<attribute name="Main-Class" value="staf.Driver" />
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.bugreports.ResultsStaf" />
-					<attribute name="Packaged-Jars" value="apache-log4j-extras-1.0 commons-cli-1.2 dom4j-1.5.2 jaxen-1.1.3 log4j-1.2.16"/>
+					<attribute name="Packaged-Jars" value="commons-cli-1.2 dom4j-1.5.2 jaxen-1.1.3 log4j-core-2.17.1 log4j-api-2.17.1"/>
 				</section>
 			</manifest>
 		</jar>
@@ -154,7 +154,8 @@
 		<copy todir="${build.staf.result.jars.dir}">
 			<fileset dir="${dist.dir}">
 				<include name="json-20160810.jar"/>
-				<include name="log4j-1.2.16.jar"/>
+				<include name="log4j-core-2.17.1.jar"/>
+				<include name="log4j-api-2.17.1.jar"/>
 				<include name="commons-logging-1.0.3"/>
 			</fileset>
 		</copy>
@@ -164,7 +165,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.results.ResultsCore"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.results.ResultsStaf"/>
-					<attribute name="Packaged-Jars" value="json-20160810 postgresql-9.1-901.jdbc4 log4j-1.2.16 commons-logging-1.0.3"/>
+					<attribute name="Packaged-Jars" value="json-20160810 postgresql-9.1-901.jdbc4 log4j-core-2.17.1 log4j-api-2.17.1 commons-logging-1.0.3"/>
 				</section>
 			</manifest>
 		</jar>
@@ -179,7 +180,8 @@
 
 		<copy todir="${build.staf.inject.jars.dir}">
 			<fileset dir="${dist.dir}">
-				<include name="log4j-1.2.16.jar"/>
+				<include name="log4j-core-2.17.1.jar"/>
+				<include name="log4j-api-2.17.1.jar"/>
 				<include name="javamail-1.4.5.jar"/>
 				<include name="mail-1.4.5.jar"/>
 			</fileset>
@@ -190,7 +192,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.inject.Driver"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.inject.INJECTStaf"/>
-					<attribute name="Packaged-Jars" value="zimbrainject mail-1.4.5 javamail-1.4.5 activation log4j-1.2.16"/>
+					<attribute name="Packaged-Jars" value="zimbrainject mail-1.4.5 javamail-1.4.5 activation log4j-core-2.17.1 log4j-api-2.17.1"/>
 				</section>
 			</manifest>
 		</jar>
@@ -205,7 +207,8 @@
 		</copy>
 
 		<ivy:install organisation="commons-cli" module="commons-cli" revision="1.2" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
-		<ivy:install organisation="log4j" module="log4j" revision="1.2.16" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="org.apache.logging.log4j" module="log4j-core" revision="2.17.1" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
+		<ivy:install organisation="org.apache.logging.log4j" module="log4j-api" revision="2.17.1" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 		<ivy:install organisation="commons-httpclient" module="commons-httpclient" revision="3.1" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 		<ivy:install organisation="dom4j" module="dom4j" revision="1.5.2" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
 		<ivy:install organisation="commons-logging" module="commons-logging" revision="1.0.3" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
@@ -223,7 +226,8 @@
 		<copy todir="${build.staf.importer.jars.dir}">
 			<fileset dir="${dist.dir}">
 				<include name="commons-cli-1.2.jar"/>
-				<include name="log4j-1.2.16.jar"/>
+				<include name="log4j-core-2.17.1.jar"/>
+				<include name="log4j-api-2.17.1"/>
 				<include name="commons-httpclient-3.1.jar"/>
 				<include name="dom4j-1.5.2.jar"/>
 				<include name="commons-logging-1.0.3.jar"/>
@@ -240,7 +244,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.importer.Driver"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.importer.StafIntegration"/>
-					<attribute name="Packaged-Jars" value="commons-cli-1.2 log4j-1.2.16 commons-httpclient-3.1 dom4j-1.5.2 commons-logging-1.0.3 commons-codec-1.6 json-20160810 mail-1.4.5 javamail-1.4.5 libidn-1.24 ${zimbraJarPath}"/>
+					<attribute name="Packaged-Jars" value="commons-cli-1.2 log4j-core-2.17.1 log4j-api-2.17.1 commons-httpclient-3.1 dom4j-1.5.2 commons-logging-1.0.3 commons-codec-1.6 json-20160810 mail-1.4.5 javamail-1.4.5 libidn-1.24 ${zimbraJarPath}"/>
 				</section>
 			</manifest>
 		</jar>
@@ -254,11 +258,10 @@
 			<fileset dir="${build.classes.dir}"/>
 		</copy>
 
-		<ivy:install organisation="log4j" module="log4j" revision="1.2.16" settingsRef="dev.settings" from="chain-resolver" to="build-dist" overwrite="true" transitive="true" type="jar"/>
-
 		<copy todir="${build.staf.nunit.jars.dir}">
 			<fileset dir="${dist.dir}">
-				<include name="log4j-1.2.16.jar"/>
+				<include name="log4j-core-2.17.1.jar"/>
+				<include name="log4j-api-2.17.1.jar"/>
 			</fileset>
 		</copy>
 
@@ -267,7 +270,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.nunit.Driver"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.nunit.StafService"/>
-					<attribute name="Packaged-Jars" value="zimbranunit log4j-1.2.16"/>
+					<attribute name="Packaged-Jars" value="zimbranunit log4j-core-2.17.1 log4j-api-2.17.1"/>
 				</section>
 			</manifest>
 		</jar>
@@ -348,7 +351,8 @@
 				<include name="apache-jsieve-core-0.5.jar"/>
 				<include name="jzlib-1.0.7.jar"/>
 				<include name="jaxen-1.1.3.jar"/>
-				<include name="log4j-1.2.16.jar"/>
+				<include name="log4j-core-2.17.1.jar"/>
+				<include name="log4j-api-2.17.1.jar"/>
 				<include name="lucene-3.5.0.jar"/>
 				<include name="unboundid-ldapsdk-2.3.5.jar"/>
 				<include name="mariadb-java-client-1.1.8.jar"/>
@@ -370,7 +374,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.soap.SoapTestMain"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.soap.StafIntegration"/>
-					<attribute name="Packaged-Jars" value="webservices-api webservices-rt metro-zcs-soapservice testng-6.8 guava-23.0 json-20160810 commons-codec-1.7 zimbrastore activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 unboundid-ldapsdk-2.3.5 commons-logging-1.0.3 log4j-1.2.16 jaxen-1.1.3 httpclient-4.5.2 httpasyncclient-4.1.2 httpcore-4.4.5 httpcore-nio-4.4.5 ${zimbraJarPath}"/>
+					<attribute name="Packaged-Jars" value="webservices-api webservices-rt metro-zcs-soapservice testng-6.8 guava-23.0 json-20160810 commons-codec-1.7 zimbrastore activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 unboundid-ldapsdk-2.3.5 commons-logging-1.0.3 log4j-core-2.17.1 log4j-api-2.17.1 jaxen-1.1.3 httpclient-4.5.2 httpasyncclient-4.1.2 httpcore-4.4.5 httpcore-nio-4.4.5 ${zimbraJarPath}"/>
 				</section>
 			</manifest>
 		</jar>
@@ -380,7 +384,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.smtp.StafTestSMTP"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.smtp.StafTestSMTP"/>
-					<attribute name="Packaged-Jars" value="json-20160810 commons-codec-1.7.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
+					<attribute name="Packaged-Jars" value="json-20160810 commons-codec-1.7.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-core-2.17.1 log4j-api-2.17.1 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
 				</section>
 			</manifest>
 		</jar>
@@ -390,7 +394,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.sample.StafCore"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.sample.StafMain"/>
-					<attribute name="Packaged-Jars" value="json-20160810 commons-codec-1.7.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.16 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
+					<attribute name="Packaged-Jars" value="json-20160810 commons-codec-1.7.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-core-2.17.1 log4j-api-2.17.1 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
 				</section>
 			</manifest>
 		</jar>
@@ -400,7 +404,7 @@
 				<attribute name="Main-Class" value="com.zimbra.qa.email.INJECTCore"/>
 				<section name="staf/service/info">
 					<attribute name="Service-Class" value="com.zimbra.qa.email.INJECTStaf"/>
-					<attribute name="Packaged-Jars" value="json-20160810 commons-codec-1.7.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-1.2.15 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
+					<attribute name="Packaged-Jars" value="json-20160810 commons-codec-1.7.jar activation ical4j-0.9.16-patched mail-1.4.5 javamail-1.4.5 commons-cli-1.2 servlet-api junit-4.8.2 dom4j-1.5.2 commons-httpclient-3.1 log4j-core-2.17.1 log4j-api-2.17.1 jaxen-1.1.3 commons-logging-1.0.3 ${zimbraJarPath}"/>
 				</section>
 			</manifest>
 		</jar>
