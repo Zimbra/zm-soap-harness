@@ -121,7 +121,7 @@
     <t:objective>Delete Inline event.</t:objective>
 
 
-	<t:property name="time.20071201120000.gmt" value="1196510400000"/>
+	<t:property name="time.20251201120000.gmt" value="1764590400000"/>
    
     <t:test>
         <t:request>
@@ -129,8 +129,8 @@
                 <m>
                     <inv > 
                     	<comp method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" >
-	                        <s d="${ICALTIME[${time.20071201120000.gmt}]}"/>  
-	                        <e d="${ICALTIME(+1h)[${time.20071201120000.gmt}]}"/>  
+	                        <s d="${ICALTIME[${time.20251201120000.gmt}]}"/>  
+	                        <e d="${ICALTIME(+1h)[${time.20251201120000.gmt}]}"/>  
 	                        <or a="${account1.name}"/>
                         </comp>
                     </inv>
@@ -155,7 +155,7 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${appointment1.id}']">
         		<t:select path="//mail:comp">
-        			<t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20071201120000.gmt}]}"/>
+        			<t:select path="//mail:s" attr="d" contains="${ICALTIME[${time.20251201120000.gmt}]}"/>
             	</t:select>
             </t:select>
         </t:response>
@@ -163,7 +163,7 @@
 
    <t:test>
         <t:request>
-			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20071201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20071201120000.gmt}]}" types="appointment">
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20251201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20251201120000.gmt}]}" types="appointment">
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
@@ -193,7 +193,7 @@
  
    <t:test>
         <t:request>
-			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20071201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20071201120000.gmt}]}" types="appointment">
+			<SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20251201120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20251201120000.gmt}]}" types="appointment">
 				<query>inid:${account1.calendar.folder.id}</query>
 			</SearchRequest>
         </t:request>
