@@ -103,6 +103,9 @@ function check_staf {
 
 function start_staf {
     cd $dir_staf
+    STAF local shutdown shutdown || true
+    old_staf_pid=$(pidof STAFProc)
+    sudo kill -9 $old_staf_pid
     export PATH=$PATH:$dir_staf/bin && \
     export LD_LIBRARY_PATH=$dir_staf/lib
     sudo chmod +wx ./STAFEnv.sh
@@ -190,7 +193,7 @@ function set_properties {
     sudo sed -i "s|@zimbra\.com|@$domain_name|g" $dir_qa/soapvalidator/conf/global.properties
     sudo sed -i "s|defaultdomain\.name=.*|defaultdomain.name=$domain_name|g" $dir_qa/soapvalidator/conf/global.properties
     sudo sed -i "s|admin\.password=.*|admin.password=$ADMIN_PASS|g" $dir_qa/soapvalidator/conf/global.properties
-    sudo sed -i "s|admin\.user=.*|admin.password=$ADMIN_USER|g" $dir_qa/soapvalidator/conf/global.properties
+    sudo sed -i "s|admin\.user=.*|admin.user=$ADMIN_USER|g" $dir_qa/soapvalidator/conf/global.properties
 }
 
 function run_tests {
