@@ -23,11 +23,13 @@ function main {
     dir_qa="/opt/qa"
     dir_staf="/usr/local/staf"
     dir_soaprun="/opt/soaprun/"
-    notify_email="ganesh.anarse@syancor.com"
+    NOTIFY_EMAIL="ganesh.anarse@syancor.com"
     HOSTNAME="$(hostname -f)"
     TEST_PATH="$dir_qa/soapvalidator/data/soapvalidator/Admin/Auth/AdminAuth-Basic.xml"
     TEST_SUITE="BHR"
     ADMIN_USER="admin"
+    TODAY="$(date +"%F")"
+    source $HOME/.bashrc
 
     while [ $# -gt 0 ]; do
 	key="$1"
@@ -77,7 +79,11 @@ function main {
     if [[ -z "$ADMIN_PASS" ]]; then
         echo "--admin-pass is required" && exit 1;
     fi
+    if [[ -z "$NOTIFY_EMAIL" ]]; then
+        echo "Warning: --notify-email is not set, No one will be notified upon completion.";
+    fi
     
+    echo $ENV_MAIL_FROM
     check_staf
     set_staf
     run_tests
@@ -203,7 +209,7 @@ function run_tests {
             ZIMBRAQAROOT $dir_qa/soapvalidator/ \
             DIRECTORY $TEST_PATH \
             LOG $dir_soaprun \
-            SUITE $TEST_SUITE ) > "$HOME/staf_cmd_logs.txt" &
+            SUITE $TEST_SUITE ) > "$HOME/$TODAY-staf_cmd_logs.txt" &
     SOAP_RUN_PID="$!"
 }
 
@@ -223,41 +229,132 @@ function monitor_soap_run {
 		if [[ "$p" == "Yes" ]]; then
 			sleep 5;
 		else
-			send_email_notification
+            if [[ -z "$NOTIFY_EMAIL" ]]; then
+                exit 0;
+            else
+			    send_email;
+            fi
 			exit 0;
 		fi
 	done
 }
 
-function send_email_notification {
-    rm -rf "$dir_bin/email.txt"
-    cat <<EOF > "$dir_bin/email.txt"
-    To: $NOTIFY_EMAIL
-    Subject: "SOAP: Tests execution started at $(date)"
+function send_email {
+    # NOTE: Env variables -> ENV_MAIL_FROM, ENV_MAIL_PASSWORD and ENV_SMTP_SERVER Must be set for 
+    # Email to be sent out.
+    email_file="$dir_bin/email.txt"
+    attach_logs="$HOME/$TODAY-staf_cmd_logs.txt"
+    mail_from="$ENV_MAIL_FROM"
+    mail_to="$NOTIFY_EMAIL"
+    mail_subject="Jenkins SOAP Tests execution: $HOSTNAME - $TODAY"
+    attach_logs_encoded=$(cat $attach_logs | base64)
+    # Parse logs to get the count
+    executed=$(grep "Executed:" "$attach_logs" | head -n 1 | awk -F ':' '{print $2}')
+    passed=$(grep "Pass:" "$attach_logs" | head -n 1 | awk -F ':' '{print $2}')
+    failed=$(grep "Fail:" "$attach_logs" | head -n 1 | awk -F ':' '{print $2}')
+    script_errors=$(grep "Script Errors:" "$attach_logs" | head -n 1 | awk -F ':' '{print $2}')
+    fail_percentage=$(awk "BEGIN {printf \"%.2f\", ($failed/$executed) * 100}")
 
-    Status of the SOAP execution on $HOSTNAME
-    ------------------------------------------------------------
-    Host: $HOSTNAME
-    Test Path: $TEST_PATH
-    Test Suite: $TEST_SUITE
-    SOAP test results are now available at: $dir_soaprun
+    cat <<EOF >$email_file
+MIME-Version: 1.0
+From: $mail_from
+To: $mail_to
+Subject: $mail_subject
+Content-Type: multipart/mixed; boundary=BOUNDARY
+
+--BOUNDARY
+Content-Type: text/html
+Content-Disposition: inline
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .passed {
+            color: green;
+            font-weight: bold;
+        }
+        .failed {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>SOAP Tests Execution Report</h2>
+    <table>
+        <tr>
+            <th>Metrics</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Executed</td>
+            <td>$executed</td>
+        </tr>
+        <tr>
+            <td>Pass</td>
+            <td class="passed">$passed</td>
+        </tr>
+        <tr>
+            <td>Fail</td>
+            <td class="failed">$failed</td>
+        </tr>
+        <tr>
+            <td>Script Errors</td>
+            <td>$script_errors</td>
+        </tr>
+    </table>
+    <p>Percentage of failed tests: <span class="failed">$fail_percentage%</span></p>
+    <p>Please check the attachment for detailed logs.</p>
+</body>
+</html>
+
+--BOUNDARY
+Content-Type: text/plain; name="$(basename "$attach_logs")"
+Content-Disposition: attachment; filename="$(basename "$attach_logs")"
+Content-Transfer-Encoding: base64
+
+$attach_logs_encoded
+
+--BOUNDARY--
 EOF
 
-    if [ "$(command -v sendmail)" ]; then
-        echo "pass" >> /dev/null;
+    curl --url "smtps://$ENV_SMTP_SERVER" --ssl-reqd \
+            --mail-from "$ENV_MAIL_FROM" \
+            --mail-rcpt "$NOTIFY_EMAIL" \
+            --user "$ENV_MAIL_FROM:$ENV_MAIL_PASSWORD" \
+            -T "$email_file" \
+            -k --anyauth \
+            --silent -o /dev/null
+    if [[ "$?" -eq "0" ]]; then
+        rm $email_file && return 0;
     else
-        if [ "$(command -v apt)" ]; then
-            sudo apt-get install sendmail -y
-        else
-            sudo yum install sendmail -y
-        fi
+        return 1;
     fi
-
-    ## WARNING: Following command might not work on Ubuntu systems.
-    ## This should be addressed later.
-    sendmail -t $NOTIFY_EMAIL < "$dir_bin/email.txt"
 }
-
 
 # #########################
 	main "$@"
