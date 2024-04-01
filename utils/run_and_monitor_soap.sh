@@ -27,6 +27,7 @@ function main {
     HOSTNAME="$(hostname -f)"
     TEST_PATH="$dir_qa/soapvalidator/data/soapvalidator/Admin/Auth/AdminAuth-Basic.xml"
     TEST_SUITE="BHR"
+    ZCS_VERSION="$(sudo su - zimbra -c 'zmcontrol -v')"
     ADMIN_USER="admin"
     TODAY="$(date +"%F")"
     source $HOME/.bashrc
@@ -87,9 +88,10 @@ function main {
     check_staf
     set_staf
     run_tests
-    echo "SOAP Run PID: $SOAP_RUN_PID"
+    echo "Installed ZCS version: $ZCS_VERSION"
+    echo "SOAP tests execution process PID: $SOAP_RUN_PID"
     monitor_soap_run &
-    echo "Started Monitoring the SOAP run..."
+    echo "Started Monitoring the SOAP run..." && exit 0;
 }
 
 function check_staf {
@@ -204,6 +206,7 @@ function set_properties {
 
 function run_tests {
     # Execute SOAP tests on the server
+    started_at="$(date +'At %r on %F')"
     (STAF LOCAL soap \
             EXECUTE localhost \
             ZIMBRAQAROOT $dir_qa/soapvalidator/ \
@@ -232,6 +235,7 @@ function monitor_soap_run {
             if [[ -z "$NOTIFY_EMAIL" ]]; then
                 exit 0;
             else
+                finished_at="$(date +'At %r on %F')"
 			    send_email;
             fi
 			exit 0;
@@ -255,6 +259,7 @@ function send_email {
     script_errors=$(grep "Script Errors:" "$attach_logs" | head -n 1 | awk -F ':' '{print $2}')
     fail_percentage=$(awk "BEGIN {printf \"%.2f\", ($failed/$executed) * 100}")
 
+    sudo rm -rf "$email_file"
     cat <<EOF >$email_file
 MIME-Version: 1.0
 From: $mail_from
@@ -328,6 +333,11 @@ Content-Disposition: inline
         </tr>
     </table>
     <p>Percentage of failed tests: <span class="failed">$fail_percentage%</span></p>
+    <p>ZCS version installed: <span>$ZCS_VERSION</span></p>
+    <p>Tests path: <span>$TEST_PATH</span></p>
+    <p>Tests suite: <span>$TEST_SUITE</span></p>
+    <p>Execution started: <span>$started_at</span></p>
+    <p>Execution finished: <span>$finished_at</span></p>
     <p>Please check the attachment for detailed logs.</p>
 </body>
 </html>
@@ -350,7 +360,7 @@ EOF
             -k --anyauth \
             --silent -o /dev/null
     if [[ "$?" -eq "0" ]]; then
-        rm $email_file && return 0;
+        return 0;
     else
         return 1;
     fi
