@@ -23,6 +23,8 @@ function main {
     dir_qa="/opt/qa"
     dir_staf="/usr/local/staf"
     dir_soaprun="/opt/soaprun/"
+    # New directory to build soapdata in it.
+    dir_soapdata="$dir_bin/soapdata_build"
     NOTIFY_EMAIL="ganesh.anarse@syancor.com"
     HOSTNAME="$(hostname -f)"
     TEST_PATH="$dir_qa/soapvalidator/data/soapvalidator/Admin/Auth/AdminAuth-Basic.xml"
@@ -84,7 +86,6 @@ function main {
         echo "Warning: --notify-email is not set, No one will be notified upon completion.";
     fi
     
-    echo $ENV_MAIL_FROM
     check_staf
     set_staf
     run_tests
@@ -93,6 +94,34 @@ function main {
     monitor_soap_run &
     echo "Started Monitoring the SOAP run..." && exit 0;
 }
+
+function build_soapdata {
+    # Check if the soapdata exists in /opt/qa directory
+    # If not Build SOAP data and copy to the said directory
+    echo "Building soapdata.tar" && mkdir "$dir_soapdata" && cd "$dir_soapdata"
+
+	git clone https://${GITHUB_ACCESS_TOKEN}@github.com/Zimbra/zimbra-package-stub.git
+	git clone -b "9.0.0" https://${GITHUB_ACCESS_TOKEN}@github.com/Zimbra/zm-zcs.git
+	git clone -b "9.0.0.p24" https://${GITHUB_ACCESS_TOKEN}@github.com/Zimbra/zm-mailbox.git
+	git clone https://${GITHUB_ACCESS_TOKEN}@github.com/Zimbra/zm-soap-harness.git
+	git clone https://${GITHUB_ACCESS_TOKEN}@github.com/Zimbra/zm-network-soap-harness.git
+
+	# start building
+	[ -d "$HOME/.ivy2/cache" ] || mkdir -p "$HOME/.ivy2/cache"
+	[ -d "$HOME/.zcs-deps" ] || mkdir -p "$HOME/.zcs-deps"
+	# Download ant-contrib
+	wget https://sourceforge.net/projects/ant-contrib/files/ant-contrib/ant-contrib-1.0b1/ant-contrib-1.0b1-bin.tar.gz || exit 1;
+	tar -xvf ant-contrib-1.0b1-bin.tar.gz && \
+	cp ant-contrib/lib/ant-contrib-1.0b1.jar $HOME/.zcs-deps && rm -rf ant-contrib-1.0b1-bin.tar.gz
+	[ "$?" -eq 0 ] && echo "Downloaded ant-contrib dependency under $HOME/.zcs-deps" || exit 1;
+
+	echo "Building zm-mailbox..." && cd $dir_soapdata/zm-mailbox
+	ant clean-ant publish-local-all -Dzimbra.buildinfo.version=9.0.0_GA || exit 1;
+	echo "Building zm-soap-harness..." && cd $dir_soapdata/zm-soap-harness
+	ant jar && ant zm-network-soap-content build-soap-data-file
+	[ "$?" -eq 0 ] && echo "soapdata.tar is created under $dir_soapdata/zm-soap-harness/build" || exit 1;
+}
+
 
 function check_staf {
     echo "Checking if the STAF command is installed."
@@ -111,6 +140,7 @@ function check_staf {
 
 function start_staf {
     cd $dir_staf
+    sudo chown -R $USER:$USER $dir_staf
     STAF local shutdown shutdown || true
     old_staf_pid=$(pidof STAFProc)
     sudo kill -9 $old_staf_pid
@@ -140,19 +170,17 @@ function update_dependencies {
         # Download STAF tar for ubuntu systems
         cd "$HOME"
         sudo apt-get update
-        sudo apt-get install -y openjdk-8-jdk
+        sudo apt-get install -y openjdk-8-jdk ant git
         sudo wget http://prdownloads.sourceforge.net/staf/STAF3426-linux-amd64.tar.gz && \
         tar -xvf STAF3426-linux-amd64.tar.gz
     else
         # Download STAF tar for RHEL systems
+        cd "$HOME"
         sudo yum update
-        sudo yum install -y openjdk-8-jdk
-        sudo wget http://prdownloads.sourceforge.net/staf/STAF3426-linux.tar.gz && \
+        sudo yum install -y java-1.8.0-openjdk-devel ant git
+        sudo wget http://prdownloads.sourceforge.net/staf/STAF3426-linux-amd64.tar.gz && \
         tar -xvf STAF3426-linux.tar.gz
     fi
-    
-    update-alternatives --list java
-    update-java-alternatives -s $(update-java-alternatives -l | grep '1\.8' | cut -d " " -f1) || echo '.'
     java -version
 
     # Install STAF
@@ -166,8 +194,21 @@ function update_dependencies {
 }
 
 function set_staf {
-    sudo rm -rf "$dir_qa"; sudo mkdir "$dir_qa"
-    sudo tar -xvf "$dir_bin/soapdata.tar" -C "$dir_qa" 1> /dev/null || exit 1;
+    sudo chown $USER:$USER "$dir_qa"
+    # Check if we need to build new soapdata.tar
+    if [ -d "$dir_qa/soapvalidator" ]; then
+        echo "directory $dir_qa/soapvalidator/ exists already"
+        echo "Will execute the test cases with soapdata present locally."
+        echo "If you wish to build new soapdata.tar, then delete the contents of $dir_qa and re-run."
+    else
+        echo "Warning: Cannot find $dir_qa/soapvalidator/; building soapdata.tar from scratch..."
+        if [[ -z "$GITHUB_ACCESS_TOKEN" ]]; then
+            echo "ERROR: Cannot build soapdata.tar without GITHUB_ACCESS_TOKEN env variable."
+            exit 1;
+        fi
+        build_soapdata
+        sudo tar -xvf "$dir_soapdata/zm-soap-harness/build/soapdata.tar" -C "$dir_qa" 1> /dev/null || exit 1;
+    fi
     # Edit /opt/qa/soapvalidator/conf/global.properties file, change domain/server values.
     set_properties
     # Register new staf services
