@@ -15,7 +15,7 @@
 <t:property name="appointment2.content" value="Content of the message${TIME}.${COUNTER}"/>
 <t:property name="reminder2.text1" value="Reminder 1"/>
 <t:property name="reminder2.text2" value="Reminder 2"/>
-
+<t:property name="utc.time" value="Z"/>
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
@@ -142,7 +142,7 @@
         <t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt1.invId}']">
                         <t:select path="//mail:comp">
-                                <t:select path="//mail:s" attr="d" contains="${ICALTIME[${time.20071201120000.gmt}]}"/>
+                                <t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20071201120000.gmt}]}${utc.time}"/>
                 </t:select>
             </t:select>
         </t:response>
