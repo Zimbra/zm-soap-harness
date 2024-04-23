@@ -10,6 +10,7 @@
 <t:property name="CurrentTime" value="${GENTIME}"/>
 <t:property name="Time1" value="${ICALTIME(+30m)}"/>
 <t:property name="Time2" value="${ICALTIME(+1h)}"/>
+<t:property name="utc.time" value="Z"/>
 
 <t:property name="test_acct.server" value="NOT_DEFINED"/>
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
@@ -141,8 +142,8 @@
         <t:response>
             <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp" attr="name" match="${task1.subject}"/>
             <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp" attr="loc" match="${task1.location}"/>
-            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:s" attr="d" contains="${Time1}"/>
-            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:e" attr="d" contains="${Time2}"/>
+            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:s" attr="d" match="${Time1}${utc.time}"/>
+            <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:e" attr="d" match="${Time2}${utc.time}"/>
             <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:or" attr="a" match="${test_account1.name}"/>
             <t:select path = "//mail:GetTaskResponse/mail:task/mail:inv/mail:comp/mail:at" attr="a" match="${test_account2.name}"/>
         </t:response>
