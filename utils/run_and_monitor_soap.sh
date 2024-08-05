@@ -195,6 +195,9 @@ function update_dependencies {
 
 function set_staf {
     sudo chown $USER:$USER "$dir_qa"
+    sudo rm -rf "$dir_soaprun"
+    sudo mkdir -p "$dir_soaprun"
+    sudo chown $USER:$USER "$dir_soaprun"
     # Check if we need to build new soapdata.tar
     if [ -d "$dir_qa/soapvalidator" ]; then
         echo "directory $dir_qa/soapvalidator/ exists already"
