@@ -94,7 +94,10 @@ function main {
     monitor_soap_run &
     echo "Started Monitoring the SOAP run..." && exit 0;
 }
-
+function run_staf {
+	local command="$@"
+	sudo bash -c "source $dir_staf/STAFEnv.sh && $command"
+}
 function build_soapdata {
     # Check if the soapdata exists in /opt/qa directory
     # If not Build SOAP data and copy to the said directory
@@ -129,9 +132,9 @@ function check_staf {
         echo "Directory \"$dir_staf\" exists"
         echo -e "Starting STAF on the server..." && start_staf
         # un-register old STAF services
-        staf local service remove service SOAP;
-        staf local service remove service LOG;
-        staf local service remove service INJECT;
+        run_staf "staf local service remove service SOAP;"
+        run_staf "staf local service remove service LOG;"
+        run_staf "staf local service remove service INJECT;"
     else 
         echo -e "STAF not installed.\nInstalling & starting STAF on the server..."
         update_dependencies && start_staf 
@@ -141,17 +144,14 @@ function check_staf {
 function start_staf {
     cd $dir_staf
     sudo chown -R $USER:$USER $dir_staf
-    STAF local shutdown shutdown || true
-    old_staf_pid=$(pidof STAFProc)
+    run_staf "STAF local shutdown shutdown || true"
+    old_staf_pid=$(sudo pidof STAFProc)
     sudo kill -9 $old_staf_pid
-    export PATH=$PATH:$dir_staf/bin && \
-    export LD_LIBRARY_PATH=$dir_staf/lib
     sudo chmod +wx ./STAFEnv.sh
-    ./STAFEnv.sh
-    ./startSTAFProc.sh
+    run_staf "$dir_staf/startSTAFProc.sh"
     if [[ $? -eq 0 ]]; then
         echo "STAF started! Testing ping..."
-        STAF local ping ping
+        run_staf "STAF local ping ping"
         if [[ $? -ne 0 ]]; then
             echo -e "ERROR: STAF is not able to run local ping.\nPlease install STAF correctly on server.";
             exit 1;
@@ -215,17 +215,17 @@ function set_staf {
     # Edit /opt/qa/soapvalidator/conf/global.properties file, change domain/server values.
     set_properties
     # Register new staf services
-    echo "Adding services to SOAP" && cd $dir_staf && ./STAFEnv.sh
-    staf local service add service SOAP LIBRARY JSTAF EXECUTE $dir_qa/soapvalidator/bin/zimbrastaf.jar; \
-    staf local service add service LOG LIBRARY STAFLog; \
-    staf local service add service INJECT LIBRARY JSTAF EXECUTE $dir_qa/soapvalidator/bin/zimbrainject.jar;
+    echo "Adding services to SOAP"
+    run_staf "staf local service add service SOAP LIBRARY JSTAF EXECUTE $dir_qa/soapvalidator/bin/zimbrastaf.jar; \
+	          staf local service add service LOG LIBRARY STAFLog; \
+	          staf local service add service INJECT LIBRARY JSTAF EXECUTE $dir_qa/soapvalidator/bin/zimbrainject.jar"
     ret_code="$?"
     if [[ "$ret_code" -eq 49 ]]; then
         echo "Services already present in STAF, ready to execute test cases!" && \
-        staf local service list
+        run_staf "staf local service list"
     elif [[ "$ret_code" -eq 0 ]]; then
         echo "Services added to STAF, ready to execute test cases!" && \
-        staf local service list
+        run_staf "staf local service list"
     else
         echo "WARNING: Error while adding the services to STAF, test cases might not get executed!"
     fi
@@ -251,12 +251,13 @@ function set_properties {
 function run_tests {
     # Execute SOAP tests on the server
     started_at="$(date +'At %r on %F')"
-    (STAF LOCAL soap \
-            EXECUTE localhost \
-            ZIMBRAQAROOT $dir_qa/soapvalidator/ \
-            DIRECTORY $TEST_PATH \
-            LOG $dir_soaprun \
-            SUITE $TEST_SUITE ) > "$HOME/$TODAY-staf_cmd_logs.txt" &
+    local command="STAF LOCAL soap \
+	                    EXECUTE localhost \
+	                    ZIMBRAQAROOT $dir_qa/soapvalidator/ \
+	                    DIRECTORY $TEST_PATH \
+	                    LOG $dir_soaprun \
+	                    SUITE $TEST_SUITE"
+    run_staf "$command" >> "$HOME/$TODAY-staf_cmd_logs.txt" &
     SOAP_RUN_PID="$!"
 }
 
