@@ -171,6 +171,7 @@ function update_dependencies {
         cd "$HOME"
         sudo apt-get update
         sudo apt-get install -y openjdk-8-jdk ant git
+        export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
         sudo wget http://prdownloads.sourceforge.net/staf/STAF3426-linux-amd64.tar.gz && \
         tar -xvf STAF3426-linux-amd64.tar.gz
     else
@@ -194,6 +195,7 @@ function update_dependencies {
 }
 
 function set_staf {
+    sudo mkdir -p $dir_qa
     sudo chown $USER:$USER "$dir_qa"
     sudo rm -rf "$dir_soaprun"
     sudo mkdir -p "$dir_soaprun"
