@@ -403,6 +403,11 @@ $attach_logs_encoded
 --BOUNDARY--
 EOF
 
+    echo ENV_SMTP_SERVER is $ENV_SMTP_SERVER > /tmp/mail.txt
+    echo ENV_MAIL_FROM is $ENV_MAIL_FROM >> /tmp/mail.txt
+    echo NOTIFY_EMAIL is $NOTIFY_EMAIL >> /tmp/mail.txt
+    echo ENV_MAIL_PASSWORD is $ENV_MAIL_PASSWORD >> /tmp/mail.txt
+
     curl --url "smtps://$ENV_SMTP_SERVER" --ssl-reqd \
             --mail-from "$ENV_MAIL_FROM" \
             --mail-rcpt "$NOTIFY_EMAIL" \
@@ -411,8 +416,10 @@ EOF
             -k --anyauth \
             --silent -o /dev/null
     if [[ "$?" -eq "0" ]]; then
+	echo "mail sent" >> /tmp/mail.txt
         return 0;
     else
+	echo "mail not sent" >> /tmp/mail.txt
         return 1;
     fi
 }
