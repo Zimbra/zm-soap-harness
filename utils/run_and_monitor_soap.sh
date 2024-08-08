@@ -263,7 +263,7 @@ function run_tests {
 	                    DIRECTORY $TEST_PATH \
 	                    LOG $dir_soaprun \
 	                    SUITE $TEST_SUITE"
-    run_staf "$command" >> "$HOME/$TODAY-staf_cmd_logs.txt" &
+    run_staf "$command" > "$HOME/$TODAY-staf_cmd_logs.txt" &
     SOAP_RUN_PID="$!"
 }
 
