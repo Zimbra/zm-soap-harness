@@ -406,13 +406,6 @@ $attach_logs_encoded
 --BOUNDARY--
 EOF
 
-    curl --url "smtps://$ENV_SMTP_SERVER" --ssl-reqd \
-            --mail-from "$ENV_MAIL_FROM" \
-            --mail-rcpt "$NOTIFY_EMAIL" \
-            --user "$ENV_MAIL_FROM:$ENV_MAIL_PASSWORD" \
-            -T "$email_file" \
-            -k --anyauth \
-            --silent -o /dev/null
     curl_cmd="curl --url smtps://$ENV_SMTP_SERVER --ssl-reqd \
 	    --mail-from \"$ENV_MAIL_FROM\""
     IFS=',' read -ra EMAILS <<< "$NOTIFY_EMAIL"
