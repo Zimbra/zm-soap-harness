@@ -234,15 +234,6 @@ function set_staf {
     else
         echo "WARNING: Error while adding the services to STAF, test cases might not get executed!"
     fi
-
-    echo "Setting up zimbra services. Adding services to the STAF"
-    sudo su - zimbra -c 'zmlocalconfig -e allow_unauthed_ping=true'
-    echo "Restarting Mailbox..." 
-    sudo su - zimbra -c 'zmmailboxdctl restart' || exit 1;
-    sudo su - zimbra -c 'zmprov mcf zimbraMtaSmtpDnsSupportLevel disabled'
-    sudo su - zimbra -c 'zmprov mcf zimbraMtaLmtpHostLookup native'
-    echo "Restarting MTA..."
-    sudo su - zimbra -c 'zmmtactl restart' || exit 1;
 }
 
 function set_properties {
