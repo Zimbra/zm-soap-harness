@@ -67,7 +67,11 @@ public class TestCase extends AbsTest {
 			"smoke-temp",
 			"bhr-temp",
 			"sanity-temp",
-			"functional-temp"
+			"functional-temp",
+			"smoke-tbd",
+			"bhr-tbd",
+			"sanity-tbd",
+			"functional-tbd"
 		};
 
 	public static final String[] DURATIONS = {
@@ -501,6 +505,11 @@ public class TestCase extends AbsTest {
 		String[] SANITY_TEMP_TYPES = {"always","sanity-temp"};
 		String[] FUNCTIONAL_TEMP_TYPES = {"always","functional-temp"};
 
+		String[] SMOKE_TBD_TYPES = {"always","smoke-tbd"};
+		String[] BHR_TBD_TYPES = {"always","bhr-tbd"};
+		String[] SANITY_TBD_TYPES = {"always","sanity-tbd"};
+		String[] FUNCTIONAL_TBD_TYPES = {"always","functional-tbd"};
+		
 		for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext(); ) {
 			String type = iterator.next();
 
@@ -572,6 +581,29 @@ public class TestCase extends AbsTest {
 
 			if (type.equalsIgnoreCase("functional-temp")) {
 				if (hasType(FUNCTIONAL_TEMP_TYPES)) {
+					return false;
+				}
+			}
+			if (type.equalsIgnoreCase("smoke-tbd")) {
+				if (hasType(SMOKE_TBD_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("bhr-tbd")) {
+				if (hasType(BHR_TBD_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("sanity-tbd")) {
+				if (hasType(SANITY_TBD_TYPES)) {
+					return false;
+				}
+			}
+
+			if (type.equalsIgnoreCase("functional-tbd")) {
+				if (hasType(FUNCTIONAL_TBD_TYPES)) {
 					return false;
 				}
 			}
