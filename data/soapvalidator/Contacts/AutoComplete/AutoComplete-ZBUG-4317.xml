@@ -1,0 +1,221 @@
+<t:tests xmlns:t="urn:zimbraTestHarness">
+
+<t:property name="domain1.name" value="${COUNTER}.${TIME}.${defaultdomain.name}"/>
+<t:property name="domain1.galaccount.name" value="galaccount${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="domain1.galaccount.datasource.name" value="name${TIME}${COUNTER}"/>
+<t:property name="domain1.account1.name" value="martin${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="domain1.account1.autocomplete.string" value="mar"/>
+<t:property name="domain1.account1.firstname" value="first${TIME}${COUNTER}"/>
+<t:property name="domain1.account1.lastname" value="last${TIME}${COUNTER}"/>
+<t:property name="domain1.account2.name" value="acct${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="contact1.firstname" value="mark${TIME}${COUNTER}@${domain1.name}"/>
+<t:property name="contact2.firstname" value="maria${COUNTER}${TIME}"/>
+<t:property name="contact2.lastname" value="marcall${COUNTER}${TIME}"/>
+
+<t:test_case testcaseid="Ping" type="always">
+    <t:objective>basic system check</t:objective>
+
+    <t:test required="true">
+        <t:request>
+            <PingRequest xmlns="urn:zimbraAdmin"/>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:PingResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:test id="adminlogin" required="true" depends="Ping">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test required="true" >
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+            	<name>${domain1.name}</name>
+            	<a n="zimbraGalMode">zimbra</a>
+            	<a n="zimbraGalMaxResults">100</a>
+        	</CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:test >
+        <t:request>
+            <CreateGalSyncAccountRequest xmlns="urn:zimbraAdmin" name="${domain1.galaccount.datasource.name}" type="zimbra" domain="${domain1.name}">
+        		<account by="name">${domain1.galaccount.name}</account>
+    		</CreateGalSyncAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateGalSyncAccountResponse/admin:account" attr="id" set="domain1.galaccount.id"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.account1.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account1.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account1.server"/>
+		</t:response>
+    </t:test>  
+
+	<t:test >
+        <t:request>
+            <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                <name>${domain1.account2.name}</name>
+                <password>${defaultpassword.value}</password>
+            </CreateAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="domain1.account2.id"/>
+			<t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="domain1.account2.server"/>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+ 
+
+<t:test_case testcaseid="AutoCompleteRequest_01" type="bhr" bugids="ZBUG-4317">
+    <t:objective>Verify AutoCompleteRequest for account matching with contact with a firstname containing an email address and no email address in the email field</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Create a contact with a firstname containing an email address and no email address in the email field.
+	3. Send AutoCompleteRequest with matching string with contact
+	4. NPE should not be observed in response and AutoCompleteRequest should return correct data
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${domain1.account2.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${domain1.account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+				<pref xmlns="" name="zimbraPrefGalAutoCompleteEnabled">TRUE</pref>
+			</ModifyPrefsRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:ModifyPrefsResponse"/>
+		</t:response>
+    </t:test>  
+    
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${contact1.firstname}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact1.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail" includeGal="1">
+				<name>${domain1.account1.autocomplete.string}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:match">
+ 					<t:select attr="type" match="gal"/>
+ 					<t:select attr="email" match=".*${domain1.account1.name}.*"/>
+ 				</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+<t:test_case testcaseid="AutoCompleteRequest_02" type="bhr" bugids="ZBUG-4317">
+    <t:objective>Verify AutoCompleteRequest for account matching with contact with a firstname and lastname and no email address in the email field.</t:objective>
+	<t:steps>
+	1. Login as account1
+	2. Create a contact with a firstname and lastname and no email address in the email field.
+	3. Send AutoCompleteRequest with matching string with contact
+	4. NPE should not be observed in response and AutoCompleteRequest should return correct data
+	</t:steps>
+
+	<t:property name="server.zimbraAccount" value="${domain1.account2.server}"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${domain1.account2.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+				<pref xmlns="" name="zimbraPrefGalAutoCompleteEnabled">TRUE</pref>
+			</ModifyPrefsRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//acct:ModifyPrefsResponse"/>
+		</t:response>
+    </t:test>  
+    
+    <t:test >
+        <t:request>
+        	<CreateContactRequest xmlns="urn:zimbraMail">
+                <cn >
+                    <a n="firstName">${contact2.firstname}</a>
+                    <a n="lastName">${contact2.lastname}</a>
+                    <a n="fullName">${contact2.firstname} ${contact2.lastname}</a>
+                </cn>     
+        	</CreateContactRequest>
+        </t:request>
+        <t:response>
+        	<t:select path="//mail:CreateContactResponse/mail:cn" attr="id" set="contact2.id"/>          
+        </t:response>
+    </t:test>
+
+	<t:test>
+		<t:request>
+			<AutoCompleteRequest xmlns="urn:zimbraMail" includeGal="1">
+				<name>${domain1.account1.autocomplete.string}</name>
+			</AutoCompleteRequest>
+		</t:request>
+		<t:response>
+ 			<t:select path="//mail:match">
+ 					<t:select attr="type" match="gal"/>
+ 					<t:select attr="email" match=".*${domain1.account1.name}.*"/>
+ 				</t:select>
+		</t:response>
+    </t:test>  
+
+</t:test_case>
+
+
+</t:tests>
