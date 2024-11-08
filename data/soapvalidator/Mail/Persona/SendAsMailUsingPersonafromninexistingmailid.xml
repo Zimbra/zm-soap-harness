@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<t:tests xmlns:t="urn:zimbraTestHarness">
+    <!-- Test Properties -->
+    <t:property name="test_account1.name" value="test1.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account2.name" value="test2.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="test_account3.name" value="test3.${TIME}.${COUNTER}@${defaultdomain.name}" />
+    <t:property name="message.content1" value="content of the message${TIME}.${COUNTER}" />
+    <t:property name="msg02.subject" value="test mail from persona" />
+    <t:property name="message.content2" value="content of the message${TIME}.${COUNTER}" />
+    <t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
+
+    <!-- Ping Test Case -->
+    <t:test_case testcaseid="Ping" type="always">
+        <t:objective>basic system check</t:objective>
+        <t:test required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin"/>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <!-- Account Setup Test Case -->
+    <t:test_case testcaseid="acct1_setup" type="always">
+        <t:objective>Create test accounts</t:objective>
+        <t:steps>
+            1. Log in to admin console
+            2. Create two accounts
+            3. Set sending mail only from these addresses" on account 1 for non existing account (account 3)
+        </t:steps>
+
+        <!-- Admin Login -->
+        <t:test id="admin_login" required="true" depends="ping">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <!-- Create Account 1 -->
+        <t:test id="create_acct1" required="true" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account1.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct1.server" />
+            </t:response>
+        </t:test>
+
+        <!-- Create Account 2 -->
+        <t:test id="create_acct2" required="true" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${test_account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="test_account2.id" />
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="test_acct2.server" />
+            </t:response>
+        </t:test>
+
+        <!-- Edit Account -->
+        <t:test id="edit_acc" required="true" depends="create_acct1">
+            <t:request>
+                <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                    <id>${test_account1.id}</id>
+                    <a n="zimbraAllowFromAddress">${test_account3.name}</a>
+                    <a n="zimbraFeatureAllowUsernameInPassword">TRUE</a>
+                </ModifyAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:ModifyAccountResponse/admin:account" attr="id" set="modified_account_id" />
+                <t:select path='//admin:ModifyAccountResponse/admin:account/admin:a[@n="zimbraAllowFromAddress"]' set="modified_allow_from_address" />
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <!-- Send Mail from Persona Test Case -->
+    <t:test_case testcaseid="sendmailfrompersona" type="bhr" bugids="ZBUG-4384">
+        <t:objective>Verify message will not vanish from the Drafts folder at the scheduled "Send Later"</t:objective>
+        <t:steps>
+            1. Log in to account
+            2. Add non existing mail id in persona
+            3. Send later mail and add non existing account in from
+   </t:steps>
+
+        <t:property name="server.zimbraAccount" value="${test_acct1.server}"/>
+
+        <!-- Account 1 Authentication -->
+        <t:test id="auth_acct1" required="true" depends="acct1_setup">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <t:property name="persona_name" value="New Persona 1" />
+
+        <!-- Create Identity -->
+        <t:test id="CreateIdentityRequest01" required="true">
+            <t:request>
+                <CreateIdentityRequest xmlns="urn:zimbraAccount">
+                    <identity name="${persona_name}">
+                        <a name="zimbraPrefIdentityName">${persona_name}</a>
+                        <a name="zimbraPrefFromDisplay">${test_account3.name}</a>
+                        <a name="zimbraPrefFromAddress">${test_account3.name}</a>
+                        <a name="zimbraPrefFromAddressType">sendAs</a>
+                    </identity>
+                </CreateIdentityRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:CreateIdentityResponse/acct:identity" attr="name" set="persona_name"/>
+                <t:select path="//acct:CreateIdentityResponse/acct:identity" attr="id" set="persona.id"/>
+                <t:select path="//acct:CreateIdentityResponse/acct:identity/acct:a[@ name='zimbraPrefFromAddress']" match="${test_account3.name}"/>
+            </t:response>
+        </t:test>
+
+        <t:property name="Time1" value="${TIME(+1m)}"/>
+
+        <!-- Save Draft -->
+        <t:test id="saveDraftRequest">
+            <t:request>
+                <SaveDraftRequest xmlns="urn:zimbraMail">
+                    <m>
+                        <autoSendTime>${Time1}</autoSendTime>
+                        <su>${msg02.subject}</su>
+                        <e t="t" a='${test_account2.name}' />
+                        <e t="f" a='${test_account3.name}' />
+                        <e t="r" a='${test_account3.name}' />
+                        <mp ct="text/plain">
+                            <content>${message.content2}</content>
+                        </mp>
+                    </m>
+                </SaveDraftRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SaveDraftResponse">
+                    <t:select path="//mail:m" attr="id" set="draft1.id"/>
+                </t:select>
+            </t:response>
+        </t:test>
+
+        <t:delay sec="80"/>
+
+        <t:property name="server.zimbraAccount" value="${test_acct2.server}" />
+
+        <!-- Account 2 Authentication -->
+        <t:test id="auth_acct2" required="true" depends="acct1_setup">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+
+        <!-- Search Message -->
+        <t:test>
+            <t:request>
+                <SearchRequest xmlns="urn:zimbraMail" types="message">
+                    <query>subject:(${msg02.subject})</query>
+                </SearchRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:SearchResponse/mail:m/mail:su" match="${msg02.subject}" />
+                <t:select path="//mail:SearchResponse/mail:m" attr="id" set="msg02.id" />
+            </t:response>
+        </t:test>
+
+        <!-- Get Message -->
+        <t:test id="GetMsgRequest">
+            <t:request>
+                <GetMsgRequest xmlns="urn:zimbraMail">
+                    <m id="${msg02.id}" />
+                </GetMsgRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetMsgResponse/mail:m[@id='${msg02.id}']">
+                    <t:select path="//mail:e[@t='f']" attr="a" match="${test_account3.name}" />
+                    <t:select path="//mail:e[@t='t']" attr="a" match="${test_account2.name}" />
+                    <t:select path="//mail:su" match="${msg02.subject}" />
+                </t:select>
+            </t:response>
+        </t:test>
+          
+        <t:test id="auth_acct1" required="true" depends="acct1_setup">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${test_account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+            </t:response>
+        </t:test>
+        <t:test depends="saveDraftRequest">
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail" types="message">
+                <query> in:${globals.drafts} </query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:m" attr="id" emptyset="1"/>
+        </t:response>
+    </t:test>
+    </t:test_case>
+</t:tests>
