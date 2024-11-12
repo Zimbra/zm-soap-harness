@@ -1,0 +1,391 @@
+<t:tests xmlns:t="urn:zimbraTestHarness" xmlns:admin="urn:zimbraAdmin" xmlns:mail="urn:zimbraMail" xmlns:acct="urn:zimbraAccount">
+
+    <!-- Define properties for accounts -->
+    <t:property name="domain0.name" value="${TIME}${COUNTER}"/>
+    <t:property name="account1.name" value="account1.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+    <t:property name="account2.name" value="account2.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+    <t:property name="account3.name" value="account3.${TIME}.${COUNTER}@externaldomain.com"/>
+    <t:property name="account4.name" value="account4.${TIME}.${COUNTER}@domain${domain0.name}"/>
+    <t:property name="alias.name" value="Alias.${TIME}.${COUNTER}@${defaultdomain.name}"/>
+    <t:property name="account1.reply" value="I am currently out of office"/>
+    <t:property name="account4.reply" value="I am currently out of office"/>
+    
+    
+    <!-- Admin authentication for setting up accounts -->
+    <t:test_case testcaseid="AdminSetup" type="always">
+        <t:objective>Admin login and account setup</t:objective>
+        
+        <t:test id="ping" required="true">
+            <t:request>
+                <PingRequest xmlns="urn:zimbraAdmin"/>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:PingResponse"/>
+            </t:response>
+        </t:test>
+
+        <t:test id="admin_login" required="true" depends="ping">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        
+    <!-- Create Internal Domain -->
+        <t:steps> 
+            1. Create a new Domain 
+        </t:steps>
+    
+        <t:test id="CreateDomainRequest0a">
+        <t:request>
+            <CreateDomainRequest xmlns="urn:zimbraAdmin">
+                <name>domain${domain0.name}</name>
+            </CreateDomainRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:CreateDomainResponse/admin:domain" attr="id" set="domain0.id"/>
+        </t:response>
+        </t:test>
+
+        <!-- Account 1 Creation -->
+        <t:test id="create_account1" required="true" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account1.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account1.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account1.server"/>
+            </t:response>
+        </t:test>
+
+        <!-- Account 2 Creation -->
+        <t:test id="create_account2" required="true" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account2.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account2.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account2.server"/>
+            </t:response>
+        </t:test>
+        
+                <!-- Custom Domain Account 3 Creation -->
+        <t:test id="create_account3" required="true" depends="admin_login">
+            <t:request>
+                <CreateAccountRequest xmlns="urn:zimbraAdmin">
+                    <name>${account4.name}</name>
+                    <password>${defaultpassword.value}</password>
+                </CreateAccountRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="account4.id"/>
+                <t:select path='//admin:CreateAccountResponse/admin:account/admin:a[@n="zimbraMailHost"]' set="account4.server"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <!-- Set OOO message for Account 1 -->
+    <t:test_case testcaseid="SetOOO" type="always" depends="AdminSetup">
+        <t:objective>Account 1 sets Out Of Office message</t:objective>
+        
+        <t:property name="server.zimbraAccount" value="${account1.server}"/>
+        
+        <t:test id="auth_account1" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account1.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+        
+        <!-- Enable OOO with From and untilDate in the past -->
+        <t:test id="set_ooo_until_date" required="true" depends="auth_account1">
+            <t:request>
+                <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                    <pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
+                    <pref name="zimbraPrefOutOfOfficeReply">${account1.reply}</pref>
+                    <pref name="zimbraPrefOutOfOfficeStatusAlertOnLogin">TRUE</pref>
+                    <pref name="zimbraPrefOutOfOfficeFromDate">20240827145900Z</pref>
+                    <pref name="zimbraPrefOutOfOfficeUntilDate">20240831145900Z</pref>
+                </ModifyPrefsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:ModifyPrefsResponse"/>
+            </t:response>
+        </t:test>
+
+        <!-- Test 1: Verify OOO status is inactive after untilDate -->
+        <t:test id="check_ooo_inactive_after_date" required="true" depends="set_ooo_until_date">
+            <t:request>
+                <GetOutOfOfficeRequest xmlns="urn:zimbraMail">
+                    <email name="${account1.name}"/>
+                    <email name="${account2.name}"/>
+                </GetOutOfOfficeRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetOutOfOfficeResponse/mail:email[@name='${account1.name}'][@isOutOfOffice='0']"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+ 
+    <t:test_case testcaseid="Set_OOO_Future_2025" type="always" depends="AdminSetup">
+    <t:objective>OOO For Future 2025</t:objective>
+        <t:test id="set_ooo_message" required="true" depends="auth_account1">
+            <t:request>
+                <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                    <pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
+                    <pref name="zimbraPrefOutOfOfficeReply">${account1.reply}</pref>
+                    <pref name="zimbraPrefOutOfOfficeStatusAlertOnLogin">TRUE</pref>
+                    <pref name="zimbraPrefOutOfOfficeUntilDate">20301231120000Z</pref>
+                </ModifyPrefsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:ModifyPrefsResponse"/>
+            </t:response>
+        </t:test>
+    
+
+    <!-- Test 2: Verify OOO Alert for Account 2 when adding Account 1 OOO Until set to Future -->
+
+        <t:property name="server.zimbraAccount" value="${account2.server}"/>
+        <t:test id="auth_account2" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account2.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+
+        <t:test id="check_ooo_alert" required="true" depends="auth_account2">
+            <t:request>
+                <GetOutOfOfficeRequest xmlns="urn:zimbraMail">
+                    <email name="${account1.name}"/>
+                    <email name="${account2.name}"/>
+                </GetOutOfOfficeRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetOutOfOfficeResponse/mail:email[@name='${account1.name}'][@isOutOfOffice='1']"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+
+    <!-- Test 3: Verify OOO for External Domain is False -->
+    <t:test_case testcaseid="VerifyOOO_ExternalDomain" type="bhr">
+        <t:objective>Verify OOO alert does not appear for external domain</t:objective>
+        <t:test id="check_external_domain" required="true" depends="acct1_setup">
+            <t:request>
+                <GetOutOfOfficeRequest xmlns="urn:zimbraMail">
+                    <email name="${account3.name}"/>
+                    <email name="${account1.name}"/>
+                </GetOutOfOfficeRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetOutOfOfficeResponse/mail:email[@name='${account3.name}'][@isOutOfOffice='0']"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+        <!-- Test 4: Verify OOO for Distribution List is False -->
+    <t:test_case testcaseid="VerifyOOO_DistributionList" type="bhr">
+        <t:objective>Verify OOO alert does not appear for distribution list recipients</t:objective>
+        <t:test id="check_ooo_dl" required="true" depends="acct1_setup">
+            <t:request>
+                <GetOutOfOfficeRequest xmlns="urn:zimbraMail">
+                    <email name="${alias.name}"/>
+                    <email name="${account1.name}"/>
+                </GetOutOfOfficeRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetOutOfOfficeResponse/mail:email[@name='${alias.name}'][@isOutOfOffice='0']"/>
+            </t:response>
+        </t:test>
+    </t:test_case>
+    
+    <t:test_case testcaseid="Set LC True" type="bhr"> 
+    <t:objective>Set LC get_out_of_office_cross_domains to TRUE </t:objective>
+
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e get_out_of_office_cross_domains=true'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+    
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+	
+	<!-- Sleep for 1 minute to wait for mbox to come up -->
+	<t:delay sec="30"/>
+    </t:test_case>
+    
+    <!-- Set zimbraPrefOutOfOfficeSuppressExternalReply True for Account 1 -->
+    <t:test_case testcaseid="Set zimbraPrefOutOfOfficeSuppressExternalReply True" type="bhr"> 
+    <t:objective>Set zimbraPrefOutOfOfficeSuppressExternalReply to TRUE </t:objective>
+            <!-- Admin Auth for Modify Account -->
+            <t:test id="admin_login" required="true" depends="ping">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+           </t:test>
+           
+           <t:test>
+               <t:request>
+               <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                   <id>${account1.id}</id>
+                   <a n="zimbraPrefOutOfOfficeSuppressExternalReply">TRUE</a>
+                   <a n="zimbraInternalSendersDomain">${defaultdomain.name}</a>
+              </ModifyAccountRequest>
+              </t:request>
+              <t:response> 
+                  <t:select path="//admin:ModifyAccountResponse" />
+                  <t:select path="//admin:ModifyAccountResponse/admin:account[@id='${account1.id}']" />
+              </t:response>
+           </t:test>        
+    </t:test_case>
+    
+    <!-- Verify OOO True for Custom Domain Recipient when sender is Default Domain Account -->
+    <t:test_case testcaseid="SetOOO" type="always" depends="AdminSetup">
+        <t:objective>Account 4 sets Out Of Office message</t:objective>
+        
+                    <!-- Admin Auth for Modify Account4 -->
+            <t:test id="admin_login" required="true" depends="ping">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAdmin">
+                    <name>${admin.user}</name>
+                    <password>${admin.password}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
+            </t:response>
+           </t:test>
+           <!-- Set zimbraPrefOutOfOfficeSuppressExternalReply as true Custom Domain Account 4 -->
+           <t:test>
+               <t:request>
+               <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                   <id>${account4.id}</id>
+                   <a n="zimbraPrefOutOfOfficeSuppressExternalReply">TRUE</a>
+              </ModifyAccountRequest>
+              </t:request>
+              <t:response> 
+                  <t:select path="//admin:ModifyAccountResponse" />
+                  <t:select path="//admin:ModifyAccountResponse/admin:account[@id='${account4.id}']" />
+              </t:response>
+           </t:test>
+        
+         <!-- Custom Domain Account 4 Auth Token -->
+        <t:property name="server.zimbraAccount" value="${account4.server}"/>
+        
+        <t:test id="auth_account4" required="true">
+            <t:request>
+                <AuthRequest xmlns="urn:zimbraAccount">
+                    <account by="name">${account4.name}</account>
+                    <password>${defaultpassword.value}</password>
+                </AuthRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+            </t:response>
+        </t:test>
+                 
+    
+            <!-- Test 5: Verify OOO status is Inactive after untilDate for Custom Domain When zimbraPrefOutOfOfficeSuppressExternalReply is TRUE -->
+        <t:test id="check_ooo_inactive_after_date" required="true" depends="set_ooo_until_dateCustomDomain">
+            <t:request>
+                <GetOutOfOfficeRequest xmlns="urn:zimbraMail">
+                    <email name="${account1.name}"/>
+                    <email name="${account4.name}"/>
+                </GetOutOfOfficeRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetOutOfOfficeResponse/mail:email[@name='${account4.name}'][@isOutOfOffice='0']"/>
+            </t:response>
+        </t:test>
+    
+        
+        <!-- Enable OOO with From and untilDate for Custom Domain Account -->
+        <t:test id="set_ooo_until_dateCustomDomain" required="true" depends="auth_account4">
+            <t:request>
+                <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+                    <pref name="zimbraPrefOutOfOfficeReplyEnabled">TRUE</pref>
+                    <pref name="zimbraPrefOutOfOfficeReply">${account4.reply}</pref>
+                    <pref name="zimbraPrefOutOfOfficeStatusAlertOnLogin">TRUE</pref>
+                    <pref name="zimbraPrefOutOfOfficeFromDate">20240827145900Z</pref>
+                    <pref name="zimbraPrefOutOfOfficeUntilDate">20300831145900Z</pref>
+                </ModifyPrefsRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//acct:ModifyPrefsResponse"/>
+            </t:response>
+        </t:test>
+
+        <!-- Test 6: Verify OOO status is Active after untilDate for Custom Domain -->
+        <t:test id="check_ooo_active_after_date" required="true" depends="set_ooo_until_dateCustomDomain">
+            <t:request>
+                <GetOutOfOfficeRequest xmlns="urn:zimbraMail">
+                    <email name="${account1.name}"/>
+                    <email name="${account4.name}"/>
+                </GetOutOfOfficeRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//mail:GetOutOfOfficeResponse/mail:email[@name='${account4.name}'][@isOutOfOffice='1']"/>
+            </t:response>
+        </t:test>
+        
+        <!-- Setting get_out_of_office_cross_domains=false back to Default -->
+            <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e get_out_of_office_cross_domains=false'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+    
+    <t:staftask>
+            <t:request>
+                <server>${zimbraServer.name}</server>
+                <service>PROCESS</service>
+                <params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
+                    ${staf.process.timeout.zmmtactl}</params>
+            </t:request>
+    </t:staftask>
+	
+	<!-- Sleep for 1 minute to wait for mbox to come up -->
+	<t:delay sec="30"/>
+    </t:test_case>
+  
+</t:tests>
