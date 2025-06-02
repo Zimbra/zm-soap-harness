@@ -67,7 +67,8 @@ public class TestCase extends AbsTest {
 			"smoke-temp",
 			"bhr-temp",
 			"sanity-temp",
-			"functional-temp"
+			"functional-temp",
+			"chat"
 		};
 
 	public static final String[] DURATIONS = {
@@ -500,6 +501,7 @@ public class TestCase extends AbsTest {
 		String[] BHR_TEMP_TYPES = {"always","bhr-temp"};
 		String[] SANITY_TEMP_TYPES = {"always","sanity-temp"};
 		String[] FUNCTIONAL_TEMP_TYPES = {"always","functional-temp"};
+		String[] CHAT_TYPES = {"always","chat"};
 
 		for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext(); ) {
 			String type = iterator.next();
@@ -572,6 +574,11 @@ public class TestCase extends AbsTest {
 
 			if (type.equalsIgnoreCase("functional-temp")) {
 				if (hasType(FUNCTIONAL_TEMP_TYPES)) {
+					return false;
+				}
+			}
+			if (type.equalsIgnoreCase("functional-temp")) {
+				if (hasType(CHAT_TYPES)) {
 					return false;
 				}
 			}

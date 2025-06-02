@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import com.zimbra.qa.chat.ChatServerSoapClient;
 
 import org.dom4j.DocumentException;
 import org.dom4j.QName;
@@ -275,9 +276,22 @@ public class SoapTest extends Test {
     }
 
     protected void doRequest(Element request) throws DocumentException, IOException, HarnessException, ServiceException {
-		tSoapRequest = request;
-		boolean isEws = request.getAttributeBool("ews", false);
-
+        tSoapRequest = request;
+        boolean isEws = request.getAttributeBool("ews", false);
+        boolean isChat = request.getAttributeBool("chat", false);
+        if (isChat) {
+            String action = request.getAttribute("action");
+            String jwt = request.getAttribute("jwt");
+            String domainId = request.getAttribute("domainId");
+            ChatServerSoapClient chatclient = new ChatServerSoapClient(action, jwt, domainId, true);
+            try {
+                Element result = chatclient.invoke();
+                mSoapResponse = result;
+            } catch (Exception e) {
+                mLog.info("Failed to retrieve response from chat server", e);
+            }
+            return;
+        }
         // Skip <t:test>???
         Element testElement = request.elementIterator().next();
         String strElement = testElement.prettyPrint();
