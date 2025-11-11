@@ -215,27 +215,38 @@
             </GetMsgRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt2.invId}']">
-                        <t:select path="//mail:comp">
-                                <t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20250101120000.pst}]}"/>
-                </t:select>
+        <t:select path="//mail:GetMsgResponse/mail:m[@id='${appt2.invId}']">
+            <t:select path="//mail:comp">
+                <t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20250101120000.pst}]}"/>
             </t:select>
-        </t:response>
+        </t:select>
+
+        <!-- ✅ Validate 2 alarms are present -->
+        <t:count path="//mail:alarm" match="2"/>
+
+        <!-- ✅ Validate both alarm details -->
+        <t:select path="//mail:alarm[@action='DISPLAY'][mail:desc='Reminder 1']"/>
+		<t:select path="//mail:alarm[@action='DISPLAY'][mail:desc='Reminder 2']"/>
+    </t:response>
     </t:test>
+    
 
     <t:test>
         <t:request>
-                        <SearchRequest xmlns="urn:zimbraMail" calExpandInstStart="${TIME(-1d)[${time.20250101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20250101120000.gmt}]}" types="appointment">
+                        <SearchRequest xmlns="urn:zimbraMail" needExp="1"
+               fullConversation="1" calExpandInstStart="${TIME(-1d)[${time.20250101120000.gmt}]}" calExpandInstEnd="${TIME(+1d)[${time.20250101120000.gmt}]}" types="appointment">
                                 <query>inid:${account1.calendar.folder.id}</query>
                         </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse">
-                <t:select path="//mail:appt[@invId='${appt2.invId}']"/>
-                <t:select path="//mail:appt/mail:alarmData/mail:alarm" attr="action" match="DISPLAY"/>
-                <t:select path="//mail:appt/mail:alarmData/mail:alarm" attr="desc" match="${reminder2.text1}"/>
-            </t:select>
-        </t:response>
+        <t:select path="//mail:SearchResponse">
+            <!-- ✅ appointment is found -->
+            <t:select path="//mail:appt[@invId='${appt2.invId}']"/>
+
+            <!-- ✅ alarm attribute = 1 -->
+            <t:select path="//mail:appt" attr="alarm" match="1"/>
+        </t:select>
+    </t:response>
     </t:test>
 
 </t:test_case>

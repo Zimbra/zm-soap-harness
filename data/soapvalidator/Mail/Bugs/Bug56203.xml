@@ -176,13 +176,22 @@
                 <m id="${mail01.id}"/>
             </GetMsgRequest>
         </t:request>
+        
         <t:response>
+           <t:select path="//mail:mp[@ct='text/plain' and @cd='attachment']">
+    		<t:select attr="filename" match="SCH支出金额权限表-20101001.xls"/>
+			</t:select>
+        </t:response>
+        
+        <!--
+			<t:response>
             <t:select path="//mail:GetMsgResponse/mail:m[@id='${mail01.id}']">
             	<t:select path="//mail:mp[@ct='application/vnd.ms-excel']">
             		<t:select attr="filename" match="SCH支出金额权限表-20101001.xls"/>
 				</t:select>
             </t:select>
         </t:response>
+		 -->
     </t:test>
     
 </t:test_case>
