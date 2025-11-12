@@ -124,19 +124,21 @@
         </t:response>
     </t:test>
     
-    <!-- Modify Forwarding rule -->
-     <t:test id="modifyprefsrequest1">
-        <t:request>
-			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
-				<pref name="zimbraPrefNewMailNotificationAddress">${account3.name}</pref>	
-				<pref name="zimbraPrefNewMailNotificationEnabled">TRUE</pref>  			
-			</ModifyPrefsRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//acct:ModifyPrefsResponse"/>
-        </t:response>
-    </t:test>
-    
+	
+	<t:property name="msg.fromAddress" value="u2@test.com"/>
+	<!-- Modify Forwarding rule - Msg to spam instead of inbox else we need to plain sendMessgae Request -->
+	<t:test id="modifyprefsrequest1">
+    <t:request>
+        <ModifyPrefsRequest xmlns="urn:zimbraAccount">
+            <pref name="zimbraPrefNewMailNotificationAddress">${account3.name}</pref>
+            <pref name="zimbraPrefNewMailNotificationEnabled">TRUE</pref>
+            <pref name="zimbraPrefMailTrustedSenderList">${msg.fromAddress}</pref>
+        </ModifyPrefsRequest>
+    </t:request>
+    <t:response>
+        <t:select path="//acct:ModifyPrefsResponse"/>
+    </t:response>
+	</t:test>
 
 <t:property name="msg01.file" value="${testMailRaw.root}/bugs/49818/bug49818.txt"/>
 
@@ -180,3 +182,24 @@
 </t:test_case>
 
 </t:tests>
+
+
+
+<!--
+<t:test>
+  <t:request>
+    <SendMsgRequest xmlns="urn:zimbraMail">
+      <m>
+        <e t="t" a="${account1.name}"/>
+        <su>Notification Test</su>
+        <mp ct="text/plain">
+          <content>Hello - notification test</content>
+        </mp>
+      </m>
+    </SendMsgRequest>
+  </t:request>
+  <t:response>
+    <t:select path="//mail:SendMsgResponse/mail:m"/>
+  </t:response>
+</t:test>
+-->
