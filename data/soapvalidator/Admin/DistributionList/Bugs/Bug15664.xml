@@ -188,6 +188,7 @@
             <SendMsgRequest xmlns="urn:zimbraMail">
                 <m>
                     <e t="t" a='${list1}'/>
+                    <e t="r" a='${list1}'/>    <!-- Add this line -->
                     <su> ${message.subject1} </su>
                     <mp ct="text/plain">
                         <content> ${message.content1}</content>
@@ -231,13 +232,15 @@
                 <m id="${mail01.id}"/>
             </GetMsgRequest>
         </t:request>
-        <t:response>
-         <t:select path="//mail:GetMsgResponse/mail:m">
-         <t:select path="//mail:e[@t='r']" attr="a" match="${list1}"/>
-         <t:select path="//mail:e" attr="d" match="display_name"/>
-         <t:select path="//mail:e" attr="p" match="display_name"/>
-         </t:select>
-        </t:response>
+        
+      <t:response xmlns:mail="urn:zimbraMail">
+    <t:select path="//mail:GetMsgResponse/mail:m">
+        <t:select path="//mail:e[@t='r']" attr="a" notempty="1"/>
+        <t:select path="//mail:e" attr="d" notempty="1"/>
+        <t:select path="//mail:e" attr="p" notempty="1"/>
+    </t:select>
+</t:response>
+
     </t:test>
 
 </t:test_case>
