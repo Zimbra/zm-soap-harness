@@ -126,17 +126,26 @@
         </t:response> 
     </t:staftask>
 
-	<t:staftask >
-		<t:request>
-			<server>${zimbraLDAPServer.name}</server>
-			<service>PROCESS</service>
-			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -h ${zimbraLDAPServer.name} mail=${admin.user} dn -LLL'" RETURNSTDOUT WAIT</params>
-		</t:request>
-		<t:response>
-        	<t:select regex="(?s)(RC.*)(Data.*:\sdn:\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="acct2.ldap.base"/>
-        </t:response> 
-    </t:staftask>
     
+    <t:staftask>
+    <t:request>
+        <server>${zimbraLDAPServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+            START SHELL COMMAND 
+            "su - zimbra -c '/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -H ldap://${zimbraLDAPServer.name} -b \"\" \"(mail=${admin.user})\" dn -LLL'" 
+            RETURNSTDOUT WAIT
+        </params>
+    </t:request>
+    <t:response>
+        <t:select 
+            regex="(?s)(RC.*)(Data.*:\sdn:\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" 
+            group="3" 
+            set="acct2.ldap.base"
+        />
+    </t:response>
+	</t:staftask>
+
      <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
