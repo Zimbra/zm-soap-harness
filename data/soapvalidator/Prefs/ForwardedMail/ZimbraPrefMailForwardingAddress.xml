@@ -392,6 +392,16 @@ So, the domain and accounts must be recreated during execution
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
     </t:test>
+    
+     <t:staftask>
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+			START SHELL COMMAND "su - zimbra -c 'zmprov ma ${account2.name} amavisBypassSpamChecks TRUE'" RETURNSTDOUT WAIT
+        </params>
+    </t:request>
+	</t:staftask>
 
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
@@ -423,7 +433,7 @@ So, the domain and accounts must be recreated during execution
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-				<query>is:anywhere subject:(${msg02.subject})</query>
+				<query>subject:(${msg02.subject})</query>
 			</SearchRequest>
 		</t:request>
 		<t:response>
@@ -468,6 +478,16 @@ So, the domain and accounts must be recreated during execution
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
     </t:test>
+    
+     <t:staftask>
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+			START SHELL COMMAND "su - zimbra -c 'zmprov ma ${account2.name} amavisBypassSpamChecks TRUE'" RETURNSTDOUT WAIT
+        </params>
+    </t:request>
+	</t:staftask>
 
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
@@ -499,7 +519,7 @@ So, the domain and accounts must be recreated during execution
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-				<query>is:anywhere subject:(${msg03.subject})</query>
+				<query>subject:(${msg03.subject})</query>
 			</SearchRequest>
 		</t:request>
 		<t:response>
@@ -544,6 +564,16 @@ So, the domain and accounts must be recreated during execution
             <t:select path="//acct:ModifyPrefsResponse"/>
         </t:response>
     </t:test>
+    
+     <t:staftask>
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+			START SHELL COMMAND "su - zimbra -c 'zmprov ma ${account2.name} amavisBypassSpamChecks TRUE'" RETURNSTDOUT WAIT
+        </params>
+    </t:request>
+	</t:staftask>
 
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
@@ -575,7 +605,7 @@ So, the domain and accounts must be recreated during execution
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="conversation">
-				<query>is:anywhere subject:(${msg04.subject})</query>
+				<query>subject:(${msg04.subject})</query>
 			</SearchRequest>
 		</t:request>
 		<t:response>

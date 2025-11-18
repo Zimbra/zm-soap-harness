@@ -90,6 +90,16 @@
 		<t:property name="msg01.subject" value="NATURAL HIGHS" />
 		<t:property name="server.zimbraAccount" value="${account1.server}"/>
 		
+		<t:staftask>
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+			START SHELL COMMAND "su - zimbra -c 'zmprov ma ${account1.name} amavisBypassSpamChecks TRUE'" RETURNSTDOUT WAIT
+        </params>
+    </t:request>
+	</t:staftask>
+		
 		<t:smtpinjecttest>
 			<t:smtpInjectRequest>
 				<address>${mta.server}</address>
@@ -113,7 +123,7 @@
 	   	<t:test>
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-					<query>is:anywhere subject:(${msg01.subject})</query>
+					<query>subject:(${msg01.subject})</query>
 				</SearchRequest>
 			</t:request>
 	        <t:response>
@@ -189,7 +199,7 @@
    	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>is:anywhere subject:(${msg01.subject})</query>
+				<query>subject:(${msg01.subject})</query>
 			</SearchRequest>
 		</t:request>
         <t:response>

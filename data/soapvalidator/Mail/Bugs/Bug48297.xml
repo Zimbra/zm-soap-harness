@@ -120,6 +120,16 @@
         </t:response>
     </t:test>
 	
+	<t:staftask>
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+			START SHELL COMMAND "su - zimbra -c 'zmprov ma ${account1.name} amavisBypassSpamChecks TRUE'" RETURNSTDOUT WAIT
+        </params>
+    </t:request>
+	</t:staftask>
+	
 	<t:property name="msg01.file" value="${testMailRaw.root}/bugs/48297/bug48297.txt"/>
 	
 	<t:smtpinjecttest>
@@ -133,7 +143,7 @@
     <t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
-				<query>is:anywhere</query>
+				<query>Adrien B</query>
 			</SearchRequest>
 		</t:request>
 		<t:response>

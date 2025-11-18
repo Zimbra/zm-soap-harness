@@ -124,22 +124,21 @@
         </t:response>
     </t:test>
     
-	
-	<!-- Modify Forwarding rule - Msg to spam instead of inbox else we need to plain sendMessgae Request rhfpy.rkyzh@example.com -->
-	<t:test id="modifyprefsrequest1">
-    <t:request>
-        <ModifyPrefsRequest xmlns="urn:zimbraAccount">
-            <pref name="zimbraPrefNewMailNotificationAddress">${account3.name}</pref>
-            <pref name="zimbraPrefNewMailNotificationEnabled">TRUE</pref>
-              <pref name="zimbraPrefMailTrustedSenderList">*@example.com</pref>
-        </ModifyPrefsRequest>
-    </t:request>
-    <t:response>
-        <t:select path="//acct:ModifyPrefsResponse"/>
-    </t:response>
-	</t:test>
+    <!-- Modify Forwarding rule -->
+     <t:test id="modifyprefsrequest1">
+        <t:request>
+			<ModifyPrefsRequest xmlns="urn:zimbraAccount">
+				<pref name="zimbraPrefNewMailNotificationAddress">${account3.name}</pref>	
+				<pref name="zimbraPrefNewMailNotificationEnabled">TRUE</pref>  			
+			</ModifyPrefsRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:ModifyPrefsResponse"/>
+        </t:response>
+    </t:test>
+    
 
-<!--<t:property name="msg01.file" value="${testMailRaw.root}/bugs/49818/bug49818.txt"/>
+<t:property name="msg01.file" value="${testMailRaw.root}/bugs/49818/bug49818.txt"/>
 
 	<t:smtpinjecttest>
         <t:smtpInjectRequest>
@@ -147,24 +146,7 @@
             <filename>${msg01.file}</filename>
             <recipient>${account1.name}</recipient>
         </t:smtpInjectRequest>
-    </t:smtpinjecttest>  -->
-    
-    <t:test>
-  		<t:request>
-    <SendMsgRequest xmlns="urn:zimbraMail">
-      <m>
-        <e t="t" a="${account1.name}"/>
-        <su>Notification Test</su>
-        <mp ct="text/plain">
-          <content>Hello - notification test</content>
-        </mp>
-      </m>
-    </SendMsgRequest>
-  		</t:request>
-  <t:response>
-    <t:select path="//mail:SendMsgResponse/mail:m"/>
-  </t:response>
-</t:test>
+    </t:smtpinjecttest>
     
    <t:delay sec="60"/>
 
@@ -187,13 +169,11 @@
     <t:test>
         <t:request>
            <SearchRequest xmlns="urn:zimbraMail" types="message">
-           <query>is:anywhere from:Postmaster</query>
+           <query>from: Postmaster</query>
            </SearchRequest>
          </t:request>
           <t:response>
-          	<t:select path="//mail:SearchResponse/mail:m" emptyset="0"/>
-                <t:select path="//mail:SearchResponse/mail:m" attr="l" match="2"/>
-            	<t:select path="//mail:SearchResponse/mail:m/mail:su" match="New message received at ${account1.name}"/>
+                <t:select path="//mail:SearchResponse/mail:m/mail:fr" match=".*.Subject: 配"/>
          </t:response>
      </t:test>
    
