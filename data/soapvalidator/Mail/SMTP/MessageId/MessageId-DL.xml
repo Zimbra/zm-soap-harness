@@ -243,6 +243,28 @@
 
 <t:test_case testcaseid="SMTP_MessageID_DL_02" type="bhr">
     <t:objective>Verify a is received once (with message id)</t:objective>
+	
+	
+	 <t:staftask>
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>
+                START SHELL COMMAND "su - zimbra -c 'zmprov ma ${account1.name} amavisBypassSpamChecks TRUE'" RETURNSTDOUT WAIT
+            </params>
+        </t:request>
+    </t:staftask>
+
+    <!-- If account2 also receives the mail, bypass for it too -->
+    <t:staftask>
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>
+                START SHELL COMMAND "su - zimbra -c 'zmprov ma ${account2.name} amavisBypassSpamChecks TRUE'" RETURNSTDOUT WAIT
+            </params>
+        </t:request>
+    </t:staftask>
     
     <t:smtpinjecttest>
         <t:smtpInjectRequest>
@@ -270,7 +292,7 @@
 	<t:test required="true" >
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
-	   			<query>is:anywhere subject:(${message2.subject})</query>
+	   			<query>subject:(${message2.subject})</query>
    			</SearchRequest>
 	 	</t:request>
   		<t:response>
@@ -312,7 +334,7 @@
 		<t:test required="true" >
 			<t:request>
 				<SearchRequest xmlns="urn:zimbraMail" types="message">
-		   			<query>is:anywhere subject:(${message2.subject})</query>
+		   			<query>subject:(${message2.subject})</query>
 	   			</SearchRequest>
 		 	</t:request>
 	  		<t:response>

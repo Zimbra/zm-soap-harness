@@ -83,6 +83,16 @@
     
     <t:property name="subject1" value="sub1${TIME}${COUNTER}"/>
     <t:property name="msg01.file" value="${testMailRaw.root}/bug62827/bug62827.txt" />
+	
+	<t:staftask>
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+			START SHELL COMMAND "su - zimbra -c 'zmprov ma ${account2.name} amavisBypassSpamChecks TRUE'" RETURNSTDOUT WAIT
+        </params>
+    </t:request>
+	</t:staftask>
     
     	<t:mailinjecttest >
         <t:lmtpInjectRequest>
@@ -137,7 +147,7 @@
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" type="messages">
-                <query>is:anywhere subject:(${subject1})</query>
+                <query>subject:(${subject1})</query>
             </SearchRequest>
         </t:request>
         <t:response>
