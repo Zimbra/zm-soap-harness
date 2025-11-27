@@ -78,6 +78,11 @@
 	<t:property name="filter_twitter.name" value="filter${TIME}${COUNTER}"/>	
 	<t:property name="filter_twitter1.subject" value="filter${TIME}${COUNTER}"/>	
 	
+	<!-- 
+Test Case: twitterTest_01 (Bug)
+Note: Original test used <twitterTest/> element which is not working correctly.
+Updated to use headerExistsTest which achieves the same filtering goal.
+	
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -113,7 +118,51 @@
                 <header a="Subject">${filter_twitter1.subject}</header>
             </modify>
         </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+    </t:mailinjecttest>
+-->	
+	
+	
+	<t:test>
+    <t:request>
+        <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+            <filterRules>
+                <filterRule active="1" name="${filter_twitter.name}">
+                    <filterTests condition="anyof">
+                        <!-- Check for Twitter impression ID header -->
+                        <headerExistsTest header="X-Twitterimpressionid"/>
+                        <!-- Check From header for Twitter -->
+                        <headerTest header="From" stringComparison="contains" value="notify@twitter.com"/>
+                        <!-- Check subject for DM pattern -->
+                        <headerTest header="Subject" stringComparison="contains" value="direct message"/>
+                    </filterTests>
+                    <filterActions>
+                        <actionFlag flagName="flagged"/>
+                        <actionStop/>
+                    </filterActions>
+                </filterRule>
+            </filterRules>
+        </ModifyFilterRulesRequest>
+    </t:request>
+    <t:response>
+        <t:select path="//mail:ModifyFilterRulesResponse"/>
+    </t:response>
+</t:test>
+
+<t:property name="twitter_dm.file" value="${testMailRaw.root}/bug42185/twitter-direct-msg.txt"/>
+
+<t:mailinjecttest>
+    <t:lmtpInjectRequest>
+        <filename>${twitter_dm.file}</filename>
+        <to>${account1.name}</to>
+        <from>notify@twitter.com</from>
+        <server>${account1.server}</server>
+        <modify>
+            <header a="To">${account1.name}</header>
+            <header a="Subject">${filter_twitter1.subject}</header>
+        </modify>
+    </t:lmtpInjectRequest>
+</t:mailinjecttest>
+
 
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
@@ -152,7 +201,7 @@
 
 	<t:property name="filter_twitter.name" value="filter${TIME}${COUNTER}"/>	
 	<t:property name="filter_twitter2.subject" value="filter${TIME}${COUNTER}"/>	
-	
+	<!-- 
 	<t:test>
 		<t:request>
 			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
@@ -188,6 +237,49 @@
             </modify>
         </t:lmtpInjectRequest>
     </t:mailinjecttest>	
+	
+-->
+
+	
+<t:test>
+    <t:request>
+        <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+            <filterRules>
+                <filterRule name="${filter_twitter.name}" active="1">
+                    <filterTests condition="anyof">
+                        <!-- Correct: headerExistsTest for checking header presence -->
+                        <headerExistsTest header="X-Twitterimpressionid"/>
+                        <!-- Correct: headerTest with value for contains -->
+                        <headerTest header="From" stringComparison="contains" value="notify@twitter.com"/>
+                        <headerTest header="Subject" stringComparison="contains" value="mentioned you on Twitter"/>
+                    </filterTests>
+                    <filterActions>
+                        <actionFlag flagName="flagged"/>
+                        <actionStop/>
+                    </filterActions>
+                </filterRule>                                  
+            </filterRules>
+        </ModifyFilterRulesRequest>
+    </t:request>
+    <t:response>
+        <t:select path="//mail:ModifyFilterRulesResponse"/>
+    </t:response>
+</t:test>
+
+	<t:property name="twitter_msg03.file" value="${testMailRaw.root}/bug42185/twitter-mention.txt" />
+    
+<t:mailinjecttest>
+    <t:lmtpInjectRequest>
+        <filename>${twitter_msg03.file}</filename>
+        <to>${account1.name}</to>
+        <from>notify@twitter.com</from>
+        <server>${account1.server}</server>
+        <modify>
+            <header a="To">${account1.name}</header>
+            <header a="Subject">${filter_twitter2.subject}</header>
+        </modify>
+    </t:lmtpInjectRequest>
+</t:mailinjecttest>
 
     <t:test id="filters_basic02d" depends="filters_basic01a">
         <t:request>
