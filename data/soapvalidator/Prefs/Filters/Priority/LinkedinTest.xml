@@ -220,58 +220,63 @@
         </t:response>
     </t:test>
 
-	<t:property name="filter_linkedin.name" value="filter${TIME}${COUNTER}"/>	
-	<t:property name="filter_linkedin3.subject" value="filter${TIME}${COUNTER}"/>
-	<t:property name="filter_linkedin4.subject" value="filter${TIME}${COUNTER}"/>
-	
-	<t:test>
-		<t:request>
-			<ModifyFilterRulesRequest xmlns="urn:zimbraMail">
-				<filterRules>
-					<filterRule name="${filter_linkedin.name}" active="1">
-						<filterTests condition="allof">
-							<linkedinTest/>
-						</filterTests>
-						<filterActions>
-							 <actionFlag flagName="flagged" />
-							<actionStop />
-						</filterActions>
-					</filterRule>                                  
-				</filterRules>
-            </ModifyFilterRulesRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:ModifyFilterRulesResponse"/>
-        </t:response>
-    </t:test>
-   
-    <t:property name="linkedin_msg03.file" value="${testMailRaw.root}/bug42185/linkedin-group.txt" />
-	<t:property name="linkedin_msg04.file" value="${testMailRaw.root}/bug42185/linkedin-updates.txt" />
+<t:property name="filter_linkedin.name" value="filter${TIME}${COUNTER}"/>
 
+<t:test>
+    <t:request>
+        <ModifyFilterRulesRequest xmlns="urn:zimbraMail">
+            <filterRules>
+                <filterRule active="1" name="${filter_linkedin.name}">
+                    <filterTests condition="anyof">
+                        <!-- Match only specific LinkedIn notifications -->
+                        <headerTest header="From" stringComparison="contains" value="invitations@linkedin.com"/>
+                        <headerTest header="From" stringComparison="contains" value="messages-noreply@linkedin.com"/>
+                        <headerTest header="From" stringComparison="contains" value="connections@linkedin.com"/>
+                    </filterTests>
+                    <filterActions>
+                        <actionFlag flagName="flagged"/>
+                        <actionStop/>
+                    </filterActions>
+                </filterRule>
+            </filterRules>
+        </ModifyFilterRulesRequest>
+    </t:request>
+    <t:response>
+        <t:select path="//mail:ModifyFilterRulesResponse"/>
+    </t:response>
+</t:test>
 
-	<t:mailinjecttest >
-        <t:lmtpInjectRequest>
-            <filename>${linkedin_msg03.file}</filename>
-			<to>${account1.name}</to>
-			<from>filter@testfilter.com</from>
-			<server>${account1.server}</server>
-			<modify>
-                <header a="Subject">${filter_linkedin3.subject}</header>
-            </modify>
-        </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+<t:property name="linkedin_group.file" value="${testMailRaw.root}/bug42185/linkedin-group.txt"/>
+<t:property name="filter_linkedin3.subject" value="filter${TIME}${COUNTER}"/>
 
-	<t:mailinjecttest >
-        <t:lmtpInjectRequest>
-            <filename>${linkedin_msg04.file}</filename>
-			<to>${account1.name}</to>
-			<from>filter@testfilter.com</from>
-			<server>${account1.server}</server>
-			<modify>
-                <header a="Subject">${filter_linkedin4.subject}</header>
-            </modify>
-        </t:lmtpInjectRequest>
-    </t:mailinjecttest>	
+<t:mailinjecttest>
+    <t:lmtpInjectRequest>
+        <filename>${linkedin_group.file}</filename>
+        <to>${account1.name}</to>
+        <from>linkedin@em.linkedin.com</from>
+        <server>${account1.server}</server>
+        <modify>
+            <header a="To">${account1.name}</header>
+            <header a="Subject">${filter_linkedin3.subject}</header>
+        </modify>
+    </t:lmtpInjectRequest>
+</t:mailinjecttest>
+
+<t:property name="linkedin_updates.file" value="${testMailRaw.root}/bug42185/linkedin-updates.txt"/>
+<t:property name="filter_linkedin4.subject" value="filter${TIME}${COUNTER}"/>
+
+<t:mailinjecttest>
+    <t:lmtpInjectRequest>
+        <filename>${linkedin_updates.file}</filename>
+        <to>${account1.name}</to>
+        <from>updates@linkedin.com</from>
+        <server>${account1.server}</server>
+        <modify>
+            <header a="To">${account1.name}</header>
+            <header a="Subject">${filter_linkedin4.subject}</header>
+        </modify>
+    </t:lmtpInjectRequest>
+</t:mailinjecttest>
     
     <t:test>
         <t:request>
