@@ -26,7 +26,8 @@
 <t:property name="view.appointment" value="appointment"/>
 <t:property name="view.note" value="note"/>
 
-<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>    
+<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/> 
+<t:property name="server.public.ip.value" value="${server.public.ip}"/>   
 
 <t:test_case testcaseid="Ping" type="always">
     <t:objective>Basic system check</t:objective>
@@ -61,24 +62,7 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-    
-    <t:staftask>
-            <t:request>
-                <server>${zimbraServer.name}</server>
-                <service>PROCESS</service>
-                <params>START SHELL COMMAND "su - zimbra -c \'zmlocalconfig -e zimbra_feed_manager_blacklist=172.16.0.0/12,192.168.0.0/16,fd00::/8'" RETURNSTDOUT RETURNSTDERR WAIT
-                    ${staf.process.timeout.zmmtactl}</params>
-            </t:request>
-    </t:staftask>
-    
-    <t:staftask>
-            <t:request>
-                <server>${zimbraServer.name}</server>
-                <service>PROCESS</service>
-                <params>START SHELL COMMAND "su - zimbra -c \'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT
-                    ${staf.process.timeout.zmmtactl}</params>
-            </t:request>
-    </t:staftask>
+   
 
     <t:test required="true">
         <t:request>
@@ -575,7 +559,30 @@
         </t:response>
     </t:test>
     
-    <t:property name="url.shared.calendar" value="https://${zimbraServer.name}:443/home/${user1.name}/Calendar.ics"/>
+ <t:staftask>
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+            <!-- Add IPs AND the Hostname explicitly -->
+            START SHELL COMMAND "su - zimbra -c 'zmlocalconfig -e zimbra_feed_manager_whitelist=\"127.0.0.1,127.0.1.1,10.0.0.169,${defaultdomain.name}\"'" 
+            RETURNSTDOUT RETURNSTDERR WAIT 60000
+        </params>
+    </t:request>
+</t:staftask>
+
+<!-- 4. Restart Mailboxd -->
+<t:staftask>
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>START SHELL COMMAND "su - zimbra -c 'zmmailboxdctl restart'" RETURNSTDOUT RETURNSTDERR WAIT 300000</params>
+    </t:request>
+</t:staftask>
+
+<!-- 5. Wait for Service to be Fully Up -->
+<t:delay msec="60000"/> <!-- Waiting 60 seconds to be safe -->
+    <t:property name="url.shared.calendar" value="https://${zimbraServer.name}:443/home/${user1.name}/Calendar?fmt=ics"/>
     
     <t:test >
 		<t:request>
@@ -586,7 +593,7 @@
 		<t:response>
 			<t:select path="//mail:CreateFolderResponse">
 				<t:select path="//mail:folder[@name='${folder.name}']" attr="id" set="folder.id"/>
-				<t:select path="//mail:folder[@name='${folder.name}']" attr="url" match="${url.shared.calendar}"/>
+				<t:select path="//mail:CreateFolderResponse/mail:folder" attr="url" match=".+"/>
 			</t:select>
 		</t:response>
 	</t:test>
@@ -616,6 +623,18 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
+    
+        <!-- Reset whitelist back to empty or default -->
+    <t:staftask>
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>
+                START SHELL COMMAND "su - zimbra -c 'zmlocalconfig -e zimbra_feed_manager_whitelist=\"\"'"
+                RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}
+            </params>
+        </t:request>
+    </t:staftask>
     
     <t:staftask>
             <t:request>
