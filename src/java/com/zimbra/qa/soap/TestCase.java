@@ -503,6 +503,7 @@ public class TestCase extends AbsTest {
 		String[] SANITY_TEMP_TYPES = {"always","sanity-temp"};
 		String[] FUNCTIONAL_TEMP_TYPES = {"always","functional-temp"};
 		String[] CHAT_TYPES = {"always","chat"};
+		String[] Q4FIX_TYPES = {"always","q4fix"};
 
 		for (Iterator<String> iterator = SoapTestCore.testType.iterator(); iterator.hasNext(); ) {
 			String type = iterator.next();
@@ -580,6 +581,12 @@ public class TestCase extends AbsTest {
 			}
 			if (type.equalsIgnoreCase("functional-temp")) {
 				if (hasType(CHAT_TYPES)) {
+					return false;
+				}
+			}
+			
+			if (type.equalsIgnoreCase("q4fix")) {
+				if (hasType(Q4FIX_TYPES)) {
 					return false;
 				}
 			}
