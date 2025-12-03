@@ -68,7 +68,8 @@ public class TestCase extends AbsTest {
 			"bhr-temp",
 			"sanity-temp",
 			"functional-temp",
-			"chat"
+			"chat",
+			"q4fix"
 		};
 
 	public static final String[] DURATIONS = {
