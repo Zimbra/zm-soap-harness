@@ -145,6 +145,36 @@
         />
     </t:response>
 	</t:staftask>
+	
+	
+	 <!-- Step 1: Dynamically determine the Base DN from the hostname -->
+<t:staftask>
+    <t:request>
+        <server>${zimbraLDAPServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+            START SHELL COMMAND "su - zimbra -c '/opt/zimbra/bin/zmhostname | cut -d. -f2- | sed \'s/\\./,dc=/g\' | sed \'s/^/dc=/\''" RETURNSTDOUT WAIT
+        </params>
+    </t:request>
+    <t:response>
+        <!-- This regex is simplified to capture the clean output -->
+        <t:select regex="dc=.*" group="0" set="ldap.base.dn"/>
+    </t:response>
+</t:staftask>
+
+<!-- Step 2: Use the dynamic Base DN in your LDAP search -->
+<t:staftask>
+    <t:request>
+        <server>${zimbraLDAPServer.name}</server>
+        <service>PROCESS</service>
+        <params>
+            START SHELL COMMAND "su - zimbra -c '/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -H ldap://${zimbraLDAPServer.name} -b \"${ldap.base.dn}\" \"(uid=${admin.user})\" dn -LLL'" RETURNSTDOUT WAIT
+        </params>
+    </t:request>
+    <t:response>
+        <t:select regex="dn: (.*)" group="1" set="acct2.ldap.base"/>
+    </t:response>
+</t:staftask>
 
      <t:test >
         <t:request>
