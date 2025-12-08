@@ -46,7 +46,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="acct_setup" type="always" >
+<t:test_case testcaseid="acct_setup" type="q4fix" >
 	<t:objective>Create a test account</t:objective>
 	<steps> 1. Login to admin account, 2. Create a test_account1 and 2 </steps>
 
@@ -62,8 +62,6 @@
 		</t:response>
 	</t:test>
 
-	       
-
     <t:test>
         <t:request>
             <CreateAccountRequest xmlns="urn:zimbraAdmin">
@@ -76,8 +74,6 @@
             <t:select path="//admin:CreateAccountResponse/admin:account/admin:a[@n='zimbraMailHost']"  set="account1.server"/>
         </t:response>
     </t:test>    
-    
-     <t:delay sec="10"/>
 
     <t:test>
         <t:request>
@@ -95,7 +91,8 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug84420" type="bhr" bugids="84420" >
+
+<t:test_case testcaseid="bug84420" type="q4fix" bugids="84420" >
 	<t:objective>Can't move subfolders in shared email folder</t:objective>
 	<t:steps> 
         1. Create nested for user1 under Inbox Folder1 --> SubFold1 --> SubFold2 --> SubFold3
@@ -210,8 +207,8 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="Share Created: Inbox shared by ${account1.name}"/>
-			<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="${account1.name} has shared &quot;Inbox&quot; with ${account2.name} Shared item: Inbox.*"/>
-		</t:response>
+        	<t:select path="//mail:SearchResponse/mail:m/mail:fr" match="${account1.name} has shared.*Inbox.*with.*${account2.name}.*Shared item.*"/>
+        	</t:response>
 	</t:test>	
 
 	<t:test>
