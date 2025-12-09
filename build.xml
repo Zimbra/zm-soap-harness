@@ -407,7 +407,7 @@
 	</target>
 
 	<target name="zm-network-soap-content" description="Copies network related soap data and tests">
-		<mkdir dir="${build.temp.dir}"/>
+		<mkdir dir="${build.temp.dir}/conf"/>
 		<echo message="Copying network related data and tests..."/>
 		<!--Current set of network related changes do not need these steps to be executed in zimbraX. Hence this part has been commented.-->
 		<if><available file="${zm-network-soap-harness.dir}/conf/setup.sh" type="file"/>
@@ -422,6 +422,15 @@
 			</copy>
 		</then>
 		</if>
+        <if> <available file="${zm-network-soap-harness.dir}/conf/global.properties" type="file"/>
+        <then>
+            <copy todir="${build.temp.dir}/conf">
+                <fileset dir="${zm-network-soap-harness.dir}/conf">
+                    <include name="global.properties"/>
+                </fileset>
+            </copy>
+        </then>
+        </if>
   	</target>
 
    	<target name="soap-build-set-up" depends="zm-network-soap-content">
@@ -457,6 +466,10 @@
 			<tarfileset dir="${build.temp.dir}/data/testmailraw" prefix="soapvalidator/data/testmailraw" mode="555" includes="**"/>
 
 			<tarfileset dir="conf" prefix="soapvalidator/conf" mode="555">
+				<include name="**/*"/>
+			</tarfileset>
+
+			<tarfileset dir="${build.temp.dir}/conf" prefix="soapvalidator/conf" mode="555">
 				<include name="**/*"/>
 			</tarfileset>
 
