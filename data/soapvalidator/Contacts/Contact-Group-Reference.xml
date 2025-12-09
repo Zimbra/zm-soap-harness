@@ -33,6 +33,8 @@
 <t:property name="contact4.nickname" value="contact4.${TIME}.${COUNTER}"/>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="acct2.ldap.base" value="NOT_DEFINED"/>
+
 
 
 <t:test_case testcaseid="Ping" type="always" >
@@ -147,24 +149,16 @@
         </t:response> 
     </t:staftask>
 
-	 <t:staftask>
-    <t:request>
-        <server>${zimbraLDAPServer.name}</server>
-        <service>PROCESS</service>
-        <params>
-            START SHELL COMMAND 
-            "su - zimbra -c '/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -H ldap://${zimbraLDAPServer.name} -b \"\" \"(mail=${admin.user})\" dn -LLL'" 
-            RETURNSTDOUT WAIT
-        </params>
-    </t:request>
-    <t:response>
-        <t:select 
-            regex="(?s)(RC.*)(Data.*:\sdn:\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" 
-            group="3" 
-            set="acct2.ldap.base"
-        />
-    </t:response>
-	</t:staftask>
+	<t:staftask >
+		<t:request>
+			<server>${zimbraLDAPServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -h ${zimbraLDAPServer.name} mail=${admin.user} dn -LLL'" RETURNSTDOUT WAIT</params>
+		</t:request>
+		<t:response>
+        	<t:select regex="(?s)(RC.*)(Data.*:\sdn:\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="acct2.ldap.base"/>
+        </t:response> 
+    </t:staftask>
 
     <t:test id="CreateContactRequesta">
         <t:request>
@@ -377,7 +371,7 @@
         </t:response>
     </t:test>
     
-     <t:staftask >
+    <t:staftask >
 		<t:request>
 			<server>${zimbraLDAPServer.name}</server>
 			<service>PROCESS</service>
@@ -387,17 +381,18 @@
         	<t:select regex="(?s)(RC.*)(Data.*:\sldap_root_password\s=\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="ldap.password"/>
         </t:response> 
     </t:staftask>
-
-	<t:staftask >
-		<t:request>
-			<server>${zimbraLDAPServer.name}</server>
-			<service>PROCESS</service>
-			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -h ${zimbraLDAPServer.name} mail=${admin.user} dn -LLL'" RETURNSTDOUT WAIT</params>
-		</t:request>
-		<t:response>
-        	<t:select regex="(?s)(RC.*)(Data.*:\sdn:\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="acct2.ldap.base"/>
-        </t:response> 
-    </t:staftask>
+    
+   <t:staftask>
+    <t:request>
+        <server>${zimbraLDAPServer.name}</server>
+        <service>PROCESS</service>
+        <params>START SHELL COMMAND "echo 'dc=${zimbraLDAPServer.name}' | sed 's/\\./,dc=/g'" RETURNSTDOUT WAIT</params>
+    </t:request>
+    <t:response>
+        <!-- Matching your working pattern: RC... Data... : value -->
+        <t:select regex="(?s)(RC.*)(Data\s+:\s)(dc=[a-zA-Z0-9\-\.,=]+)(.*)" group="3" set="acct2.ldap.base"/>
+    </t:response>
+	</t:staftask>
     
      <t:test >
         <t:request>
