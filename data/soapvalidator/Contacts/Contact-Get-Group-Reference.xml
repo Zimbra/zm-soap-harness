@@ -24,6 +24,8 @@
 <t:property name="test_acct.server" value="NOT_DEFINED"/>
 
 <t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
+    <t:property name="acct2.ldap.base" value="NOT_DEFINED"/>
+
 
 
 <t:test_case testcaseid="Ping" type="always" >
@@ -125,57 +127,31 @@
         	<t:select regex="(?s)(RC.*)(Data.*:\sldap_root_password\s=\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="ldap.password"/>
         </t:response> 
     </t:staftask>
-
     
-    <t:staftask>
+   <t:staftask>
     <t:request>
         <server>${zimbraLDAPServer.name}</server>
         <service>PROCESS</service>
-        <params>
-            START SHELL COMMAND 
-            "su - zimbra -c '/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -H ldap://${zimbraLDAPServer.name} -b \"\" \"(mail=${admin.user})\" dn -LLL'" 
-            RETURNSTDOUT WAIT
-        </params>
+        <params>START SHELL COMMAND "echo 'dc=${zimbraLDAPServer.name}' | sed 's/\\./,dc=/g'" RETURNSTDOUT WAIT</params>
     </t:request>
     <t:response>
-        <t:select 
-            regex="(?s)(RC.*)(Data.*:\sdn:\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" 
-            group="3" 
-            set="acct2.ldap.base"
-        />
+        <!-- Matching your working pattern: RC... Data... : value -->
+        <t:select regex="(?s)(RC.*)(Data\s+:\s)(dc=[a-zA-Z0-9\-\.,=]+)(.*)" group="3" set="acct2.ldap.base"/>
     </t:response>
 	</t:staftask>
-	
-	
-	 <!-- Step 1: Dynamically determine the Base DN from the hostname -->
-<t:staftask>
-    <t:request>
-        <server>${zimbraLDAPServer.name}</server>
-        <service>PROCESS</service>
-        <params>
-            START SHELL COMMAND "su - zimbra -c '/opt/zimbra/bin/zmhostname | cut -d. -f2- | sed \'s/\\./,dc=/g\' | sed \'s/^/dc=/\''" RETURNSTDOUT WAIT
-        </params>
-    </t:request>
-    <t:response>
-        <!-- This regex is simplified to capture the clean output -->
-        <t:select regex="dc=.*" group="0" set="ldap.base.dn"/>
-    </t:response>
-</t:staftask>
 
-<!-- Step 2: Use the dynamic Base DN in your LDAP search -->
-<t:staftask>
-    <t:request>
-        <server>${zimbraLDAPServer.name}</server>
-        <service>PROCESS</service>
-        <params>
-            START SHELL COMMAND "su - zimbra -c '/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -H ldap://${zimbraLDAPServer.name} -b \"${ldap.base.dn}\" \"(uid=${admin.user})\" dn -LLL'" RETURNSTDOUT WAIT
-        </params>
-    </t:request>
-    <t:response>
-        <t:select regex="dn: (.*)" group="1" set="acct2.ldap.base"/>
-    </t:response>
-</t:staftask>
 
+	<!-- <t:staftask >
+		<t:request>
+			<server>${zimbraLDAPServer.name}</server>
+			<service>PROCESS</service>
+			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -h ${zimbraLDAPServer.name} mail=${admin.user} dn -LLL'" RETURNSTDOUT WAIT</params>
+		</t:request>
+		<t:response>
+        	<t:select regex="(?s)(RC.*)(Data.*:\sdn:\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="acct2.ldap.base"/>
+        </t:response> 
+    </t:staftask>  -->
+    
      <t:test >
         <t:request>
             <CreateContactRequest xmlns="urn:zimbraMail">
@@ -192,6 +168,8 @@
             </t:select>	
         </t:response>
     </t:test>
+    
+    <t:delay msec="3000"/>
 
     <t:test>
         <t:request>

@@ -16,6 +16,9 @@
 <t:property name="gal.searchstring" value="galtest${gal.curTime}"/>
 <t:property name="list1" value="test@${gal.domain1}"/>
 
+    <t:property name="acct2.ldap.base" value="NOT_DEFINED"/>
+
+
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
@@ -100,27 +103,19 @@
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmlocalconfig -s ldap_root_password'" RETURNSTDOUT WAIT</params>
 		</t:request>
 		<t:response>
-        	<!--t:select regex=".*Data\s+:\s+ldap_root_password\s+=\s+(!\s)(.*)" group="0" set="ldap.password"/-->
-            <t:select regex="(?s)(RC.*)(Data.*:\sldap_root_password\s=\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="ldap.password"/>
+        	<t:select regex="(?s)(RC.*)(Data.*:\sldap_root_password\s=\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" group="3" set="ldap.password"/>
         </t:response> 
     </t:staftask>
-
-	<t:staftask>
+    
+   <t:staftask>
     <t:request>
         <server>${zimbraLDAPServer.name}</server>
         <service>PROCESS</service>
-        <params>
-            START SHELL COMMAND 
-            "su - zimbra -c '/opt/zimbra/common/bin/ldapsearch -x -D cn=config -w ${ldap.password} -H ldap://${zimbraLDAPServer.name} -b \"\" \"(mail=${admin.user})\" dn -LLL'" 
-            RETURNSTDOUT WAIT
-        </params>
+        <params>START SHELL COMMAND "echo 'dc=${zimbraLDAPServer.name}' | sed 's/\\./,dc=/g'" RETURNSTDOUT WAIT</params>
     </t:request>
     <t:response>
-        <t:select 
-            regex="(?s)(RC.*)(Data.*:\sdn:\s)([0-9a-zA-Z].*[0-9a-zA-Z])(.*)" 
-            group="3" 
-            set="acct2.ldap.base"
-        />
+        <!-- Matching your working pattern: RC... Data... : value -->
+        <t:select regex="(?s)(RC.*)(Data\s+:\s)(dc=[a-zA-Z0-9\-\.,=]+)(.*)" group="3" set="acct2.ldap.base"/>
     </t:response>
 	</t:staftask>
 
@@ -138,6 +133,8 @@
 
         </t:response>
     </t:test>
+	<t:delay msec="5000"/>
+
   
     <t:test id="SearchGal1">
         <t:request>
