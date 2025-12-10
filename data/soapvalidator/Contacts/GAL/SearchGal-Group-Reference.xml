@@ -16,7 +16,7 @@
 <t:property name="gal.searchstring" value="galtest${gal.curTime}"/>
 <t:property name="list1" value="test@${gal.domain1}"/>
 
-    <t:property name="acct2.ldap.base" value="NOT_DEFINED"/>
+    <t:property name="domain.ldap.base" value="NOT_DEFINED"/>
 
 
 
@@ -107,17 +107,19 @@
         </t:response> 
     </t:staftask>
     
-   <t:staftask>
+<t:staftask>
     <t:request>
         <server>${zimbraLDAPServer.name}</server>
         <service>PROCESS</service>
-        <params>START SHELL COMMAND "echo 'dc=${zimbraLDAPServer.name}' | sed 's/\\./,dc=/g'" RETURNSTDOUT WAIT</params>
+        <!-- Echo the account name, extract domain, convert to DN -->
+        <params>START SHELL COMMAND "echo '${test_account1.name}' | cut -d'@' -f2 | sed 's/\\./,dc=/g' | sed 's/^/dc=/'" RETURNSTDOUT WAIT</params>
     </t:request>
     <t:response>
-        <!-- Matching your working pattern: RC... Data... : value -->
-        <t:select regex="(?s)(RC.*)(Data\s+:\s)(dc=[a-zA-Z0-9\-\.,=]+)(.*)" group="3" set="acct2.ldap.base"/>
+       
+        <t:select regex="(?s)(RC.*)(Data.*:\s)([^\s]+)(.*)" group="3" set="domain.ldap.base"/>
     </t:response>
-	</t:staftask>
+</t:staftask>
+
 
     
     <t:test required="true">
@@ -143,7 +145,7 @@
             </SearchGalRequest>
         </t:request>
         <t:response>
-            <t:select path="//acct:SearchGalResponse/acct:cn" attr="ref" match="${account1.ldap.base}"/>
+             <t:select path="//acct:SearchGalResponse/acct:cn" attr="ref" match="uid=.*"/>
             <t:select path="//acct:SearchGalResponse/acct:cn/acct:a[@n='email']" match="${test_account1.name}"/>                        
         </t:response>
     </t:test>
