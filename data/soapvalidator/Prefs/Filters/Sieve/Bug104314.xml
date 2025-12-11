@@ -99,7 +99,7 @@ log "done";'/>
 </t:test_case>
 
 
-<t:test_case testcaseid="Variables setup" type="q4fix">
+<t:test_case testcaseid="Variables setup" type="always">
     <t:objective>create test account</t:objective>
     
 	<t:test required="true">
@@ -167,7 +167,7 @@ log "done";'/>
 
 </t:test_case>
 
-<t:test_case testcaseid="Accounts setup" type="q4fix">  
+<t:test_case testcaseid="Accounts setup" type="bhr">  
 <t:objective>create test account</t:objective>          
     <t:test required="true">
         <t:request>
@@ -396,7 +396,7 @@ log "done";'/>
 </t:test_case>
 
     
-<t:test_case testcaseid="bug104314_newval1" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval1" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newvalue "[SPAM] $\{1}"
@@ -426,6 +426,7 @@ log "done";'/>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
+	<t:delay sec="10"/>
     
 <t:test required="true">
 	<t:request>
@@ -482,7 +483,7 @@ log "done";'/>
 </t:test_case>   
 
 
-<t:test_case testcaseid="bug104314_newval2" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval2" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newvalue "$\{1} [SPAM]"
@@ -512,7 +513,7 @@ log "done";'/>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test> 
-	
+	<t:delay sec="10"/>	
 <t:test required="true">
 	<t:request>
 		<AuthRequest xmlns="urn:zimbraAccount" csrfTokenSecured="0">
@@ -567,7 +568,7 @@ log "done";'/>
     
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval3" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval3" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newvalue "$\{1} [SPAM]" matching the subject
@@ -652,7 +653,7 @@ log "done";'/>
     
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval4" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval4" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newname "X-Header2" :matches "X-Header" "*";
@@ -759,7 +760,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval5" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval5" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :index 1 :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "*";
@@ -853,7 +854,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval6" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval6" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newname "X-Header2" :matches "X-Header" "HeaderVal";
@@ -960,7 +961,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval7" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval7" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :newname "X-Header2" :matches "X-Header" "HeaderVal";
@@ -1067,7 +1068,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval8" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval8" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL </t:objective>
     <steps> 
         1. Add sieve rule for the user :newname "X-Sieve-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Sieve-Header" "HeaderVal";
@@ -1174,7 +1175,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval9" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval9" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :index 2 :newname "X-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "HeaderVal"; 
@@ -1268,7 +1269,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_newval10" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_newval10" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule for the user :index 2 :newname "X-Header2" :newvalue "[NEWVAL] $\{1}" :matches "X-Header" "HeaderVal"; 
@@ -1362,7 +1363,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_outgoing1" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_outgoing1" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add outgoing sieve rule for the user :newvalue "[SPAM] $\{1}"
@@ -1392,6 +1393,7 @@ log "done";'/>
             <t:select path = "//admin:ModifyAccountResponse/admin:account"/>
         </t:response>
     </t:test>
+	 <t:delay sec="10"/>
     
 <t:test required="true">
 	<t:request>
@@ -1421,6 +1423,7 @@ log "done";'/>
         	<t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="msg1.id"/>
    		</t:response>
 	</t:test>
+	<t:delay sec="10"/>
 
 <t:test required="true">
 	<t:request>
@@ -1447,7 +1450,7 @@ log "done";'/>
      
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_comparator1" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_comparator1" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule 11 for user
@@ -1541,7 +1544,7 @@ log "done";'/>
 	    
 </t:test_case>
 
-<t:test_case testcaseid="bug104314_comparator2" type="q4fix" bugids="104314">
+<t:test_case testcaseid="bug104314_comparator2" type="bhr" bugids="104314">
    <t:objective>rewrite the "subject" header of all messages received  from a specific address  or to a specific DL</t:objective>
     <steps> 
         1. Add sieve rule 12 for user
@@ -1636,7 +1639,7 @@ log "done";'/>
 </t:test_case>   
 
 
-<t:test_case testcaseid="bug1ZCS-859" type="q4fix" bugids="ZCS-859">
+<t:test_case testcaseid="bug1ZCS-859" type="bhr" bugids="ZCS-859">
    <t:objective>Rewrite the "subject" header of all messages received</t:objective>
     <steps> 
         1. Add sieve rule for the user :newvalue "[SPAM] + {original subject}"

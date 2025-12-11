@@ -16,9 +16,7 @@
 <t:property name="gal.searchstring" value="galtest${gal.curTime}"/>
 <t:property name="list1" value="test@${gal.domain1}"/>
 
-    <t:property name="domain.ldap.base" value="NOT_DEFINED"/>
-
-
+<t:property name="account1.ldap.base" value="NOT_DEFINED"/>
 
 <t:test_case testcaseid="Ping" type="always" >
     <t:objective>basic system check</t:objective>
@@ -116,12 +114,10 @@
     </t:request>
     <t:response>
        
-        <t:select regex="(?s)(RC.*)(Data.*:\s)([^\s]+)(.*)" group="3" set="domain.ldap.base"/>
+        <t:select regex="(?s)(RC.*)(Data.*:\s)([^\s]+)(.*)" group="3" set="account1.ldap.base"/>
     </t:response>
 </t:staftask>
 
-
-    
     <t:test required="true">
         <t:request>
         <AuthRequest xmlns="urn:zimbraAccount">
