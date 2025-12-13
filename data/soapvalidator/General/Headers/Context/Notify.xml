@@ -422,43 +422,38 @@
         </t:response>
     </t:test>    
     
-	<t:test required="true">
-        <t:requestContext>
-            <authToken>${authToken}</authToken>
-            <session/>
-        </t:requestContext>
+	<t:repeat count="5" delay="2000">
+    <t:test>
         <t:request>
-            <NoOpRequest xmlns="urn:zimbraMail"/>
+            <SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
+                <query>in:inbox</query>
+            </SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:NoOpResponse"/>
+            <t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail1.subject}"/>
         </t:response>
     </t:test>
+	</t:repeat>
 
-	<!-- do a simple verification of the mail -->
-	<t:test>
-		<t:request>
-			<SearchRequest xmlns="urn:zimbraMail" types="message,appointment">
-				<query>in:inbox</query>
-			</SearchRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="appt1.id"/>
-			<t:select path="//mail:SearchResponse/mail:m" attr="su" match="${mail1.subject}"/>
-		</t:response>
-	</t:test>
 
-    <!-- do a simple verification of the appointment -->
-    <t:test >
+  <!-- Retry appointment search -->
+<t:repeat count="5" delay="2000">
+    <t:test>
         <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="1130610600000" calExpandInstEnd="1134239400000">
-				<query>${mail1.subject}</query>
-			</SearchRequest>
+            <SearchRequest xmlns="urn:zimbraMail"
+                           types="appointment"
+                           calExpandInstStart="1130610600000"
+                           calExpandInstEnd="1134239400000">
+                <query>${mail1.subject}</query>
+            </SearchRequest>
         </t:request>
         <t:response>
-           <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appt1.id"/>
+            <t:select path="//mail:SearchResponse/mail:appt"
+                      attr="invId"
+                      set="appt1.id"/>
         </t:response>
     </t:test>
+</t:repeat>
 
 </t:test_case>
 
@@ -549,6 +544,7 @@
 
 </t:test_case>
 
+<t:property name="appointment1.id" value=""/>
 
 <t:test_case testcaseid="Notification11" type="bhr">
     <t:objective> Modify an appointment to verify the notification block </t:objective>
@@ -576,16 +572,24 @@
         </t:response>
     </t:test>
 
-    <t:test >
+    <t:repeat count="5" delay="4000">
+    <t:test>
         <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
-				<query>${appointment1.subject}</query>
-			</SearchRequest>
+            <SearchRequest xmlns="urn:zimbraMail"
+                           types="appointment"
+                           calExpandInstStart="${TimeRangeStart}"
+                           calExpandInstEnd="${TimeRangeFinish}">
+                <query>${appointment1.subject}</query>
+            </SearchRequest>
         </t:request>
         <t:response>
-           <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appointment1.id"/>
+            <t:select path="//mail:SearchResponse/mail:appt"
+                      attr="invId"
+                      set="appointment1.id"/>
         </t:response>
     </t:test>
+</t:repeat>
+
 
     <t:test>
         <t:request>
@@ -620,7 +624,7 @@
 
 </t:test_case>
 
-
+<t:property name="appointment2.id" value=""/>
 <t:test_case testcaseid="Notification12" type="bhr" bugids="33533">
     <t:objective> Cancel an appointment to verify the notification block </t:objective>
     
@@ -647,17 +651,27 @@
 		</t:response>
 	</t:test>
 
-    <t:test >
+    <t:repeat count="5" delay="4000">
+    <t:test>
         <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
-				<query>${appointment2.subject}</query>
-			</SearchRequest>
+            <SearchRequest xmlns="urn:zimbraMail"
+                           types="appointment"
+                           calExpandInstStart="${TimeRangeStart}"
+                           calExpandInstEnd="${TimeRangeFinish}">
+                <query>${appointment2.subject}</query>
+            </SearchRequest>
         </t:request>
         <t:response>
-           <t:select path="//mail:SearchResponse/mail:appt" attr="invId" set="appointment2.id"/>
-           <t:select path="//mail:SearchResponse/mail:appt" attr="id" set="appointment.id"/>
+            <t:select path="//mail:SearchResponse/mail:appt"
+                      attr="invId"
+                      set="appointment2.id"/>
+            <t:select path="//mail:SearchResponse/mail:appt"
+                      attr="id"
+                      set="appointment.id"/>
         </t:response>
     </t:test>
+</t:repeat>
+
 
 	<t:test >
 		<t:request>

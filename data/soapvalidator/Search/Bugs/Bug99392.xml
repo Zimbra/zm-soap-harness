@@ -23,7 +23,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="change zimbraExtensionBindPort port" type="q4fix" >
+<t:test_case testcaseid="change zimbraExtensionBindPort port" type="always" >
     <t:objective>Change zimbraExtensionBindPort port </t:objective>
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>	
@@ -81,7 +81,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="bug99392" type="q4fix" bugids="99392" >
+<t:test_case testcaseid="bug99392" type="bhr" bugids="99392" >
     <t:objective>Make mailstore extension port 7072 configurable</t:objective>
 	<t:steps>
 	1. Modify zimbraExtensionBindPort to 1111
@@ -132,6 +132,7 @@
 		</t:response>
 	</t:test>
 
+    <t:repeat count="5" delay="4000">
    <t:test >
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -142,6 +143,7 @@
             <t:select path="//mail:SearchResponse/mail:m/mail:e" attr="a" match="${admin.user}" />
         </t:response>
     </t:test>
+</t:repeat>
 	
 	<t:staftask >
 		<t:request>

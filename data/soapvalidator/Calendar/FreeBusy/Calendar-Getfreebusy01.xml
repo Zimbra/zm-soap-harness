@@ -59,7 +59,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="acct_setup01_calendar_getfreebusy" type="q4fix">
+<t:test_case testcaseid="acct_setup01_calendar_getfreebusy" type="always">
     <t:objective>Create a test account</t:objective>
     <steps> 
         1. Login to admin account
@@ -154,7 +154,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest2" type="q4fix">
+<t:test_case testcaseid="GetFreeBusyRequest2" type="bhr">
     <t:objective>GetFreeBusy status of attendees </t:objective>
     <t:steps>1.login to the test account.
 			 2.Create an appointment of account1 with account2.
@@ -222,7 +222,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest03" type="q4fix"> 
+<t:test_case testcaseid="GetFreeBusyRequest03" type="bhr"> 
     <t:objective>GetFreeBusy status of attendees after the attendee has accepted the meeting </t:objective>
     <t:steps> 1. Login to account1.
 			  2. Create an appointment of account1 with account2.
@@ -356,7 +356,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest04" type="q4fix">  
+<t:test_case testcaseid="GetFreeBusyRequest04" type="bhr">  
     <t:objective>GetFreeBusy status of attendees when Account2 is free all day </t:objective>
     <t:steps> 1. Login to account1.
 			  2. Check the status FreeBusy for account2(free).
@@ -387,7 +387,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFreeBusyRequest05" type="q4fix">  
+<t:test_case testcaseid="GetFreeBusyRequest05" type="bhr">  
     <t:objective>GetFreeBusy status of attendees when Account2 is busy all day </t:objective>
     <t:steps> 1. Login to account2.
 			  2. Create a all day appointment with fb=busy.
@@ -458,7 +458,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest06" type="q4fix">  
+<t:test_case testcaseid="GetFreeBusyRequest06" type="bhr">  
     <t:objective>GetFreeBusy status of attendees when status of Account2 is tentative all day </t:objective>
     <t:steps> 1. Login to account2.
 			  2. Create a all day appointment with fb=tentative.
@@ -501,6 +501,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
+	<t:delay sec="5"/>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test id="auth1" required="true">
@@ -528,7 +529,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest07" type="q4fix">  
+<t:test_case testcaseid="GetFreeBusyRequest07" type="bhr">  
     <t:objective>GetFreeBusy status of attendees when status of Account is unknown </t:objective>
     <t:steps> 1. Login to account1.
 			  2. Check the status FreeBusy for account(unknown).
@@ -569,7 +570,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest08" type="q4fix">  
+<t:test_case testcaseid="GetFreeBusyRequest08" type="bhr">  
     <t:objective>GetFreeBusy status of attendees when status of Account2 is Out of Office </t:objective>
     <t:steps> 1. Login to account2.
 			  2. Create a all day appointment with fb=tentative.
@@ -612,6 +613,7 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
+	<t:delay sec="5"/>
 
 	<t:property name="server.zimbraAccount" value="${account2.server}"/>
     <t:test id="auth1" required="true">
@@ -638,7 +640,7 @@
     </t:test>
 </t:test_case>
 
-<t:test_case testcaseid="GetFreeBusyRequest09" type="q4fix">
+<t:test_case testcaseid="GetFreeBusyRequest09" type="bhr">
     <t:objective>GetFreeBusy status of Account2 who is in a meeting for 1 hour (daily occurrence) </t:objective>
     <t:steps>1.login to the test account2.
 			 2.Create a never ending daily appointment.
@@ -690,6 +692,7 @@
         </t:response>
     </t:test>
 
+<t:delay sec="5"/>
 
 	<t:property name="server.zimbraAccount" value="${account1.server}"/>
     <t:test id="auth1" required="true">
@@ -719,7 +722,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest10" type="q4fix"> 
+<t:test_case testcaseid="GetFreeBusyRequest10" type="bhr"> 
     <t:objective>GetFreeBusy status of attendees after the attendee has accepted the meeting and then declines the meeting. </t:objective>
     <t:steps> 1. Login to account1.
 			  2. Create an appointment of account1 with account2.
@@ -765,6 +768,7 @@
         </t:response>
 
 	</t:test>
+	<t:delay sec="5"/>
 
     <t:test required="true" >
         <t:request>
@@ -829,6 +833,8 @@
 
         </t:response>
     </t:test>
+	
+	<t:delay sec="5"/>
 
     <t:test>
         <t:request>
@@ -898,7 +904,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFreeBusyRequest11" type="q4fix">
+<t:test_case testcaseid="GetFreeBusyRequest11" type="bhr">
     <t:objective>GetFreeBusyRequest a new account that has not logged in yet </t:objective>
     <t:steps>1.Login into account1.
              2.Check the status FreeBusy for account3.
@@ -930,7 +936,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFreeBusyRequest12" type="q4fix" bugids="25463">
+<t:test_case testcaseid="GetFreeBusyRequest12" type="bhr" bugids="25463">
     <t:objective>GetFreeBusy status of attendees by using email address in uid </t:objective>
 
     <t:steps> Fire GetFreeBusyRequest with email-address </t:steps>
@@ -947,7 +953,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFreeBusyRequest13" type="q4fix" bugids="25463">
+<t:test_case testcaseid="GetFreeBusyRequest13" type="bhr" bugids="25463">
     <t:objective>GetFreeBusy status of attendees by using id attribute </t:objective>
 
     <t:steps> Fire GetFreeBusyRequest with email-address </t:steps>
@@ -965,7 +971,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFreeBusyRequest14" type="q4fix" bugids="25463">
+<t:test_case testcaseid="GetFreeBusyRequest14" type="bhr" bugids="25463">
     <t:objective>GetFreeBusy status of attendees by using name attribute </t:objective>
 
     <t:steps> Fire GetFreeBusyRequest with email-address </t:steps>
@@ -983,7 +989,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="GetFreeBusyRequest15" type="q4fix" bugids="25463">
+<t:test_case testcaseid="GetFreeBusyRequest15" type="bhr" bugids="25463">
     <t:objective>GetFreeBusy status of attendees by using zimbraID </t:objective>
 
     <t:steps> Fire GetFreeBusyRequest with zimbraId </t:steps>
