@@ -29,7 +29,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="get_task_acct_setup_01" type="q4fix">
+<t:test_case testcaseid="get_task_acct_setup_01" type="always">
 	<t:objective>Create test accounts</t:objective>
 
     <t:test id="admin_login" required="true" >
@@ -72,7 +72,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="get_task_acct_setup_02" type="q4fix">
+<t:test_case testcaseid="get_task_acct_setup_02" type="always">
 	<t:objective>Login to First Account</t:objective>
 
 	<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
@@ -103,7 +103,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="get_task_01" type="q4fix">
+<t:test_case testcaseid="get_task_01" type="bhr">
 	<t:objective>To obtain the details of a task using GetTaskRequest</t:objective>
 	<t:steps>
 		1. Create a Task.
@@ -134,6 +134,8 @@
 			<t:select path="//mail:CreateTaskResponse" attr="invId" set ="task1.id"/>
 		</t:response>
 	</t:test>
+	
+	<t:delay sec="10"/>
 
     <t:test depends="GetTaskRequest1a">
         <t:request> 

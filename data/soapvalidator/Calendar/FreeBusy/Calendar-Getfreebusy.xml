@@ -48,7 +48,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="acct_setup" type="q4fix" >
+<t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create a test account</t:objective>
     <steps> 
         1. Login to admin account
@@ -110,7 +110,7 @@
 <t:property name="server.zimbraAccount" value="${test_acct.server}"/>
 
 
-<t:test_case testcaseid="acct_setup2" type="q4fix" >
+<t:test_case testcaseid="acct_setup2" type="bhr" >
     <t:objective>login to the test account</t:objective>
     
     <t:test id="auth1" required="true">
@@ -279,7 +279,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="GetFreeBusyRequest11" type="q4fix">
+<t:test_case testcaseid="GetFreeBusyRequest11" type="bhr">
     <t:objective>GetFreeBusy status of attendees </t:objective>
     <t:steps>1.Create an appointment of test_account1 with test_account2.
              2.Check the status FreeBusy for test_account1(busy).
@@ -308,6 +308,8 @@
             <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
     </t:test>
+	
+	<t:delay sec="5"/>
 
    <!--Check the status FreeBusy for test_account1(busy). -->
     <t:test>

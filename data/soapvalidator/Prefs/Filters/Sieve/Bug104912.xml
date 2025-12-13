@@ -429,6 +429,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 
 		</t:test>
+		<t:delay sec="10"/>
 
 		<!-- Send a mail with subject containing priority. Should execute admin before, user and after script -->
 
@@ -634,6 +635,8 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					attr="name" match="${account1.name}" />
 			</t:response>
 		</t:test>
+		
+			<t:delay sec="10"/>
 
 		<!-- Send mail with Spam score as low. Should be executed by all filters -->
 		<t:test>
@@ -1003,6 +1006,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					attr="name" match="${account1.name}" />
 			</t:response>
 		</t:test>
+		<t:delay sec="10"/>
 
 		<!-- Send mail with size greater than 2500K. It should be rejected -->
 		<t:test>
@@ -1627,6 +1631,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					attr="name" match="${account1.name}" />
 			</t:response>
 		</t:test>
+		<t:delay sec="10"/>
 
 
 		<!-- Send a mail. The filter should stop after user script execution. The admin after should not get executed -->
@@ -1728,6 +1733,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					attr="name" match="${account1.name}" />
 			</t:response>
 		</t:test>
+		<t:delay sec="10"/>
 
 		<!-- Send mail. The admin before should discard the message. However the rest filters should also get executed as "Stop" command is not fired in Admin before command -->
 
