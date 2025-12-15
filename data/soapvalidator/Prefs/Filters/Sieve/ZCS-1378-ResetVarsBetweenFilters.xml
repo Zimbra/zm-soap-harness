@@ -152,7 +152,20 @@ if  header :matches ["X-Header3"] "*" {
                 <t:select path="//admin:ModifyAccountResponse/admin:account"/>
             </t:response>
         </t:test>
-	<t:delay sec="10"/>
+	
+	 <t:test>
+            <t:request>
+                <FlushCacheRequest xmlns="urn:zimbraAdmin">
+                    <cache type="account">
+                        <entry by="id">${test_account1.id}</entry>
+                    </cache>
+                </FlushCacheRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:FlushCacheResponse"/>
+            </t:response>
+        </t:test>
+	
         <t:test>
             <t:request>
                 <SendMsgRequest xmlns="urn:zimbraMail">

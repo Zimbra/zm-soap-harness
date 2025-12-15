@@ -940,6 +940,45 @@
     <t:objective>GetFreeBusy status of attendees by using email address in uid </t:objective>
 
     <t:steps> Fire GetFreeBusyRequest with email-address </t:steps>
+	
+	
+	    <!-- FIX: Create Appointment for Account 1 so FreeBusy returns 'Busy' -->
+    <t:property name="server.zimbraAccount" value="${account1.server}"/>
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${defaultpassword.value}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <CreateAppointmentRequest xmlns="urn:zimbraMail">
+                <m>
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="BusyTest12" >
+                        <s d="${ICALTIME(+5m)}"/>  
+                        <e d="${ICALTIME(+60m)}"/>  
+                        <or a="${account1.name}"/>
+                    </inv>
+                    <mp content-type="text/plain">
+                        <content>Busy Content</content>
+                    </mp>
+                    <su>Busy Subject Test 12</su>
+                </m>
+            </CreateAppointmentRequest>
+        </t:request>
+        <t:response>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
+        </t:response>
+    </t:test>
+
+	<t:delay sec="5"/>
+
 
     <t:test>
         <t:request>

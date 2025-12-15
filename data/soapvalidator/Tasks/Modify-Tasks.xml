@@ -790,10 +790,12 @@
 			<t:select path="//mail:CreateTaskResponse"/>
 		</t:response>
 	</t:test>
+	
+	<t:delay sec="10"/>
 
 	<t:test>
         <t:request>
-            <GetTaskSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+            <GetTaskSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}" l="${account1.folder.task.id}"/>
         </t:request>
         <t:response>
             <t:select path = "//mail:GetTaskSummariesResponse/mail:task[@name='${task8.subject}']" attr="invId" set="task8.id"/>
@@ -866,10 +868,11 @@
 			<t:select path="//mail:CreateTaskResponse"/>
 		</t:response>
 	</t:test>
+	<t:delay sec="5"/>
 
 	<t:test>
         <t:request>
-            <GetTaskSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}"/>
+            <GetTaskSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}" l="${account1.folder.task.id}"/>
         </t:request>
         <t:response>
             <t:select path = "//mail:GetTaskSummariesResponse/mail:task[@name='${task9.subject}']" attr="invId" set="task9.id"/>

@@ -636,8 +636,19 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 			</t:response>
 		</t:test>
 		
-			<t:delay sec="10"/>
-
+		<t:test>
+            <t:request>
+                <FlushCacheRequest xmlns="urn:zimbraAdmin">
+                    <cache type="account">
+                        <entry by="id">${account1.id}</entry>
+                    </cache>
+                </FlushCacheRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:FlushCacheResponse"/>
+            </t:response>
+        </t:test>
+		
 		<!-- Send mail with Spam score as low. Should be executed by all filters -->
 		<t:test>
 			<t:request>
@@ -1006,7 +1017,19 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					attr="name" match="${account1.name}" />
 			</t:response>
 		</t:test>
-		<t:delay sec="10"/>
+		
+		<t:test>
+            <t:request>
+                <FlushCacheRequest xmlns="urn:zimbraAdmin">
+                    <cache type="account">
+                        <entry by="id">${account1.id}</entry>
+                    </cache>
+                </FlushCacheRequest>
+            </t:request>
+            <t:response>
+                <t:select path="//admin:FlushCacheResponse"/>
+            </t:response>
+        </t:test>
 
 		<!-- Send mail with size greater than 2500K. It should be rejected -->
 		<t:test>
