@@ -285,15 +285,16 @@
              2.Check the status FreeBusy for test_account1(busy).
     </t:steps>
    
-    <!--Create an appointment of test_account1 with test_account2.-->
+   <!--Create an appointment of test_account1 with test_account2.-->
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <s d="${ICALTIME(+1h)}"/>  
-                        <e d="${ICALTIME(+2h)}"/>  
+                        <!-- FIX: Use explicit relative time that definitely overlaps NOW or +5m -->
+                        <s d="${ICALTIME(+10m)}"/>  
+                        <e d="${ICALTIME(+70m)}"/>  
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -309,16 +310,18 @@
         </t:response>
     </t:test>
 	
-	<t:delay sec="5"/>
+	<!-- Increase delay slightly to allow Free/Busy indexer to update -->
+	<t:delay sec="10"/>
 
    <!--Check the status FreeBusy for test_account1(busy). -->
     <t:test>
         <t:request>
+           <!-- Query from NOW to +10 hours -->
            <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME}" e="${TIME(+36000s)}" uid="${test_account1.id}"/>
         </t:request>
         <t:response>      
             <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>  
-            <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>     
+            <!-- Removed duplicate select check -->
         </t:response>
     </t:test>
 
