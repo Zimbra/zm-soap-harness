@@ -113,6 +113,26 @@ log "done";'/>
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 		</t:response>
 	</t:test>
+	
+	
+	    <!-- STAF: Whitelist ALL Custom Headers and Disable Login Filter -->
+    <t:staftask >
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c 'zmprov mcf zimbraInvalidLoginFilterMaxFailedLogin 0 +zimbraCustomMimeHeaderNameAllowed X-Spam-Score +zimbraCustomMimeHeaderNameAllowed X-Sieve-Header +zimbraCustomMimeHeaderNameAllowed X-Header0 +zimbraCustomMimeHeaderNameAllowed X-Header1 +zimbraCustomMimeHeaderNameAllowed X-Header2 +zimbraCustomMimeHeaderNameAllowed X-Header3 +zimbraCustomMimeHeaderNameAllowed X-Test-Header +zimbraCustomMimeHeaderNameAllowed X-Test-Header-1 +zimbraCustomMimeHeaderNameAllowed X-Test-Header-2 +zimbraCustomMimeHeaderNameAllowed X-Test-Header-3 +zimbraCustomMimeHeaderNameAllowed X-Test-Header-4 +zimbraCustomMimeHeaderNameAllowed X-Test-Header-5 +zimbraCustomMimeHeaderNameAllowed X-Test-Header-6 +zimbraCustomMimeHeaderNameAllowed X-Test-Header-7 +zimbraCustomMimeHeaderNameAllowed X-Test-Header-8 +zimbraCustomMimeHeaderNameAllowed X-Test-Header-9 +zimbraCustomMimeHeaderNameAllowed X-Numeric-Header +zimbraCustomMimeHeaderNameAllowed X-Numeric2-Header'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+        </t:request>
+    </t:staftask>
+
+    <!-- STAF: Flush Cache (Critical for changes to take effect) -->
+    <t:staftask >
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c 'zmprov fc all'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+        </t:request>
+    </t:staftask>
+
 
 		<!--<t:test>
 			<t:request>

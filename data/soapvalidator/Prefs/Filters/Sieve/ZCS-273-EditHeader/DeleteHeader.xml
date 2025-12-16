@@ -1732,6 +1732,26 @@
 			<t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
 		</t:response>
 	</t:test>
+	
+	<!-- 2. STAF: Whitelist the Custom Header (CRITICAL FIX) -->
+    <t:staftask >
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'zmprov mcf +zimbraCustomMimeHeaderNameAllowed X-Test-Header\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+        </t:request>
+    </t:staftask>
+
+    <!-- 3. STAF: Flush Cache to apply changes immediately -->
+    <t:staftask >
+        <t:request>
+            <server>${zimbraServer.name}</server>
+            <service>PROCESS</service>
+            <params>START SHELL COMMAND "su - zimbra -c \'zmprov fc all\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+        </t:request>
+    </t:staftask>
+    
+    <t:delay sec="5"/>
 
     <t:test >
         <t:request>

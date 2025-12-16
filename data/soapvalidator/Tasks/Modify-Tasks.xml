@@ -748,9 +748,9 @@
 </t:test_case>
 
 <t:test_case testcaseid="modify_task_08" type="bhr" bugids="18475">
-	<t:objective>To modify a task by adding an attachment</t:objective>
+    <t:objective>To modify a task by adding an attachment</t:objective>
 
-	<t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
+    <t:property name="server.zimbraAccount" value="${test_acct.server1}"/>
 
     <t:test required="true">
         <t:request>
@@ -766,143 +766,130 @@
         </t:response>
     </t:test>
 
-	<t:test id="ModifyTaskRequest8a">
-		<t:request>
-	        <CreateTaskRequest xmlns="urn:zimbraMail">
-				<m l="${account1.folder.task.id}">
-					<inv method="REQUEST">
-						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task8.subject}" loc="${task1.location}">
-							<s d="${Time1}"/>
-							<e d="${Time2}"/>
-							<or a="${test_account1.name}"/>
-							<at role="REQ" ptst="NE" a="${test_account2.name}"/>
-						</comp>
-					</inv>
-					<mp ct="text/plain">
-    					<content>${task8.content}</content>
-					</mp>
-					<su>${task8.subject}</su>
-					<e a="${test_account2.name}" t="t"/>
-				</m>
-	        </CreateTaskRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//mail:CreateTaskResponse"/>
-		</t:response>
-	</t:test>
-	
-	<t:delay sec="10"/>
-
-	<t:test>
+    <t:test id="ModifyTaskRequest8a">
         <t:request>
-            <GetTaskSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}" l="${account1.folder.task.id}"/>
+            <CreateTaskRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.task.id}">
+                    <inv method="REQUEST">
+                        <comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task8.subject}" loc="${task1.location}">
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
+                            <or a="${test_account1.name}"/>
+                            <at role="REQ" ptst="NE" a="${test_account2.name}"/>
+                        </comp>
+                    </inv>
+                    <mp ct="text/plain">
+                        <content>${task8.content}</content>
+                    </mp>
+                    <su>${task8.subject}</su>
+                    <e a="${test_account2.name}" t="t"/>
+                </m>
+            </CreateTaskRequest>
         </t:request>
         <t:response>
-            <t:select path = "//mail:GetTaskSummariesResponse/mail:task[@name='${task8.subject}']" attr="invId" set="task8.id"/>
+            <!-- FIX: Capture invId directly here -->
+            <t:select path="//mail:CreateTaskResponse" attr="invId" set="task8.id"/>
         </t:response>
     </t:test>
+    
+    
+    <t:delay sec="3"/>
 
-	<t:property name="uploadServletServer" value="${test_acct.server1}"/>
+    <t:property name="uploadServletServer" value="${test_acct.server1}"/>
 
-	<t:uploadservlettest>
-		<t:uploadServletRequest>
-			<filename>${msg01.file}</filename>
-		</t:uploadServletRequest>
-		<t:uploadServletResponse>
-			<t:select attr="id" set="attach.aid"/>
-		</t:uploadServletResponse>
-	</t:uploadservlettest>
+    <t:uploadservlettest>
+        <t:uploadServletRequest>
+            <filename>${msg01.file}</filename>
+        </t:uploadServletRequest>
+        <t:uploadServletResponse>
+            <t:select attr="id" set="attach.aid"/>
+        </t:uploadServletResponse>
+    </t:uploadservlettest>
 
-	<t:test depends="ModifyTaskRequest1a">
-		<t:request>
-	        <ModifyTaskRequest xmlns="urn:zimbraMail" id="${task8.id}">
-				<m>
-					<inv method="REQUEST">
-						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task8.subject}" loc="${task1.new_location}">
-							<s d="${Time1}"/>
-							<e d="${Time2}"/>
-							<or a="${test_account1.name}"/>
-							<at role="REQ" ptst="NE" a="${test_account3.name}"/>
-						</comp>
-					</inv>
-					<mp ct="text/plain">
-    					<content>${task8.content}</content>
-					</mp>
-					<su>${task8.subject}</su>
-					<e a="${test_account3.name}" t="t"/>
-					<attach aid="${attach.aid}"/>
-				</m>
-	        </ModifyTaskRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//mail:ModifyTaskResponse"/>
-		</t:response>
-	</t:test>
+    <t:test depends="ModifyTaskRequest8a">
+        <t:request>
+            <ModifyTaskRequest xmlns="urn:zimbraMail" id="${task8.id}">
+                <m>
+                    <inv method="REQUEST">
+                        <comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task8.subject}" loc="${task1.new_location}">
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
+                            <or a="${test_account1.name}"/>
+                            <at role="REQ" ptst="NE" a="${test_account3.name}"/>
+                        </comp>
+                    </inv>
+                    <mp ct="text/plain">
+                        <content>${task8.content}</content>
+                    </mp>
+                    <su>${task8.subject}</su>
+                    <e a="${test_account3.name}" t="t"/>
+                    <attach aid="${attach.aid}"/>
+                </m>
+            </ModifyTaskRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyTaskResponse"/>
+        </t:response>
+    </t:test>
 
 </t:test_case>
 
 <t:test_case testcaseid="modify_task_09" type="bhr">
-	<t:objective>Modify the priority of a task to high</t:objective>
+    <t:objective>Modify the priority of a task to high</t:objective>
 
-	<t:test id="ModifyTaskRequest9a">
-		<t:request>
-	        <CreateTaskRequest xmlns="urn:zimbraMail">
-				<m l="${account1.folder.task.id}">
-					<inv method="REQUEST">
-						<comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task9.subject}" loc="${task1.location}">
-							<s d="${Time1}"/>
-							<e d="${Time2}"/>
-							<or a="${test_account1.name}"/>
-							<at role="REQ" ptst="NE" a="${test_account2.name}"/>
-						</comp>
-					</inv>
-					<mp ct="text/plain">
-    					<content>${task9.content}</content>
-					</mp>
-					<su>${task9.subject}</su>
-					<e a="${test_account2.name}" t="t"/>
-				</m>
-	        </CreateTaskRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//mail:CreateTaskResponse"/>
-		</t:response>
-	</t:test>
-	<t:delay sec="5"/>
-
-	<t:test>
+    <t:test id="ModifyTaskRequest9a">
         <t:request>
-            <GetTaskSummariesRequest xmlns="urn:zimbraMail" s="${TimeRangeStart}" e="${TimeRangeFinish}" l="${account1.folder.task.id}"/>
+            <CreateTaskRequest xmlns="urn:zimbraMail">
+                <m l="${account1.folder.task.id}">
+                    <inv method="REQUEST">
+                        <comp priority="1" percentComplete="50" status="INPR" allDay="0" name="${task9.subject}" loc="${task1.location}">
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
+                            <or a="${test_account1.name}"/>
+                            <at role="REQ" ptst="NE" a="${test_account2.name}"/>
+                        </comp>
+                    </inv>
+                    <mp ct="text/plain">
+                        <content>${task9.content}</content>
+                    </mp>
+                    <su>${task9.subject}</su>
+                    <e a="${test_account2.name}" t="t"/>
+                </m>
+            </CreateTaskRequest>
         </t:request>
         <t:response>
-            <t:select path = "//mail:GetTaskSummariesResponse/mail:task[@name='${task9.subject}']" attr="invId" set="task9.id"/>
+             <!-- FIX: Capture invId directly here -->
+             <t:select path="//mail:CreateTaskResponse" attr="invId" set="task9.id"/>
         </t:response>
     </t:test>
+    
+   
+    <t:delay sec="3"/>
 
-	<t:test depends="ModifyTaskRequest9a">
-		<t:request>
-	        <ModifyTaskRequest xmlns="urn:zimbraMail" id="${task9.id}">
-				<m>
-					<inv method="REQUEST">
-						<comp priority="9" percentComplete="50" status="INPR" allDay="0" name="${task9.subject}" loc="${task1.new_location}">
-							<s d="${Time1}"/>
-							<e d="${Time2}"/>
-							<or a="${test_account1.name}"/>
-							<at role="REQ" ptst="NE" a="${test_account3.name}"/>
-						</comp>
-					</inv>
-					<mp ct="text/plain">
-    					<content>${task9.content}</content>
-					</mp>
-					<su>${task9.subject}</su>
-					<e a="${test_account3.name}" t="t"/>
-				</m>
-	        </ModifyTaskRequest>
-		</t:request>
-		<t:response>
-			<t:select path="//mail:ModifyTaskResponse"/>
-		</t:response>
-	</t:test>
+    <t:test depends="ModifyTaskRequest9a">
+        <t:request>
+            <ModifyTaskRequest xmlns="urn:zimbraMail" id="${task9.id}">
+                <m>
+                    <inv method="REQUEST">
+                        <comp priority="9" percentComplete="50" status="INPR" allDay="0" name="${task9.subject}" loc="${task1.new_location}">
+                            <s d="${Time1}"/>
+                            <e d="${Time2}"/>
+                            <or a="${test_account1.name}"/>
+                            <at role="REQ" ptst="NE" a="${test_account3.name}"/>
+                        </comp>
+                    </inv>
+                    <mp ct="text/plain">
+                        <content>${task9.content}</content>
+                    </mp>
+                    <su>${task9.subject}</su>
+                    <e a="${test_account3.name}" t="t"/>
+                </m>
+            </ModifyTaskRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:ModifyTaskResponse"/>
+        </t:response>
+    </t:test>
 
 </t:test_case>
 
