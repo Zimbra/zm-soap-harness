@@ -298,6 +298,23 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
 			</t:response>
 		</t:test>
+		
+		<t:staftask >
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>START SHELL COMMAND "su - zimbra -c \'zmprov mcf zimbraInvalidLoginFilterMaxFailedLogin 0 +zimbraCustomMimeHeaderNameAllowed X-Spam-Score +zimbraCustomMimeHeaderNameAllowed X-Sieve-Header\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+    </t:request>
+</t:staftask>
+
+<t:staftask >
+    <t:request>
+        <server>${zimbraServer.name}</server>
+        <service>PROCESS</service>
+        <params>START SHELL COMMAND "su - zimbra -c \'zmprov fc all\'" RETURNSTDOUT RETURNSTDERR WAIT ${staf.process.timeout.zmmtactl}</params>
+    </t:request>
+</t:staftask>
+
     
 		<t:test required="true">
 			<t:request>
