@@ -22,7 +22,7 @@
 
 </t:test_case>
 
-<t:test_case testcaseid="acct_setup1" type="q4fix" >
+<t:test_case testcaseid="acct_setup1" type="always" >
     <t:objective>Create test accounts</t:objective>
    
     <!-- Login to admin -->
@@ -48,6 +48,7 @@
             <t:select path="//admin:ModifyConfigResponse"/>
         </t:response>
     </t:test>
+	<t:delay sec="10"/>
         
     <t:test id="create_test_account1" required="false" depends="admin_login">
         <t:request>
@@ -100,6 +101,7 @@
             <t:select path="//admin:CreateDistributionListResponse/admin:dl" attr="id" set="list1.id"/>
         </t:response>
     </t:test>
+		<t:delay sec="5"/>
     
     <t:test id="addDistributionListMemberRequest1" depends="addDistributionListMemberRequest1a">
         <t:request>
@@ -113,6 +115,8 @@
             <t:select path="//admin:AddDistributionListMemberResponse"/>
         </t:response>
     </t:test>
+		<t:delay sec="5"/>
+
     
     <t:test id="addDistributionListMemberRequest1" depends="addDistributionListMemberRequest1a">
         <t:request>
@@ -129,6 +133,8 @@
       		   <t:select path='//admin:ModifyDistributionListResponse/admin:dl/admin:a[@n="zimbraPrefReplyToDisplay"]' match="display_name"/> 
         </t:response>
     </t:test>
+		<t:delay sec="5"/>
+
     
     <t:test>
 		<t:request>

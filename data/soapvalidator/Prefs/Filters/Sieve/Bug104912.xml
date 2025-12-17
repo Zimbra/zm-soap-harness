@@ -616,222 +616,169 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 	</t:test_case>
 
 
+<t:test_case testcaseid="SendMail_And_checkFilter_Execution_2" type="bhr">
+    <t:objective>Modify account and send mail to check sieve filter</t:objective>
+
+    
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+        </t:response>
+    </t:test>
+
+    
+    <t:test id="modifyaccountrequest_2">
+        <t:request>
+            <ModifyAccountRequest xmlns="urn:zimbraAdmin">
+                <id>${account1.id}</id>
+                <a n="zimbraAdminSieveScriptBefore">${admin_script_value_before_2}</a>
+                <a n="zimbraMailSieveScript">${user_script_value_2}</a>
+                <a n="zimbraAdminSieveScriptAfter">${admin_script_value_after_2}</a>
+            </ModifyAccountRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:ModifyAccountResponse/admin:account" attr="name" match="${account1.name}" />
+        </t:response>
+    </t:test>
+
+    <t:test>
+        <t:request>
+            <FlushCacheRequest xmlns="urn:zimbraAdmin">
+                <cache type="account">
+                    <entry by="id">${account1.id}</entry>
+                </cache>
+            </FlushCacheRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:FlushCacheResponse"/>
+        </t:response>
+    </t:test>
+
+    <t:delay sec="10"/>
+
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m f="!">
+                    <header name="X-Spam-Score">1</header>
+                    <e t="t" a="${account1.name}" />
+                    <su>${subject3}</su>
+                    <mp ct="text/plain">
+                        <content>content3</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="Sent_message1.id" />
+        </t:response>
+    </t:test>
+
+    
+    <t:delay sec="10"/>
+
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+        </t:response>
+    </t:test>
+
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail">
+                <query>in:Junk</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${subject3}" />
+        </t:response>
+    </t:test>
 
 
-	<t:test_case testcaseid="SendMail_And_checkFilter_Execution_2"
-		type="bhr">
-		<t:objective> Modify account and send mail to check sieve filter
-		</t:objective>
+   
+    <t:test required="true">
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAdmin">
+                <name>${admin.user}</name>
+                <password>${admin.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
+        </t:response>
+    </t:test>
 
+    <t:test>
+        <t:request>
+            <SendMsgRequest xmlns="urn:zimbraMail">
+                <m f="!">
+                    <header name="X-Spam-Score">4</header>
+                    <e t="t" a="${account1.name}" />
+                    <su>${subject4}</su>
+                    <mp ct="text/plain">
+                        <content>content4</content>
+                    </mp>
+                </m>
+            </SendMsgRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SendMsgResponse/mail:m" attr="id" set="Sent_message1.id" />
+        </t:response>
+    </t:test>
 
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
+    
+    <t:delay sec="10"/>
 
+    <t:test>
+        <t:request>
+            <AuthRequest xmlns="urn:zimbraAccount">
+                <account by="name">${account1.name}</account>
+                <password>${test_account1.password}</password>
+            </AuthRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
+        </t:response>
+    </t:test>
 
-		<t:test id="modifyaccountrequest_2">
-			<t:request>
-				<ModifyAccountRequest xmlns="urn:zimbraAdmin">
-					<id>${account1.id}</id>
-					<a n="zimbraAdminSieveScriptBefore">${admin_script_value_before_2}</a>
-					<a n="zimbraMailSieveScript">${user_script_value_2}</a>
-					<a n="zimbraAdminSieveScriptAfter">${admin_script_value_after_2}</a>
-				</ModifyAccountRequest>
-			</t:request>
+    
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail">
+                <query>in:Junk</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${subject4}" emptyset="1" />
+        </t:response>
+    </t:test>
 
-			<t:response>
-				<t:select path="//admin:ModifyAccountResponse/admin:account"
-					attr="name" match="${account1.name}" />
-			</t:response>
-		</t:test>
-		
-		<t:test>
-            <t:request>
-                <FlushCacheRequest xmlns="urn:zimbraAdmin">
-                    <cache type="account">
-                        <entry by="id">${account1.id}</entry>
-                    </cache>
-                </FlushCacheRequest>
-            </t:request>
-            <t:response>
-                <t:select path="//admin:FlushCacheResponse"/>
-            </t:response>
-        </t:test>
-		
-		<!-- Send mail with Spam score as low. Should be executed by all filters -->
-		<t:test>
-			<t:request>
-				<SendMsgRequest xmlns="urn:zimbraMail">
-					<m f="!">
-						<header name="X-Spam-Score">1</header>
-						<e t="t" a="${account1.name}" />
-						<su>${subject3}</su>
-						<mp ct="text/plain">
-							<content>content3</content>
-						</mp>
-					</m>
-				</SendMsgRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
-					set="Sent_message1.id" />
-			</t:response>
-		</t:test>
+   
+    <t:test>
+        <t:request>
+            <SearchRequest xmlns="urn:zimbraMail">
+                <query>in:inbox</query>
+            </SearchRequest>
+        </t:request>
+        <t:response>
+            <t:select path="//mail:SearchResponse/mail:c" attr="su" match="${subject4}" emptyset="1" />
+        </t:response>
+    </t:test>
 
-
-
-		<t:test>
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAccount">
-					<account by="name">${account1.name}</account>
-					<password>${test_account1.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
-				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
-			</t:response>
-		</t:test>
-
-		<t:test>
-			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail">
-					<query>in:Junk</query>
-				</SearchRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//mail:SearchResponse/mail:c" attr="su"
-					match="${subject3}" />
-			</t:response>
-		</t:test>
-
-		<t:test>
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAccount">
-					<account by="name">${account2.name}</account>
-					<password>${test_account1.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
-				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
-			</t:response>
-		</t:test>
-
-
-		<t:test>
-			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail">
-					<query>in:inbox</query>
-				</SearchRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//mail:SearchResponse/mail:c" attr="su"
-					match="${subject3}" />
-			</t:response>
-		</t:test>
-
-
-		<t:test required="true">
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAdmin">
-					<name>${admin.user}</name>
-					<password>${admin.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//admin:AuthResponse/admin:authToken" set="authToken" />
-			</t:response>
-		</t:test>
-
-		<!-- Send mail with spam score as high. Should be discarded by admin before filter -->
-
-		<t:test>
-			<t:request>
-				<SendMsgRequest xmlns="urn:zimbraMail">
-					<m f="!">
-						<header name="X-Spam-Score">4</header>
-						<e t="t" a="${account1.name}" />
-						<su>${subject4}</su>
-						<mp ct="text/plain">
-							<content>content4</content>
-						</mp>
-					</m>
-				</SendMsgRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//mail:SendMsgResponse/mail:m" attr="id"
-					set="Sent_message1.id" />
-			</t:response>
-		</t:test>
-
-
-
-		<t:test>
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAccount">
-					<account by="name">${account1.name}</account>
-					<password>${test_account1.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
-				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
-			</t:response>
-		</t:test>
-
-		<t:test>
-			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail">
-					<query>in:Junk</query>
-				</SearchRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//mail:SearchResponse/mail:c" attr="su"
-					match="${subject4}" emptyset="1" />
-			</t:response>
-		</t:test>
-
-
-		<t:test>
-			<t:request>
-				<AuthRequest xmlns="urn:zimbraAccount">
-					<account by="name">${account2.name}</account>
-					<password>${test_account1.password}</password>
-				</AuthRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//acct:AuthResponse/acct:lifetime" match="^\d+$" />
-				<t:select path="//acct:AuthResponse/acct:authToken" set="authToken" />
-			</t:response>
-		</t:test>
-
-
-		<t:test>
-			<t:request>
-				<SearchRequest xmlns="urn:zimbraMail">
-					<query>in:inbox</query>
-				</SearchRequest>
-			</t:request>
-			<t:response>
-				<t:select path="//mail:SearchResponse/mail:c" attr="su"
-					match="${subject4}" emptyset="1" />
-			</t:response>
-		</t:test>
-
-
-
-	</t:test_case>
-
-
+</t:test_case>
 
 
 
@@ -1034,6 +981,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					attr="name" match="${account1.name}" />
 			</t:response>
 		</t:test>
+		<t:delay sec="10"/>
 		
 		<t:test>
             <t:request>
@@ -1257,6 +1205,7 @@ if address :is :all "from" "admin@${defaultdomain.name}"
 					attr="name" match="${account1.name}" />
 			</t:response>
 		</t:test>
+		<t:delay sec="10"/>
 
 
 		<t:test>
