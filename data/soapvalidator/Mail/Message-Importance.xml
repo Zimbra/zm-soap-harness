@@ -236,25 +236,18 @@
 		</t:response>
 	</t:test>
 	
+	<t:delay sec="10"/>
 
-<t:property name="message1.id" value=""/>
-<t:for start="1" end="5" break="message1.id">
-<t:delay msec="5000"/>
-    <t:test>
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>subject:(${message1.subject})</query>
-            </SearchRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id" emptyset="1"/> 
-        </t:response>
-    </t:test>
-
-</t:for>
-<t:if string="${message1.id}" relation="=" value="">
-    <t:fail message="Message with subject ${message1.subject} was not found after retries"/>
-</t:if>
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message1.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
 
     <t:test >
         <t:request>
@@ -323,26 +316,18 @@
 
 		</t:response>
 	</t:test>
+		<t:delay sec="10"/>
 
-	
-	<t:property name="message1.id" value=""/>
-<t:for start="1" end="5" break="message1.id">
-<t:delay msec="5000"/>
-    <t:test>
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="message">
-                <query>subject:(${message1.subject})</query>
-            </SearchRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id" emptyset="1"/> 
-        </t:response>
-    </t:test>
-
-</t:for>
-<t:if string="${message1.id}" relation="=" value="">
-    <t:fail message="Message with subject ${message1.subject} was not found after retries"/>
-</t:if>
+	<t:test>
+		<t:request>
+			<SearchRequest xmlns="urn:zimbraMail" types="message">
+				<query>subject:(${message1.subject})</query>
+			</SearchRequest>
+		</t:request>
+		<t:response>
+			<t:select path="//mail:SearchResponse/mail:m" attr="id" set="message1.id"/>
+		</t:response>
+	</t:test>
 
     <t:test >
         <t:request>
@@ -385,7 +370,7 @@
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m f="!">
-					<e t="t" a="matt@zimbra.com"/>
+					<e t="t" a="${account2.name}"/>
 					<su>${message1.subject}</su>
 					<mp ct="text/plain">
 						<content>${message1.content}</content>
@@ -439,7 +424,7 @@
 		<t:request>
 			<SendMsgRequest xmlns="urn:zimbraMail">
 				<m f="?">
-					<e t="t" a="matt@zimbra.com"/>
+					<e t="t" a="${account2.name}"/>
 					<su>${message1.subject}</su>
 					<mp ct="text/plain">
 						<content>${message1.content}</content>

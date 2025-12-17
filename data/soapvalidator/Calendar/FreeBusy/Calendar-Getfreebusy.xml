@@ -279,21 +279,21 @@
 </t:test_case>
 
 <t:test_case testcaseid="GetFreeBusyRequest11" type="bhr">
-    <t:objective>GetFreeBusy status of attendees </t:objective>
-    <t:steps>1.Create an appointment of test_account1 with test_account2.
-             2.Check the status FreeBusy for test_account1(busy).
+    <t:objective>GetFreeBusy status of attendees</t:objective>
+    <t:steps>
+        1.Create an appointment of test_account1 with test_account2.
+        2.Check the status FreeBusy for test_account1(busy).
     </t:steps>
    
-    <!-- Step 1: Create Appointment -->
     <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
                     <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <!-- Start 10 mins from NOW -->
-                        <s d="${ICALTIME(+10m)}"/>  
-                        <e d="${ICALTIME(+70m)}"/>  
+                        <!-- SAFER: Start 1 hour from NOW -->
+                        <s d="${ICALTIME(+1h)}"/>  
+                        <e d="${ICALTIME(+2h)}"/>  
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
@@ -309,23 +309,18 @@
         </t:response>
     </t:test>
     
-    <!-- FIX: Increased delay to 20s to ensure indexing completes -->
-    <t:delay sec="20"/>
-
-    <!-- Step 2: Check Free/Busy -->
+    <t:delay sec="30"/>
+  
     <t:test>
         <t:request>
-           <!-- Query covering the appointment time -->
-           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME}" e="${TIME(+36000s)}" uid="${test_account1.id}"/>
+          
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME}" e="${TIME(+3h)}" uid="${test_account1.name}"/>
         </t:request>
         <t:response>      
-            <!-- Verify we found a BUSY slot -->
             <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>  
         </t:response>
     </t:test>
 
 </t:test_case>
-
-
 
 </t:tests>
