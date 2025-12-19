@@ -90,7 +90,7 @@
 <!-- 
 <t:finally areas="spam, noncluster">
 
-	<!-- After all tests have run, reset the zimbra_class_store setting to the original 
+	After all tests have run, reset the zimbra_class_store setting to the original 
 	
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}"/>
 
@@ -110,8 +110,6 @@
 		<t:request>
 			<server>${zimbraServer.name}</server>
 			<service>PROCESS</service>
-			<!--<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmlocalconfig  -e zimbra_class_store=com.zimbra.cs.store.file.FileBlobStore'" RETURNSTDOUT WAIT</params> 
-			
 			<params>START SHELL COMMAND "su - zimbra -c \'/opt/zimbra/bin/zmlocalconfig  -e zimbra_class_store=${zimbra_class_store_value}'" RETURNSTDOUT WAIT</params>
 		</t:request>		 
    </t:staftask>
@@ -127,7 +125,6 @@
 </t:finally>
 -->
 
-<!-- Make sure non-admin auth is not allowed to run tests -->
 
 
 <t:test_case testcaseid="VerifyStoreManagerRequest_01" type="deprecated">

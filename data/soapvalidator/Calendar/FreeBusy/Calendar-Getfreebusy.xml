@@ -7,13 +7,13 @@
 <t:property name="test_account2.password" value="${defaultpassword.value}"/>
 <t:property name="test_account3.name" value="test${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="test_account3.password" value="${defaultpassword.value}"/>
+<t:property name="tz.default" value="(GMT-08.00) Pacific Time (US &amp; Canada) / Tijuana"/>
 
 
 <t:property name="calendar.spchar" value="//\\'^%"/>
 <t:property name="calendar.space" value="           "/>
 <t:property name="calendar.blank" value=""/>
 <t:property name="calendar.sometext" value="some text"/>
-
 
 <t:property name="now" value="${TIME}"/>
 <t:property name="end" value="${TIME(+5s)}"/>
@@ -25,7 +25,6 @@
 <t:property name="now2" value="${TIME(+1h)}"/>
 
 <t:property name="Time4" value="${ICALTIME(+1h)}"/>
-
 
 <t:property name="appointment.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
 <t:property name="appointment1.subject" value="Subject of meeting${TIME}.${COUNTER}"/>
@@ -285,36 +284,35 @@
         2.Check the status FreeBusy for test_account1(busy).
     </t:steps>
    
-    <t:test>
+    <t:test required="true">
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
-                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment.subject}" loc="${appointment.location}">
+                    <inv method="REQUEST" type="event" fb="B" transp="O" allDay="0" name="${appointment1.subject}" loc="${appointment.location}">
                         <at role="OPT" ptst="NE" rsvp="1" a="${test_account2.name}"/>
-                        <!-- SAFER: Start 1 hour from NOW -->
-                        <s d="${ICALTIME(+1h)}"/>  
-                        <e d="${ICALTIME(+2h)}"/>  
+                        <s d="${Time1}" tz="${tz.default}"/>  
+                        <e d="${Time2}" tz="${tz.default}"/>  
                         <or a="${test_account1.name}"/>
                     </inv>
                     <e a="${test_account2.name}" t="t"/>
                     <mp content-type="text/plain">
                         <content>${appointment.content}</content>
                     </mp>
-                    <su>${appointment.subject}</su>
+                    <su>${appointment1.subject}</su>
                 </m>
             </CreateAppointmentRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:CreateAppointmentResponse"/>
+            <t:select path = "//mail:CreateAppointmentResponse"/>
         </t:response>
-    </t:test>
+
+	</t:test>
     
     <t:delay sec="30"/>
   
     <t:test>
-        <t:request>
-          
-           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME}" e="${TIME(+3h)}" uid="${test_account1.name}"/>
+        <t:request>     
+           <GetFreeBusyRequest xmlns="urn:zimbraMail" s="${TIME(-1d)}" e="${TIME(+2d)}" uid="${test_account1.name}"/>
         </t:request>
         <t:response>      
             <t:select path="//mail:GetFreeBusyResponse/mail:usr/mail:b"/>  

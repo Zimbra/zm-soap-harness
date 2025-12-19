@@ -34,7 +34,7 @@
 
 
 
-<t:test_case testcaseid="acct_setup" type="q4fix" >
+<t:test_case testcaseid="acct_setup" type="always" >
     <t:objective>Create test accounts</t:objective>
 
     <!-- Login to admin -->
@@ -82,7 +82,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="435659" type="q4fix" areas="Calendar" bugids="33535">
+<t:test_case testcaseid="435659" type="bhr" areas="Calendar" bugids="33535">
     <t:objective>Create Single event with reminder.</t:objective>
 
 
@@ -165,7 +165,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="437003" type="q4fix" areas="Calendar">
+<t:test_case testcaseid="437003" type="bhr" areas="Calendar">
     <t:objective> Setup single events and set reminder to email for Second time - Hours </t:objective>
 
 
@@ -220,11 +220,7 @@
                 <t:select path="//mail:s" attr="d" match="${ICALTIME[${time.20250101120000.pst}]}"/>
             </t:select>
         </t:select>
-
-        <!-- ✅ Validate 2 alarms are present -->
         <t:count path="//mail:alarm" match="2"/>
-
-        <!-- ✅ Validate both alarm details -->
         <t:select path="//mail:alarm[@action='DISPLAY'][mail:desc='Reminder 1']"/>
 		<t:select path="//mail:alarm[@action='DISPLAY'][mail:desc='Reminder 2']"/>
     </t:response>
@@ -238,15 +234,12 @@
                                 <query>inid:${account1.calendar.folder.id}</query>
                         </SearchRequest>
         </t:request>
-        <t:response>
-        <t:select path="//mail:SearchResponse">
-            <!-- ✅ appointment is found -->
-            <t:select path="//mail:appt[@invId='${appt2.invId}']"/>
-
-            <!-- ✅ alarm attribute = 1 -->
-            <t:select path="//mail:appt" attr="alarm" match="1"/>
-        </t:select>
-    </t:response>
+         <t:response>
+    <t:select path="//mail:SearchResponse">
+        <t:select path="//mail:appt[@invId='${appt2.invId}']"/>
+        <t:select path="//mail:appt[@invId='${appt2.invId}' and @alarm='1']"/>
+    </t:select>
+</t:response>
     </t:test>
 
 </t:test_case>
