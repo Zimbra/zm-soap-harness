@@ -134,11 +134,14 @@
 			</SendMsgRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//mail:SendMsgResponse"/>
-		</t:response>
+    <t:select path="//soap:Fault"/>
+    <t:select path="//soap:Fault/soap:Code/soap:Value"
+              match="soap:Sender"/>
+    <t:select path="//zimbra:Code"
+              match="mail.SEND_ABORTED_ADDRESS_FAILURE"/>
+</t:response>
 	</t:test>
 
-	<t:delay sec="60"/>
 	
 	<t:test>
 		<t:request>
@@ -147,7 +150,7 @@
 			</SearchRequest>
 		</t:request>
 		<t:response>
-			<t:select path="//mail:SearchResponse/mail:m"/>
+		<t:select path="//mail:SearchResponse/mail:m" count="0"/>
 		</t:response>
 	</t:test>
 

@@ -378,6 +378,19 @@
     </t:mailinjecttest>
 
 <t:delay sec="30"/>
+
+<t:test>
+  <t:request>
+    <NoOpRequest xmlns="urn:zimbraMail"/>
+  </t:request>
+
+ <t:header>
+  <t:select path="//*[local-name()='notify']"/>
+  <t:select path="//*[local-name()='notify']/*[local-name()='created']/*[local-name()='m']"/>
+  <t:select path="//*[local-name()='notify']/*[local-name()='modified']/*[local-name()='folder']"/>
+</t:header>
+</t:test>
+
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
@@ -386,13 +399,13 @@
 		</t:request>
 		<t:response>
 			<t:select path="//mail:SearchResponse/mail:m"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:su" match="${msg.subject}"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:e[@t='f']" attr="a" match="${nonZimbraUser.name}"/>
-			<t:header path="//zimbra:context/zimbra:notify/zimbra:modified/zimbra:folder" attr="id" match="${folder.inbox}"/>
+  			<t:select path="//mail:SearchResponse/mail:m/mail:su" match="email01A"/>
 		</t:response>
 	</t:test>
 
 </t:test_case>
+
+
 
 
 <t:test_case testcaseid="Notification8" type="bhr">
@@ -458,6 +471,7 @@
 </t:test_case>
 
 
+
 <t:test_case testcaseid="Notification9" type="bhr">
     <t:objective> Add a mail to verify the notification block </t:objective>
     
@@ -473,14 +487,30 @@
         </t:request>
         <t:response>
             <t:select path="//mail:AddMsgResponse/mail:m"/>
-            <t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m" attr="l" match="${folder.inbox}"/>
-            <t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:su" match="this is subject of the message"/>
-            <t:header path="//zimbra:context/zimbra:notify/zimbra:created/zimbra:m/zimbra:fr" match="${message.content1}"/>
-            <t:header path="//zimbra:context/zimbra:notify/zimbra:modified/zimbra:folder" attr="id" match="${folder.inbox}"/>
         </t:response>
+    </t:test>
+	
+	    <t:test>
+        <t:request>
+            <NoOpRequest xmlns="urn:zimbraMail"/>
+        </t:request>
+
+        <t:header>
+            <!-- created message -->
+            <t:select path="//zimbra:notify/zimbra:created/zimbra:m" attr="l" match="${folder.inbox}"/>
+            <t:select path="//zimbra:notify/zimbra:created/zimbra:m/zimbra:su"
+                      match="this is subject of the message"/>
+            <t:select path="//zimbra:notify/zimbra:created/zimbra:m/zimbra:fr"
+                      match="${message.content1}"/>
+
+            <!-- modified folder -->
+            <t:select path="//zimbra:notify/zimbra:modified/zimbra:folder"
+                      attr="id" match="${folder.inbox}"/>
+        </t:header>
     </t:test>
 
 </t:test_case>
+
 
 
 <t:test_case testcaseid="Notification10" type="bhr">

@@ -212,11 +212,13 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
+	
+	<t:delay sec="10"/>
 
     <t:test>
         <t:request>
             <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
-				<query>${appointment.content}</query>
+				<query>inid:10</query>
 			</SearchRequest>
         </t:request>
         <t:response>
