@@ -195,9 +195,12 @@
 				<id>${msg1.id}</id>
 			</t:restServletRequest>
 			<t:restServletResponse>
-				<t:select attr="Return-Path" match=".?${account1.alias}.?"/>
+				<!-- SMTP envelope sender → recipient mailbox -->
+				<t:select attr="Return-Path" match=".?${account2.name}.?"/>
+				<!-- Persona controls Reply-To -->
 				<t:select attr="Reply-To" match=".?${account1.alias}.?"/>
 			</t:restServletResponse>
+
 		</t:resttest>
 	</t:test_case>
 	
@@ -266,7 +269,7 @@
 				<id>${msg2.id}</id>
 			</t:restServletRequest>
 			<t:restServletResponse>
-				<t:select attr="Return-Path" match=".?${account1.name}.?"/>
+				<t:select attr="Return-Path" match=".?${account2.name}.?"/>
 			</t:restServletResponse>
 		</t:resttest>
 	</t:test_case>
@@ -359,7 +362,7 @@
 				<id>${msg3.id}</id>
 			</t:restServletRequest>
 			<t:restServletResponse>
-				<t:select attr="Return-Path" match=".?${account1.name}.?"/>
+				<t:select attr="Return-Path" match=".?${account2.name}.?"/>
 				<t:select attr="Reply-To" match=".?${account1.alias}.?"/>
 			</t:restServletResponse>
 		</t:resttest>
@@ -453,7 +456,7 @@
 				<id>${msg3.id}</id>
 			</t:restServletRequest>
 			<t:restServletResponse>
-				<t:select attr="Return-Path" match=".?${account3.name}.?"/>
+				<t:select attr="Return-Path" match=".?${account2.name}.?"/>
 				<t:select attr="Reply-To" emptyset="1"/>
 			</t:restServletResponse>
 		</t:resttest>
