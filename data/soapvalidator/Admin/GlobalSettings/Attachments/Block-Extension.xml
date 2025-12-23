@@ -659,20 +659,18 @@
     </t:steps>
 
 
-    <!-- Message should be blocked, because it has a bmp extension -->
-    <t:smtpinjecttest>
-        <t:smtpInjectRequest>
-            <address>${mta.server}</address>
-            <recipient>${account3.name}</recipient>
-            <filename>${msg2.foldername}/email-bmp.txt</filename>
-            <sender>${admin.user}</sender>		<!-- set from because a bounceback may be generated -->
-        </t:smtpInjectRequest>
-<!--
-		<t:smtpInjectResponse>
-			<t:select match=".*550.*"/>
-		</t:smtpInjectResponse>
--->
-    </t:smtpinjecttest>
+  <t:smtpinjecttest>
+    <t:smtpInjectRequest>
+        <address>${mta.server}</address>
+        <recipient>${account3.name}</recipient>
+        <filename>${msg2.foldername}/email-bmp.txt</filename>
+        <sender>${admin.user}@${defaultdomain.name}</sender>
+    </t:smtpInjectRequest>
+    <t:smtpInjectResponse>
+        <t:select match=".*250.*"/>
+    </t:smtpInjectResponse>
+</t:smtpinjecttest>
+
 
 	<t:property name="server.zimbraAccount" value="${account3.server}"/>
     <t:test required="true" >
@@ -686,7 +684,7 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
-
+	<t:delay sec="10"/>
 	<t:test>
 		<t:request>
 			<SearchRequest xmlns="urn:zimbraMail" types="message">
