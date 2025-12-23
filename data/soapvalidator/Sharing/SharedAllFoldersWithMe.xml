@@ -901,7 +901,12 @@
             </GetShareInfoRequest>
         </t:request>
         <t:response>
-             <t:select path='//acct:GetShareInfoResponse/acct:share[@ownerId="${account2.id}"]' attr="folderId" match="${account2.folder.drafts.id}" />
+            <t:select 
+  path='//acct:GetShareInfoResponse/acct:share[
+    @ownerId="${account2.id}" and 
+    @granteeType="all" and 
+    @rights="${rights.manager}"
+  ]' />
         </t:response>
     </t:test>
 
@@ -976,7 +981,11 @@
             </GetShareInfoRequest>
         </t:request>
         <t:response>
-             <t:select path='//acct:GetShareInfoResponse/acct:share[@ownerId="${account2.id}"]' attr="folderId" match="${account2.folder.drafts.id}" />
+             <t:select
+ path='//acct:GetShareInfoResponse/acct:share[
+   @ownerId="${account2.id}" and
+   @rights="rwidx"
+ ]'/>
         </t:response>
     </t:test>
 
