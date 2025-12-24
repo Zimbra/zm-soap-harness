@@ -190,7 +190,7 @@
         </t:response>
     </t:test>
 	
-	 <t:test>
+	  <t:test>
         <t:request>
             <CreateAppointmentRequest xmlns="urn:zimbraMail">
                 <m>
@@ -209,22 +209,25 @@
             </CreateAppointmentRequest>
         </t:request>
         <t:response>
-            <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
+         
+            <t:select path="//mail:CreateAppointmentResponse"
+          attr="apptId"
+          set="appointment1.id"/>
+
         </t:response>
     </t:test>
 	
 	<t:delay sec="15"/>
 
     <t:test>
-        <t:request>
-            <SearchRequest xmlns="urn:zimbraMail" types="appointment" calExpandInstStart="${TimeRangeStart}" calExpandInstEnd="${TimeRangeFinish}">
-				            <query>in:calendar</query>
-			</SearchRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:SearchResponse/mail:appt"/>
-        </t:response>
-    </t:test>
+    <t:request>
+        <GetAppointmentRequest xmlns="urn:zimbraMail" id="${appointment1.id}"/>
+    </t:request>
+    <t:response>
+        <!-- Appointment exists -->
+        <t:select path="//mail:GetAppointmentResponse/mail:appt"/>
+    </t:response>
+</t:test>
 	
 </t:test_case>
 
@@ -299,5 +302,3 @@
 </t:test_case>
 
 </t:tests>
-
-
