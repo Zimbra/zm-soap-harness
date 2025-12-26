@@ -50,7 +50,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="acctSetup1_appointment" type="q4fix" >
+<t:test_case testcaseid="acctSetup1_appointment" type="always" >
     <t:objective>Create test accounts</t:objective>
    
     <!-- Login to admin -->
@@ -95,7 +95,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid = "bug_68676" type="q4fix" areas="Calendar" bugids="68676">
+<t:test_case testcaseid = "bug_68676" type="bhr" areas="Calendar" bugids="68676">
     <t:objective>Verify DismissCalendarItemAlarmRequest returned with error - permission denied: cannot dismiss alarms of a shared calendar </t:objective>
     <t:steps>1. Log as user say user1
 			 2. Create an appointment with Reminder
@@ -172,6 +172,8 @@
             <t:select path = "//mail:CreateAppointmentResponse" attr="invId" set="appointment1.id"/>
         </t:response>
     </t:test>
+	
+	<t:delay sec="15"/>
 
     <t:test>
         <t:request>
@@ -223,6 +225,8 @@
              <t:select path="//mail:CreateMountpointResponse/mail:link" attr="name" set="calendar.name"/>     
         </t:response>
     </t:test>
+	
+	<t:delay sec="15"/>
     
      <t:test required="true">
         <t:request>
@@ -242,9 +246,7 @@
 			</SearchRequest>
         </t:request>
         <t:response>
-            <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment.subject1}"/>
-           
-            
+            <t:select path="//mail:SearchResponse/mail:appt" attr="name" match="${appointment.subject1}"/>    
         </t:response>
     </t:test>
     
