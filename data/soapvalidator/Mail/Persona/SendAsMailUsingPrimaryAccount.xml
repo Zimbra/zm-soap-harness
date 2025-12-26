@@ -104,7 +104,7 @@
 
 	<t:property name="server.zimbraAdmin" value="${zimbraServer.name}" />
 
-	<t:test_case testcaseid="sendMailAsPrimaryAccount" type="q4fix">
+	<t:test_case testcaseid="sendMailAsPrimaryAccount" type="bhr">
 		<t:objective>Verify user is able to send an email with sendAs right
 		</t:objective>
 		<t:steps>
@@ -238,12 +238,19 @@
 				<id>${msg01.id}</id>
 			</t:restServletRequest>
 			<t:restServletResponse>
-				<t:select attr="Return-Path" match=".?${test_account1.name}.?" />
+				
+        <t:select path="//cs:body"
+                  contains="From: ${test_account2.name}"/>
+
+        <t:select path="//cs:body"
+                  contains="Sender: ${test_account1.name}"/>
+        <t:select path="//cs:body"
+                  contains="To: ${test_account3.name}"/>
 			</t:restServletResponse>
 		</t:resttest>
 	</t:test_case>
 
-	<t:test_case testcaseid="sendMailAsPrimaryAccountPersona" type="q4fix">
+	<t:test_case testcaseid="sendMailAsPrimaryAccountPersona" type="bhr">
 		<t:objective>Verify user is able to send an email with sendAs right
 		</t:objective>
 		<t:steps>
