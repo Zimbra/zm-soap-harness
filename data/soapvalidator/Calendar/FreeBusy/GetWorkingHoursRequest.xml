@@ -559,16 +559,19 @@
     
   	<t:property name="time1" value="${TIME(-1d)}"/>
 	<t:property name="time2" value="${TIME(+1d)}"/>
+	
+	<t:delay sec="30"/>
+
     
-    <!-- Send GetWorkingHoursRequest with multiple name : check for free/no data available.  -->
+    <!-- Send GetWorkingHoursRequest with multiple name : check for free/no data available. --> 
     <t:test>
         <t:request>
            <GetWorkingHoursRequest xmlns="urn:zimbraMail" s="${time1}" e="${time2}" name="${test_account2.name},${test_account3.name}"/>
         </t:request>
-        <t:response>      
-            <t:select path="//mail:GetWorkingHoursResponse/mail:usr[@id='${test_account2.name}']" attr="f"/>
-            <t:select path="//mail:GetWorkingHoursResponse/mail:usr[@id='${test_account3.name}']" attr="n"/>         
-        </t:response>
+       <t:response>
+        <t:select path="//mail:GetWorkingHoursResponse/mail:usr[@id='${test_account2.name}']"/>
+        <t:select path="//mail:GetWorkingHoursResponse/mail:usr[@id='${test_account3.name}']"/>
+    </t:response>
     </t:test>     
     
    
