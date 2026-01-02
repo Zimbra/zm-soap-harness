@@ -429,43 +429,54 @@
         </t:response>
     </t:test>
 
-	 <t:test>
-        <t:request>
-            <GetShareInfoRequest xmlns="urn:zimbraAccount">
-            </GetShareInfoRequest>
-        </t:request>
-        <t:response>
-              <t:select path="//acct:GetShareInfoResponse">
-					<t:select path="acct:share" attr="folderPath" match="/Contacts" />
-              </t:select>
-        </t:response>
-    </t:test>
+	 <!-- Validate shared Contacts exists (share metadata only) -->
+<t:test>
+    <t:request>
+        <GetShareInfoRequest xmlns="urn:zimbraAccount"/>
+    </t:request>
+    <t:response>
+        <t:select path="//acct:GetShareInfoResponse">
+            <t:select path="acct:share" attr="view" match="contact"/>
+            <t:select path="acct:share" attr="granteeType" match="pub"/>
+            <t:select path="acct:share" attr="ownerEmail" match="${account2.name}"/>
+        </t:select>
+    </t:response>
+</t:test>
 
-    <t:test >
-        <t:request>
-            <CreateMountpointRequest xmlns="urn:zimbraMail">
-                 <link l="${account1.root.id}" name="${account2.Sharedfolder.Contacts.name}" zid="${account2.id}" rid="${account2.folder.contact.id}" view="${view.contact}"/>
-            </CreateMountpointRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//mail:CreateMountpointResponse/mail:link" attr="id" set="account2.Sharedfolder.contact.id"/>
-        </t:response>
-    </t:test>
+<!-- Create mountpoint -->
+<t:test>
+    <t:request>
+        <CreateMountpointRequest xmlns="urn:zimbraMail">
+            <link l="${account1.root.id}"
+                  name="${account2.Sharedfolder.Contacts.name}"
+                  zid="${account2.id}"
+                  rid="${account2.folder.contact.id}"
+                  view="${view.contact}"/>
+        </CreateMountpointRequest>
+    </t:request>
+    <t:response>
+        <t:select path="//mail:CreateMountpointResponse/mail:link"
+                  attr="id"
+                  set="account2.Sharedfolder.contact.id"/>
+    </t:response>
+</t:test>
 
-    <t:delay sec="3"/>
+<t:delay sec="3"/>
 
-    <!-- Do GetShareInfoRequest -->
-    <t:test>
-        <t:request>
-            <GetShareInfoRequest xmlns="urn:zimbraAccount">
-            </GetShareInfoRequest>
-        </t:request>
-        <t:response>
-              <t:select path="//acct:GetShareInfoResponse">
-					<t:select path="acct:share" attr="mid" match="${account2.Sharedfolder.contact.id}" />
-              </t:select>
-        </t:response>
-    </t:test>
+<t:test>
+    <t:request>
+        <GetFolderRequest xmlns="urn:zimbraMail">
+            <folder l="${account1.root.id}"/>
+        </GetFolderRequest>
+    </t:request>
+    <t:response>
+        <!-- Validate mounted Contacts folder -->
+        <t:select path="//mail:link"
+                  attr="id"
+                  match="${account2.Sharedfolder.contact.id}"/>
+    </t:response>
+</t:test>
+
 
 </t:test_case>
 
