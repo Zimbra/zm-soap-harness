@@ -172,18 +172,16 @@
 	<t:property name="server.restServlet" value="${account1.server}"/>
 
 	<t:resttest>
-		<t:restServletRequest>
-			<id>${msg01.id}</id>
-			<part>${msg01.part1.id}</part>
-			<view>html</view>
-		</t:restServletRequest>
-		<t:restServletResponse>
-			<t:select attr="StatusCode" match="200"/>
-		<!--	<t:content match="${msg01.part1.html.content}"/> -->
-		<t:select attr="Content-Type" match="application/pdf"/>
-		</t:restServletResponse>
-	</t:resttest>
-
+    <t:restServletRequest>
+        <id>${msg01.id}</id>
+        <part>${msg01.part1.id}</part>
+        <view>raw</view>
+    </t:restServletRequest>
+    <t:restServletResponse>
+        <t:select attr="StatusCode" match="200"/>
+        <t:select attr="Content-Type" match="application/msword"/>
+    </t:restServletResponse>
+</t:resttest>
 </t:test_case>
 
 
