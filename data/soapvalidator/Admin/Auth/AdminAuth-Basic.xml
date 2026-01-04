@@ -4,7 +4,6 @@
 
 <t:property name="admin.account1.name" value="accented.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="admin.account2.name" value="admin.${TIME}.${COUNTER}@${defaultdomain.name}"/>
-<t:property name="admin.account7.name" value="admin.${TIME}.${COUNTER}@${defaultdomain.name}"/>
 <t:property name="admin.account3.without_domain_name" value="admin.${TIME}.${COUNTER}"/>
 <t:property name="admin.account4.without_domain_name" value="admin.${TIME}.${COUNTER}"/>
 <t:property name="account.foreignPrincipal" value="test:${TIME}.${COUNTER}"/>
@@ -111,7 +110,7 @@
 </t:test_case>
 
 
-<t:test_case testcaseid="AdminAuth_basic_04" type="bhr" bugids="32581">
+<t:test_case testcaseid="AdminAuth_basic_04" type="sanity" bugids="32581">
 	<t:objective> Verify admin AuthRequest support "account by" syntax. Check for "name/id/foriegn principal" </t:objective>
 
     <t:test required="true" >
@@ -153,41 +152,9 @@
             <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
         </t:response>
     </t:test>
-
-</t:test_case>
-
-
-<t:test_case testcaseid="AdminAuth_basic_07" type="bhr" bugids="32581">
-	<t:objective> Verify admin AuthRequest support "account by" syntax. Check for "name/id/foriegn principal" </t:objective>
-
-    <t:test required="true" >
-        <t:request>
-            <AuthRequest xmlns="urn:zimbraAdmin">
-			<account by="name">${admin.user}</account>
-            <password>${admin.password}</password>
-            </AuthRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:AuthResponse/admin:authToken" set="authToken"/>
-        </t:response>
-    </t:test>
-
-    <t:test >
-        <t:request>
-            <CreateAccountRequest xmlns="urn:zimbraAdmin">
-                <name>${admin.account7.name}</name>
-                <password>${admin.password}</password>
-                <a n="zimbraIsAdminAccount">${globals.true}</a>
-            </CreateAccountRequest>
-        </t:request>
-        <t:response>
-            <t:select path="//admin:CreateAccountResponse/admin:account" attr="id" set="admin.Id"/>
-        </t:response>
-    </t:test>  
-    
-    <t:delay msec="2000"/>
-
-    <t:test required="true" >
+	<t:delay msec="2000"/>
+	
+	 <t:test required="true" >
         <t:request>
             <AuthRequest xmlns="urn:zimbraAdmin">
 			<account by="id">${admin.Id}</account>
