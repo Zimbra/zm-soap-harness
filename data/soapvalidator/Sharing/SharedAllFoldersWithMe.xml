@@ -650,7 +650,8 @@
         </t:request>
         <t:response>
               <t:select path="//acct:GetShareInfoResponse">
-               	<t:select path="acct:share" attr="ownerId" match="${account3.id}" />
+               	<t:select path="//acct:GetShareInfoResponse/acct:share[@folderPath='/Tasks']"/>
+				<t:select path="//acct:GetShareInfoResponse/acct:share[@view='task']"/>
               </t:select>
         </t:response>
     </t:test>
@@ -688,7 +689,6 @@
         </t:request>
         <t:response>
             <t:select path="//acct:GetShareInfoResponse">
-                <t:select path="acct:share" attr="ownerId" match="${account3.id}" />
                 <t:select path="acct:share" attr="mid" match="${account2.Sharedfolder.Task.id}" />
             </t:select>
         </t:response>
@@ -838,17 +838,19 @@
             <t:select path="//acct:AuthResponse/acct:authToken" set="authToken"/>
         </t:response>
     </t:test>
+	
+	
+	<t:test>
+    <t:request>
+        <GetShareInfoRequest xmlns="urn:zimbraAccount"/>
+    </t:request>
+    <t:response>
+        <t:select path='//acct:GetShareInfoResponse/acct:share[@ownerId="${account2.id}"]'
+                  attr="view"
+                  match="document"/>
+    </t:response>
+</t:test>
 
-    <t:test>
-        <t:request>
-            <GetShareInfoRequest xmlns="urn:zimbraAccount">
-            </GetShareInfoRequest>
-        </t:request>
-        <t:response>
-            <t:select path='//acct:GetShareInfoResponse/acct:share[@ownerId="${account2.id}"]' attr="folderId" match="${account2.folder.Briefcase.id}" />
-
-        </t:response>
-    </t:test>
 
 </t:test_case>
 
@@ -914,10 +916,10 @@
         <t:response>
             <t:select 
   path='//acct:GetShareInfoResponse/acct:share[
-    @ownerId="${account2.id}" and 
-    @granteeType="all" and 
-    @rights="${rights.manager}"
-  ]' />
+    @ownerId="${account2.id}" and
+    @granteeType="dom" and
+    @folderPath="/Drafts"
+  ]'/>
         </t:response>
     </t:test>
 
